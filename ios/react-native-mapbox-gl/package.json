@@ -1,0 +1,112 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "react-native-mapbox-gl",
+        "scope": null,
+        "escapedName": "react-native-mapbox-gl",
+        "name": "react-native-mapbox-gl",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/yangwoo/Desktop/Project-Vinyl-Client"
+    ]
+  ],
+  "_from": "react-native-mapbox-gl@latest",
+  "_id": "react-native-mapbox-gl@5.1.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/react-native-mapbox-gl",
+  "_nodeVersion": "4.4.7",
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/react-native-mapbox-gl-5.1.0.tgz_1479404957297_0.6102505743037909"
+  },
+  "_npmUser": {
+    "name": "bsudekum",
+    "email": "bobby@mapbox.com"
+  },
+  "_npmVersion": "2.15.8",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "react-native-mapbox-gl",
+    "scope": null,
+    "escapedName": "react-native-mapbox-gl",
+    "name": "react-native-mapbox-gl",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/react-native-mapbox-gl/-/react-native-mapbox-gl-5.1.0.tgz",
+  "_shasum": "8035687b234960fa2a60f3deef7e277049a46860",
+  "_shrinkwrap": null,
+  "_spec": "react-native-mapbox-gl",
+  "_where": "/Users/yangwoo/Desktop/Project-Vinyl-Client",
+  "author": {
+    "name": "Bobby Sudekum"
+  },
+  "bugs": {
+    "url": "https://github.com/mapbox/react-native-mapbox-gl/issues"
+  },
+  "dependencies": {
+    "babel-eslint": "^6.1.2",
+    "lodash": "^4.13.1"
+  },
+  "description": "A Mapbox GL react native module for creating custom maps",
+  "devDependencies": {
+    "babel-eslint": "^6.1.2",
+    "eslint": "^3.1.1",
+    "eslint-config-strict-react": "^8.0.1",
+    "eslint-plugin-react": "^5.2.2",
+    "eslint-plugin-react-native": "1.1.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "8035687b234960fa2a60f3deef7e277049a46860",
+    "tarball": "https://registry.npmjs.org/react-native-mapbox-gl/-/react-native-mapbox-gl-5.1.0.tgz"
+  },
+  "gitHead": "334b17f902538de567545a00b0605f09ad0c214c",
+  "homepage": "https://github.com/mapbox/react-native-mapbox-gl#readme",
+  "keywords": [
+    "gl",
+    "ios",
+    "android",
+    "mapbox",
+    "react-component",
+    "react-native"
+  ],
+  "licenses": [
+    {
+      "type": "BSD",
+      "url": "https://github.com/mapbox/react-native-mapbox-gl/blob/master/LICENSE.md"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "bsudekum",
+      "email": "bobby@mapbox.com"
+    },
+    {
+      "name": "brentvatne",
+      "email": "brentvatne@gmail.com"
+    }
+  ],
+  "name": "react-native-mapbox-gl",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mapbox/react-native-mapbox-gl.git"
+  },
+  "scripts": {
+    "lint": "eslint --no-eslintrc -c .eslintrc index.js example.js",
+    "preinstall": "node ./scripts/download-mapbox-gl-native-ios-if-on-mac.js 3.3.1",
+    "test": "npm run lint"
+  },
+  "version": "5.1.0"
+}
