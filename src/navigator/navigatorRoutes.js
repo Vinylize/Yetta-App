@@ -35,6 +35,6 @@ export function registerNavigatorRoute() {
 export function mapNavigatorRoute() {
   return {
     Component: Map,
-    queryConfig: new MapRoute(),
+    queryConfig: new MapRoute()
   };
 }

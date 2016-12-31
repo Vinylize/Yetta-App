@@ -8,6 +8,9 @@ import {
   View,
   TouchableHighlight
 } from 'react-native';
+import {
+  mapNavigatorRoute
+} from '../navigator/navigatorRoutes';
 import { login } from './../auth/auth';
 
 const styles = {
@@ -36,7 +39,8 @@ const styles = {
 
 export class Login extends Component {
   static propTypes = {
-    Users: PropTypes.Object
+    Users: PropTypes.Object,
+    navigator: PropTypes.any
   };
 
   constructor() {
@@ -53,6 +57,9 @@ export class Login extends Component {
       login(this.state.userEmail, this.state.password)
         .then((data) => {
           return AsyncStorage.setItem(`accessToken`, data.getToken.user.accessToken);
+        })
+        .then(() => {
+          this.props.navigator.push(mapNavigatorRoute());
         })
         .catch(console.log);
     }

@@ -7,9 +7,9 @@ export default class LoginMutation extends Relay.Mutation {
 
   getMutation() {
     return Relay.QL`
-        mutation {
-            getToken
-        }
+      mutation {
+        getToken
+      }
     `;
   }
 
@@ -22,12 +22,12 @@ export default class LoginMutation extends Relay.Mutation {
 
   getFatQuery() {
     return Relay.QL`
-        fragment on getTokenPayload {
-          user{
-            _id
-            name
-          }
+      fragment on getTokenPayload {
+        user{
+          _id
+          name
         }
+      }
     `
   }
 
@@ -50,6 +50,4 @@ export default class LoginMutation extends Relay.Mutation {
       loginUser: this.props.loginUser
     }
   }
-
-
 }

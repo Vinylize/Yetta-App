@@ -11,9 +11,8 @@ export function register(email, name, password) {
         password: password
       }
     }), {
-      onSuccess: (data) => {
-        console.log(data);
-        // resolve(login(username, password));
+      onSuccess: () => {
+        resolve();
       },
 
       onFailure: (transaction) => {

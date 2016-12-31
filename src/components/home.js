@@ -8,38 +8,37 @@ import {
   TouchableHighlight
 } from 'react-native';
 import {
-  mapNavigatorRoute,
   loginNavigatorRoute,
-  registerNavigatorRoute,
+  registerNavigatorRoute
 } from '../navigator/navigatorRoutes';
 
 const styles = {
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   mapBox: {
     flex: 6,
     alignItems: 'stretch',
-    marginBottom:-30,
+    marginBottom:-30
   },
   map: {
     flex: 1
   },
   textLogin: {
     fontSize: 20,
-    textAlign: 'center',
+    textAlign: 'center'
   },
   textRegister: {
     fontSize: 20,
-    textAlign: 'center',
+    textAlign: 'center'
   }
 };
 
 export class Home extends Component {
   static propTypes = {
     navigator: PropTypes.any
-  }
+  };
 
   state = {
     center: {
@@ -210,7 +209,7 @@ export class Home extends Component {
           </Text>
         </TouchableHighlight>
         <TouchableHighlight
-          style={{ flex: 1, backgroundColor: '#2b3ee5', justifyContent: 'center' }}
+          style={{ flex: 1, backgroundColor: '#42dcf4', justifyContent: 'center' }}
           onPress={this.handleRegister.bind(this)}>
           <Text style={styles.textRegister}>
             Register
@@ -235,5 +234,5 @@ export default Relay.createContainer(Home, {
   initialVariables: {
   },
   fragments: {
-  },
+  }
 });
