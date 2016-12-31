@@ -37,11 +37,6 @@ const styles = {
 };
 
 export class Register extends Component {
-  static propTypes = {
-    Users: PropTypes.Object,
-    navigator: PropTypes.any
-  };
-
   constructor() {
     super();
     this.state = {
@@ -99,16 +94,5 @@ export default Relay.createContainer(Register, {
   initialVariables: {
     orderBy: null
   },
-  fragments: {
-    Users: () => {
-      return Relay.QL `
-        fragment on User {
-          _id,
-          email,
-          name,
-          createdAt
-        }
-      `;
-    }
-  }
+  fragments: {}
 });

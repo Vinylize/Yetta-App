@@ -12,7 +12,7 @@ export function setNetworkLayer() {
     Authorization: authToken,
   };
   Relay.injectNetworkLayer(
-    new Relay.DefaultNetworkLayer('http://220.76.27.58:5001/graphql', options)
+    new Relay.DefaultNetworkLayer('http://220.76.27.58:5001/graphql')
   );
 }
 

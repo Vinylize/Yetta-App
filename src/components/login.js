@@ -38,11 +38,6 @@ const styles = {
 };
 
 export class Login extends Component {
-  static propTypes = {
-    Users: PropTypes.Object,
-    navigator: PropTypes.any
-  };
-
   constructor() {
     super();
     this.state = {
@@ -97,16 +92,5 @@ export default Relay.createContainer(Login, {
   initialVariables: {
     orderBy: null
   },
-  fragments: {
-    Users: () => {
-      return Relay.QL `
-          fragment on User {
-              _id,
-              email,
-              name,
-              createdAt
-          }
-      `;
-    }
-  }
+  fragments: {}
 });
