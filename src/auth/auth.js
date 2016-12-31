@@ -19,7 +19,7 @@ export function register(email, name, password) {
       onFailure: (transaction) => {
         console.log(transaction.getError());
         reject(transaction.getError().message);
-      },
+      }
     });
   });
 }
@@ -29,7 +29,7 @@ export function login(email, password) {
     Relay.Store.commitUpdate(new LoginMutation({
       input: {
         email: email,
-        password: password,
+        password: password
       }
     }), {
       onSuccess: (data) => {
@@ -40,7 +40,7 @@ export function login(email, password) {
       onFailure: (transaction) => {
         console.log(transaction.getError().message);
         reject(transaction.getError().message);
-      },
+      }
     });
   });
 }

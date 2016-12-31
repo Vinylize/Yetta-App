@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Mapbox, { MapView } from 'react-native-mapbox-gl';
 import Relay from 'react-relay';
 import {
+  AsyncStorage,
   Text,
   View,
   TouchableHighlight
@@ -32,10 +33,14 @@ const styles = {
   textRegister: {
     fontSize: 20,
     textAlign: 'center',
-  },
+  }
 };
 
 export class Home extends Component {
+  static propTypes = {
+    navigator: PropTypes.any
+  }
+
   state = {
     center: {
       latitude: 37.53601435685916,
@@ -91,6 +96,22 @@ export class Home extends Component {
     super();
     this.renderTop = this.renderTop.bind(this);
     this.renderBottom = this.renderBottom.bind(this);
+  }
+
+  componentDidMount() {
+    this.checkLogin()
+      .then((token) => {
+        if(token) {
+          // todo: to smt here
+        }
+      })
+      .catch(console.log)
+  }
+
+  checkLogin() {
+    return new Promise((resolve) => {
+      resolve(AsyncStorage.getItem(`accessToken`));
+    });
   }
 
   handleLogin() {

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Relay from 'react-relay';
 import {
+  AsyncStorage,
   Alert,
   Text,
   TextInput,
@@ -49,7 +50,11 @@ export class Login extends Component {
 
   handleLoginButton() {
     if (this.state.userEmail && this.state.password) {
-      login(this.state.userEmail, this.state.password);
+      login(this.state.userEmail, this.state.password)
+        .then((data) => {
+          return AsyncStorage.setItem(`accessToken`, data.getToken.user.accessToken);
+        })
+        .catch(console.log);
     }
     else {
       Alert.alert(
