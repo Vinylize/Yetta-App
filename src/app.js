@@ -7,12 +7,12 @@ export function setNetworkLayer() {
   let options = {};
 
   // Access Token
-  const authToken = '';
+  const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ODY3OWVmYTgwZjRkZjE3NDU5YTYwYzciLCJuYW1lIjoieWZkc2FuZyIsImVtYWlsIjoiZmRzc2Rkc2Zkc0BuYXZlci5jb20iLCJpYXQiOjE0ODMxODU5MTR9.CqqvCh-EWsLaWitw7fXa_H3-n7EpUTz2vAR5sqn0bGw';
   options.headers = {
     Authorization: authToken,
   };
   Relay.injectNetworkLayer(
-    new Relay.DefaultNetworkLayer('http://localhost:5001/graphql', options)
+    new Relay.DefaultNetworkLayer('http://220.76.27.58:5001/graphql', options)
   );
 }
 

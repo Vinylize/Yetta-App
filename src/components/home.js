@@ -5,94 +5,80 @@ import {
   View,
   TouchableHighlight
 } from 'react-native';
-import RegisterMutation from '../mutations/register';
+import * as navigatorRoutes from './../navigator/navigatorRoutes';
 
 const styles = {
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF'
+    justifyContent: 'center'
   },
   welcome: {
     fontSize: 20,
-    textAlign: 'center',
-    margin: 10
+    textAlign: 'center'
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5
-  }
+  textLogin: {
+    fontSize: 20,
+    textAlign: 'center'
+  },
+  textRegister: {
+    fontSize: 20,
+    textAlign: 'center'
+  },
 };
 
-export function register(email, name, password) {
-  return new Promise((resolve, reject) => {
-    Relay.Store.commitUpdate(new RegisterMutation({
-      input: {
-        email: email,
-        name: name,
-        password: password
-      }
-    }), {
-      onSuccess: (data) => {
-        console.log(data);
-        // resolve(login(username, password));
-      },
-
-      onFailure: (transaction) => {
-        console.log(transaction.getError());
-        reject(transaction.getError().message);
-      },
-    });
-  });
-}
-
-export function login(username, password) {
-  // return new Promise((resolve, reject) => {
-  //   Relay.Store.commitUpdate(new LoginMutation({
-  //     input: {
-  //       username: username,
-  //       password: password,
-  //     },
-  //     user: null,
-  //   }), {
-  //     onSuccess: (data) => {
-  //       resolve(data);
-  //     },
-  //
-  //     onFailure: (transaction) => {
-  //       reject(transaction.getError().message);
-  //     },
-  //   });
-  // });
-}
-
 export class Home extends Component {
-  static propTypes = {
-    Users: PropTypes.Object
-  };
-
   constructor() {
     super();
+    this.renderTop = this.renderTop.bind(this);
+    this.renderBottom = this.renderBottom.bind(this);
+  }
+
+  handleLogin() {
+    const newRoute = navigatorRoutes.loginNavigatorRoute();
+    this.props.navigator.push(newRoute);
+  }
+
+  handleRegister() {
+    const newRoute = navigatorRoutes.registerNavigatorRoute();
+    this.props.navigator.push(newRoute);
+  }
+
+  renderTop() {
+    return (
+      <View style={{flex:6, backgroundColor: 'yellow', justifyContent: 'center'}}>
+        <Text style={styles.welcome}>
+          Hello!
+        </Text>
+      </View>
+    )
+  }
+
+  renderBottom() {
+    return (
+      <View style={{flex:2}}>
+        <TouchableHighlight
+          style={{flex:1, backgroundColor: '#e2462b', justifyContent: 'center'}}
+          onPress={this.handleLogin.bind(this)}>
+          <Text style={styles.textLogin}>
+            Login
+          </Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={{flex:1, backgroundColor: '#2b3ee5', justifyContent: 'center'}}
+          onPress={this.handleRegister.bind(this)}>
+          <Text style={styles.textRegister}>
+            Register
+          </Text>
+        </TouchableHighlight>
+      </View>
+    )
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          {this.props.Users.name}
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-        <TouchableHighlight onPress={() => register("fffffffddff@gfmail.com", "fzzzfff", "12a34")}>
-          <Text>Register</Text>
-        </TouchableHighlight>
+        {this.renderTop()}
+        {this.renderBottom()}
       </View>
     );
   }
@@ -100,19 +86,7 @@ export class Home extends Component {
 
 export default Relay.createContainer(Home, {
   initialVariables: {
-    orderBy: null
   },
   fragments: {
-    Users: () => {
-      return Relay.QL `
-          fragment on User {
-              _id,
-              email,
-              name,
-              createdAt
-          }
-      `;
-    }
   }
 });
-

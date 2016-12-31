@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest",
+    "test": "eslint src/**/*.js && jest",
     "lint": "eslint --fix *.js"
   },
   "dependencies": {
@@ -16,9 +16,12 @@
   },
   "devDependencies": {
     "babel-core": "^6.21.0",
+    "babel-eslint": "^7.1.1",
     "babel-jest": "18.0.0",
     "babel-preset-react-native": "1.9.1",
     "babel-relay-plugin": "^0.10.0",
+    "eslint": "^3.12.2",
+    "eslint-plugin-react": "^6.8.0",
     "graphql": "^0.8.2",
     "jest": "18.0.0",
     "react-test-renderer": "15.4.1"
