@@ -8,7 +8,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import {
-  mapNavigatorRoute
+  portOrShipNavigatorRoute
 } from '../navigator/navigatorRoutes';
 import { login } from './../auth/auth';
 
@@ -43,12 +43,8 @@ export default class Login extends Component {
       password: undefined,
       userEmail: undefined,
       registerOnProgress: false
-    }
+    };
   }
-
-  static propTypes = {
-    navigator: PropTypes.any
-  };
 
   handleLoginButton() {
     if (this.state.userEmail && this.state.password) {
@@ -61,7 +57,7 @@ export default class Login extends Component {
           throw Error(data);
         })
         .then(token => AsyncStorage.setItem(`accessToken`, token))
-        .then(() => this.props.navigator.push(mapNavigatorRoute()))
+        .then(() => this.props.navigator.push(portOrShipNavigatorRoute()))
         .catch(console.log);
     }
     else {
@@ -93,3 +89,7 @@ export default class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  navigator: PropTypes.any
+};

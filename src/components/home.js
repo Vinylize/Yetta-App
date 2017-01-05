@@ -28,21 +28,17 @@ const styles = {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: 'white'
+    color: '#ececec'
   },
   textRegister: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: 'white'
+    color: '#ececec'
   }
 };
 
 export default class Home extends Component {
-  static propTypes = {
-    navigator: PropTypes.any
-  };
-
   state = {
     center: {
       latitude: 37.53601435685916,
@@ -187,32 +183,7 @@ export default class Home extends Component {
   renderTop() {
     return (
       <View style={styles.mapBox}>
-        <MapView
-          ref={map => {
-            this._map = map;
-          }}
-          style={styles.map}
-          initialCenterCoordinate={this.state.center}
-          initialZoomLevel={14}
-          initialDirection={0}
-          scrollEnabled={true}
-          rotateEnabled={false}
-          zoomEnabled={true}
-          showsUserLocation={true}
-          userTrackingMode={this.state.userTrackingMode}
-          annotations={this.state.annotations}
-          annotationsAreImmutable
-          styleURL={Mapbox.mapStyles.light}
-          logoIsHidden={true}
-          onChangeUserTrackingMode={this.onChangeUserTrackingMode}
-          onRegionDidChange={this.onRegionDidChange}
-          onRegionWillChange={this.onRegionWillChange}
-          onOpenAnnotation={this.onOpenAnnotation}
-          onRightAnnotationTapped={this.onRightAnnotationTapped}
-          onUpdateUserLocation={this.onUpdateUserLocation}
-          onLongPress={this.onLongPress}
-          onTap={this.onTap}
-        />
+
       </View>
     );
   }
@@ -249,3 +220,7 @@ export default class Home extends Component {
     );
   }
 }
+
+Home.propTypes = {
+  navigator: PropTypes.any
+};

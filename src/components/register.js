@@ -42,12 +42,8 @@ export default class Register extends Component {
       userName: undefined,
       password: undefined,
       userEmail: undefined
-    }
+    };
   }
-
-  static propTypes = {
-    navigator: PropTypes.any
-  };
 
   handleRegisterButton() {
     if (this.state.userName && this.state.password && this.state.userEmail) {
@@ -91,3 +87,7 @@ export default class Register extends Component {
     );
   }
 }
+
+Register.propTypes = {
+  navigator: PropTypes.any
+};

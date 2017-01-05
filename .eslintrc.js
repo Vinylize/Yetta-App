@@ -10,8 +10,6 @@ module.exports = {
 
   "plugins": ["react"],
 
-  "parser": "babel-eslint",
-
   "ecmaFeatures": {
     "arrowFunctions": true,
     "binaryLiterals": true,
