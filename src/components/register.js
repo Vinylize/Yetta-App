@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import Relay from 'react-relay';
 import {
   Alert,
   Text,
@@ -36,7 +35,7 @@ const styles = {
   }
 };
 
-export class Register extends Component {
+export default class Register extends Component {
   constructor() {
     super();
     this.state = {
@@ -45,6 +44,10 @@ export class Register extends Component {
       userEmail: undefined
     }
   }
+
+  static propTypes = {
+    navigator: PropTypes.any
+  };
 
   handleRegisterButton() {
     if (this.state.userName && this.state.password && this.state.userEmail) {
@@ -89,10 +92,3 @@ export class Register extends Component {
     );
   }
 }
-
-export default Relay.createContainer(Register, {
-  initialVariables: {
-    orderBy: null
-  },
-  fragments: {}
-});
