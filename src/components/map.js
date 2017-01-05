@@ -77,25 +77,6 @@ export default class Map extends Component {
     }]
   };
 
-  componentDidMount() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const initialPosition = JSON.stringify(position);
-        console.log(initialPosition);
-      },
-      (error) => alert(JSON.stringify(error)),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-    );
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      const lastPosition = JSON.stringify(position);
-      this.setState({lastPosition});
-    });
-    this.props.relay.setVariables({
-      bottomLeft: [0,1],
-      upperRight: [2,3]
-    })
-  }
-
   onRegionDidChange = (location) => {
     this.setState({ currentZoom: location.zoomLevel });
     console.log('onRegionDidChange', location);

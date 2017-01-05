@@ -49,7 +49,7 @@ export default class Home extends Component {
       longitude: 127.1368545604094
     },
     zoom: 11,
-    userTrackingMode: Mapbox.userTrackingMode.none,
+    userTrackingMode: Mapbox.userTrackingMode.follow,
     annotations: [{
       coordinates: [40.72052634, -73.97686958312988],
       type: 'point',

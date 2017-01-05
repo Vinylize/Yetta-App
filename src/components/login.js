@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import Relay from 'react-relay';
 import {
   AsyncStorage,
   Alert,
@@ -53,21 +52,16 @@ export default class Login extends Component {
 
   handleLoginButton() {
     if (this.state.userEmail && this.state.password) {
+      console.log(this.state);
       login(this.state.userEmail, this.state.password)
-        .then(data => data.getToken.user.accessToken)
-        .then((token) => {
-          Relay.injectNetworkLayer(
-            new Relay.DefaultNetworkLayer('http://220.76.27.58:5001/graphql', {
-              headers: {
-                Authorization: token
-              }
-            })
-          );
-          return AsyncStorage.setItem(`accessToken`, token);
+        .then(data => {
+          if (data && data.accessToken) {
+            return data.accessToken;
+          }
+          throw Error(data);
         })
-        .then(() => {
-          this.props.navigator.push(mapNavigatorRoute());
-        })
+        .then(token => AsyncStorage.setItem(`accessToken`, token))
+        .then(() => this.props.navigator.push(mapNavigatorRoute()))
         .catch(console.log);
     }
     else {
