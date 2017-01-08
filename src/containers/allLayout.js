@@ -12,6 +12,11 @@ const renderScene = (route, navigator) => {
   );
 };
 
+const configureScene = (route) => {
+  const { sceneConfig } = route;
+  return (sceneConfig) ? sceneConfig : Navigator.SceneConfigs.HorizontalSwipeJump;
+};
+
 class All extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +28,7 @@ class All extends React.Component {
       <Navigator
         initialRoute={initialRoute}
         renderScene={renderScene}
+        configureScene={configureScene}
       />
     );
   }

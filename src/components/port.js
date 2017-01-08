@@ -48,35 +48,36 @@ const shippingShip = (lat, lon) => {
 };
 
 export default class Port extends Component {
-  state = {
-    center: {
-      latitude: 37.53601435685916,
-      longitude: 127.1368545604094
-    },
-    zoom: 11,
-    userTrackingMode: Mapbox.userTrackingMode.follow,
-    annotations: [{
-      coordinates: [40.72052634, -73.97686958312988],
-      type: 'point',
-      title: 'This is marker 1',
-      subtitle: 'It has a rightCalloutAccessory too',
-      rightCalloutAccessory: {
-        source: { uri: 'https://cldup.com/9Lp0EaBw5s.png' },
-        height: 25,
-        width: 25
-      },
-      annotationImage: {
-        source: { uri: 'https://cldup.com/CnRLZem9k9.png' },
-        height: 25,
-        width: 25
-      },
-      id: 'marker1'
-    }],
-    timeout: undefined
-  };
-
   constructor() {
     super();
+
+    this.state = {
+      center: {
+        latitude: 37.53601435685916,
+        longitude: 127.1368545604094
+      },
+      zoom: 11,
+      userTrackingMode: Mapbox.userTrackingMode.follow,
+      annotations: [{
+        coordinates: [40.72052634, -73.97686958312988],
+        type: 'point',
+        title: 'This is marker 1',
+        subtitle: 'It has a rightCalloutAccessory too',
+        rightCalloutAccessory: {
+          source: { uri: 'https://cldup.com/9Lp0EaBw5s.png' },
+          height: 25,
+          width: 25
+        },
+        annotationImage: {
+          source: { uri: 'https://cldup.com/CnRLZem9k9.png' },
+          height: 25,
+          width: 25
+        },
+        id: 'marker1'
+      }],
+      timeout: undefined
+    };
+
     this.state.timeout = TimerMixin.setInterval(
       () => {
         getPortLocation()
@@ -118,7 +119,6 @@ export default class Port extends Component {
   onTap = (location) => {
     //console.log('onTap', location);
     //console.log(this.props);
-    //TimerMixin.clearInterval(this.state.timeout);
   };
   onChangeUserTrackingMode = (userTrackingMode) => {
     this.setState({ userTrackingMode });
@@ -138,6 +138,7 @@ export default class Port extends Component {
   }
 
   componentWillUnmount() {
+    TimerMixin.clearInterval(this.state.timeout);
     this._offlineProgressSubscription.remove();
     this._offlineMaxTilesSubscription.remove();
     this._offlineErrorSubscription.remove();
