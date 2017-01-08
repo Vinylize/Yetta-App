@@ -4,7 +4,7 @@ const headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json'
 };
-const url = 'http://192.168.0.76:5001/';
+const url = 'http://220.76.27.58:5001/';
 
 export function register(email, name, password) {
   const endPoint = `${url}auth/signup`;

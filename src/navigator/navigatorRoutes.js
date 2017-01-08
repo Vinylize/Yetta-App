@@ -1,3 +1,4 @@
+import { Navigator } from 'react-native';
 import Home from './../components/home';
 import Login from './../components/login';
 import Map from './../components/map';
@@ -6,15 +7,19 @@ import Port from './../components/port';
 import Ship from './../components/ship';
 import PortOrShip from './../components/portOrShip';
 
+const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
+
 export function homeNavigatorRoute() {
   return {
-    Component: Home
+    Component: Home,
+    sceneConfig
   };
 }
 
 export function loginNavigatorRoute() {
   return {
-    Component: Login
+    Component: Login,
+    sceneConfig
   };
 }
 
@@ -32,18 +37,21 @@ export function mapNavigatorRoute() {
 
 export function portNavigatorRoute() {
   return {
-    Component: Port
+    Component: Port,
+    sceneConfig
   };
 }
 
 export function shipNavigatorRoute() {
   return {
-    Component: Ship
+    Component: Ship,
+    sceneConfig
   };
 }
 
 export function portOrShipNavigatorRoute() {
   return {
-    Component: PortOrShip
+    Component: PortOrShip,
+    sceneConfig
   };
 }

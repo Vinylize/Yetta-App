@@ -57,7 +57,7 @@ export default class Login extends Component {
           throw Error(data);
         })
         .then(token => AsyncStorage.setItem(`accessToken`, token))
-        .then(() => this.props.navigator.push(portOrShipNavigatorRoute()))
+        .then(() => this.props.navigator.resetTo(portOrShipNavigatorRoute()))
         .catch(console.log);
     }
     else {
