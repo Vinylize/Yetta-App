@@ -1,15 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Alert,
-  Text,
   TextInput,
   View,
-  TouchableHighlight
+  TouchableOpacity,
+  Image,
+  LayoutAnimation,
+  Keyboard
 } from 'react-native';
-import {
-  loginNavigatorRoute
-} from '../navigator/navigatorRoutes';
 import { register } from './../auth/auth';
+
+import imgHeart from './../resources/heart.png';
 
 const styles = {
   container: {
@@ -30,8 +31,25 @@ const styles = {
   },
   textInput: {
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1
+    borderWidth: 1,
+    marginLeft: 24,
+    marginRight: 24,
+    marginBottom: 5,
+    padding: 10,
+    borderRadius: 4,
+    borderColor: '#ececec'
+  },
+  registerBtn: {
+    height: 0,
+    width: 0,
+    marginTop: 20,
+    opacity: 0.9
+  },
+  registerBtnActive: {
+    height: 70,
+    width: 70,
+    marginTop: 20,
+    opacity: 0.9
   }
 };
 
@@ -45,13 +63,32 @@ export default class Register extends Component {
     };
   }
 
+  shouldComponentUpdate(nextState) {
+    let { password, userEmail, userName } = this.state;
+    if (password !== nextState.password) {
+      return true;
+    }
+    if (userEmail !== nextState.userEmail) {
+      return true;
+    }
+    if (userName !== nextState.userName) {
+      return true;
+    }
+    return false;
+  }
+
+  componentWillUpdate() {
+    LayoutAnimation.easeInEaseOut();
+  }
+
   handleRegisterButton() {
     if (this.state.userName && this.state.password && this.state.userEmail) {
       // todo: handle duplicate signup
       register(this.state.userEmail, this.state.userName, this.state.password)
         .then((rjson) => {
           console.log(rjson);
-          this.props.navigator.push(loginNavigatorRoute());
+          this.props.goToLogin();
+          //this.props.navigator.push(loginNavigatorRoute());
         })
         .catch(console.log);
     }
@@ -60,6 +97,11 @@ export default class Register extends Component {
         'OMG, TYPE SOMETHING'
       );
     }
+  }
+
+  checkTextInputAllFilled() {
+    let { userName, password, userEmail } = this.state;
+    return (userName && password && userEmail);
   }
 
   render() {
@@ -76,21 +118,27 @@ export default class Register extends Component {
           onChangeText={(text) => this.setState({password: text})}
           value={this.state.password}
           placeholder={'password'}
+          onSubmitEditing={Keyboard.dismiss}
         />
         <TextInput
           style={styles.textInput}
           onChangeText={(text) => this.setState({userEmail: text})}
           value={this.state.userEmail}
           placeholder={'email'}
+          onSubmitEditing={Keyboard.dismiss}
         />
-        <TouchableHighlight onPress={this.handleRegisterButton.bind(this)}>
-          <Text>Register</Text>
-        </TouchableHighlight>
+        <TouchableOpacity onPress={this.handleRegisterButton.bind(this)}>
+          <Image
+            style={(this.checkTextInputAllFilled()) ? styles.registerBtnActive : styles.registerBtn}
+            source={imgHeart}
+          />
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
 Register.propTypes = {
-  navigator: PropTypes.any
+  navigator: PropTypes.any,
+  goToLogin: PropTypes.func
 };

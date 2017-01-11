@@ -1,15 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  AsyncStorage,
   Alert,
-  Text,
   TextInput,
   View,
-  TouchableHighlight
+  TouchableOpacity,
+  Image,
+  LayoutAnimation,
+  Keyboard
 } from 'react-native';
 import {
   portOrShipNavigatorRoute
 } from '../navigator/navigatorRoutes';
+
+import imgTriRight from './../resources/triangle-right.png';
 
 const styles = {
   container: {
@@ -30,12 +33,25 @@ const styles = {
   },
   textInput: {
     height: 40,
-    borderColor: 'gray',
     borderWidth: 1,
     marginLeft: 24,
     marginRight: 24,
     marginBottom: 5,
-    padding: 10
+    padding: 10,
+    borderRadius: 4,
+    borderColor: '#ececec'
+  },
+  loginBtn: {
+    height: 0,
+    width: 0,
+    marginTop: 20,
+    opacity: 0.9
+  },
+  loginBtnActive: {
+    height: 70,
+    width: 70,
+    marginTop: 20,
+    opacity: 0.9
   }
 };
 
@@ -50,16 +66,21 @@ export default class Login extends Component {
   }
 
   shouldComponentUpdate(nextState) {
-    if (this.state.password !== nextState.password) {
+    let { password, userEmail, registerOnProgress } = this.state;
+    if (password !== nextState.password) {
       return true;
     }
-    if (this.state.userEmail !== nextState.userEmail) {
+    if (userEmail !== nextState.userEmail) {
       return true;
     }
-    if (this.state.registerOnProgress !== nextState.registerOnProgress) {
+    if (registerOnProgress !== nextState.registerOnProgress) {
       return true;
     }
     return false;
+  }
+
+  componentWillUpdate() {
+    LayoutAnimation.easeInEaseOut();
   }
 
   handleLoginButton() {
@@ -88,22 +109,29 @@ export default class Login extends Component {
     return (
       <View style={styles.container}>
         <TextInput
+          ref='inputPassword'
           style={styles.textInput}
           onChangeText={(text) => this.setState({password: text})}
           value={this.state.password}
           placeholder={'password'}
           placeholderTextColor={'#f78585'}
+          onSubmitEditing={Keyboard.dismiss}
         />
         <TextInput
+          ref='inputEmail'
           style={styles.textInput}
           onChangeText={(text) => this.setState({userEmail: text})}
           value={this.state.userEmail}
           placeholder={'email'}
           placeholderTextColor={'#f78585'}
+          onSubmitEditing={Keyboard.dismiss}
         />
-        <TouchableHighlight onPress={this.handleLoginButton.bind(this)}>
-          <Text>Login</Text>
-        </TouchableHighlight>
+        <TouchableOpacity onPress={this.handleLoginButton.bind(this)}>
+          <Image
+            style={(this.state.password && this.state.userEmail) ? styles.loginBtnActive : styles.loginBtn}
+            source={imgTriRight}
+          />
+        </TouchableOpacity>
       </View>
     );
   }

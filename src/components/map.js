@@ -29,7 +29,8 @@ Mapbox.setAccessToken(accessToken);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    backgroundColor: 'grey'
   },
   map: {
     flex: 1

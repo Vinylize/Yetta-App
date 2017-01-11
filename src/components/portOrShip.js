@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
-  TouchableHighlight,
+  TouchableOpacity,
   Dimensions,
   LayoutAnimation
 } from 'react-native';
@@ -61,7 +61,7 @@ export default class PortOrShip extends Component {
   renderHeader() {
     return (
       <View style={styles.container}>
-        <TouchableHighlight
+        <TouchableOpacity
           style={[styles.button, {backgroundColor: '#ff6666', height: (this.state.clicked) ? 40 : HEIGHT}]}
           onPress={() => {
             this.setState({portOrShip: SCENE_CONSTANT.PORT});
@@ -70,10 +70,11 @@ export default class PortOrShip extends Component {
               this.setState({clicked: true});
             }
           }}
+          activeOpacity={1}
         >
           <Text style={styles.text}>Port</Text>
-        </TouchableHighlight>
-        <TouchableHighlight
+        </TouchableOpacity>
+        <TouchableOpacity
           style={[styles.button, {backgroundColor: '#42dcf4', height: (this.state.clicked) ? 40 : HEIGHT}]}
           onPress={() => {
             this.setState({portOrShip: SCENE_CONSTANT.SHIP});
@@ -82,9 +83,10 @@ export default class PortOrShip extends Component {
               this.setState({clicked: true});
             }
           }}
+          activeOpacity={1}
         >
           <Text style={styles.text}>Ship</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   }
