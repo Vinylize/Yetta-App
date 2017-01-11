@@ -8,11 +8,8 @@ import {
   Dimensions,
   LayoutAnimation
 } from 'react-native';
-import {
-  loginNavigatorRoute,
-  registerNavigatorRoute
-} from '../navigator/navigatorRoutes';
 import Login from './login';
+import Register from './register';
 
 const styles = {
   container: {
@@ -22,7 +19,8 @@ const styles = {
   mapBox: {
     flex: 8,
     alignItems: 'stretch',
-    marginBottom: -30
+    marginBottom: -30,
+    backgroundColor: 'yellow'
   },
   map: {
     flex: 1
@@ -33,11 +31,25 @@ const styles = {
     textAlign: 'center',
     color: '#ececec'
   },
+  textLoginPressed: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#ececec',
+    marginTop: 20
+  },
   textRegister: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#ececec'
+  },
+  textRegisterPressed: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#ececec',
+    marginTop: 20
   }
 };
 
@@ -97,50 +109,12 @@ export default class Home extends Component {
   }
 
   handleRegister() {
-    this.props.navigator.push(registerNavigatorRoute());
-  }
-
-  onRegionDidChange = (location) => {
-    this.setState({ currentZoom: location.zoomLevel });
-    console.log('onRegionDidChange', location);
-  };
-  onRegionWillChange = (location) => {
-    console.log('onRegionWillChange', location);
-  };
-  onUpdateUserLocation = (location) => {
-    console.log('onUpdateUserLocation', location);
-    this._map.getBounds(bounds => {
-      console.log(bounds);
+    LayoutAnimation.easeInEaseOut();
+    this.setState({
+      clicked: 'register'
     });
-    //sendQueries(queryRequests) {
-    //  return Promise.all(queryRequests.map(
-    //    queryRequest => fetch(...).then(result => {
-    //      if (result.errors) {
-    //        queryRequest.reject(new Error(...));
-    //      } else {
-    //        queryRequest.resolve({response: result.data});
-    //      }
-    //    })
-    //  ));
-    //}
-
-  };
-  onOpenAnnotation = (annotation) => {
-    console.log('onOpenAnnotation', annotation);
-  };
-  onRightAnnotationTapped = (e) => {
-    console.log('onRightAnnotationTapped', e);
-  };
-  onLongPress = (location) => {
-    console.log('onLongPress', location);
-  };
-  onTap = (location) => {
-    console.log('onTap', location);
-  };
-  onChangeUserTrackingMode = (userTrackingMode) => {
-    this.setState({ userTrackingMode });
-    console.log('onChangeUserTrackingMode', userTrackingMode);
-  };
+    //this.props.navigator.push(registerNavigatorRoute());
+  }
 
   componentWillMount() {
     this._offlineProgressSubscription = Mapbox.addOfflinePackProgressListener(progress => {
@@ -161,28 +135,88 @@ export default class Home extends Component {
   }
 
   renderTop() {
+    let { clicked } = this.state;
     return (
-      <View style={styles.mapBox}>
+      <View style={[styles.mapBox,
+        {backgroundColor: (clicked === 'login') ? '#ff6666' : (clicked === 'register') ? '#42dcf4' : 'yellow'}]}
+      >
 
       </View>
     );
   }
 
+  loginStyle() {
+    let { clicked } = this.state;
+    if (clicked === 'login') {
+      return (
+        {
+          height: HEIGHT - 69.5,
+          width: WIDTH,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 1,
+          justifyContent: 'flex-start'
+        }
+      );
+    }
+    else if (clicked === 'register') {
+      return (
+        {
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          height: 69.5,
+          width: WIDTH,
+          zIndex: 0,
+          justifyContent: 'center'
+        }
+      )
+    }
+    return {justifyContent: 'center'};
+  }
+
+  registerStyle() {
+    let { clicked } = this.state;
+    if (clicked === 'login') {
+      return (
+        {
+          position: 'absolute',
+          bottom: 0, left: 0,
+          height: 69.5,
+          width: WIDTH,
+          zIndex: 0,
+          justifyContent: 'center'
+        }
+      );
+    }
+    else if (clicked === 'register') {
+      return (
+        {
+          height: HEIGHT - 69.5,
+          width: WIDTH,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 1,
+          justifyContent: 'flex-start'
+        }
+      )
+    }
+    return {justifyContent: 'center'};
+  }
+
   render() {
     let { clicked } = this.state;
     return (
-      <View style={styles.container}>
+      <View style={[styles.container]}>
         {this.renderTop()}
         <TouchableOpacity
-          style={[{ flex: 1, backgroundColor: '#ff6666'},
-            (clicked === 'login') ?
-              {height: HEIGHT, width: WIDTH, position: 'absolute', top: 0, left: 0, zIndex: 1, justifyContent: 'flex-start'}
-              :
-              {flex: 1, justifyContent: 'center'}]}
+          style={[{ flex: 1, backgroundColor: '#ff6666'}, this.loginStyle()]}
           onPress={this.handleLogin.bind(this)}
-          activeOpacity={(clicked === 'login') ? 1 : 0.7}
+          activeOpacity={1}
         >
-          <Text style={styles.textLogin}>
+          <Text style={(clicked === 'login') ? styles.textLoginPressed : styles.textLogin}>
             Login
           </Text>
           {(clicked === 'login') ?
@@ -190,12 +224,16 @@ export default class Home extends Component {
             : null}
         </TouchableOpacity>
         <TouchableOpacity
-
-          style={{ flex: 1, backgroundColor: '#42dcf4', justifyContent: 'center' }}
-          onPress={this.handleRegister.bind(this)}>
-          <Text style={styles.textRegister}>
+          style={[{ height: 69.5, width: WIDTH, backgroundColor: '#42dcf4', justifyContent: 'center' }, this.registerStyle()]}
+          onPress={this.handleRegister.bind(this)}
+          activeOpacity={1}
+        >
+          <Text style={(clicked === 'register') ? styles.textRegisterPressed : styles.textRegister}>
             Register
           </Text>
+          {(clicked === 'register') ?
+            <Register navigator={this.props.navigator}/>
+            : null}
         </TouchableOpacity>
       </View>
     );

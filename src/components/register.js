@@ -16,7 +16,7 @@ const styles = {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF'
+    backgroundColor: '#42dcf4'
   },
   welcome: {
     fontSize: 20,
