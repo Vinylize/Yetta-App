@@ -6,7 +6,8 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
-  LayoutAnimation
+  LayoutAnimation,
+  Keyboard
 } from 'react-native';
 import Login from './login';
 import Register from './register';
@@ -209,12 +210,13 @@ export default class Home extends Component {
   render() {
     let { clicked } = this.state;
     return (
-      <View style={[styles.container]}>
+      <View style={styles.container}>
         {this.renderTop()}
         <TouchableOpacity
           style={[{ flex: 1, backgroundColor: '#ff6666'}, this.loginStyle()]}
           onPress={this.handleLogin.bind(this)}
           activeOpacity={1}
+          onPressIn={() => Keyboard.dismiss()}
         >
           <Text style={(clicked === 'login') ? styles.textLoginPressed : styles.textLogin}>
             Login
@@ -227,12 +229,13 @@ export default class Home extends Component {
           style={[{ height: 69.5, width: WIDTH, backgroundColor: '#42dcf4', justifyContent: 'center' }, this.registerStyle()]}
           onPress={this.handleRegister.bind(this)}
           activeOpacity={1}
+          onPressIn={() => Keyboard.dismiss()}
         >
           <Text style={(clicked === 'register') ? styles.textRegisterPressed : styles.textRegister}>
             Register
           </Text>
           {(clicked === 'register') ?
-            <Register navigator={this.props.navigator}/>
+            <Register navigator={this.props.navigator} goToLogin={this.handleLogin.bind(this)}/>
             : null}
         </TouchableOpacity>
       </View>
