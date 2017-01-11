@@ -4,12 +4,15 @@ import {
   AsyncStorage,
   Text,
   View,
-  TouchableHighlight
+  TouchableOpacity,
+  Dimensions,
+  LayoutAnimation
 } from 'react-native';
 import {
   loginNavigatorRoute,
   registerNavigatorRoute
 } from '../navigator/navigatorRoutes';
+import Login from './login';
 
 const styles = {
   container: {
@@ -38,6 +41,9 @@ const styles = {
   }
 };
 
+const HEIGHT = Dimensions.get('window').height;
+const WIDTH = Dimensions.get('window').width;
+
 export default class Home extends Component {
   state = {
     center: {
@@ -46,54 +52,20 @@ export default class Home extends Component {
     },
     zoom: 11,
     userTrackingMode: Mapbox.userTrackingMode.follow,
-    annotations: [{
-      coordinates: [40.72052634, -73.97686958312988],
-      type: 'point',
-      title: 'This is marker 1',
-      subtitle: 'It has a rightCalloutAccessory too',
-      rightCalloutAccessory: {
-        source: { uri: 'https://cldup.com/9Lp0EaBw5s.png' },
-        height: 25,
-        width: 25
-      },
-      annotationImage: {
-        source: { uri: 'https://cldup.com/CnRLZem9k9.png' },
-        height: 25,
-        width: 25
-      },
-      id: 'marker1'
-    }, {
-      coordinates: [40.714541341726175, -74.00579452514648],
-      type: 'point',
-      title: 'Important!',
-      subtitle: 'Neat, this is a custom annotation image',
-      annotationImage: {
-        source: { uri: 'https://cldup.com/7NLZklp8zS.png' },
-        height: 25,
-        width: 25
-      },
-      id: 'marker2'
-    }, {
-      coordinates: [[40.76572150042782, -73.99429321289062], [40.743485405490695, -74.00218963623047], [40.728266950429735, -74.00218963623047], [40.728266950429735, -73.99154663085938], [40.73633186448861, -73.98983001708984], [40.74465591168391, -73.98914337158203], [40.749337730454826, -73.9870834350586]],
-      type: 'polyline',
-      strokeColor: '#00FB00',
-      strokeWidth: 4,
-      strokeAlpha: 0.5,
-      id: 'foobar'
-    }, {
-      coordinates: [[40.749857912194386, -73.96820068359375], [40.741924698522055, -73.9735221862793], [40.735681504432264, -73.97523880004883], [40.7315190495212, -73.97438049316406], [40.729177554196376, -73.97180557250975], [40.72345355209305, -73.97438049316406], [40.719290332250544, -73.97455215454102], [40.71369559554873, -73.97729873657227], [40.71200407096382, -73.97850036621094], [40.71031250340588, -73.98691177368163], [40.71031250340588, -73.99154663085938]],
-      type: 'polygon',
-      fillAlpha: 1,
-      strokeColor: '#ffffff',
-      fillColor: '#0000ff',
-      id: 'zap'
-    }]
+    annotations: [],
+    clicked: '',
   };
 
   constructor() {
     super();
     this.renderTop = this.renderTop.bind(this);
-    this.renderBottom = this.renderBottom.bind(this);
+  }
+
+  shouldComponentUpdate(nextState) {
+    if (this.state.clicked !== nextState.clicked) {
+      return true;
+    }
+    return false;
   }
 
   componentDidMount() {
@@ -106,6 +78,10 @@ export default class Home extends Component {
       .catch(console.log);
   }
 
+  componentWillUpdate() {
+    LayoutAnimation.easeInEaseOut();
+  }
+
   checkLogin() {
     return new Promise((resolve) => {
       resolve(AsyncStorage.getItem('accessToken'));
@@ -113,7 +89,11 @@ export default class Home extends Component {
   }
 
   handleLogin() {
-    this.props.navigator.push(loginNavigatorRoute());
+    LayoutAnimation.easeInEaseOut();
+    this.setState({
+      clicked: 'login'
+    });
+    //this.props.navigator.push(loginNavigatorRoute());
   }
 
   handleRegister() {
@@ -188,34 +168,35 @@ export default class Home extends Component {
     );
   }
 
-  renderBottom() {
+  render() {
+    let { clicked } = this.state;
     return (
-      <View style={{ flex: 2 }}>
-        <TouchableHighlight
-          style={{ flex: 1, backgroundColor: '#ff6666', justifyContent: 'center' }}
-          onPress={this.handleLogin.bind(this)}>
+      <View style={styles.container}>
+        {this.renderTop()}
+        <TouchableOpacity
+          style={[{ flex: 1, backgroundColor: '#ff6666'},
+            (clicked === 'login') ?
+              {height: HEIGHT, width: WIDTH, position: 'absolute', top: 0, left: 0, zIndex: 1, justifyContent: 'flex-start'}
+              :
+              {flex: 1, justifyContent: 'center'}]}
+          onPress={this.handleLogin.bind(this)}
+          activeOpacity={(clicked === 'login') ? 1 : 0.7}
+        >
           <Text style={styles.textLogin}>
             Login
           </Text>
-        </TouchableHighlight>
-        <TouchableHighlight
+          {(clicked === 'login') ?
+            <Login navigator={this.props.navigator}/>
+            : null}
+        </TouchableOpacity>
+        <TouchableOpacity
 
           style={{ flex: 1, backgroundColor: '#42dcf4', justifyContent: 'center' }}
           onPress={this.handleRegister.bind(this)}>
           <Text style={styles.textRegister}>
             Register
           </Text>
-        </TouchableHighlight>
-
-      </View>
-    );
-  }
-
-  render() {
-    return (
-      <View style={styles.container}>
-        {this.renderTop()}
-        {this.renderBottom()}
+        </TouchableOpacity>
       </View>
     );
   }

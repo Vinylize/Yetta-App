@@ -1,9 +1,8 @@
 import { getAuthHeaders } from './auth';
-
-const url = 'http://192.168.0.76:5001/';
+import { URL } from './../utils';
 
 export function updateShipLocation(location) {
-  const endPoint = `${url}user/coordinate`;
+  const endPoint = `${URL}user/coordinate`;
   const body = JSON.stringify({
     location
   });
