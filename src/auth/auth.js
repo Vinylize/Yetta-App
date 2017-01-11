@@ -1,13 +1,13 @@
 import { AsyncStorage } from 'react-native';
+import { URL } from './../utils';
 
 const headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json'
 };
-const url = 'http://220.76.27.58:5001/';
 
 export function register(email, name, password) {
-  const endPoint = `${url}auth/signup`;
+  const endPoint = `${URL}auth/signup`;
   const body = JSON.stringify({
     email: email,
     name: name,
@@ -17,7 +17,7 @@ export function register(email, name, password) {
 }
 
 export function login(email, password) {
-  const endPoint = `${url}auth/login`;
+  const endPoint = `${URL}auth/login`;
   const body = JSON.stringify({
     email: email,
     password: password

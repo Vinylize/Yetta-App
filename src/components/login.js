@@ -17,7 +17,7 @@ const styles = {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF'
+    backgroundColor: 'transparent'
   },
   welcome: {
     fontSize: 20,
@@ -56,8 +56,8 @@ export default class Login extends Component {
           }
           throw Error(data);
         })
-        .then(token => AsyncStorage.setItem(`accessToken`, token))
-        .then(() => this.props.navigator.resetTo(portOrShipNavigatorRoute()))
+        .then(token => AsyncStorage.setItem('accessToken', token))
+        .then(() => this.props.navigator.push(portOrShipNavigatorRoute()))
         .catch(console.log);
     }
     else {

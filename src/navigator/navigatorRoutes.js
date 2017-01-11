@@ -3,7 +3,6 @@ import Home from './../components/home';
 import Login from './../components/login';
 import Map from './../components/map';
 import Register from './../components/register';
-import Port from './../components/port';
 import Ship from './../components/ship';
 import PortOrShip from './../components/portOrShip';
 
@@ -35,13 +34,6 @@ export function mapNavigatorRoute() {
   };
 }
 
-export function portNavigatorRoute() {
-  return {
-    Component: Port,
-    sceneConfig
-  };
-}
-
 export function shipNavigatorRoute() {
   return {
     Component: Ship,
@@ -52,6 +44,6 @@ export function shipNavigatorRoute() {
 export function portOrShipNavigatorRoute() {
   return {
     Component: PortOrShip,
-    sceneConfig
+    sceneConfig: Navigator.SceneConfigs.PushFromRight
   };
 }
