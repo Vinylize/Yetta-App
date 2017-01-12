@@ -9,6 +9,8 @@ import {
 import Map from './map';
 
 const HEIGHT = Dimensions.get('window').height;
+const WIDTH = Dimensions.get('window').width;
+
 const SCENE_CONSTANT = {
   PORT: 'PORT',
   SHIP: 'SHIP',
@@ -23,15 +25,14 @@ const styles = {
     flexDirection: 'row'
   },
   button: {
-    flex: 1,
-    height: 40,
     justifyContent: 'center',
     alignItems: 'center'
   },
   text: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#ececec'
+    color: '#ececec',
+    alignSelf: 'center'
   }
 };
 
@@ -59,14 +60,22 @@ export default class PortOrShip extends Component {
   }
 
   renderHeader() {
+    let { clicked, portOrShip } = this.state;
     return (
       <View style={styles.container}>
         <TouchableOpacity
-          style={[styles.button, {backgroundColor: '#ff6666', height: (this.state.clicked) ? 40 : HEIGHT}]}
+          style={[
+            styles.button,
+            {
+              backgroundColor: '#ff6666',
+              height: (clicked) ? 40 : HEIGHT,
+              flex: (clicked && portOrShip === SCENE_CONSTANT.PORT) ? 3 : 1
+            }
+          ]}
           onPress={() => {
+            LayoutAnimation.easeInEaseOut();
             this.setState({portOrShip: SCENE_CONSTANT.PORT});
             if (!this.state.clicked) {
-              LayoutAnimation.easeInEaseOut();
               this.setState({clicked: true});
             }
           }}
@@ -75,11 +84,18 @@ export default class PortOrShip extends Component {
           <Text style={styles.text}>Port</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.button, {backgroundColor: '#42dcf4', height: (this.state.clicked) ? 40 : HEIGHT}]}
+          style={[
+            styles.button,
+            {
+              backgroundColor: '#42dcf4',
+              height: (clicked) ? 40 : HEIGHT,
+              flex: (clicked && portOrShip === SCENE_CONSTANT.SHIP) ? 3 : 1
+            }
+          ]}
           onPress={() => {
+            LayoutAnimation.easeInEaseOut();
             this.setState({portOrShip: SCENE_CONSTANT.SHIP});
             if (!this.state.clicked) {
-              LayoutAnimation.easeInEaseOut();
               this.setState({clicked: true});
             }
           }}
