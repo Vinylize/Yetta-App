@@ -58,27 +58,20 @@ const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
 export default class Home extends Component {
-  state = {
-    center: {
-      latitude: 37.53601435685916,
-      longitude: 127.1368545604094
-    },
-    zoom: 11,
-    userTrackingMode: Mapbox.userTrackingMode.follow,
-    annotations: [],
-    clicked: '',
-  };
-
   constructor() {
     super();
     this.renderTop = this.renderTop.bind(this);
-  }
-
-  shouldComponentUpdate(nextState) {
-    if (this.state.clicked !== nextState.clicked) {
-      return true;
-    }
-    return false;
+    this.state = {
+      center: {
+        latitude: 37.53601435685916,
+        longitude: -127.1368545604094
+      },
+      zoom: 11,
+      userTrackingMode: Mapbox.userTrackingMode.follow,
+      annotations: [],
+      first: true,
+      gotUserLocation: false
+    };
   }
 
   componentDidMount() {
@@ -89,10 +82,23 @@ export default class Home extends Component {
         }
       })
       .catch(console.log);
-  }
-
-  componentWillUpdate() {
-    LayoutAnimation.easeInEaseOut();
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { longitude, latitude } = position.coords;
+        this.setState({
+          center: {
+            longitude,
+            latitude
+          },
+          gotUserLocation: true
+        });
+      },
+      (error) => {
+        this.setState({gotUserLocation: true});
+        console.log(JSON.stringify(error));
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+    );
   }
 
   checkLogin() {
@@ -106,7 +112,6 @@ export default class Home extends Component {
     this.setState({
       clicked: 'login'
     });
-    //this.props.navigator.push(loginNavigatorRoute());
   }
 
   handleRegister() {
@@ -114,7 +119,6 @@ export default class Home extends Component {
     this.setState({
       clicked: 'register'
     });
-    //this.props.navigator.push(registerNavigatorRoute());
   }
 
   componentWillMount() {
@@ -136,12 +140,30 @@ export default class Home extends Component {
   }
 
   renderTop() {
-    let { clicked } = this.state;
     return (
       <View style={[styles.mapBox,
-        {backgroundColor: (clicked === 'login') ? '#ff6666' : (clicked === 'register') ? '#42dcf4' : 'yellow'}]}
+        {backgroundColor: 'yellow'}]}
       >
-
+        {this.state.gotUserLocation ?
+          <MapView
+            ref={map => {
+              this._map = map;
+            }}
+            style={styles.map}
+            initialCenterCoordinate={this.state.center}
+            initialZoomLevel={14}
+            initialDirection={0}
+            scrollEnabled={false}
+            zoomEnabled={false}
+            showsUserLocation={true}
+            styleURL={Mapbox.mapStyles.light}
+            userTrackingMode={this.state.userTrackingMode}
+            annotationsAreImmutable
+            logoIsHidden
+          />
+          :
+          <View style={{flex: 1, backgroundColor: '#ececec'}}/>
+        }
       </View>
     );
   }
@@ -149,30 +171,25 @@ export default class Home extends Component {
   loginStyle() {
     let { clicked } = this.state;
     if (clicked === 'login') {
-      return (
-        {
-          height: HEIGHT - 69.5,
-          width: WIDTH,
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 1,
-          justifyContent: 'flex-start'
-        }
-      );
-    }
-    else if (clicked === 'register') {
-      return (
-        {
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          height: 69.5,
-          width: WIDTH,
-          zIndex: 0,
-          justifyContent: 'center'
-        }
-      )
+      return ({
+        height: HEIGHT - 69.5,
+        width: WIDTH,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: 1,
+        justifyContent: 'flex-start'
+      });
+    } else if (clicked === 'register') {
+      return ({
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        height: 69.5,
+        width: WIDTH,
+        zIndex: 0,
+        justifyContent: 'center'
+      });
     }
     return {justifyContent: 'center'};
   }
@@ -180,29 +197,24 @@ export default class Home extends Component {
   registerStyle() {
     let { clicked } = this.state;
     if (clicked === 'login') {
-      return (
-        {
-          position: 'absolute',
-          bottom: 0, left: 0,
-          height: 69.5,
-          width: WIDTH,
-          zIndex: 0,
-          justifyContent: 'center'
-        }
-      );
-    }
-    else if (clicked === 'register') {
-      return (
-        {
-          height: HEIGHT - 69.5,
-          width: WIDTH,
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 1,
-          justifyContent: 'flex-start'
-        }
-      )
+      return ({
+        position: 'absolute',
+        bottom: 0, left: 0,
+        height: 69.5,
+        width: WIDTH,
+        zIndex: 0,
+        justifyContent: 'center'
+      });
+    } else if (clicked === 'register') {
+      return ({
+        height: HEIGHT - 69.5,
+        width: WIDTH,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: 1,
+        justifyContent: 'flex-start'
+      });
     }
     return {justifyContent: 'center'};
   }
