@@ -3,12 +3,12 @@ import {
   Alert,
   TextInput,
   View,
-  TouchableOpacity,
   Image,
   LayoutAnimation,
-  Keyboard
+  Keyboard,
+  PanResponder
 } from 'react-native';
-import { register } from './../auth/auth';
+// import { register } from './../auth/auth';
 
 import imgHeart from './../resources/heart.png';
 
@@ -61,6 +61,7 @@ export default class Register extends Component {
       password: undefined,
       userEmail: undefined
     };
+    this.handleRegisterButton = this.handleRegisterButton.bind(this);
   }
 
   shouldComponentUpdate(nextState) {
@@ -71,10 +72,21 @@ export default class Register extends Component {
     if (userEmail !== nextState.userEmail) {
       return true;
     }
-    if (userName !== nextState.userName) {
-      return true;
-    }
-    return false;
+    return (userName !== nextState.userName);
+  }
+
+  componentWillMount() {
+    this.registerBtnPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: this.registerBtnHandleStartShouldSetPanResponder,
+      onPanResponderGrant: this.registerBtnHandlePanResponderGrant.bind(this)
+    });
+  }
+
+  registerBtnHandleStartShouldSetPanResponder() {
+    return true;
+  }
+  registerBtnHandlePanResponderGrant() {
+    this.handleRegisterButton();
   }
 
   componentWillUpdate() {
@@ -83,16 +95,16 @@ export default class Register extends Component {
 
   handleRegisterButton() {
     if (this.state.userName && this.state.password && this.state.userEmail) {
+      this.props.goToLogin();
       // todo: handle duplicate signup
-      register(this.state.userEmail, this.state.userName, this.state.password)
-        .then((rjson) => {
-          console.log(rjson);
-          this.props.goToLogin();
-          //this.props.navigator.push(loginNavigatorRoute());
-        })
-        .catch(console.log);
-    }
-    else {
+      // register(this.state.userEmail, this.state.userName, this.state.password)
+      //   .then((rjson) => {
+      //     console.log(rjson);
+      //     this.props.goToLogin();
+      //     //this.props.navigator.push(loginNavigatorRoute());
+      //   })
+      //   .catch(console.log);
+    } else {
       Alert.alert(
         'OMG, TYPE SOMETHING'
       );
@@ -127,12 +139,12 @@ export default class Register extends Component {
           placeholder={'email'}
           onSubmitEditing={Keyboard.dismiss}
         />
-        <TouchableOpacity onPress={this.handleRegisterButton.bind(this)}>
+        <View {...this.registerBtnPanResponder.panHandlers}>
           <Image
             style={(this.checkTextInputAllFilled()) ? styles.registerBtnActive : styles.registerBtn}
             source={imgHeart}
           />
-        </TouchableOpacity>
+        </View>
       </View>
     );
   }
