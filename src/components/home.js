@@ -4,7 +4,6 @@ import {
   AsyncStorage,
   Text,
   View,
-  TouchableOpacity,
   Dimensions,
   LayoutAnimation,
   Keyboard,
@@ -159,6 +158,14 @@ export default class Home extends Component {
       onPanResponderRelease: this.loginOnPanResponderRelease.bind(this),
       onPanResponderTerminate: this.loginHandlePanResponderEnd
     });
+    this.registerPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: this.registerHandleStartShouldSetPanResponder,
+      onMoveShouldSetPanResponder: this.registerHandleMoveShouldSetPanResponder.bind(this),
+      onPanResponderGrant: this.registerHandlePanResponderGrant.bind(this),
+      onPanResponderMove: this.registerHandlePanResponderMove.bind(this),
+      onPanResponderRelease: this.registerOnPanResponderRelease.bind(this),
+      onPanResponderTerminate: this.registerHandlePanResponderEnd
+    });
   }
 
   componentWillUnmount() {
@@ -170,18 +177,15 @@ export default class Home extends Component {
   loginHandleStartShouldSetPanResponder() {
     return true;
   }
-
   loginHandleMoveShouldSetPanResponder() {
     return (this.state.clicked === 'login');
   }
-
   loginHandlePanResponderGrant() {
     if (this.state.clicked !== 'login') {
       this.handleLogin();
     }
     Keyboard.dismiss();
   }
-
   loginHandlePanResponderMove(e, gestureState) {
     if (this.state.clicked === 'login') {
       const { dy } = gestureState;
@@ -190,7 +194,6 @@ export default class Home extends Component {
       }
     }
   }
-
   loginOnPanResponderRelease(e, gestureState) {
     if (this.state.clicked === 'login') {
       const { dy } = gestureState;
@@ -200,8 +203,40 @@ export default class Home extends Component {
       }
     }
   }
-
   loginHandlePanResponderEnd() {
+    // TBD
+  }
+
+  registerHandleStartShouldSetPanResponder() {
+    return true;
+  }
+  registerHandleMoveShouldSetPanResponder() {
+    return (this.state.clicked === 'register');
+  }
+  registerHandlePanResponderGrant() {
+    if (this.state.clicked !== 'register') {
+      this.handleRegister();
+    }
+    Keyboard.dismiss();
+  }
+  registerHandlePanResponderMove(e, gestureState) {
+    if (this.state.clicked === 'register') {
+      const { dy } = gestureState;
+      if (dy > 0) {
+        this.refViewRegister.setNativeProps({style: {height: HEIGHT - dy}});
+      }
+    }
+  }
+  registerOnPanResponderRelease(e, gestureState) {
+    if (this.state.clicked === 'register') {
+      const { dy } = gestureState;
+      if (dy > 0) {
+        LayoutAnimation.easeInEaseOut();
+        this.setState({clicked: ''});
+      }
+    }
+  }
+  registerHandlePanResponderEnd() {
     // TBD
   }
 
@@ -263,7 +298,7 @@ export default class Home extends Component {
         left: 0,
         height: 69.5,
         width: WIDTH,
-        zIndex: 0,
+        zIndex: 1,
         justifyContent: 'center'
       });
     }
@@ -291,12 +326,12 @@ export default class Home extends Component {
       });
     } else if (clicked === 'register') {
       return ({
-        height: HEIGHT - 69.5,
+        height: HEIGHT,
         width: WIDTH,
         position: 'absolute',
-        top: 0,
+        bottom: 0,
         left: 0,
-        zIndex: 1,
+        zIndex: 0,
         justifyContent: 'flex-start'
       });
     }
@@ -331,6 +366,7 @@ export default class Home extends Component {
         <View
           ref={component => this.refViewRegister = component} // eslint-disable-line
           style={[{backgroundColor: '#42dcf4'}, this.registerStyle()]}
+          {...this.registerPanResponder.panHandlers}
         >
           <Text style={(clicked === 'register') ? styles.textRegisterPressed : styles.textRegister}>
             Register
