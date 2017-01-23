@@ -142,10 +142,7 @@ export default class Login extends Component {
           placeholderTextColor={'#f78585'}
           onSubmitEditing={Keyboard.dismiss}
         />
-        <View
-          onPress={this.handleLoginButton.bind(this)}
-          {...this.loginBtnPanResponder.panHandlers}
-        >
+        <View {...this.loginBtnPanResponder.panHandlers}>
           <Image
             style={(this.checkLoginBtnEnabled()) ? styles.loginBtnActive : styles.loginBtn}
             source={imgTriRight}
