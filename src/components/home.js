@@ -14,11 +14,7 @@ import Login from './login';
 import Register from './register';
 
 const config = {
-  apiKey: 'AIzaSyDDhknkw2Q-yXX6UzRFpMXpp4pYCSxfvh4',
-  authDomain: 'vinyl-73696.firebaseapp.com',
-  databaseURL: 'https://vinyl-73696.firebaseio.com',
-  storageBucket: 'vinyl-73696.appspot.com',
-  messagingSenderId: '960372413712'
+  
 };
 
 firebase.initializeApp(config);
