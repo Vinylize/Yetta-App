@@ -3,10 +3,10 @@ import {
   Alert,
   TextInput,
   View,
-  TouchableOpacity,
   Image,
   LayoutAnimation,
-  Keyboard
+  Keyboard,
+  PanResponder
 } from 'react-native';
 import {
   portOrShipNavigatorRoute
@@ -63,6 +63,8 @@ export default class Login extends Component {
       userEmail: undefined,
       registerOnProgress: false
     };
+    this.checkLoginBtnEnabled = this.checkLoginBtnEnabled.bind(this);
+    this.handleLoginButton = this.handleLoginButton.bind(this);
   }
 
   shouldComponentUpdate(nextState) {
@@ -73,18 +75,33 @@ export default class Login extends Component {
     if (userEmail !== nextState.userEmail) {
       return true;
     }
-    if (registerOnProgress !== nextState.registerOnProgress) {
-      return true;
-    }
-    return false;
+    return (registerOnProgress !== nextState.registerOnProgress);
+  }
+
+  componentWillMount() {
+    this.loginBtnPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: this.loginBtnHandleStartShouldSetPanResponder,
+      onPanResponderGrant: this.loginBtnHandlePanResponderGrant.bind(this)
+    });
+  }
+
+  loginBtnHandleStartShouldSetPanResponder() {
+    return true;
+  }
+  loginBtnHandlePanResponderGrant() {
+    this.handleLoginButton();
   }
 
   componentWillUpdate() {
     LayoutAnimation.easeInEaseOut();
   }
 
+  checkLoginBtnEnabled() {
+    return (this.state.userEmail && this.state.password);
+  }
+
   handleLoginButton() {
-    if (this.state.userEmail && this.state.password) {
+    if (this.checkLoginBtnEnabled()) {
       console.log(this.state);
       // login(this.state.userEmail, this.state.password)
       //   .then(data => {
@@ -97,8 +114,7 @@ export default class Login extends Component {
       //   .then(() => this.props.navigator.push(portOrShipNavigatorRoute()))
       //   .catch(console.log);
       this.props.navigator.push(portOrShipNavigatorRoute());
-    }
-    else {
+    } else {
       Alert.alert(
         'OMG, TYPE SOMETHING'
       );
@@ -126,12 +142,15 @@ export default class Login extends Component {
           placeholderTextColor={'#f78585'}
           onSubmitEditing={Keyboard.dismiss}
         />
-        <TouchableOpacity onPress={this.handleLoginButton.bind(this)}>
+        <View
+          onPress={this.handleLoginButton.bind(this)}
+          {...this.loginBtnPanResponder.panHandlers}
+        >
           <Image
-            style={(this.state.password && this.state.userEmail) ? styles.loginBtnActive : styles.loginBtn}
+            style={(this.checkLoginBtnEnabled()) ? styles.loginBtnActive : styles.loginBtn}
             source={imgTriRight}
           />
-        </TouchableOpacity>
+        </View>
       </View>
     );
   }
