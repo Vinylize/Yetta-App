@@ -8,6 +8,7 @@ import {
   Keyboard,
   PanResponder
 } from 'react-native';
+import * as firebase from 'firebase';
 import {
   portOrShipNavigatorRoute
 } from '../navigator/navigatorRoutes';
@@ -65,6 +66,7 @@ export default class Login extends Component {
     };
     this.checkLoginBtnEnabled = this.checkLoginBtnEnabled.bind(this);
     this.handleLoginButton = this.handleLoginButton.bind(this);
+    this.login = this.login.bind(this);
   }
 
   shouldComponentUpdate(nextState) {
@@ -100,9 +102,20 @@ export default class Login extends Component {
     return (this.state.userEmail && this.state.password);
   }
 
+  login(email, password) {
+    return new Promise(resolve => {
+      resolve(firebase.auth().signInWithEmailAndPassword(email, password));
+    });
+  }
+
   handleLoginButton() {
     if (this.checkLoginBtnEnabled()) {
       console.log(this.state);
+      this.login(this.state.userEmail, this.state.password).then((res) => {
+        console.log(res);
+        firebase.auth().currentUser.getToken().then(console.log);
+      }
+      ).catch(console.log);
       // login(this.state.userEmail, this.state.password)
       //   .then(data => {
       //     if (data && data.accessToken) {
