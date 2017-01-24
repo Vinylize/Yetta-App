@@ -6,7 +6,8 @@ import {
   Image,
   LayoutAnimation,
   Keyboard,
-  PanResponder
+  PanResponder,
+  AsyncStorage
 } from 'react-native';
 import * as firebase from 'firebase';
 import {
@@ -113,7 +114,13 @@ export default class Login extends Component {
       console.log(this.state);
       this.login(this.state.userEmail, this.state.password).then((res) => {
         console.log(res);
-        firebase.auth().currentUser.getToken().then(console.log);
+        console.log(firebase.auth().currentUser);
+        firebase.auth().currentUser.getToken()
+          .then(token => {
+            console.log(token);
+            return AsyncStorage.setItem('token', token);
+          })
+          .then(this.props.navigator.push(portOrShipNavigatorRoute()));
       }
       ).catch(console.log);
       // login(this.state.userEmail, this.state.password)
@@ -126,7 +133,6 @@ export default class Login extends Component {
       //   .then(token => AsyncStorage.setItem('accessToken', token))
       //   .then(() => this.props.navigator.push(portOrShipNavigatorRoute()))
       //   .catch(console.log);
-      this.props.navigator.push(portOrShipNavigatorRoute());
     } else {
       Alert.alert(
         'OMG, TYPE SOMETHING'

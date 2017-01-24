@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Navigator } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './store';
 import AllLayout from './containers/allLayout';
