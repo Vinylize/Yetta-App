@@ -9,8 +9,12 @@ import {
   Keyboard,
   PanResponder
 } from 'react-native';
+import * as firebase from 'firebase';
 import Login from './login';
 import Register from './register';
+import {
+  portOrShipNavigatorRoute
+} from '../navigator/navigatorRoutes';
 
 const styles = {
   container: {
@@ -94,13 +98,14 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    this.checkLogin()
-      .then((token) => {
-        if (token) {
-          // todo: to smt here
-        }
-      })
-      .catch(console.log);
+    firebase.auth().onAuthStateChanged((user) =>{
+      if (user) {
+        this.props.navigator.push(portOrShipNavigatorRoute());
+      } else {
+        // TBD
+      }
+    });
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { longitude, latitude } = position.coords;
@@ -118,12 +123,6 @@ export default class Home extends Component {
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
-  }
-
-  checkLogin() {
-    return new Promise((resolve) => {
-      resolve(AsyncStorage.getItem('accessToken'));
-    });
   }
 
   handleLogin() {

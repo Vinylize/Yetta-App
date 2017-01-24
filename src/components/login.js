@@ -6,8 +6,10 @@ import {
   Image,
   LayoutAnimation,
   Keyboard,
-  PanResponder
+  PanResponder,
+  AsyncStorage
 } from 'react-native';
+import * as firebase from 'firebase';
 import {
   portOrShipNavigatorRoute
 } from '../navigator/navigatorRoutes';
@@ -65,6 +67,7 @@ export default class Login extends Component {
     };
     this.checkLoginBtnEnabled = this.checkLoginBtnEnabled.bind(this);
     this.handleLoginButton = this.handleLoginButton.bind(this);
+    this.login = this.login.bind(this);
   }
 
   shouldComponentUpdate(nextState) {
@@ -100,9 +103,26 @@ export default class Login extends Component {
     return (this.state.userEmail && this.state.password);
   }
 
+  login(email, password) {
+    return new Promise(resolve => {
+      resolve(firebase.auth().signInWithEmailAndPassword(email, password));
+    });
+  }
+
   handleLoginButton() {
     if (this.checkLoginBtnEnabled()) {
       console.log(this.state);
+      this.login(this.state.userEmail, this.state.password).then((res) => {
+        console.log(res);
+        console.log(firebase.auth().currentUser);
+        firebase.auth().currentUser.getToken()
+          .then(token => {
+            console.log(token);
+            return AsyncStorage.setItem('token', token);
+          })
+          .then(this.props.navigator.push(portOrShipNavigatorRoute()));
+      }
+      ).catch(console.log);
       // login(this.state.userEmail, this.state.password)
       //   .then(data => {
       //     if (data && data.accessToken) {
@@ -113,7 +133,6 @@ export default class Login extends Component {
       //   .then(token => AsyncStorage.setItem('accessToken', token))
       //   .then(() => this.props.navigator.push(portOrShipNavigatorRoute()))
       //   .catch(console.log);
-      this.props.navigator.push(portOrShipNavigatorRoute());
     } else {
       Alert.alert(
         'OMG, TYPE SOMETHING'
