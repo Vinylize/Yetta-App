@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Mapbox, { MapView } from 'react-native-mapbox-gl';
 import {
-  AsyncStorage,
   Text,
   View,
   Dimensions,
@@ -98,14 +97,16 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) =>{
-      if (user) {
-        this.props.navigator.push(portOrShipNavigatorRoute());
-      } else {
-        // TBD
-      }
-    });
-
+    if (this.state.first) {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          // firebase.auth().getToken().then(console.log);
+          this.props.navigator.push(portOrShipNavigatorRoute());
+        } else {
+          // TBD
+        }
+      });
+    }
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { longitude, latitude } = position.coords;

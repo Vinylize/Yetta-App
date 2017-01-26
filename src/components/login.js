@@ -6,13 +6,9 @@ import {
   Image,
   LayoutAnimation,
   Keyboard,
-  PanResponder,
-  AsyncStorage
+  PanResponder
 } from 'react-native';
 import * as firebase from 'firebase';
-import {
-  portOrShipNavigatorRoute
-} from '../navigator/navigatorRoutes';
 
 import imgTriRight from './../resources/triangle-right.png';
 
@@ -111,32 +107,13 @@ export default class Login extends Component {
 
   handleLoginButton() {
     if (this.checkLoginBtnEnabled()) {
-      console.log(this.state);
-      this.login(this.state.userEmail, this.state.password).then((res) => {
-        console.log(res);
-        console.log(firebase.auth().currentUser);
-        firebase.auth().currentUser.getToken()
-          .then(token => {
-            console.log(token);
-            return AsyncStorage.setItem('token', token);
-          })
-          .then(this.props.navigator.push(portOrShipNavigatorRoute()));
-      }
-      ).catch(console.log);
-      // login(this.state.userEmail, this.state.password)
-      //   .then(data => {
-      //     if (data && data.accessToken) {
-      //       return data.accessToken;
-      //     }
-      //     throw Error(data);
-      //   })
-      //   .then(token => AsyncStorage.setItem('accessToken', token))
-      //   .then(() => this.props.navigator.push(portOrShipNavigatorRoute()))
-      //   .catch(console.log);
-    } else {
-      Alert.alert(
-        'OMG, TYPE SOMETHING'
-      );
+      this.login(this.state.userEmail, this.state.password)
+        .then(() => firebase.auth().currentUser.getToken())
+        .catch(() => {
+          Alert.alert(
+            'invalid email or password'
+          );
+        });
     }
   }
 
