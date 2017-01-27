@@ -163,3 +163,6 @@ android/captures/
 graphql.config.json
 data/schema.json
 
+# utilities
+src/utils.js
+
