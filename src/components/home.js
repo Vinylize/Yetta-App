@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Mapbox, { MapView } from 'react-native-mapbox-gl';
 import {
-  AsyncStorage,
   Text,
   View,
   Dimensions,
@@ -9,8 +8,12 @@ import {
   Keyboard,
   PanResponder
 } from 'react-native';
+import * as firebase from 'firebase';
 import Login from './login';
 import Register from './register';
+import {
+  portOrShipNavigatorRoute
+} from '../navigator/navigatorRoutes';
 
 const styles = {
   container: {
@@ -94,13 +97,16 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    this.checkLogin()
-      .then((token) => {
-        if (token) {
-          // todo: to smt here
+    if (this.state.first) {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          // firebase.auth().getToken().then(console.log);
+          this.props.navigator.push(portOrShipNavigatorRoute());
+        } else {
+          // TBD
         }
-      })
-      .catch(console.log);
+      });
+    }
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { longitude, latitude } = position.coords;
@@ -118,12 +124,6 @@ export default class Home extends Component {
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
-  }
-
-  checkLogin() {
-    return new Promise((resolve) => {
-      resolve(AsyncStorage.getItem('accessToken'));
-    });
   }
 
   handleLogin() {

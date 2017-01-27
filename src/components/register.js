@@ -8,7 +8,13 @@ import {
   Keyboard,
   PanResponder
 } from 'react-native';
-// import { register } from './../auth/auth';
+
+const Lokka = require('lokka').Lokka;
+const Transport = require('lokka-transport-http').Transport;
+
+const client = new Lokka({
+  transport: new Transport()
+});
 
 import imgHeart from './../resources/heart.png';
 
@@ -93,17 +99,36 @@ export default class Register extends Component {
     LayoutAnimation.easeInEaseOut();
   }
 
+  registerHelper(email, name, password) {
+    client.mutate(`{
+      createUser(
+        input:{
+          email: "${email}",
+          name: "${name}",
+          password: "${password}"
+        }
+      ) {
+        result
+      }
+    }`
+    ).then(response => {
+      // todo: handle errors on register
+      console.log(response);
+    });
+  }
+
+  register(email, name, password) {
+    return new Promise(resolve => {
+      resolve(this.registerHelper(email, name, password));
+    });
+  }
+
   handleRegisterButton() {
-    if (this.state.userName && this.state.password && this.state.userEmail) {
-      this.props.goToLogin();
-      // todo: handle duplicate signup
-      // register(this.state.userEmail, this.state.userName, this.state.password)
-      //   .then((rjson) => {
-      //     console.log(rjson);
-      //     this.props.goToLogin();
-      //     //this.props.navigator.push(loginNavigatorRoute());
-      //   })
-      //   .catch(console.log);
+    const { userName, password, userEmail } = this.state;
+    if (userName && password && userEmail) {
+      this.register(userEmail, userName, password);
+      // todo: determine what to do after register completion
+      // this.props.goToLogin();
     } else {
       Alert.alert(
         'OMG, TYPE SOMETHING'
