@@ -10,8 +10,17 @@ import {
   ListView,
   Dimensions
 } from 'react-native';
+import * as firebase from 'firebase';
 import TimerMixin from 'react-timer-mixin';
 import { getPortLocation } from './../auth/port';
+import { URL } from './../utils';
+
+const Lokka = require('lokka').Lokka;
+const Transport = require('lokka-transport-http').Transport;
+
+const client = new Lokka({
+  transport: new Transport(URL)
+});
 
 const SCENE_CONSTANT = {
   PORT: 'PORT',
@@ -118,6 +127,13 @@ export default class Map extends Component {
       },
       1000
     );
+    this.observeShipLocation();
+    //console.log(client._transport._httpOptions);
+  }
+
+  observeShipLocation() {
+    firebase.database().ref('/userProperties/coordinate').child('voMxBx91EYPx5wWpnS70f9sYQTC2').on('value',
+      (childSnapshot, prevChildKey) => console.log(childSnapshot.val(), prevChildKey));
   }
 
   shouldComponentUpdate(nextState, nextProps) {
@@ -177,6 +193,40 @@ export default class Map extends Component {
     this._offlineProgressSubscription.remove();
     this._offlineMaxTilesSubscription.remove();
     this._offlineErrorSubscription.remove();
+  }
+
+  createConnectionOpenPort() {
+    firebase.auth().currentUser.getToken()
+      .then(token => {
+        client._transport._httpOptions.headers = {
+          authorization: token
+        };
+        return client.mutate(`{
+          connectionOpenPort(
+            input:{
+              category: "C1",
+              subCategory:"ship"
+            }
+          ) {
+            result
+          }
+        }`)
+      })
+      .then(response => {
+        // todo: handle errors on register
+        console.log(response);
+      });
+  }
+
+  renderCreateConnectionOpenPortBtn() {
+    return (
+      <TouchableOpacity
+        style={styles.btnListOrMap}
+        onPress={this.createConnectionOpenPort.bind(this)}
+      >
+        <Text>open port</Text>
+      </TouchableOpacity>
+    );
   }
 
   renderSwitchButton() {
@@ -248,6 +298,7 @@ export default class Map extends Component {
           onTap={this.onTap}
         />
         {(this.props.currentScene === SCENE_CONSTANT.SHIP) ? this.renderSwitchButton() : null}
+        {(this.props.currentScene === SCENE_CONSTANT.PORT) ? this.renderCreateConnectionOpenPortBtn() : null}
         {(this.props.currentScene === SCENE_CONSTANT.SHIP && this.state.listOrMap === SCENE_CONSTANT.LIST) ? this.renderListView() : null}
       </View>
     );
