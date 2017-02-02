@@ -11,6 +11,7 @@ import {
 import * as firebase from 'firebase';
 import Login from './login';
 import Register from './register';
+import { PhoneVerificationButton } from './phoneVerification';
 import {
   portOrShipNavigatorRoute
 } from '../navigator/navigatorRoutes';
@@ -360,7 +361,10 @@ export default class Home extends Component {
             Login
           </Text>
           {(clicked === 'login') ?
-            <Login navigator={this.props.navigator}/>
+            <View style={{flex: 1}}>
+              <Login navigator={this.props.navigator}/>
+              <PhoneVerificationButton navigator={this.props.navigator}/>
+            </View>
             : null}
         </View>
         <View
