@@ -21,7 +21,8 @@ const styles = {
     height: HEIGHT * 0.4,
     width: WIDTH,
     backgroundColor: 'white',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    borderRadius: 5
   },
   phoneVerifKeyboardCol: {
     flex: 1,
@@ -68,11 +69,11 @@ export default class PhoneVerification extends Component {
           height: 50,
           width: WIDTH,
           justifyContent: 'center',
-          borderBottomWidth: 1
+          zIndex: 10
         }}
       >
         <TouchableOpacity
-          style={{left: 20}}
+          style={{left: 20, width: 40}}
           onPress={() => this.props.navigator.pop()}
         >
           <Text>back</Text>
@@ -83,7 +84,50 @@ export default class PhoneVerification extends Component {
 
   renderBody() {
     return (
-      null
+      <View style={{
+        flex: 1,
+        marginTop: 70,
+        marginBottom: HEIGHT * 0.4,
+        backgroundColor: 'transparent',
+        justifyContent: 'center'
+      }}>
+        <View style={{
+          height: 70,
+          width: WIDTH,
+          flexDirection: 'row',
+          backgroundColor: 'transparent',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingLeft: 20
+        }}>
+          {this.renderPhoneNumBox()}
+          {this.renderPhoneNumBox()}
+          {this.renderPhoneNumBox()}
+          <View style={{width: 30}}/>
+          {this.renderPhoneNumBox()}
+          {this.renderPhoneNumBox()}
+          {this.renderPhoneNumBox()}
+          <View style={{width: 30}}/>
+          {this.renderPhoneNumBox()}
+          {this.renderPhoneNumBox()}
+          {this.renderPhoneNumBox()}
+          <View style={{width: 20}}/>
+        </View>
+      </View>
+    );
+  }
+
+  renderPhoneNumBox(number) {
+    return (
+      <View style={{
+        marginRight: 3,
+        width: 25,
+        borderBottomWidth: 1.5,
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <Text>{number}</Text>
+      </View>
     );
   }
 
@@ -128,7 +172,7 @@ export default class PhoneVerification extends Component {
 
   render() {
     return (
-      <View style={{flex: 1, backgroundColor: 'blue'}}>
+      <View style={{flex: 1, backgroundColor: '#1b83d3'}}>
         {this.renderHeader()}
         {this.renderBody()}
         {this.renderKeyboard()}
