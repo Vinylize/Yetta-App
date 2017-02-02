@@ -20,6 +20,15 @@ const styles = {
     flexDirection: 'row',
     borderRadius: 5
   },
+  phoneVerifHeaderContainer: {
+    position: 'absolute',
+    top: 20,
+    left: 0,
+    height: 50,
+    width: WIDTH,
+    justifyContent: 'center',
+    zIndex: 10
+  },
   phoneVerifKeyboardCol: {
     flex: 1,
     flexDirection: 'column'
@@ -46,6 +55,25 @@ const styles = {
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  phoneVerifDigitContainer: {
+    height: 50,
+    width: WIDTH,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  phoneVerifInstrContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 40
+  },
+  textPhoneVerifDelete: {
+    backgroundColor: 'transparent',
+    fontSize: 30,
+    color: '#1b83d3',
+    top: -1,
+    left: 2
   }
 };
 
@@ -82,13 +110,13 @@ export default class PhoneVerification extends Component {
     super();
     this.state = {
       digit: '',
+      code: '',
       showEnterBtn: false,
       toggleCursor: false,
-      pressedDigit: undefined
+      pressedDigit: undefined,
+      showResponse: false
     };
     this.back = '<';
-    this.handleKeyboardBtn = this.handleKeyboardBtn.bind(this);
-    this.checkPuttingNumComplete = this.checkPuttingNumComplete.bind(this);
   }
 
   componentDidMount() {
@@ -103,20 +131,18 @@ export default class PhoneVerification extends Component {
 
   renderHeader() {
     return (
-      <View
-        style={{
-          position: 'absolute',
-          top: 20,
-          left: 0,
-          height: 50,
-          width: WIDTH,
-          justifyContent: 'center',
-          zIndex: 10
-        }}
-      >
+      <View style={styles.phoneVerifHeaderContainer}>
         <TouchableOpacity
           style={{left: 20, width: 40}}
-          onPress={() => this.props.navigator.pop()}
+          onPress={() => {
+            if (this.state.showResponse === true) {
+              LayoutAnimation.easeInEaseOut();
+              this.setState({showResponse: false});
+              (this.state.digit.length > 11) && this.setState({showEnterBtn: true});
+            } else if (this.state.showResponse === false) {
+              this.props.navigator.pop();
+            }
+          }}
         >
           <Text>back</Text>
         </TouchableOpacity>
@@ -124,25 +150,20 @@ export default class PhoneVerification extends Component {
     );
   }
 
-  renderBody() {
+  renderRequestView() {
+    const requestViewOnResponse = {
+      position: 'absolute',
+      top: HEIGHT * 181.5 / 667 - 70,
+      left: -WIDTH
+    };
     return (
-      <View style={styles.phoneVerifBodyContainer}>
-        <View style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginBottom: 40
-        }}>
-          <Text>
-            휴대폰 인증을 위한 전화번호를 입력해주세요
-          </Text>
+      <View style={[{width: WIDTH},
+        (this.state.showResponse) ? requestViewOnResponse : {}
+      ]}>
+        <View style={styles.phoneVerifInstrContainer}>
+          <Text>휴대폰 인증을 위한 전화번호를 입력해주세요</Text>
         </View>
-        <View style={{
-          height: 50,
-          width: WIDTH,
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
+        <View style={styles.phoneVerifDigitContainer}>
           <Text style={{fontSize: 30, marginBottom: 20}}>{this.state.digit}</Text>
           <Text style={{
             fontSize: 30,
@@ -152,6 +173,42 @@ export default class PhoneVerification extends Component {
             |
           </Text>
         </View>
+      </View>
+    );
+  }
+
+  renderResponseView() {
+    const requestViewOnResponse = {
+      position: 'absolute',
+      top: HEIGHT * 181.5 / 667 - 70,
+      left: WIDTH
+    };
+    return (
+      <View style={[{width: WIDTH},
+        (!this.state.showResponse) ? requestViewOnResponse : {}
+      ]}>
+        <View style={styles.phoneVerifInstrContainer}>
+          <Text>전송된 4자리 인증번호를 입력해주세요</Text>
+        </View>
+        <View style={styles.phoneVerifDigitContainer}>
+          <Text style={{fontSize: 30, marginBottom: 20}}>{this.state.code}</Text>
+          <Text style={{
+            fontSize: 30,
+            marginBottom: 23,
+            color: (this.state.toggleCursor && !this.check4DigitComplete()) ? 'black' : '#1b83d3'
+          }}>
+            |
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderBody() {
+    return (
+      <View style={styles.phoneVerifBodyContainer}>
+        {this.renderRequestView()}
+        {this.renderResponseView()}
         {this.renderEnterBtn()}
       </View>
     );
@@ -165,15 +222,20 @@ export default class PhoneVerification extends Component {
         onPress={() => this.handleKeyboardBtn(number)}
         onPressIn={() => this.setState({pressedDigit: number})}
         onPressOut={() => this.setState({pressedDigit: ''})}
-        activeOpacity={0.9}
-      >
+        activeOpacity={0.9}>
         <Text>{number}</Text>
       </TouchableOpacity>
     );
   }
 
   checkPuttingNumComplete() {
-    return (this.state.digit.length === 11 + 2);
+    const maxNumOfDigits = 11;
+    const maxNumOfWhitespace = 2;
+    return (this.state.digit.length === maxNumOfDigits + maxNumOfWhitespace);
+  }
+
+  check4DigitComplete() {
+    return (this.state.code.length === 4);
   }
 
   renderEnterBtn() {
@@ -186,26 +248,32 @@ export default class PhoneVerification extends Component {
         <TouchableOpacity
           style={styles.phoneVerifEnterBtn}
           onPress={() => {
-            if (this.checkPuttingNumComplete()) {
-              // todo: do smt here
+            if (this.state.digit.length > 11) {
+              const { showResponse } = this.state;
+              if (showResponse === false) {
+                LayoutAnimation.easeInEaseOut();
+                this.setState({showResponse: true});
+                (!this.check4DigitComplete()) && this.setState({showEnterBtn: false});
+              } else if (showResponse === true) {
+                // todo
+              }
             }
-          }}
-        >
-          <Text style={{
-            backgroundColor: 'transparent',
-            fontSize: 30,
-            color: '#1b83d3',
-            top: -1,
-            left: 2
           }}>
-            >
-          </Text>
+          <Text style={styles.textPhoneVerifDelete}>></Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   handleKeyboardBtn(number) {
+    if (this.state.showResponse) {
+      this.handleKeyboardBtnOnResponse(number);
+    } else {
+      this.handleKeyboardBtnOnRequest(number);
+    }
+  }
+
+  handleKeyboardBtnOnRequest(number) {
     const { digit } = this.state;
     if (number === this.back) {
       LayoutAnimation.easeInEaseOut();
@@ -227,6 +295,25 @@ export default class PhoneVerification extends Component {
       }
       (deeplyCopiedArr.length >= 12) && this.setState({showEnterBtn: true});
       this.setState({digit: deeplyCopiedArr});
+    }
+  }
+
+  handleKeyboardBtnOnResponse(number) {
+    const { code } = this.state;
+    if (number === this.back) {
+      LayoutAnimation.easeInEaseOut();
+      const deeplyCopiedStr = code.slice(0, -1);
+      this.setState({code: deeplyCopiedStr});
+      if (this.check4DigitComplete()) {
+        this.setState({showEnterBtn: false});
+      }
+    } else if (!this.check4DigitComplete()) {
+      LayoutAnimation.easeInEaseOut();
+      const deeplyCopiedStr = code.concat(number);
+      this.setState({code: deeplyCopiedStr});
+      if (deeplyCopiedStr.length === 4) {
+        this.setState({showEnterBtn: true});
+      }
     }
   }
 
