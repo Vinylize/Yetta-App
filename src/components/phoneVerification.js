@@ -3,7 +3,8 @@ import {
   Text,
   View,
   PanResponder,
-  TouchableOpacity
+  TouchableOpacity,
+  LayoutAnimation
 } from 'react-native';
 import { WIDTH, HEIGHT } from './../utils';
 import { phoneVerificationNavigatorRoute } from './../navigator/navigatorRoutes';
@@ -19,14 +20,60 @@ const styles = {
     flexDirection: 'row',
     borderRadius: 5
   },
+  phoneVerifHeaderContainer: {
+    position: 'absolute',
+    top: 20,
+    left: 0,
+    height: 50,
+    width: WIDTH,
+    justifyContent: 'center',
+    zIndex: 10
+  },
   phoneVerifKeyboardCol: {
     flex: 1,
     flexDirection: 'column'
   },
   phoneVerifKeyboardRowBtn: {
     flex: 1,
+    borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  phoneVerifBodyContainer: {
+    flex: 1,
+    marginTop: 70,
+    marginBottom: HEIGHT * 0.4,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column'
+  },
+  phoneVerifEnterBtn: {
+    width: 50,
+    height: 50,
+    borderRadius: 30,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  phoneVerifDigitContainer: {
+    height: 50,
+    width: WIDTH,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  phoneVerifInstrContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 40
+  },
+  textPhoneVerifDelete: {
+    backgroundColor: 'transparent',
+    fontSize: 30,
+    color: '#1b83d3',
+    top: -1,
+    left: 2
   }
 };
 
@@ -62,29 +109,40 @@ export default class PhoneVerification extends Component {
   constructor() {
     super();
     this.state = {
-      digit: ''
+      digit: '',
+      code: '',
+      showEnterBtn: false,
+      toggleCursor: false,
+      pressedDigit: undefined,
+      showResponse: false
     };
     this.back = '<';
-    this.handleKeyboardBtn = this.handleKeyboardBtn.bind(this);
-    this.checkPuttingNumComplete = this.checkPuttingNumComplete.bind(this);
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      this.setState({toggleCursor: !this.state.toggleCursor});
+    }, 500);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timer);
   }
 
   renderHeader() {
     return (
-      <View
-        style={{
-          position: 'absolute',
-          top: 20,
-          left: 0,
-          height: 50,
-          width: WIDTH,
-          justifyContent: 'center',
-          zIndex: 10
-        }}
-      >
+      <View style={styles.phoneVerifHeaderContainer}>
         <TouchableOpacity
           style={{left: 20, width: 40}}
-          onPress={() => this.props.navigator.pop()}
+          onPress={() => {
+            if (this.state.showResponse === true) {
+              LayoutAnimation.easeInEaseOut();
+              this.setState({showResponse: false});
+              (this.state.digit.length > 11) && this.setState({showEnterBtn: true});
+            } else if (this.state.showResponse === false) {
+              this.props.navigator.pop();
+            }
+          }}
         >
           <Text>back</Text>
         </TouchableOpacity>
@@ -92,64 +150,66 @@ export default class PhoneVerification extends Component {
     );
   }
 
-  renderBody() {
-    const { digit } = this.state;
+  renderRequestView() {
+    const requestViewOnResponse = {
+      position: 'absolute',
+      top: HEIGHT * 181.5 / 667 - 70,
+      left: -WIDTH
+    };
     return (
-      <View style={{
-        flex: 1,
-        marginTop: 70,
-        marginBottom: HEIGHT * 0.4,
-        backgroundColor: 'transparent',
-        justifyContent: 'center',
-        flexDirection: 'column'
-      }}>
-        <View style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginBottom: 50
-        }}>
-          <Text>
-            니 폰 번호
-          </Text>
+      <View style={[{width: WIDTH},
+        (this.state.showResponse) ? requestViewOnResponse : {}
+      ]}>
+        <View style={styles.phoneVerifInstrContainer}>
+          <Text>휴대폰 인증을 위한 전화번호를 입력해주세요</Text>
         </View>
-        <View style={{
-          height: 70,
-          width: WIDTH,
-          flexDirection: 'row',
-          backgroundColor: 'transparent',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingLeft: 20
-        }}>
-          {this.renderPhoneNumBox(digit[0])}
-          {this.renderPhoneNumBox(digit[1])}
-          {this.renderPhoneNumBox(digit[2])}
-          <View style={{width: 30}}/>
-          {this.renderPhoneNumBox(digit[3])}
-          {this.renderPhoneNumBox(digit[4])}
-          {this.renderPhoneNumBox(digit[5])}
-          {this.renderPhoneNumBox(digit[6])}
-          <View style={{width: 30}}/>
-          {this.renderPhoneNumBox(digit[7])}
-          {this.renderPhoneNumBox(digit[8])}
-          {this.renderPhoneNumBox(digit[9])}
-          {this.renderPhoneNumBox(digit[10])}
-          <View style={{width: 20}}/>
+        <View style={styles.phoneVerifDigitContainer}>
+          <Text style={{fontSize: 30, marginBottom: 20}}>{this.state.digit}</Text>
+          <Text style={{
+            fontSize: 30,
+            marginBottom: 23,
+            color: (this.state.toggleCursor && !this.checkPuttingNumComplete()) ? 'black' : '#1b83d3'
+          }}>
+            |
+          </Text>
         </View>
       </View>
     );
   }
 
-  renderPhoneNumBox(number) {
+  renderResponseView() {
+    const requestViewOnResponse = {
+      position: 'absolute',
+      top: HEIGHT * 181.5 / 667 - 70,
+      left: WIDTH
+    };
     return (
-      <View style={{
-        marginRight: 3,
-        width: 20,
-        borderBottomWidth: 1.5,
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
-        <Text>{number}</Text>
+      <View style={[{width: WIDTH},
+        (!this.state.showResponse) ? requestViewOnResponse : {}
+      ]}>
+        <View style={styles.phoneVerifInstrContainer}>
+          <Text>전송된 4자리 인증번호를 입력해주세요</Text>
+        </View>
+        <View style={styles.phoneVerifDigitContainer}>
+          <Text style={{fontSize: 30, marginBottom: 20}}>{this.state.code}</Text>
+          <Text style={{
+            fontSize: 30,
+            marginBottom: 23,
+            color: (this.state.toggleCursor && !this.check4DigitComplete()) ? 'black' : '#1b83d3'
+          }}>
+            |
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderBody() {
+    return (
+      <View style={styles.phoneVerifBodyContainer}>
+        {this.renderRequestView()}
+        {this.renderResponseView()}
+        {this.renderEnterBtn()}
       </View>
     );
   }
@@ -157,44 +217,103 @@ export default class PhoneVerification extends Component {
   renderRow(number) {
     return (
       <TouchableOpacity
-        style={styles.phoneVerifKeyboardRowBtn}
+        style={[styles.phoneVerifKeyboardRowBtn,
+          {backgroundColor: (this.state.pressedDigit === number) ? '#ececec' : 'white'}]}
         onPress={() => this.handleKeyboardBtn(number)}
-      >
+        onPressIn={() => this.setState({pressedDigit: number})}
+        onPressOut={() => this.setState({pressedDigit: ''})}
+        activeOpacity={0.9}>
         <Text>{number}</Text>
       </TouchableOpacity>
     );
   }
 
   checkPuttingNumComplete() {
-    return (this.state.digit.length === 11);
+    const maxNumOfDigits = 11;
+    const maxNumOfWhitespace = 2;
+    return (this.state.digit.length === maxNumOfDigits + maxNumOfWhitespace);
   }
 
-  renderRowEnterBtn() {
+  check4DigitComplete() {
+    return (this.state.code.length === 4);
+  }
+
+  renderEnterBtn() {
     return (
-      <TouchableOpacity
-        style={styles.phoneVerifKeyboardRowBtn}
-        onPress={() => {
-          if (this.checkPuttingNumComplete()) {
-            // todo: do smt here
-          }
-        }}
-      >
-        <Text style={{
-          color: (this.checkPuttingNumComplete()) ? 'blue' : '#ececec'
-        }}>
-          enter
-        </Text>
-      </TouchableOpacity>
+      <View style={[styles.phoneVerifEnterBtn, {
+        position: 'absolute',
+        bottom: 30,
+        right: (this.state.showEnterBtn) ? 20 : -30
+      }]}>
+        <TouchableOpacity
+          style={styles.phoneVerifEnterBtn}
+          onPress={() => {
+            if (this.state.digit.length > 11) {
+              const { showResponse } = this.state;
+              if (showResponse === false) {
+                LayoutAnimation.easeInEaseOut();
+                this.setState({showResponse: true});
+                (!this.check4DigitComplete()) && this.setState({showEnterBtn: false});
+              } else if (showResponse === true) {
+                // todo
+              }
+            }
+          }}>
+          <Text style={styles.textPhoneVerifDelete}>></Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 
   handleKeyboardBtn(number) {
+    if (this.state.showResponse) {
+      this.handleKeyboardBtnOnResponse(number);
+    } else {
+      this.handleKeyboardBtnOnRequest(number);
+    }
+  }
+
+  handleKeyboardBtnOnRequest(number) {
+    const { digit } = this.state;
     if (number === this.back) {
-      const deeplyCopiedArr = this.state.digit.slice(0, -1);
+      LayoutAnimation.easeInEaseOut();
+      let deeplyCopiedArr = digit.slice(0, -1);
+      if (digit.length === 13) {
+        deeplyCopiedArr = ''.concat(deeplyCopiedArr.slice(0, 7), ' ', deeplyCopiedArr.slice(9));
+      } else if (deeplyCopiedArr[deeplyCopiedArr.length - 1] === ' ') {
+        deeplyCopiedArr = deeplyCopiedArr.slice(0, -1);
+      }
+      (deeplyCopiedArr.length < 12) && this.setState({showEnterBtn: false});
       this.setState({digit: deeplyCopiedArr});
-    } else if (this.state.digit.length <= 10) {
-      const deeplyCopiedArr = this.state.digit.concat(number);
+    } else if (!this.checkPuttingNumComplete()) {
+      LayoutAnimation.easeInEaseOut();
+      let deeplyCopiedArr = digit.concat(number);
+      if (digit.length === 3 || digit.length === 7) {
+        deeplyCopiedArr = digit.concat(' ', number);
+      } else if (deeplyCopiedArr.length === 13) {
+        deeplyCopiedArr = ''.concat(digit.slice(0, 7), digit[8], ' ', digit.slice(9), number);
+      }
+      (deeplyCopiedArr.length >= 12) && this.setState({showEnterBtn: true});
       this.setState({digit: deeplyCopiedArr});
+    }
+  }
+
+  handleKeyboardBtnOnResponse(number) {
+    const { code } = this.state;
+    if (number === this.back) {
+      LayoutAnimation.easeInEaseOut();
+      const deeplyCopiedStr = code.slice(0, -1);
+      this.setState({code: deeplyCopiedStr});
+      if (this.check4DigitComplete()) {
+        this.setState({showEnterBtn: false});
+      }
+    } else if (!this.check4DigitComplete()) {
+      LayoutAnimation.easeInEaseOut();
+      const deeplyCopiedStr = code.concat(number);
+      this.setState({code: deeplyCopiedStr});
+      if (deeplyCopiedStr.length === 4) {
+        this.setState({showEnterBtn: true});
+      }
     }
   }
 
@@ -205,7 +324,7 @@ export default class PhoneVerification extends Component {
           {this.renderRow(1)}
           {this.renderRow(4)}
           {this.renderRow(7)}
-          {this.renderRow(this.back)}
+          {this.renderRow(' ')}
         </View>
         <View style={styles.phoneVerifKeyboardCol}>
           {this.renderRow(2)}
@@ -217,7 +336,7 @@ export default class PhoneVerification extends Component {
           {this.renderRow(3)}
           {this.renderRow(6)}
           {this.renderRow(9)}
-          {this.renderRowEnterBtn()}
+          {this.renderRow(this.back)}
         </View>
       </View>
     );

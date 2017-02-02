@@ -257,6 +257,7 @@ export default class Home extends Component {
             initialDirection={0}
             scrollEnabled={false}
             zoomEnabled={false}
+            rotateEnabled={false}
             showsUserLocation={true}
             styleURL={Mapbox.mapStyles.light}
             userTrackingMode={this.state.userTrackingMode}
