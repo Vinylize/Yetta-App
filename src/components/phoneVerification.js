@@ -3,7 +3,8 @@ import {
   Text,
   View,
   PanResponder,
-  TouchableOpacity
+  TouchableOpacity,
+  LayoutAnimation
 } from 'react-native';
 import { WIDTH, HEIGHT } from './../utils';
 import { phoneVerificationNavigatorRoute } from './../navigator/navigatorRoutes';
@@ -27,6 +28,15 @@ const styles = {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  phoneVerifBodyContainer: {
+    flex: 1,
+    marginTop: 70,
+    marginBottom: HEIGHT * 0.4,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column'
   }
 };
 
@@ -62,7 +72,8 @@ export default class PhoneVerification extends Component {
   constructor() {
     super();
     this.state = {
-      digit: ''
+      digit: '',
+      showEnterBtn: false
     };
     this.back = '<';
     this.handleKeyboardBtn = this.handleKeyboardBtn.bind(this);
@@ -93,63 +104,25 @@ export default class PhoneVerification extends Component {
   }
 
   renderBody() {
-    const { digit } = this.state;
     return (
-      <View style={{
-        flex: 1,
-        marginTop: 70,
-        marginBottom: HEIGHT * 0.4,
-        backgroundColor: 'transparent',
-        justifyContent: 'center',
-        flexDirection: 'column'
-      }}>
+      <View style={styles.phoneVerifBodyContainer}>
         <View style={{
           justifyContent: 'center',
           alignItems: 'center',
-          marginBottom: 50
+          marginBottom: 40
         }}>
           <Text>
             니 폰 번호
           </Text>
         </View>
+        <View style={{marginBottom: 20, flexDirection: 'row'}}>
+        <Text style={{fontSize: 30}}>{this.state.digit}</Text>
         <View style={{
-          height: 70,
-          width: WIDTH,
-          flexDirection: 'row',
-          backgroundColor: 'transparent',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingLeft: 20
-        }}>
-          {this.renderPhoneNumBox(digit[0])}
-          {this.renderPhoneNumBox(digit[1])}
-          {this.renderPhoneNumBox(digit[2])}
-          <View style={{width: 30}}/>
-          {this.renderPhoneNumBox(digit[3])}
-          {this.renderPhoneNumBox(digit[4])}
-          {this.renderPhoneNumBox(digit[5])}
-          {this.renderPhoneNumBox(digit[6])}
-          <View style={{width: 30}}/>
-          {this.renderPhoneNumBox(digit[7])}
-          {this.renderPhoneNumBox(digit[8])}
-          {this.renderPhoneNumBox(digit[9])}
-          {this.renderPhoneNumBox(digit[10])}
-          <View style={{width: 20}}/>
+          width: 10,
+          backgroundColor: 'black'
+        }}/>
         </View>
-      </View>
-    );
-  }
-
-  renderPhoneNumBox(number) {
-    return (
-      <View style={{
-        marginRight: 3,
-        width: 20,
-        borderBottomWidth: 1.5,
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
-        <Text>{number}</Text>
+        {this.renderEnterBtn()}
       </View>
     );
   }
@@ -169,10 +142,20 @@ export default class PhoneVerification extends Component {
     return (this.state.digit.length === 11);
   }
 
-  renderRowEnterBtn() {
+  renderEnterBtn() {
     return (
       <TouchableOpacity
-        style={styles.phoneVerifKeyboardRowBtn}
+        style={{
+          width: 50,
+          height: 50,
+          borderRadius: 30,
+          backgroundColor: 'white',
+          position: 'absolute',
+          bottom: 30,
+          right: (this.state.showEnterBtn) ? 20 : -30,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
         onPress={() => {
           if (this.checkPuttingNumComplete()) {
             // todo: do smt here
@@ -180,9 +163,13 @@ export default class PhoneVerification extends Component {
         }}
       >
         <Text style={{
-          color: (this.checkPuttingNumComplete()) ? 'blue' : '#ececec'
+          backgroundColor: 'transparent',
+          fontSize: 30,
+          color: '#1b83d3',
+          top: -1,
+          left: 2
         }}>
-          enter
+          >
         </Text>
       </TouchableOpacity>
     );
@@ -191,9 +178,11 @@ export default class PhoneVerification extends Component {
   handleKeyboardBtn(number) {
     if (number === this.back) {
       const deeplyCopiedArr = this.state.digit.slice(0, -1);
+      (deeplyCopiedArr.length < 10) && this.setState({showEnterBtn: false});
       this.setState({digit: deeplyCopiedArr});
-    } else if (this.state.digit.length <= 10) {
+    } else if (!this.checkPuttingNumComplete()) {
       const deeplyCopiedArr = this.state.digit.concat(number);
+      (deeplyCopiedArr.length >= 10) && this.setState({showEnterBtn: true});
       this.setState({digit: deeplyCopiedArr});
     }
   }
@@ -205,7 +194,7 @@ export default class PhoneVerification extends Component {
           {this.renderRow(1)}
           {this.renderRow(4)}
           {this.renderRow(7)}
-          {this.renderRow(this.back)}
+          {this.renderRow()}
         </View>
         <View style={styles.phoneVerifKeyboardCol}>
           {this.renderRow(2)}
@@ -217,7 +206,7 @@ export default class PhoneVerification extends Component {
           {this.renderRow(3)}
           {this.renderRow(6)}
           {this.renderRow(9)}
-          {this.renderRowEnterBtn()}
+          {this.renderRow(this.back)}
         </View>
       </View>
     );
