@@ -5,6 +5,7 @@ import Map from './../components/map';
 import Register from './../components/register';
 import Ship from './../components/ship';
 import PortOrShip from './../components/portOrShip';
+import PhoneVerification from './../components/phoneVerification';
 
 const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
 
@@ -45,5 +46,12 @@ export function portOrShipNavigatorRoute() {
   return {
     Component: PortOrShip,
     sceneConfig: Navigator.SceneConfigs.PushFromRight
+  };
+}
+
+export function phoneVerificationNavigatorRoute() {
+  return {
+    Component: PhoneVerification,
+    sceneConfig
   };
 }

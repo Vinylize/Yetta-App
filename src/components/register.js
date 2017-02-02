@@ -8,12 +8,13 @@ import {
   Keyboard,
   PanResponder
 } from 'react-native';
+import { URL } from './../utils';
 
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
 
 const client = new Lokka({
-  transport: new Transport()
+  transport: new Transport(URL)
 });
 
 import imgHeart from './../resources/heart.png';

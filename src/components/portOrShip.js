@@ -40,7 +40,7 @@ export default class PortOrShip extends Component {
   constructor() {
     super();
     this.state = {
-      portOrShip: SCENE_CONSTANT.PORT,
+      portOrShip: '',
       clicked: false
     };
   }
