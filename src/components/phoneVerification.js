@@ -26,6 +26,7 @@ const styles = {
   },
   phoneVerifKeyboardRowBtn: {
     flex: 1,
+    borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -82,7 +83,8 @@ export default class PhoneVerification extends Component {
     this.state = {
       digit: '',
       showEnterBtn: false,
-      toggleCursor: false
+      toggleCursor: false,
+      pressedDigit: undefined
     };
     this.back = '<';
     this.handleKeyboardBtn = this.handleKeyboardBtn.bind(this);
@@ -142,8 +144,12 @@ export default class PhoneVerification extends Component {
           alignItems: 'center'
         }}>
           <Text style={{fontSize: 30, marginBottom: 20}}>{this.state.digit}</Text>
-          <Text style={{fontSize: 30, marginBottom: 23}}>
-            {(this.state.toggleCursor && !this.checkPuttingNumComplete()) ? '|' : ' '}
+          <Text style={{
+            fontSize: 30,
+            marginBottom: 23,
+            color: (this.state.toggleCursor && !this.checkPuttingNumComplete()) ? 'black' : '#1b83d3'
+          }}>
+            |
           </Text>
         </View>
         {this.renderEnterBtn()}
@@ -154,8 +160,12 @@ export default class PhoneVerification extends Component {
   renderRow(number) {
     return (
       <TouchableOpacity
-        style={styles.phoneVerifKeyboardRowBtn}
+        style={[styles.phoneVerifKeyboardRowBtn,
+          {backgroundColor: (this.state.pressedDigit === number) ? '#ececec' : 'white'}]}
         onPress={() => this.handleKeyboardBtn(number)}
+        onPressIn={() => this.setState({pressedDigit: number})}
+        onPressOut={() => this.setState({pressedDigit: ''})}
+        activeOpacity={0.9}
       >
         <Text>{number}</Text>
       </TouchableOpacity>
@@ -227,7 +237,7 @@ export default class PhoneVerification extends Component {
           {this.renderRow(1)}
           {this.renderRow(4)}
           {this.renderRow(7)}
-          {this.renderRow()}
+          {this.renderRow(' ')}
         </View>
         <View style={styles.phoneVerifKeyboardCol}>
           {this.renderRow(2)}
