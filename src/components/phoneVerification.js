@@ -37,6 +37,14 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column'
+  },
+  phoneVerifEnterBtn: {
+    width: 50,
+    height: 50,
+    borderRadius: 30,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 };
 
@@ -73,11 +81,22 @@ export default class PhoneVerification extends Component {
     super();
     this.state = {
       digit: '',
-      showEnterBtn: false
+      showEnterBtn: false,
+      toggleCursor: false
     };
     this.back = '<';
     this.handleKeyboardBtn = this.handleKeyboardBtn.bind(this);
     this.checkPuttingNumComplete = this.checkPuttingNumComplete.bind(this);
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      this.setState({toggleCursor: !this.state.toggleCursor});
+    }, 500);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timer);
   }
 
   renderHeader() {
@@ -112,15 +131,20 @@ export default class PhoneVerification extends Component {
           marginBottom: 40
         }}>
           <Text>
-            니 폰 번호
+            휴대폰 인증을 위한 전화번호를 입력해주세요
           </Text>
         </View>
-        <View style={{marginBottom: 20, flexDirection: 'row'}}>
-        <Text style={{fontSize: 30}}>{this.state.digit}</Text>
         <View style={{
-          width: 10,
-          backgroundColor: 'black'
-        }}/>
+          height: 50,
+          width: WIDTH,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Text style={{fontSize: 30, marginBottom: 20}}>{this.state.digit}</Text>
+          <Text style={{fontSize: 30, marginBottom: 23}}>
+            {(this.state.toggleCursor && !this.checkPuttingNumComplete()) ? '|' : ' '}
+          </Text>
         </View>
         {this.renderEnterBtn()}
       </View>
@@ -139,50 +163,59 @@ export default class PhoneVerification extends Component {
   }
 
   checkPuttingNumComplete() {
-    return (this.state.digit.length === 11);
+    return (this.state.digit.length === 11 + 2);
   }
 
   renderEnterBtn() {
     return (
-      <TouchableOpacity
-        style={{
-          width: 50,
-          height: 50,
-          borderRadius: 30,
-          backgroundColor: 'white',
-          position: 'absolute',
-          bottom: 30,
-          right: (this.state.showEnterBtn) ? 20 : -30,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-        onPress={() => {
-          if (this.checkPuttingNumComplete()) {
-            // todo: do smt here
-          }
-        }}
-      >
-        <Text style={{
-          backgroundColor: 'transparent',
-          fontSize: 30,
-          color: '#1b83d3',
-          top: -1,
-          left: 2
-        }}>
-          >
-        </Text>
-      </TouchableOpacity>
+      <View style={[styles.phoneVerifEnterBtn, {
+        position: 'absolute',
+        bottom: 30,
+        right: (this.state.showEnterBtn) ? 20 : -30
+      }]}>
+        <TouchableOpacity
+          style={styles.phoneVerifEnterBtn}
+          onPress={() => {
+            if (this.checkPuttingNumComplete()) {
+              // todo: do smt here
+            }
+          }}
+        >
+          <Text style={{
+            backgroundColor: 'transparent',
+            fontSize: 30,
+            color: '#1b83d3',
+            top: -1,
+            left: 2
+          }}>
+            >
+          </Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 
   handleKeyboardBtn(number) {
+    const { digit } = this.state;
     if (number === this.back) {
-      const deeplyCopiedArr = this.state.digit.slice(0, -1);
-      (deeplyCopiedArr.length < 10) && this.setState({showEnterBtn: false});
+      LayoutAnimation.easeInEaseOut();
+      let deeplyCopiedArr = digit.slice(0, -1);
+      if (digit.length === 13) {
+        deeplyCopiedArr = ''.concat(deeplyCopiedArr.slice(0, 7), ' ', deeplyCopiedArr.slice(9));
+      } else if (deeplyCopiedArr[deeplyCopiedArr.length - 1] === ' ') {
+        deeplyCopiedArr = deeplyCopiedArr.slice(0, -1);
+      }
+      (deeplyCopiedArr.length < 12) && this.setState({showEnterBtn: false});
       this.setState({digit: deeplyCopiedArr});
     } else if (!this.checkPuttingNumComplete()) {
-      const deeplyCopiedArr = this.state.digit.concat(number);
-      (deeplyCopiedArr.length >= 10) && this.setState({showEnterBtn: true});
+      LayoutAnimation.easeInEaseOut();
+      let deeplyCopiedArr = digit.concat(number);
+      if (digit.length === 3 || digit.length === 7) {
+        deeplyCopiedArr = digit.concat(' ', number);
+      } else if (deeplyCopiedArr.length === 13) {
+        deeplyCopiedArr = ''.concat(digit.slice(0, 7), digit[8], ' ', digit.slice(9), number);
+      }
+      (deeplyCopiedArr.length >= 12) && this.setState({showEnterBtn: true});
       this.setState({digit: deeplyCopiedArr});
     }
   }
