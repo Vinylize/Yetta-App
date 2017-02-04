@@ -7,25 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00C302E51ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
-		00C302E71ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
-		00C302E81ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
-		00C302E91ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
-		00C302EA1ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
+		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
+		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
+		00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302C01ABCB91800DB3ED1 /* libRCTImage.a */; };
+		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
+		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* pingstersAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* pingstersAppTests.m */; };
 		0B8646A0C931B88DD17F3CDC /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */; };
-		133E29F31AD74F7200F7D852 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
-		139105C61AF99C1200B5F7CC /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
-		139FDEF61B0652A700C62182 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
+		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
+		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
+		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		140ED2AC1D01E1AD002B40FF /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		146834051AC3E58100842450 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		171C02BF1E4587F7002DB33B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 171C02BE1E4587F7002DB33B /* Podfile */; };
-		5E9157361DD0AC6A00FF2AA8 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-		832341BD1AAA6AB300B99B32 /* ReferenceProxy in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		177913791E4616EA000454F2 /* VinylMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 177913781E4616EA000454F2 /* VinylMapView.m */; };
+		1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1779137E1E464064000454F2 /* VinylMapViewManager.m */; };
+		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		D156E7BC1E17E69B00174789 /* react-native-mapbox-gl in Resources */ = {isa = PBXBuildFile; fileRef = D156E7BB1E17E69B00174789 /* react-native-mapbox-gl */; };
 		D156E7D11E17E70300174789 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D156E7D01E17E70200174789 /* Mapbox.framework */; };
 		D156E7D21E17E70300174789 /* Mapbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D156E7D01E17E70200174789 /* Mapbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -224,6 +226,10 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = pingstersApp/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		171C02BE1E4587F7002DB33B /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		177913771E4615F9000454F2 /* VinylMapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VinylMapView.h; sourceTree = "<group>"; };
+		177913781E4616EA000454F2 /* VinylMapView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VinylMapView.m; sourceTree = "<group>"; };
+		1779137D1E46401C000454F2 /* VinylMapViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VinylMapViewManager.h; sourceTree = "<group>"; };
+		1779137E1E464064000454F2 /* VinylMapViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VinylMapViewManager.m; sourceTree = "<group>"; };
 		2DC22F90E1E449A090C9E7B8 /* libRCTMapboxGL.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTMapboxGL.a; sourceTree = "<group>"; };
 		3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-pingstersApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		541CB24A49262EC50D77A6B1 /* Pods-pingstersApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pingstersApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-pingstersApp/Pods-pingstersApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -241,7 +247,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				140ED2AC1D01E1AD002B40FF /* ReferenceProxy in Frameworks */,
+				140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,17 +255,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5E9157361DD0AC6A00FF2AA8 /* ReferenceProxy in Frameworks */,
-				146834051AC3E58100842450 /* ReferenceProxy in Frameworks */,
-				00C302E51ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */,
-				00C302E71ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */,
-				00C302E81ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */,
-				133E29F31AD74F7200F7D852 /* ReferenceProxy in Frameworks */,
-				00C302E91ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */,
-				139105C61AF99C1200B5F7CC /* ReferenceProxy in Frameworks */,
-				832341BD1AAA6AB300B99B32 /* ReferenceProxy in Frameworks */,
-				00C302EA1ABCBA2D00DB3ED1 /* ReferenceProxy in Frameworks */,
-				139FDEF61B0652A700C62182 /* ReferenceProxy in Frameworks */,
+				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
+				146834051AC3E58100842450 /* libReact.a in Frameworks */,
+				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
+				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
+				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
+				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
+				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
+				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
+				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
+				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
+				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				D156E7D11E17E70300174789 /* Mapbox.framework in Frameworks */,
 				DBEB8DCE80BE4BF3AB159994 /* libRCTMapboxGL.a in Frameworks */,
 				0B8646A0C931B88DD17F3CDC /* libPods-pingstersApp.a in Frameworks */,
@@ -356,6 +362,10 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				177913771E4615F9000454F2 /* VinylMapView.h */,
+				177913781E4616EA000454F2 /* VinylMapView.m */,
+				1779137D1E46401C000454F2 /* VinylMapViewManager.h */,
+				1779137E1E464064000454F2 /* VinylMapViewManager.m */,
 			);
 			name = pingstersApp;
 			sourceTree = "<group>";
@@ -858,6 +868,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				177913791E4616EA000454F2 /* VinylMapView.m in Sources */,
+				1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
