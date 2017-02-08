@@ -11,13 +11,27 @@
 #import "VinylMapViewManager.h"
 #import "VinylMapView.h"
 
-@implementation VinylMapManager
+
+@implementation VinylMapManager {
+  VinylMapView *_vinylMap;
+}
 
 RCT_EXPORT_MODULE();
 
+RCT_EXPORT_METHOD(moveMap:(NSString *)latitude: (NSString *)longitude)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap omfg:latitude longitude:longitude];
+    });
+  }
+}
+
 - (UIView *)view
 {
-  return [[VinylMapView alloc] init];
+  VinylMapView *map = [VinylMapView new];
+  _vinylMap = map;
+  return map;
 }
 
 @end

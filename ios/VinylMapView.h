@@ -10,9 +10,10 @@
 #define VinylMapView_h
 
 #import "RCTView.h"
+#import <GoogleMaps/GoogleMaps.h>
 
 @interface VinylMapView : RCTView
-
+- (void)omfg:(NSString*)latitude longitude:(NSString*)longitude;
 @end
 
 #endif /* VinylMapView_h */

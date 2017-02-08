@@ -11,6 +11,7 @@
 
 #import "RCTViewManager.h"
 @interface VinylMapManager : RCTViewManager
+
 @end
 
 #endif /* VinylMapViewManager_h */
