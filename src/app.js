@@ -11,7 +11,8 @@ export default class Vinyl extends Component {
     super();
     this.state = {
       longitude: undefined,
-      latitude: undefined
+      latitude: undefined,
+      toggle: false
     };
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -27,19 +28,12 @@ export default class Vinyl extends Component {
   }
 
   render() {
-    console.log(VinylMap);
-    console.log(VinylMap.addEvent);
     return (
       // <Provider store={store}>
       //   <AllLayout/>
       // </Provider>
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <VinylMap
-          ref={ref => {
-            console.log(ref);
-            console.log(ref.addEvent);
-            this.map = ref;
-          }}
           style={{flex: 1}}
         />
         <TouchableOpacity
@@ -57,7 +51,30 @@ export default class Vinyl extends Component {
             // console.log(this.map);
             const { longitude, latitude } = this.state;
             console.log(longitude, latitude);
-            vmm.moveMap(String(latitude), String(longitude));
+            // vmm.moveMap(String(latitude), String(longitude));
+            vmm.animateToLocation(String(latitude), String(longitude));
+          }}
+        />
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 100,
+            right: 40,
+            borderRadius: 5,
+            height: 50,
+            width: 50,
+            backgroundColor: '#ececec'
+          }}
+          onPress={() => {
+            const { longitude, latitude, toggle } = this.state;
+            if (toggle) {
+              console.log("asdf");
+              vmm.updateMarker(String(latitude), String(longitude));
+            } else {
+              console.log("asdffff");
+              vmm.updateMarker(String(latitude + 1), String(longitude + 1));
+            }
+            this.setState({toggle: !toggle});
           }}
         />
       </View>

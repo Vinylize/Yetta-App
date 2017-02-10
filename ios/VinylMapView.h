@@ -13,7 +13,10 @@
 #import <GoogleMaps/GoogleMaps.h>
 
 @interface VinylMapView : RCTView
-- (void)omfg:(NSString*)latitude longitude:(NSString*)longitude;
+- (void)moveMap:(NSString*)latitude longitude:(NSString*)longitude;
+- (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude;
+- (void)moveMarker:(NSString*)latitude longitude:(NSString*)longitude;
+- (void)updateMarker:(NSString*)latitude longitude:(NSString*)longitude;
 @end
 
 #endif /* VinylMapView_h */

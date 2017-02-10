@@ -22,10 +22,38 @@ RCT_EXPORT_METHOD(moveMap:(NSString *)latitude: (NSString *)longitude)
 {
   if (_vinylMap) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      [_vinylMap omfg:latitude longitude:longitude];
+      [_vinylMap moveMap:latitude longitude:longitude];
     });
   }
 }
+
+RCT_EXPORT_METHOD(animateToLocation:(NSString *)latitude: (NSString *)longitude)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap animateToLocation:latitude longitude:longitude];
+    });
+  }
+}
+
+RCT_EXPORT_METHOD(moveMarker:(NSString *)latitude: (NSString *)longitude)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap moveMarker:latitude longitude:longitude];
+    });
+  }
+}
+
+RCT_EXPORT_METHOD(updateMarker:(NSString *)latitude: (NSString *)longitude)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap updateMarker:latitude longitude:longitude];
+    });
+  }
+}
+
 
 - (UIView *)view
 {
