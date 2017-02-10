@@ -11,13 +11,55 @@
 #import "VinylMapViewManager.h"
 #import "VinylMapView.h"
 
-@implementation VinylMapManager
+
+@implementation VinylMapManager {
+  VinylMapView *_vinylMap;
+}
 
 RCT_EXPORT_MODULE();
 
+RCT_EXPORT_METHOD(moveMap:(NSString *)latitude: (NSString *)longitude)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap moveMap:latitude longitude:longitude];
+    });
+  }
+}
+
+RCT_EXPORT_METHOD(animateToLocation:(NSString *)latitude: (NSString *)longitude)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap animateToLocation:latitude longitude:longitude];
+    });
+  }
+}
+
+RCT_EXPORT_METHOD(moveMarker:(NSString *)latitude: (NSString *)longitude)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap moveMarker:latitude longitude:longitude];
+    });
+  }
+}
+
+RCT_EXPORT_METHOD(updateMarker:(NSString *)latitude: (NSString *)longitude)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap updateMarker:latitude longitude:longitude];
+    });
+  }
+}
+
+
 - (UIView *)view
 {
-  return [[VinylMapView alloc] init];
+  VinylMapView *map = [VinylMapView new];
+  _vinylMap = map;
+  return map;
 }
 
 @end
