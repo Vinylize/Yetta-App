@@ -11,6 +11,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,7 +34,9 @@ public class VinylMapPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        List<ViewManager> result = new ArrayList<ViewManager>();
-        return result;
+        VinylMapManager mapManager = new VinylMapManager(reactContext);
+        return Arrays.<ViewManager>asList(
+            mapManager
+        );
     }
 }

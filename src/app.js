@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import store from './store';
-import AllLayout from './containers/allLayout';
 import VinylMap from './components/VinylMapAndroid';
 import { View, NativeModules, TouchableOpacity } from 'react-native';
 // let vmm = NativeModules.VinylMapManager;
@@ -28,6 +27,7 @@ export default class Vinyl extends Component {
   }
 
   render() {
+    console.log(VinylMap);
     return (
       // <Provider store={store}>
       //   <AllLayout/>
