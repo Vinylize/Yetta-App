@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import store from './store';
-import VinylMap from './components/VinylMapAndroid';
-import { View, NativeModules, TouchableOpacity } from 'react-native';
+import VinylMapAndroid from './components/VinylMapAndroid';
+import VinylMapIOS from './components/VinylMapIOS';
+import { View, NativeModules, TouchableOpacity, Platform } from 'react-native';
 // let vmm = NativeModules.VinylMapManager;
 
 export default class Vinyl extends Component {
@@ -27,15 +28,15 @@ export default class Vinyl extends Component {
   }
 
   render() {
-    console.log(VinylMap);
     return (
       // <Provider store={store}>
       //   <AllLayout/>
       // </Provider>
       <View style={{flex: 1, backgroundColor: 'white'}}>
-        <VinylMap
-          style={{flex: 1}}
-        />
+        {(Platform.OS === 'ios') ?
+          <VinylMapIOS style={{flex: 1}}/> :
+          <VinylMapAndroid style={{flex: 1}}/>
+        }
         <TouchableOpacity
           style={{
             position: 'absolute',
