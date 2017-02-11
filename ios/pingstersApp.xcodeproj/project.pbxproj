@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -12,7 +13,6 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* pingstersAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* pingstersAppTests.m */; };
-		0B8646A0C931B88DD17F3CDC /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
@@ -25,12 +25,9 @@
 		171C02BF1E4587F7002DB33B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 171C02BE1E4587F7002DB33B /* Podfile */; };
 		177913791E4616EA000454F2 /* VinylMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 177913781E4616EA000454F2 /* VinylMapView.m */; };
 		1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1779137E1E464064000454F2 /* VinylMapViewManager.m */; };
+		179D3A1D1E4F3F6B00038FE8 /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
-		D156E7BC1E17E69B00174789 /* react-native-mapbox-gl in Resources */ = {isa = PBXBuildFile; fileRef = D156E7BB1E17E69B00174789 /* react-native-mapbox-gl */; };
-		D156E7D11E17E70300174789 /* Mapbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D156E7D01E17E70200174789 /* Mapbox.framework */; };
-		D156E7D21E17E70300174789 /* Mapbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D156E7D01E17E70200174789 /* Mapbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		DBEB8DCE80BE4BF3AB159994 /* libRCTMapboxGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DC22F90E1E449A090C9E7B8 /* libRCTMapboxGL.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,20 +122,6 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
-		D138A3261E17F1B800A39932 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DFEEB0551BD545B09D53CC66 /* RCTMapboxGL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C5DBB3401AF2EF2B00E611A9;
-			remoteInfo = RCTMapboxGL;
-		};
-		D138A3281E17F1B800A39932 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DFEEB0551BD545B09D53CC66 /* RCTMapboxGL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = C5DBB34B1AF2EF2B00E611A9;
-			remoteInfo = RCTMapboxGLTests;
-		};
 		D1FBBCA31E134BB3002357F4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */;
@@ -197,7 +180,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				D156E7D21E17E70300174789 /* Mapbox.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -229,16 +211,13 @@
 		177913781E4616EA000454F2 /* VinylMapView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VinylMapView.m; sourceTree = "<group>"; };
 		1779137D1E46401C000454F2 /* VinylMapViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VinylMapViewManager.h; sourceTree = "<group>"; };
 		1779137E1E464064000454F2 /* VinylMapViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VinylMapViewManager.m; sourceTree = "<group>"; };
-		2DC22F90E1E449A090C9E7B8 /* libRCTMapboxGL.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTMapboxGL.a; sourceTree = "<group>"; };
+		179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-pingstersApp.a"; path = "../../../Library/Developer/Xcode/DerivedData/pingstersApp-djwrprktbzexhdgdqgptqhvxgiwn/Build/Products/Debug-iphonesimulator/libPods-pingstersApp.a"; sourceTree = "<group>"; };
 		3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-pingstersApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		541CB24A49262EC50D77A6B1 /* Pods-pingstersApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pingstersApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-pingstersApp/Pods-pingstersApp.release.xcconfig"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
-		D156E7BB1E17E69B00174789 /* react-native-mapbox-gl */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "react-native-mapbox-gl"; sourceTree = "<group>"; };
-		D156E7D01E17E70200174789 /* Mapbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mapbox.framework; sourceTree = "<group>"; };
 		D298115BD0EB9190BBD4918E /* Pods-pingstersApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pingstersApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pingstersApp/Pods-pingstersApp.debug.xcconfig"; sourceTree = "<group>"; };
-		DFEEB0551BD545B09D53CC66 /* RCTMapboxGL.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTMapboxGL.xcodeproj; path = "../node_modules/react-native-mapbox-gl/ios/RCTMapboxGL.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,6 +233,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				179D3A1D1E4F3F6B00038FE8 /* libPods-pingstersApp.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -265,9 +245,6 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				D156E7D11E17E70300174789 /* Mapbox.framework in Frameworks */,
-				DBEB8DCE80BE4BF3AB159994 /* libRCTMapboxGL.a in Frameworks */,
-				0B8646A0C931B88DD17F3CDC /* libPods-pingstersApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,7 +396,6 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
-				DFEEB0551BD545B09D53CC66 /* RCTMapboxGL.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -437,8 +413,6 @@
 			isa = PBXGroup;
 			children = (
 				171C02BE1E4587F7002DB33B /* Podfile */,
-				D156E7D01E17E70200174789 /* Mapbox.framework */,
-				D156E7BB1E17E69B00174789 /* react-native-mapbox-gl */,
 				13B07FAE1A68108700A75B9A /* pingstersApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* pingstersAppTests */,
@@ -459,18 +433,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D138A31A1E17F1B800A39932 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				D138A3271E17F1B800A39932 /* libRCTMapboxGL.a */,
-				D138A3291E17F1B800A39932 /* RCTMapboxGLTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		EF5438760FE62FCB7EEA22C7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */,
 				3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */,
 			);
 			name = Frameworks;
@@ -571,10 +537,6 @@
 				{
 					ProductGroup = 78C398B11ACF4ADC00677621 /* Products */;
 					ProjectRef = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
-				},
-				{
-					ProductGroup = D138A31A1E17F1B800A39932 /* Products */;
-					ProjectRef = DFEEB0551BD545B09D53CC66 /* RCTMapboxGL.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302D41ABCB9D200DB3ED1 /* Products */;
@@ -694,20 +656,6 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D138A3271E17F1B800A39932 /* libRCTMapboxGL.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRCTMapboxGL.a;
-			remoteRef = D138A3261E17F1B800A39932 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		D138A3291E17F1B800A39932 /* RCTMapboxGLTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = RCTMapboxGLTests.xctest;
-			remoteRef = D138A3281E17F1B800A39932 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		D1FBBCA41E134BB3002357F4 /* libRCTImage-tvOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -772,7 +720,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				D156E7BC1E17E69B00174789 /* react-native-mapbox-gl in Resources */,
 				171C02BF1E4587F7002DB33B /* Podfile in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
@@ -840,19 +787,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-pingstersApp/Pods-pingstersApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D156E7D41E17E73400174789 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "bash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework/strip-frameworks.sh\"";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -910,9 +844,7 @@
 				INFOPLIST_FILE = pingstersAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -932,9 +864,7 @@
 				INFOPLIST_FILE = pingstersAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -962,8 +892,6 @@
 					"$(inherited)/**",
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native/ReactCommon/**",
-					"$(SRCROOT)/../node_modules/react-native-mapbox-gl/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager/**",
 					"$(SRCROOT)/../node_modules/React/**",
 				);
 				INFOPLIST_FILE = pingstersApp/Info.plist;
@@ -999,8 +927,6 @@
 					"$(inherited)/**",
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native/ReactCommon/**",
-					"$(SRCROOT)/../node_modules/react-native-mapbox-gl/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager/**",
 					"$(SRCROOT)/../node_modules/React/**",
 				);
 				INFOPLIST_FILE = pingstersApp/Info.plist;
@@ -1060,7 +986,6 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native/ReactCommon/**",
-					"$(SRCROOT)/../node_modules/react-native-mapbox-gl/ios/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1104,7 +1029,6 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native/ReactCommon/**",
-					"$(SRCROOT)/../node_modules/react-native-mapbox-gl/ios/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
