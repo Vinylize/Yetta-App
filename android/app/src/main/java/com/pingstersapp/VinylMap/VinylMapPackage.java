@@ -14,14 +14,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.pingstersapp.VinylMap.VinylMapModule;
+import com.pingstersapp.VinylMap.VinylMapManager;
 
 public class VinylMapPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new VinylMapModule(reactContext));
+        modules.add(new VinylMapManager(reactContext));
 
         return modules;
     }
@@ -33,6 +33,7 @@ public class VinylMapPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Collections.emptyList();
+        List<ViewManager> result = new ArrayList<ViewManager>();
+        return result;
     }
 }

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import store from './store';
 import AllLayout from './containers/allLayout';
-import VinylMap from './components/VinylMap';
+import VinylMap from './components/VinylMapAndroid';
 import { View, NativeModules, TouchableOpacity } from 'react-native';
-let vmm = NativeModules.VinylMapManager;
+// let vmm = NativeModules.VinylMapManager;
 
 export default class Vinyl extends Component {
   constructor() {
@@ -52,7 +52,7 @@ export default class Vinyl extends Component {
             const { longitude, latitude } = this.state;
             console.log(longitude, latitude);
             // vmm.moveMap(String(latitude), String(longitude));
-            vmm.animateToLocation(String(latitude), String(longitude));
+            // vmm.animateToLocation(String(latitude), String(longitude));
           }}
         />
         <TouchableOpacity
@@ -69,10 +69,10 @@ export default class Vinyl extends Component {
             const { longitude, latitude, toggle } = this.state;
             if (toggle) {
               console.log("asdf");
-              vmm.updateMarker(String(latitude), String(longitude));
+              // vmm.updateMarker(String(latitude), String(longitude));
             } else {
               console.log("asdffff");
-              vmm.updateMarker(String(latitude + 1), String(longitude + 1));
+              // vmm.updateMarker(String(latitude + 1), String(longitude + 1));
             }
             this.setState({toggle: !toggle});
           }}
