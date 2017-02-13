@@ -4,11 +4,13 @@ import {
   View,
   PanResponder,
   TouchableOpacity,
-  LayoutAnimation
+  LayoutAnimation,
+  Dimensions
 } from 'react-native';
-import { WIDTH, HEIGHT } from './../utils';
+// import { WIDTH, HEIGHT } from './../utils';
 import { phoneVerificationNavigatorRoute } from './../navigator/navigatorRoutes';
-
+const HEIGHT = Dimensions.get('window').height;
+const WIDTH = Dimensions.get('window').width;
 const styles = {
   phoneVerifKeyboardContainer: {
     position: 'absolute',
