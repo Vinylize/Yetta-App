@@ -262,7 +262,6 @@ export default class Home extends Component {
   }
 
   animateShrink() {
-    console.log('s');
     this.state.shrinkValue.setValue(1);
     Animated.timing(
       this.state.shrinkValue,
@@ -274,7 +273,6 @@ export default class Home extends Component {
   }
 
   animateBack() {
-    console.log('asdf');
     this.state.shrinkValue.setValue(0.7);
     Animated.timing(
       this.state.shrinkValue,
