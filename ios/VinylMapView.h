@@ -12,10 +12,11 @@
 #import "RCTView.h"
 #import <GoogleMaps/GoogleMaps.h>
 
-@interface VinylMapView : RCTView
+@interface VinylMapView : RCTView<GMSMapViewDelegate>
 - (void)moveMap:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)moveMarker:(NSString*)latitude longitude:(NSString*)longitude;
+- (void)addMarker:(NSString *)latitude longitude:(NSString *)longitude id:(NSString*)id;
 - (void)updateMarker:(NSString*)latitude longitude:(NSString*)longitude;
 @end
 

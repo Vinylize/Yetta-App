@@ -38,7 +38,8 @@ export default class Home extends Component {
       longitude: undefined,
       latitude: undefined,
       menuClicked: false,
-      shrinkValue: new Animated.Value(1)
+      shrinkValue: new Animated.Value(1),
+      markerTest: false
     };
   }
 
@@ -294,17 +295,29 @@ export default class Home extends Component {
           {this.renderSwitch()}
           {this.renderSearchBar()}
           {this.renderLocationBtn()}
-          <View style={{
-            position: 'absolute',
-            right: 20,
-            bottom: 20,
-            height: 40,
-            width: 40,
-            borderRadius: 50,
-            backgroundColor: 'white',
-            shadowOffset: {height: 1, width: 2},
-            shadowOpacity: 0.23
-          }}/>
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              right: 20,
+              bottom: 20,
+              height: 40,
+              width: 40,
+              borderRadius: 50,
+              backgroundColor: 'white',
+              shadowOffset: {height: 1, width: 2},
+              shadowOpacity: 0.23
+            }}
+            onPress={() => {
+              const { markerTest, latitude, longitude } = this.state;
+              if (markerTest) {
+                vmm.updateMarker(String(latitude), String(longitude));
+              } else {
+                vmm.updateMarker(String(latitude + 1), String(longitude + 1));
+                vmm.addMarker(String(latitude - 0.5), String(longitude), 'testing marker 01');
+              }
+              this.setState({markerTest: !markerTest});
+            }}
+          />
         </Animated.View>
       </View>
     );
