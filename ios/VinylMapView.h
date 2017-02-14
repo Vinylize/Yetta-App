@@ -10,14 +10,20 @@
 #define VinylMapView_h
 
 #import "RCTView.h"
+#import "RCTRootView.h"
+#import "RCTBundleURLProvider.h"
 #import <GoogleMaps/GoogleMaps.h>
 
-@interface VinylMapView : RCTView<GMSMapViewDelegate>
+@interface VinylMapView : GMSMapView<GMSMapViewDelegate>
+
+@property (nonatomic, copy) RCTBubblingEventBlock onPress;
+
 - (void)moveMap:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)moveMarker:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)addMarker:(NSString *)latitude longitude:(NSString *)longitude id:(NSString*)id;
 - (void)updateMarker:(NSString*)latitude longitude:(NSString*)longitude;
+
 @end
 
 #endif /* VinylMapView_h */

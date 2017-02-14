@@ -72,7 +72,13 @@ export default class Home extends Component {
   renderMap() {
     if (Platform.OS === 'ios') {
       return (
-        <VinylMapIOS style={{flex: 1}}/>
+        <VinylMapIOS
+          style={{flex: 1}}
+          onPress={(e) => {
+            console.log(e);
+            console.log(e.nativeEvent);
+          }}
+        />
       )
     }
     return (

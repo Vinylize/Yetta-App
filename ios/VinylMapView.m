@@ -30,7 +30,17 @@
   _map.myLocationEnabled = YES;
   _map.delegate = self;
   [self addSubview:_map];
+
   return self;
+}
+
+- (id)eventFromCoordinate:(CLLocationCoordinate2D)coordinate {
+  return @{
+           @"coordinate": @{
+               @"latitude": @(coordinate.latitude),
+               @"longitude": @(coordinate.longitude),
+               },
+           };
 }
 
 - (void)moveMap:(NSString*)latitude longitude:(NSString *)longitude {
@@ -61,7 +71,7 @@
   [_marker_ids addObject:id];
 }
 
--(void)updateMarker: (NSString *)latitude longitude:(NSString *)longitude {
+- (void)updateMarker: (NSString *)latitude longitude:(NSString *)longitude {
   if (_marker == nil) {
     _marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
     // _marker.icon = [UIImage imageNamed:CAR_FOUND_IMAGE];
@@ -76,21 +86,22 @@
 
 #pragma mark - GMSMapViewDelegate
 
-- (void)mapView:(GMSMapView *)mapView
-didTapAtCoordinate:(CLLocationCoordinate2D)coordinate {
-  // NSLog(@"You tapped at %f,%f", coordinate.latitude, coordinate.longitude);
-}
-
 - (void)mapView:(GMSMapView *)mapView willMove:(BOOL)gesture {
   // TBD
 }
 
+- (void)mapView:(GMSMapView *)mapView didTapAtCoordinate:(CLLocationCoordinate2D)coordinate {
+  if (!self.onPress) return;
+  self.onPress([self eventFromCoordinate:coordinate]);
+}
+
 - (BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker {
   // NSLog(@"%f %f", marker.position.latitude, marker.position.longitude);
-  NSUInteger index = [_markers indexOfObject:marker];
-  NSString *id = _marker_ids[index];
+  // NSUInteger index = [_markers indexOfObject:marker];
+  // NSString *id = _marker_ids[index];
   // NSLog(@"%lu", (unsigned long)index);
   // NSLog(@"%@", id);
+  
   return YES;
 }
 

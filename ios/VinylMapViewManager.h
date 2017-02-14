@@ -10,6 +10,7 @@
 #define VinylMapViewManager_h
 
 #import "RCTViewManager.h"
+
 @interface VinylMapManager : RCTViewManager
 
 @end
