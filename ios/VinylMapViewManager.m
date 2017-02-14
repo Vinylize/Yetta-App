@@ -11,12 +11,18 @@
 #import "VinylMapViewManager.h"
 #import "VinylMapView.h"
 
-
 @implementation VinylMapManager {
   VinylMapView *_vinylMap;
 }
 
 RCT_EXPORT_MODULE();
+
+- (UIView *)view
+{
+  VinylMapView *map = [VinylMapView new];
+  _vinylMap = map;
+  return map;
+}
 
 RCT_EXPORT_METHOD(moveMap:(NSString *)latitude: (NSString *)longitude)
 {
@@ -45,6 +51,15 @@ RCT_EXPORT_METHOD(moveMarker:(NSString *)latitude: (NSString *)longitude)
   }
 }
 
+RCT_EXPORT_METHOD(addMarker:(NSString *)latitude: (NSString *)longitude: (NSString *)id)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap addMarker:latitude longitude:longitude id:id];
+    });
+  }
+}
+
 RCT_EXPORT_METHOD(updateMarker:(NSString *)latitude: (NSString *)longitude)
 {
   if (_vinylMap) {
@@ -54,12 +69,6 @@ RCT_EXPORT_METHOD(updateMarker:(NSString *)latitude: (NSString *)longitude)
   }
 }
 
-
-- (UIView *)view
-{
-  VinylMapView *map = [VinylMapView new];
-  _vinylMap = map;
-  return map;
-}
+RCT_EXPORT_VIEW_PROPERTY(onPress, RCTBubblingEventBlock);
 
 @end
