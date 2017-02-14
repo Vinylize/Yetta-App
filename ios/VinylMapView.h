@@ -15,6 +15,7 @@
 @interface VinylMapView : GMSMapView<GMSMapViewDelegate>
 
 @property (nonatomic, copy) RCTBubblingEventBlock onPress;
+@property (nonatomic, copy) RCTBubblingEventBlock onMarkerPress;
 
 - (void)moveMap:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude;

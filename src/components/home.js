@@ -75,7 +75,9 @@ export default class Home extends Component {
         <VinylMapIOS
           style={{flex: 1}}
           onPress={(e) => {
-            console.log(e);
+            console.log(e.nativeEvent);
+          }}
+          onMarkerPress={(e) => {
             console.log(e.nativeEvent);
           }}
         />
