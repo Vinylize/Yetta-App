@@ -10,7 +10,8 @@ import {
   NativeModules,
   TextInput,
   TouchableOpacity,
-  Animated
+  Animated,
+  Easing
 } from 'react-native';
 import * as firebase from 'firebase';
 import {
@@ -28,6 +29,7 @@ const styles = {
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
+const cardWidth = WIDTH * 0.92;
 
 export default class Home extends Component {
   constructor() {
@@ -41,8 +43,20 @@ export default class Home extends Component {
       shrinkValue: new Animated.Value(1),
       markerTest: false,
       markerClicked: false,
-      clickedMarkerID: undefined
+      clickedMarkerID: undefined,
+      animatedCardLeftVal: new Animated.Value(0),
+      cardIndex: 0
     };
+  }
+
+  componentWillMount() {
+    this.cardPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: this.cardHandlePanResponderGrant.bind(this),
+      onPanResponderMove: this.cardHandlePanResponderMove.bind(this),
+      onPanResponderRelease: this.cardHandlePanResponderRelease.bind(this)
+    });
   }
 
   componentDidMount() {
@@ -69,6 +83,73 @@ export default class Home extends Component {
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
+  }
+
+  cardHandlePanResponderGrant() {
+    // TBD
+  }
+
+  cardHandlePanResponderMove(e, gestureState) {
+    const { dx } = gestureState;
+    this.refViewCardContainer.setNativeProps({style: {left: dx}});
+  }
+
+  cardHandlePanResponderRelease(e, gestureState) {
+    const { dx } = gestureState;
+    if (Math.abs(dx) < WIDTH / 3) {
+      this.animateCardPosReset(dx);
+    } else if (dx > 0) {
+      // move card to the left
+      this.animateCardPosLeft(dx);
+    } else if (dx < 0) {
+      // move card to the right
+      this.animateCardPosRight(dx);
+    }
+
+  }
+
+  animateCardPosReset(left) {
+    this.state.animatedCardLeftVal.setValue(left);
+    Animated.timing(
+      this.state.animatedCardLeftVal,
+      {
+        toValue: 0,
+        duration: 100,
+        easing: Easing.linear
+      }
+    ).start();
+  }
+
+  animateCardPosLeft(left) {
+    this.state.animatedCardLeftVal.setValue(left);
+    Animated.timing(
+      this.state.animatedCardLeftVal,
+      {
+        toValue: cardWidth + 10,
+        duration: 200,
+        easing: Easing.linear
+      }
+    ).start(() => {
+      this.setState({cardIndex: this.state.cardIndex - 1});
+      this.refViewCardContainer.setNativeProps({style: {left: 0}});
+      this.state.animatedCardLeftVal.setValue(0);
+    });
+  }
+
+  animateCardPosRight(left) {
+    this.state.animatedCardLeftVal.setValue(left);
+    Animated.timing(
+      this.state.animatedCardLeftVal,
+      {
+        toValue: -cardWidth - 10,
+        duration: 200,
+        easing: Easing.linear
+      }
+    ).start(() => {
+      this.setState({cardIndex: this.state.cardIndex + 1});
+      this.refViewCardContainer.setNativeProps({style: {left: 0}});
+      this.state.animatedCardLeftVal.setValue(0);
+    });
   }
 
   renderMap() {
@@ -273,17 +354,19 @@ export default class Home extends Component {
     )
   }
 
-  renderCardCenter() {
-    const cardWidth = WIDTH * 0.92;
+  renderCard(left, header) {
     return (
-      <View style={{
-        position: 'absolute',
-        width: cardWidth,
-        height: 100,
-        backgroundColor: 'white',
-        left: 10,
-        flexDirection: 'row'
-      }}>
+      <View
+        style={{
+          position: 'absolute',
+          width: cardWidth,
+          height: 100,
+          backgroundColor: 'white',
+          left: left,
+          flexDirection: 'row'
+        }}
+        {...this.cardPanResponder.panHandlers}
+      >
         <View style={{
           flex: 1,
           justifyContent: 'center',
@@ -312,7 +395,7 @@ export default class Home extends Component {
               <Text style={{
                 marginBottom: 3,
                 marginLeft: 12
-              }}>Eugenia Daniels</Text>
+              }}>{header}</Text>
             </View>
             <View style={{flex: 1}}>
               <Text style={{
@@ -346,43 +429,29 @@ export default class Home extends Component {
     )
   }
 
-  renderCard() {
-    const cardWidth = WIDTH * 0.92;
-    if (!this.state.markerClicked) {
+  renderCardContainer() {
+    const { markerClicked, animatedCardLeftVal, cardIndex } = this.state;
+    if (!markerClicked) {
       return null;
     }
     return (
-      <View style={{
-        position: 'absolute',
-        left: 0,
-        bottom: 0,
-        width: WIDTH,
-        height: 100,
-        backgroundColor: 'transparent',
-        shadowOffset: {height: 1, width: 2},
-        shadowOpacity: 0.23
-      }}>
-        <View style={{
+      <Animated.View
+        ref={component => this.refViewCardContainer = component} // eslint-disable-line
+        style={{
           position: 'absolute',
-          width: cardWidth,
+          left: animatedCardLeftVal,
+          bottom: 0,
+          width: WIDTH,
           height: 100,
-          backgroundColor: 'white',
-          left: -cardWidth
-        }}>
-
-        </View>
-        {this.renderCardCenter()}
-        <View style={{
-          position: 'absolute',
-          width: cardWidth,
-          height: 100,
-          backgroundColor: 'white',
-          left: cardWidth + 20
-        }}>
-
-        </View>
-
-      </View>
+          backgroundColor: 'transparent',
+          shadowOffset: {height: 1, width: 2},
+          shadowOpacity: 0.23
+        }}
+      >
+        {this.renderCard(-cardWidth, cardIndex - 1)}
+        {this.renderCard(10, cardIndex)}
+        {this.renderCard(cardWidth + 20, cardIndex + 1)}
+      </Animated.View>
     )
   }
 
@@ -442,7 +511,7 @@ export default class Home extends Component {
               this.setState({markerTest: !markerTest});
             }}
           />
-          {this.renderCard()}
+          {this.renderCardContainer()}
         </Animated.View>
       </View>
     );
