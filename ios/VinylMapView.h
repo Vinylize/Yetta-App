@@ -10,8 +10,6 @@
 #define VinylMapView_h
 
 #import "RCTView.h"
-#import "RCTRootView.h"
-#import "RCTBundleURLProvider.h"
 #import <GoogleMaps/GoogleMaps.h>
 
 @interface VinylMapView : GMSMapView<GMSMapViewDelegate>
