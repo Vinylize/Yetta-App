@@ -10,7 +10,8 @@ import {
   NativeModules,
   TextInput,
   TouchableOpacity,
-  Animated
+  Animated,
+  Easing
 } from 'react-native';
 import * as firebase from 'firebase';
 import {
@@ -41,8 +42,20 @@ export default class Home extends Component {
       shrinkValue: new Animated.Value(1),
       markerTest: false,
       markerClicked: false,
-      clickedMarkerID: undefined
+      clickedMarkerID: undefined,
+      busyOnCardRelease: false,
+      animatedCardLeftVal: new Animated.Value(0)
     };
+  }
+
+  componentWillMount() {
+    this.cardPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: this.cardHandlePanResponderGrant.bind(this),
+      onPanResponderMove: this.cardHandlePanResponderMove.bind(this),
+      onPanResponderRelease: this.cardHandlePanResponderRelease.bind(this)
+    });
   }
 
   componentDidMount() {
@@ -69,6 +82,32 @@ export default class Home extends Component {
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );
+  }
+
+  cardHandlePanResponderGrant() {
+    // TBD
+  }
+
+  cardHandlePanResponderMove(e, gestureState) {
+    const { dx } = gestureState;
+    this.refViewCardContainer.setNativeProps({style: {left: dx}});
+  }
+
+  cardHandlePanResponderRelease(e, gestureState) {
+    const { dx } = gestureState;
+    this.animateCardPosReset(dx);
+  }
+
+  animateCardPosReset(left) {
+    this.state.animatedCardLeftVal.setValue(left);
+    Animated.timing(
+      this.state.animatedCardLeftVal,
+      {
+        toValue: 0,
+        duration: 100,
+        easing: Easing.linear
+      }
+    ).start()
   }
 
   renderMap() {
@@ -276,14 +315,18 @@ export default class Home extends Component {
   renderCardCenter() {
     const cardWidth = WIDTH * 0.92;
     return (
-      <View style={{
-        position: 'absolute',
-        width: cardWidth,
-        height: 100,
-        backgroundColor: 'white',
-        left: 10,
-        flexDirection: 'row'
-      }}>
+      <View
+        ref={component => this.refViewCardCenter = component} // eslint-disable-line
+        style={{
+          position: 'absolute',
+          width: cardWidth,
+          height: 100,
+          backgroundColor: 'white',
+          left: 10,
+          flexDirection: 'row'
+        }}
+        {...this.cardPanResponder.panHandlers}
+      >
         <View style={{
           flex: 1,
           justifyContent: 'center',
@@ -352,16 +395,19 @@ export default class Home extends Component {
       return null;
     }
     return (
-      <View style={{
-        position: 'absolute',
-        left: 0,
-        bottom: 0,
-        width: WIDTH,
-        height: 100,
-        backgroundColor: 'transparent',
-        shadowOffset: {height: 1, width: 2},
-        shadowOpacity: 0.23
-      }}>
+      <Animated.View
+        ref={component => this.refViewCardContainer = component} // eslint-disable-line
+        style={{
+          position: 'absolute',
+          left: this.state.animatedCardLeftVal,
+          bottom: 0,
+          width: WIDTH,
+          height: 100,
+          backgroundColor: 'transparent',
+          shadowOffset: {height: 1, width: 2},
+          shadowOpacity: 0.23
+        }}
+      >
         <View style={{
           position: 'absolute',
           width: cardWidth,
@@ -382,7 +428,7 @@ export default class Home extends Component {
 
         </View>
 
-      </View>
+      </Animated.View>
     )
   }
 
