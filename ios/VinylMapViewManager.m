@@ -70,5 +70,6 @@ RCT_EXPORT_METHOD(updateMarker:(NSString *)latitude: (NSString *)longitude)
 }
 
 RCT_EXPORT_VIEW_PROPERTY(onPress, RCTBubblingEventBlock);
+RCT_EXPORT_VIEW_PROPERTY(onMarkerPress, RCTBubblingEventBlock);
 
 @end

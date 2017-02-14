@@ -39,7 +39,9 @@ export default class Home extends Component {
       latitude: undefined,
       menuClicked: false,
       shrinkValue: new Animated.Value(1),
-      markerTest: false
+      markerTest: false,
+      markerClicked: false,
+      clickedMarkerID: undefined
     };
   }
 
@@ -75,8 +77,11 @@ export default class Home extends Component {
         <VinylMapIOS
           style={{flex: 1}}
           onPress={(e) => {
-            console.log(e);
             console.log(e.nativeEvent);
+          }}
+          onMarkerPress={(e) => {
+            // console.log(e.nativeEvent);
+            this.setState({markerClicked: !this.state.markerClicked});
           }}
         />
       )
@@ -268,6 +273,119 @@ export default class Home extends Component {
     )
   }
 
+  renderCardCenter() {
+    const cardWidth = WIDTH * 0.92;
+    return (
+      <View style={{
+        position: 'absolute',
+        width: cardWidth,
+        height: 100,
+        backgroundColor: 'white',
+        left: 10,
+        flexDirection: 'row'
+      }}>
+        <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'flex-end'
+        }}>
+          <View style={{
+            width: 56,
+            height: 56,
+            borderRadius: 50,
+            backgroundColor: '#d8d8d8'
+          }}/>
+        </View>
+        <View style={{
+          flex: 3.5,
+          flexDirection: 'row'
+        }}>
+          <View style={{
+            flex: 4,
+            flexDirection: 'column'
+          }}>
+            <View style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              alignItems: 'flex-start'
+            }}>
+              <Text style={{
+                marginBottom: 3,
+                marginLeft: 12
+              }}>Eugenia Daniels</Text>
+            </View>
+            <View style={{flex: 1}}>
+              <Text style={{
+                marginTop: 6,
+                marginLeft: 12,
+                fontSize: 11,
+                color: '#adb3b4'
+              }}>$3,500 - 4,500 (Delivery fee only)</Text>
+            </View>
+          </View>
+          <View style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <View style={{
+              width: 40,
+              height: 40,
+              backgroundColor: '#656266',
+              borderRadius: 40,
+              shadowOffset: {height: 3, width: 1},
+              shadowOpacity: 0.4,
+              shadowRadius: 5,
+              marginRight: 10
+            }}>
+
+            </View>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
+  renderCard() {
+    const cardWidth = WIDTH * 0.92;
+    if (!this.state.markerClicked) {
+      return null;
+    }
+    return (
+      <View style={{
+        position: 'absolute',
+        left: 0,
+        bottom: 0,
+        width: WIDTH,
+        height: 100,
+        backgroundColor: 'transparent',
+        shadowOffset: {height: 1, width: 2},
+        shadowOpacity: 0.23
+      }}>
+        <View style={{
+          position: 'absolute',
+          width: cardWidth,
+          height: 100,
+          backgroundColor: 'white',
+          left: -cardWidth
+        }}>
+
+        </View>
+        {this.renderCardCenter()}
+        <View style={{
+          position: 'absolute',
+          width: cardWidth,
+          height: 100,
+          backgroundColor: 'white',
+          left: cardWidth + 20
+        }}>
+
+        </View>
+
+      </View>
+    )
+  }
+
   animateShrink() {
     this.state.shrinkValue.setValue(1);
     Animated.timing(
@@ -324,6 +442,7 @@ export default class Home extends Component {
               this.setState({markerTest: !markerTest});
             }}
           />
+          {this.renderCard()}
         </Animated.View>
       </View>
     );

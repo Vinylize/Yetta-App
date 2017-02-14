@@ -43,6 +43,16 @@
            };
 }
 
+- (id)eventMarkerPress:(CLLocationCoordinate2D)coordinate markerID:(NSString*)markerID {
+  return @{
+           @"coordinate": @{
+               @"latitude": @(coordinate.latitude),
+               @"longitude": @(coordinate.longitude),
+               },
+           @"id": markerID,
+           };
+}
+
 - (void)moveMap:(NSString*)latitude longitude:(NSString *)longitude {
   GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:latitude.doubleValue
                                                           longitude:longitude.doubleValue
@@ -96,12 +106,12 @@
 }
 
 - (BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker {
-  // NSLog(@"%f %f", marker.position.latitude, marker.position.longitude);
-  // NSUInteger index = [_markers indexOfObject:marker];
-  // NSString *id = _marker_ids[index];
-  // NSLog(@"%lu", (unsigned long)index);
-  // NSLog(@"%@", id);
+  NSUInteger index = [_markers indexOfObject:marker];
+  NSString *markerID = _marker_ids[index];
   
+  if (self.onMarkerPress) {
+    self.onMarkerPress([self eventMarkerPress:marker.position markerID:markerID]);
+  }
   return YES;
 }
 
