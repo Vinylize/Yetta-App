@@ -29,6 +29,7 @@ const styles = {
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
+const cardWidth = WIDTH * 0.92;
 
 export default class Home extends Component {
   constructor() {
@@ -43,8 +44,8 @@ export default class Home extends Component {
       markerTest: false,
       markerClicked: false,
       clickedMarkerID: undefined,
-      busyOnCardRelease: false,
-      animatedCardLeftVal: new Animated.Value(0)
+      animatedCardLeftVal: new Animated.Value(0),
+      cardIndex: 0
     };
   }
 
@@ -95,7 +96,16 @@ export default class Home extends Component {
 
   cardHandlePanResponderRelease(e, gestureState) {
     const { dx } = gestureState;
-    this.animateCardPosReset(dx);
+    if (Math.abs(dx) < WIDTH / 3) {
+      this.animateCardPosReset(dx);
+    } else if (dx > 0) {
+      // move card to the left
+      this.animateCardPosLeft(dx);
+    } else if (dx < 0) {
+      // move card to the right
+      this.animateCardPosRight(dx);
+    }
+
   }
 
   animateCardPosReset(left) {
@@ -107,7 +117,39 @@ export default class Home extends Component {
         duration: 100,
         easing: Easing.linear
       }
-    ).start()
+    ).start();
+  }
+
+  animateCardPosLeft(left) {
+    this.state.animatedCardLeftVal.setValue(left);
+    Animated.timing(
+      this.state.animatedCardLeftVal,
+      {
+        toValue: cardWidth + 10,
+        duration: 200,
+        easing: Easing.linear
+      }
+    ).start(() => {
+      this.setState({cardIndex: this.state.cardIndex - 1});
+      this.refViewCardContainer.setNativeProps({style: {left: 0}});
+      this.state.animatedCardLeftVal.setValue(0);
+    });
+  }
+
+  animateCardPosRight(left) {
+    this.state.animatedCardLeftVal.setValue(left);
+    Animated.timing(
+      this.state.animatedCardLeftVal,
+      {
+        toValue: -cardWidth - 10,
+        duration: 200,
+        easing: Easing.linear
+      }
+    ).start(() => {
+      this.setState({cardIndex: this.state.cardIndex + 1});
+      this.refViewCardContainer.setNativeProps({style: {left: 0}});
+      this.state.animatedCardLeftVal.setValue(0);
+    });
   }
 
   renderMap() {
@@ -312,17 +354,15 @@ export default class Home extends Component {
     )
   }
 
-  renderCardCenter() {
-    const cardWidth = WIDTH * 0.92;
+  renderCard(left, header) {
     return (
       <View
-        ref={component => this.refViewCardCenter = component} // eslint-disable-line
         style={{
           position: 'absolute',
           width: cardWidth,
           height: 100,
           backgroundColor: 'white',
-          left: 10,
+          left: left,
           flexDirection: 'row'
         }}
         {...this.cardPanResponder.panHandlers}
@@ -355,7 +395,7 @@ export default class Home extends Component {
               <Text style={{
                 marginBottom: 3,
                 marginLeft: 12
-              }}>Eugenia Daniels</Text>
+              }}>{header}</Text>
             </View>
             <View style={{flex: 1}}>
               <Text style={{
@@ -389,9 +429,9 @@ export default class Home extends Component {
     )
   }
 
-  renderCard() {
-    const cardWidth = WIDTH * 0.92;
-    if (!this.state.markerClicked) {
+  renderCardContainer() {
+    const { markerClicked, animatedCardLeftVal, cardIndex } = this.state;
+    if (!markerClicked) {
       return null;
     }
     return (
@@ -399,7 +439,7 @@ export default class Home extends Component {
         ref={component => this.refViewCardContainer = component} // eslint-disable-line
         style={{
           position: 'absolute',
-          left: this.state.animatedCardLeftVal,
+          left: animatedCardLeftVal,
           bottom: 0,
           width: WIDTH,
           height: 100,
@@ -408,26 +448,9 @@ export default class Home extends Component {
           shadowOpacity: 0.23
         }}
       >
-        <View style={{
-          position: 'absolute',
-          width: cardWidth,
-          height: 100,
-          backgroundColor: 'white',
-          left: -cardWidth
-        }}>
-
-        </View>
-        {this.renderCardCenter()}
-        <View style={{
-          position: 'absolute',
-          width: cardWidth,
-          height: 100,
-          backgroundColor: 'white',
-          left: cardWidth + 20
-        }}>
-
-        </View>
-
+        {this.renderCard(-cardWidth, cardIndex - 1)}
+        {this.renderCard(10, cardIndex)}
+        {this.renderCard(cardWidth + 20, cardIndex + 1)}
       </Animated.View>
     )
   }
@@ -488,7 +511,7 @@ export default class Home extends Component {
               this.setState({markerTest: !markerTest});
             }}
           />
-          {this.renderCard()}
+          {this.renderCardContainer()}
         </Animated.View>
       </View>
     );
