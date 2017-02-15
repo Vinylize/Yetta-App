@@ -30,6 +30,9 @@ const styles = {
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 const cardWidth = WIDTH * 0.92;
+const expandedCardHeight = HEIGHT * 0.43;
+const cardHeight = 100;
+const cardInitBottom = -expandedCardHeight + cardHeight;
 
 export default class Home extends Component {
   constructor() {
@@ -45,7 +48,11 @@ export default class Home extends Component {
       markerClicked: false,
       clickedMarkerID: undefined,
       animatedCardLeftVal: new Animated.Value(0),
-      cardIndex: 0
+      animatedCardBottomVal: new Animated.Value(cardInitBottom),
+      cardIndex: 0,
+      cardExpanded: false,
+      busyOnCardMoveX: false,
+      busyOnCardMoveY: false
     };
   }
 
@@ -90,25 +97,56 @@ export default class Home extends Component {
   }
 
   cardHandlePanResponderMove(e, gestureState) {
-    const { dx } = gestureState;
-    this.refViewCardContainer.setNativeProps({style: {left: dx}});
+    const { dx, dy } = gestureState;
+    const { busyOnCardMoveX, busyOnCardMoveY, cardExpanded } = this.state;
+    if (!busyOnCardMoveY) {
+      if (busyOnCardMoveX || (Math.abs(dx) > 5 && Math.abs(dy) < 10)) {
+        this.setState({busyOnCardMoveX: true});
+        this.refViewCardContainer.setNativeProps({style: {left: dx}});
+      } else if (cardInitBottom - dy <= 0 && !busyOnCardMoveX) {
+        if (busyOnCardMoveX === false) {
+          let cardBottomValOnTouch;
+          if (cardExpanded) {
+            cardBottomValOnTouch = (dy >= 0) ? -dy : 0;
+          } else {
+            cardBottomValOnTouch = cardInitBottom - dy;
+          }
+          this.refViewCardContainer.setNativeProps({style: {bottom: cardBottomValOnTouch}});
+        }
+      }
+    }
   }
 
   cardHandlePanResponderRelease(e, gestureState) {
-    const { dx } = gestureState;
-    if (Math.abs(dx) < WIDTH / 3) {
-      this.animateCardPosReset(dx);
-    } else if (dx > 0) {
-      // move card to the left
-      this.animateCardPosLeft(dx);
-    } else if (dx < 0) {
-      // move card to the right
-      this.animateCardPosRight(dx);
+    const { dx, dy } = gestureState;
+    const { busyOnCardMoveX, busyOnCardMoveY, cardExpanded } = this.state;
+    if (!busyOnCardMoveY) {
+      if (Math.abs(dx) < WIDTH / 4 && dy === 0) {
+        this.animateCardPosResetX(dx);
+      } else if (busyOnCardMoveX && dx > 0) {
+        // move card to the left
+        this.animateCardPosLeft(dx);
+      } else if (busyOnCardMoveX && dx < 0) {
+        // move card to the right
+        this.animateCardPosRight(dx);
+      } else if (dy < 0 && !cardExpanded) {
+        // expand card
+        this.setState({busyOnCardMoveY: true});
+        this.animateCardExpand(dy);
+      } else if (dy > 0 && cardExpanded) {
+        // shrink card after expanded
+        this.animateCardPosResetY(dy);
+      } else if (dy > 0 && !cardExpanded) {
+        // hide card
+        this.animateCardHide(dy);
+      }
+      this.setState({
+        busyOnCardMoveX: false
+      });
     }
-
   }
 
-  animateCardPosReset(left) {
+  animateCardPosResetX(left) {
     this.state.animatedCardLeftVal.setValue(left);
     Animated.timing(
       this.state.animatedCardLeftVal,
@@ -118,6 +156,22 @@ export default class Home extends Component {
         easing: Easing.linear
       }
     ).start();
+  }
+
+  animateCardPosResetY(dy) {
+    this.state.animatedCardBottomVal.setValue(-dy);
+    Animated.timing(
+      this.state.animatedCardBottomVal,
+      {
+        toValue: cardInitBottom,
+        duration: 100,
+        easing: Easing.linear
+      }
+    ).start(() => {
+      this.setState({
+        cardExpanded: false
+      })
+    });
   }
 
   animateCardPosLeft(left) {
@@ -152,16 +206,71 @@ export default class Home extends Component {
     });
   }
 
+  animateCardExpand(dy) {
+    if (cardInitBottom - dy <= 0) {
+      this.state.animatedCardBottomVal.setValue(cardInitBottom - dy);
+      Animated.timing(
+        this.state.animatedCardBottomVal,
+        {
+          toValue: 0,
+          duration: 100,
+          easing: Easing.linear
+        }
+      ).start(() => {
+        this.setState({
+          busyOnCardMoveY: false,
+          cardExpanded: true
+        });
+      });
+    } else {
+      this.state.animatedCardBottomVal.setValue(0);
+      this.setState({
+        busyOnCardMoveY: false,
+        cardExpanded: true
+      });
+    }
+  }
+
+  animateCardAppear() {
+    this.state.animatedCardBottomVal.setValue(-expandedCardHeight);
+    Animated.timing(
+      this.state.animatedCardBottomVal,
+      {
+        toValue: cardInitBottom,
+        duration: 100,
+        easing: Easing.linear
+      }
+    ).start();
+  }
+
+  animateCardHide(dy) {
+    this.state.animatedCardBottomVal.setValue(cardInitBottom - dy);
+    Animated.timing(
+      this.state.animatedCardBottomVal,
+      {
+        toValue: -expandedCardHeight,
+        duration: 100,
+        easing: Easing.linear
+      }
+    ).start(() => {
+      this.setState({markerClicked: false});
+    });
+  }
+
   renderMap() {
     if (Platform.OS === 'ios') {
       return (
         <VinylMapIOS
           style={{flex: 1}}
           onPress={(e) => {
-            console.log(e.nativeEvent);
+            // console.log(e.nativeEvent);
           }}
           onMarkerPress={(e) => {
             // console.log(e.nativeEvent);
+            if (this.state.markerClicked === false) {
+              // marker is clicked
+              this.animateCardAppear();
+            }
             this.setState({markerClicked: !this.state.markerClicked});
           }}
         />
@@ -360,92 +469,119 @@ export default class Home extends Component {
         style={{
           position: 'absolute',
           width: cardWidth,
-          height: 100,
+          height: expandedCardHeight,
           backgroundColor: 'white',
           left: left,
-          flexDirection: 'row'
+          flexDirection: 'column',
+          shadowOffset: {height: 1, width: 2},
+          shadowOpacity: 0.23
         }}
         {...this.cardPanResponder.panHandlers}
       >
         <View style={{
           flex: 1,
-          justifyContent: 'center',
-          alignItems: 'flex-end'
-        }}>
-          <View style={{
-            width: 56,
-            height: 56,
-            borderRadius: 50,
-            backgroundColor: '#d8d8d8'
-          }}/>
-        </View>
-        <View style={{
-          flex: 3.5,
           flexDirection: 'row'
         }}>
           <View style={{
-            flex: 4,
-            flexDirection: 'column'
-          }}>
-            <View style={{
-              flex: 1,
-              justifyContent: 'flex-end',
-              alignItems: 'flex-start'
-            }}>
-              <Text style={{
-                marginBottom: 3,
-                marginLeft: 12
-              }}>{header}</Text>
-            </View>
-            <View style={{flex: 1}}>
-              <Text style={{
-                marginTop: 6,
-                marginLeft: 12,
-                fontSize: 11,
-                color: '#adb3b4'
-              }}>$3,500 - 4,500 (Delivery fee only)</Text>
-            </View>
-          </View>
-          <View style={{
             flex: 1,
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'flex-end'
           }}>
             <View style={{
-              width: 40,
-              height: 40,
-              backgroundColor: '#656266',
-              borderRadius: 40,
-              shadowOffset: {height: 3, width: 1},
-              shadowOpacity: 0.4,
-              shadowRadius: 5,
-              marginRight: 10
+              width: 56,
+              height: 56,
+              borderRadius: 50,
+              backgroundColor: '#d8d8d8'
+            }}/>
+          </View>
+          <View style={{
+            flex: 3.5,
+            flexDirection: 'row'
+          }}>
+            <View style={{
+              flex: 4,
+              flexDirection: 'column'
             }}>
+              <View style={{
+                flex: 1,
+                justifyContent: 'flex-end',
+                alignItems: 'flex-start'
+              }}>
+                <Text style={{
+                  marginBottom: 3,
+                  marginLeft: 12
+                }}>{header}</Text>
+              </View>
+              <View style={{flex: 1}}>
+                <Text style={{
+                  marginTop: 6,
+                  marginLeft: 12,
+                  fontSize: 11,
+                  color: '#adb3b4'
+                }}>$3,500 - 4,500 (Delivery fee only)</Text>
+              </View>
+            </View>
+            <View style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <View style={{
+                width: 40,
+                height: 40,
+                backgroundColor: '#656266',
+                borderRadius: 40,
+                shadowOffset: {height: 3, width: 1},
+                shadowOpacity: 0.4,
+                shadowRadius: 5,
+                marginRight: 25
+              }}>
 
+              </View>
             </View>
           </View>
         </View>
+        {this.renderCardDetail()}
+      </View>
+    )
+  }
+
+  renderCardDetail() {
+    return (
+      <View style={{
+        flex: 2,
+        marginLeft: 20,
+        marginRight: 20,
+        borderTopWidth: 1,
+        borderColor: '#f4f7f7'
+      }}>
+
       </View>
     )
   }
 
   renderCardContainer() {
-    const { markerClicked, animatedCardLeftVal, cardIndex } = this.state;
+    const {
+      markerClicked,
+      animatedCardLeftVal,
+      animatedCardBottomVal,
+      cardIndex
+    } = this.state;
+
     if (!markerClicked) {
       return null;
     }
+
     return (
       <Animated.View
         ref={component => this.refViewCardContainer = component} // eslint-disable-line
         style={{
           position: 'absolute',
           left: animatedCardLeftVal,
-          bottom: 0,
+          bottom: animatedCardBottomVal,
           width: WIDTH,
-          height: 100,
-          backgroundColor: 'transparent',
-          shadowOffset: {height: 1, width: 2},
-          shadowOpacity: 0.23
+          height: expandedCardHeight,
+          backgroundColor: 'transparent'
         }}
       >
         {this.renderCard(-cardWidth, cardIndex - 1)}
