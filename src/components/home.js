@@ -100,7 +100,7 @@ export default class Home extends Component {
     const { dx, dy } = gestureState;
     const { busyOnCardMoveX, busyOnCardMoveY, cardExpanded } = this.state;
     if (!busyOnCardMoveY) {
-      if (Math.abs(dx) > 5 && Math.abs(dy) < 10) {
+      if (busyOnCardMoveX || (Math.abs(dx) > 5 && Math.abs(dy) < 10)) {
         this.setState({busyOnCardMoveX: true});
         this.refViewCardContainer.setNativeProps({style: {left: dx}});
       } else if (cardInitBottom - dy <= 0 && !busyOnCardMoveX) {
