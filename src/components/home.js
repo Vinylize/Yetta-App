@@ -31,7 +31,7 @@ const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 const cardWidth = WIDTH * 0.92;
 const expandedCardHeight = HEIGHT * 0.43;
-const cardHeight = 100;
+const cardHeight = 90;
 const cardInitBottom = -expandedCardHeight + cardHeight;
 
 export default class Home extends Component {
@@ -52,7 +52,8 @@ export default class Home extends Component {
       cardIndex: 0,
       cardExpanded: false,
       busyOnCardMoveX: false,
-      busyOnCardMoveY: false
+      busyOnCardMoveY: false,
+      processState: 2
     };
   }
 
@@ -469,7 +470,7 @@ export default class Home extends Component {
         style={{
           position: 'absolute',
           width: cardWidth,
-          height: expandedCardHeight,
+          height: expandedCardHeight - 20,
           backgroundColor: 'white',
           left: left,
           flexDirection: 'column',
@@ -548,14 +549,201 @@ export default class Home extends Component {
 
   renderCardDetail() {
     return (
-      <View style={{
-        flex: 2,
-        marginLeft: 20,
-        marginRight: 20,
-        borderTopWidth: 1,
-        borderColor: '#f4f7f7'
-      }}>
+      <View
+        style={{
+          flex: 2,
+          marginLeft: 20,
+          marginRight: 20,
+          borderTopWidth: 1,
+          borderColor: '#f4f7f7',
+          flexDirection: 'row'
+        }}
+      >
+        <View style={{flex: 3}}>
+          {this.renderProcess()}
+        </View>
+        <View style={{
+          flex: 2,
+          flexDirection: 'column'
+        }}>
+          <View style={{
+            flex: 1,
+            flexDirection: 'row'
+          }}>
+            <View style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <View style={{
+                height: 40,
+                width: 40,
+                borderRadius: 40,
+                backgroundColor: 'white',
+                borderWidth: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column'
+              }}>
+                <Text style={{
+                  fontSize: 10
+                }}>
+                  32
+                </Text>
+                <Text style={{
+                  fontSize: 11
+                }}>
+                  MIN
+                </Text>
+              </View>
+            </View>
+            <View style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <View style={{
+                height: 40,
+                width: 40,
+                borderRadius: 40,
+                backgroundColor: 'white',
+                borderWidth: 1,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <Text style={{
+                  fontSize: 10
+                }}>
+                  0.5
+                </Text>
+                <Text style={{
+                  fontSize: 11
+                }}>
+                  km
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={{
+            flex: 1,
+            flexDirection: 'column'
+          }}>
+            <View style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'flex-end',
+              marginRight: 10
+            }}>
+              <Text style={{
+                fontSize: 12,
+                color: '#3aacff',
+                fontWeight: 'bold'
+              }}>
+                See the receipt
+              </Text>
+            </View>
+            <View style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              marginRight: 10
+            }}>
+              <Text style={{
+                fontSize: 13,
+                color: 'black',
+                fontWeight: 'bold',
+                marginBottom: 20
+              }}>
+                Cancel
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    )
+  }
 
+  renderProcess() {
+    const renderDot = (index) => {
+      return (
+        <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <View style={{
+            height: 11,
+            width: 11,
+            borderRadius: 10,
+            backgroundColor: (index <= this.state.processState) ? '#2e3031' : '#eaefef'
+          }}/>
+        </View>
+      )
+    };
+    const renderProcessLine = (index, top) => {
+      // todo: fix style
+      return (
+        <View style={{
+          position: 'absolute',
+          left: 0,
+          top: top,
+          zIndex: -1
+        }}>
+          <View style={{
+            position: 'absolute',
+            left: (index < this.state.processState) ? 20 : 19,
+            top: top,
+            borderWidth: (index < this.state.processState) ? 1 : 2,
+            borderStyle: (index < this.state.processState) ? 'solid': 'dotted',
+            borderColor: (index < this.state.processState) ? '#2e3031' : '#eaefef',
+            width: 0.1,
+            height: 40
+          }}/>
+        </View>
+      )
+    };
+    const renderTextProcess = (index, text) => {
+      return (
+        <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'flex-start'
+        }}>
+          <Text style={{
+            fontSize: 11.4,
+            color: (index <= this.state.processState) ? '#2e3031' : '#eaefef'
+          }}>{text}</Text>
+        </View>
+      )
+    };
+    return (
+      <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        marginTop: 20,
+        marginBottom: 20
+      }}>
+        <View style={{
+          flex: 1,
+          flexDirection: 'column'
+        }}>
+          {renderDot(0)}
+          {renderDot(1)}
+          {renderDot(2)}
+          {renderDot(3)}
+          {renderProcessLine(0, 8)}
+          {renderProcessLine(1, 25)}
+          {renderProcessLine(2, 8 + 17 * 2)}
+        </View>
+        <View style={{
+          flex: 3.4,
+          flexDirection: 'column'
+        }}>
+          {renderTextProcess(0, 'Order accepted')}
+          {renderTextProcess(1, 'Delivery started')}
+          {renderTextProcess(2, 'Item bought')}
+          {renderTextProcess(3, 'Delivery completed')}
+        </View>
       </View>
     )
   }
