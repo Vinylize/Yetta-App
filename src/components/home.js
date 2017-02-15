@@ -231,6 +231,18 @@ export default class Home extends Component {
     }
   }
 
+  animateCardAppear() {
+    this.state.animatedCardBottomVal.setValue(-expandedCardHeight);
+    Animated.timing(
+      this.state.animatedCardBottomVal,
+      {
+        toValue: cardInitBottom,
+        duration: 100,
+        easing: Easing.linear
+      }
+    ).start();
+  }
+
   animateCardHide(dy) {
     this.state.animatedCardBottomVal.setValue(cardInitBottom - dy);
     Animated.timing(
@@ -242,7 +254,6 @@ export default class Home extends Component {
       }
     ).start(() => {
       this.setState({markerClicked: false});
-      this.state.animatedCardBottomVal.setValue(cardInitBottom);
     });
   }
 
@@ -252,10 +263,14 @@ export default class Home extends Component {
         <VinylMapIOS
           style={{flex: 1}}
           onPress={(e) => {
-            console.log(e.nativeEvent);
+            // console.log(e.nativeEvent);
           }}
           onMarkerPress={(e) => {
             // console.log(e.nativeEvent);
+            if (this.state.markerClicked === false) {
+              // marker is clicked
+              this.animateCardAppear();
+            }
             this.setState({markerClicked: !this.state.markerClicked});
           }}
         />
