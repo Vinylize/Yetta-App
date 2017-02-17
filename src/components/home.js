@@ -19,6 +19,7 @@ import {
 } from '../navigator/navigatorRoutes';
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
+import SearchBar from './searchBar';
 let vmm = NativeModules.VinylMapManager;
 
 const styles = {
@@ -810,7 +811,10 @@ export default class Home extends Component {
           {this.renderMap()}
           {this.renderMenu()}
           {this.renderSwitch()}
-          {this.renderSearchBar()}
+          <SearchBar
+            latitude={this.state.latitude}
+            longitude={this.state.longitude}
+          />
           {this.renderLocationBtn()}
           <TouchableOpacity
             style={{
