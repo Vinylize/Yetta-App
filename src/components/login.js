@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 // import * as firebase from 'firebase';
 
-import imgTriRight from './../resources/triangle-right.png';
-
 const styles = {
   container: {
     flex: 1,
