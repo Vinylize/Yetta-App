@@ -20,8 +20,8 @@ import {
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
 import SearchBar from './searchBar';
-//let vmm = NativeModules.VinylMapManager;
-let vmm = NativeModules.VinylMap;
+import Experimental from './experimental';
+let vmm = NativeModules.VinylMapManager;
 
 const styles = {
   container: {
@@ -843,6 +843,7 @@ export default class Home extends Component {
             }}
           />
           {this.renderCardContainer()}
+          <Experimental/>
         </Animated.View>
       </View>
     );

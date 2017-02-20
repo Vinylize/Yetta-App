@@ -35,7 +35,7 @@ import javax.annotation.Nullable;
 
 public class VinylMapManager extends ViewGroupManager<VinylMapModule> {
 
-    private static final String REACT_CLASS = "VinylMap";
+    private static final String REACT_CLASS = "VinylMapManager";
 
     private ReactContext reactContext;
 
