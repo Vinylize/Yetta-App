@@ -84,7 +84,7 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.pingstersapp"
@@ -129,7 +129,8 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // From node_modules
     compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.facebook.react:react-native:+'
+
+    compile project(':ReactAndroid')
     compile 'com.google.android.gms:play-services-maps:10.0.1'
 }
 

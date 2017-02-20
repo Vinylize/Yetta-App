@@ -46,7 +46,7 @@ export default class Experimental extends Component {
     const {dx, dy} = gestureState;
     const y = `${dx}deg`;
     const x = `${dy}deg`;
-    this.refView.setNativeProps({style: {transform: [{skewY: x}]}});
+    this.refView.setNativeProps({style: {transform: [{perspective: 1000}, {rotateX: x}, {rotateY: y}]}});
 
   }
 
@@ -82,24 +82,33 @@ export default class Experimental extends Component {
     const width = 100;
     const height = 50;
     return (
-      <Animated.View
-        ref={component => this.refView = component}
-        style={{
-          position: 'absolute',
-          left: WIDTH / 2 - width / 2,
-          top: HEIGHT / 2 - height / 2,
-          width: width,
-          height: height,
-          backgroundColor: "grey",
-          shadowOffset: {height: 1, width: 2},
-          shadowOpacity: 0.5,
-          transform: [{perspective: 850}, {rotateX: "50deg"}]
+      <View style={{
+        position: 'absolute',
+        left: WIDTH / 2 - width / 2,
+        top: HEIGHT / 2 - height / 2,
+        width: width,
+        height: HEIGHT * 0.7,
+        backgroundColor: "transparent"
+      }}>
+        <Animated.View
+          pointerEvents={'auto'}
+          ref={component => this.refView = component}
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: width,
+            height: HEIGHT * 0.7,
+            backgroundColor: "grey",
+            shadowOffset: {height: 1, width: 2},
+            shadowOpacity: 0.5,
+            zIndex: 100
+          }}
+          {...this.panResponder.panHandlers}
+        >
 
-        }}
-        {...this.panResponder.panHandlers}
-      >
-
-      </Animated.View>
+        </Animated.View>
+      </View>
     );
   }
 }
