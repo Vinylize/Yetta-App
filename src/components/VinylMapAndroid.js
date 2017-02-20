@@ -1,3 +1,3 @@
 import { requireNativeComponent } from 'react-native';
 
-module.exports = requireNativeComponent('VinylMap', null);
+module.exports = requireNativeComponent('VinylMapManager', null);

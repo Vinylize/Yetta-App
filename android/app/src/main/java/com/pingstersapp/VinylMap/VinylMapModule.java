@@ -4,6 +4,7 @@ package com.pingstersapp.VinylMap;
  * Created by jeyoungchan on 2/10/17.
  */
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -31,6 +32,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
+import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.events.EventDispatcher;
@@ -48,11 +50,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.RunnableFuture;
 
 public class VinylMapModule extends MapView implements OnMapReadyCallback {
-    private GoogleMap mMap;
+    public static GoogleMap mMap;
     private final VinylMapManager manager;
-    private final ThemedReactContext context;
+    private static ThemedReactContext context;
+    private static Handler mainHandler;
 
     public VinylMapModule(ThemedReactContext reactContext, Context appContext, VinylMapManager manager,
                       GoogleMapOptions googleMapOptions) {
@@ -63,15 +67,35 @@ public class VinylMapModule extends MapView implements OnMapReadyCallback {
 
         super.onCreate(null);
         super.onResume();
+        super.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
+        this.mMap = googleMap;
         // Add a marker in Sydney, Australia, and move the camera.
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        this.mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        this.mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    public void animateToLocationHelper(String latitude, String longitude) {
+        this.mMap.animateCamera(CameraUpdateFactory.newLatLng(
+                new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude))
+        ));
+    }
+
+    public void animateToLocation(final String latitude, final String longitude) {
+        if (mMap != null) {
+            // todo: this may have performance issues
+            Handler uiHandler = new Handler(Looper.getMainLooper());
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    animateToLocationHelper(latitude, longitude);
+                }
+            };
+            uiHandler.post(runnable);
+        }
     }
 }

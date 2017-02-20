@@ -7,12 +7,15 @@ package com.pingstersapp.VinylMap;
 import android.view.View;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.MapBuilder;
+import com.facebook.react.common.SystemClock;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.LayoutShadowNode;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -32,11 +35,13 @@ import javax.annotation.Nullable;
 
 public class VinylMapManager extends ViewGroupManager<VinylMapModule> {
 
-    private static final String REACT_CLASS = "VinylMap";
+    private static final String REACT_CLASS = "VinylMapManager";
 
     private ReactContext reactContext;
 
     private final ReactApplicationContext appContext;
+
+    public static VinylMapModule _vinylMapModule;
 
     protected GoogleMapOptions googleMapOtions;
 
@@ -60,8 +65,8 @@ public class VinylMapManager extends ViewGroupManager<VinylMapModule> {
             e.printStackTrace();
             emitMapError("Map initialize error", "map_init_error");
         }
-
-        return new VinylMapModule(context, this.appContext.getCurrentActivity(), this, this.googleMapOtions);
+        this._vinylMapModule = new VinylMapModule(context, this.appContext.getCurrentActivity(), this, this.googleMapOtions);
+        return this._vinylMapModule;
     }
 
     private void emitMapError(String message, String type) {
@@ -72,5 +77,12 @@ public class VinylMapManager extends ViewGroupManager<VinylMapModule> {
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit("onError", error);
+    }
+
+    @ReactMethod
+    public void animateToLocation(String latitude, String longitude) {
+        if (this._vinylMapModule != null) {
+            this._vinylMapModule.animateToLocation(latitude, longitude);
+        }
     }
 }

@@ -20,6 +20,7 @@ import {
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
 import SearchBar from './searchBar';
+import Experimental from './experimental';
 let vmm = NativeModules.VinylMapManager;
 
 const styles = {
@@ -69,6 +70,7 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
+    console.log(NativeModules.VinylMap);
     // if (this.state.first) {
     //   firebase.auth().onAuthStateChanged((user) => {
     //     if (user) {
@@ -382,6 +384,7 @@ export default class Home extends Component {
         activeOpacity={0.8}
         onPress={() => {
           const { latitude, longitude } = this.state;
+          console.log(latitude, longitude);
           vmm.animateToLocation(String(latitude), String(longitude));
         }}
       >
@@ -840,6 +843,7 @@ export default class Home extends Component {
             }}
           />
           {this.renderCardContainer()}
+          <Experimental/>
         </Animated.View>
       </View>
     );
