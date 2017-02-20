@@ -9,7 +9,7 @@
 #ifndef VinylMapView_h
 #define VinylMapView_h
 
-#import "RCTView.h"
+#import <React/RCTView.h>
 #import <GoogleMaps/GoogleMaps.h>
 
 @interface VinylMapView : GMSMapView<GMSMapViewDelegate>
