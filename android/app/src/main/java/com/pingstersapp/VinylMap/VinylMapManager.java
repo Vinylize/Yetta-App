@@ -80,9 +80,16 @@ public class VinylMapManager extends ViewGroupManager<VinylMapModule> {
     }
 
     @ReactMethod
-    public void animateToLocation(String latitude, String longitude) {
+    public void animateToLocation(final String latitude, final String longitude) {
         if (this._vinylMapModule != null) {
             this._vinylMapModule.animateToLocation(latitude, longitude);
+        }
+    }
+
+    @ReactMethod
+    public void updateMarker(final String latitude, final String longitude) {
+        if (this._vinylMapModule != null) {
+            this._vinylMapModule.updateMarker(latitude, longitude);
         }
     }
 }

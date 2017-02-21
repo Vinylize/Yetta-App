@@ -43,6 +43,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class VinylMapModule extends MapView implements OnMapReadyCallback {
     private final VinylMapManager manager;
     private static ThemedReactContext context;
     private static Handler mainHandler;
+    private Marker marker;
 
     public VinylMapModule(ThemedReactContext reactContext, Context appContext, VinylMapManager manager,
                       GoogleMapOptions googleMapOptions) {
@@ -75,24 +77,47 @@ public class VinylMapModule extends MapView implements OnMapReadyCallback {
         this.mMap = googleMap;
         // Add a marker in Sydney, Australia, and move the camera.
         LatLng sydney = new LatLng(-34, 151);
-        this.mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        marker = this.mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         this.mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
-    public void animateToLocationHelper(String latitude, String longitude) {
+    public void animateToLocationHelper(final String latitude, final String longitude) {
         this.mMap.animateCamera(CameraUpdateFactory.newLatLng(
-                new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude))
+            new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude))
         ));
+    }
+
+    public void updateMarkerHelper(final String latitude, final String longitude) {
+        if (marker != null) {
+            LatLng tmp = marker.getPosition();
+            if (tmp.longitude == 151) {
+                marker.setPosition(new LatLng(-34, 150));
+            } else {
+                marker.setPosition(new LatLng(-34, 151));
+            }
+        }
     }
 
     public void animateToLocation(final String latitude, final String longitude) {
         if (mMap != null) {
-            // todo: this may have performance issues
             Handler uiHandler = new Handler(Looper.getMainLooper());
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
                     animateToLocationHelper(latitude, longitude);
+                }
+            };
+            uiHandler.post(runnable);
+        }
+    }
+
+    public void updateMarker(final String latitude, final String longitude) {
+        if (mMap != null) {
+            Handler uiHandler = new Handler(Looper.getMainLooper());
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    updateMarkerHelper(latitude, longitude);
                 }
             };
             uiHandler.post(runnable);

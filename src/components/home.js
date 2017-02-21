@@ -837,13 +837,12 @@ export default class Home extends Component {
                 vmm.updateMarker(String(latitude), String(longitude));
               } else {
                 vmm.updateMarker(String(latitude + 1), String(longitude + 1));
-                vmm.addMarker(String(latitude - 0.5), String(longitude), 'testing marker 01');
+                //vmm.addMarker(String(latitude - 0.5), String(longitude), 'testing marker 01');
               }
               this.setState({markerTest: !markerTest});
             }}
           />
           {this.renderCardContainer()}
-          <Experimental/>
         </Animated.View>
       </View>
     );
