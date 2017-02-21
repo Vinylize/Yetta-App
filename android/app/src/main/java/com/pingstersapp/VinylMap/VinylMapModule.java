@@ -45,6 +45,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.pingstersapp.VinylMap.latlnginterpolation.LatLngInterpolator;
+import com.pingstersapp.VinylMap.latlnginterpolation.MarkerAnimation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,10 +93,12 @@ public class VinylMapModule extends MapView implements OnMapReadyCallback {
         if (marker != null) {
             LatLng tmp = marker.getPosition();
             if (tmp.longitude == 151) {
-                marker.setPosition(new LatLng(-34, 150));
+                tmp = new LatLng(-34, 150);
             } else {
-                marker.setPosition(new LatLng(-34, 151));
+                tmp = new LatLng(-34, 151);
             }
+            LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Linear();
+            MarkerAnimation.animateMarkerToGB(marker, tmp, latLngInterpolator);
         }
     }
 
