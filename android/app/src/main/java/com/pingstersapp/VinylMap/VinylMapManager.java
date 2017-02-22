@@ -92,4 +92,12 @@ public class VinylMapManager extends ViewGroupManager<VinylMapModule> {
             this._vinylMapModule.updateMarker(latitude, longitude);
         }
     }
+
+    public void sendEvent(ReactContext reactContext,
+                           String eventName,
+                           @Nullable WritableMap params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+    }
 }

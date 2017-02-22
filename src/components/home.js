@@ -11,7 +11,8 @@ import {
   TextInput,
   TouchableOpacity,
   Animated,
-  Easing
+  Easing,
+  DeviceEventEmitter
 } from 'react-native';
 import * as firebase from 'firebase';
 import {
@@ -67,6 +68,15 @@ export default class Home extends Component {
       onPanResponderMove: this.cardHandlePanResponderMove.bind(this),
       onPanResponderRelease: this.cardHandlePanResponderRelease.bind(this)
     });
+
+    if (Platform.OS === 'android') {
+      DeviceEventEmitter.addListener('onPressMarker', (e) => {
+        console.log(e);
+      });
+      DeviceEventEmitter.addListener('onMarkerPress', (e) => {
+        console.log(e);
+      });
+    }
   }
 
   componentDidMount() {
