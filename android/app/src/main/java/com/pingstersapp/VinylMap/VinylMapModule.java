@@ -25,6 +25,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -58,9 +60,9 @@ import java.util.concurrent.RunnableFuture;
 public class VinylMapModule extends MapView implements OnMapReadyCallback {
     public static GoogleMap mMap;
     private final VinylMapManager manager;
-    private static ThemedReactContext context;
-    private static Handler mainHandler;
-    private Marker marker;
+    private final ThemedReactContext context;
+    private Marker marker; // todo: remove this
+    private final Map<Marker, String> markerMap = new HashMap<>();
 
     public VinylMapModule(ThemedReactContext reactContext, Context appContext, VinylMapManager manager,
                       GoogleMapOptions googleMapOptions) {
@@ -81,6 +83,17 @@ public class VinylMapModule extends MapView implements OnMapReadyCallback {
         LatLng sydney = new LatLng(-34, 151);
         marker = this.mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         this.mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        this.mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                WritableMap event = Arguments.createMap();
+                // String _marker_id = markerMap.get(marker);
+                event.putString("id", "marker clicked!");
+                manager.sendEvent(context, "onMarkerPress", event);
+                return false;
+            }
+        });
     }
 
     public void animateToLocationHelper(final String latitude, final String longitude) {
