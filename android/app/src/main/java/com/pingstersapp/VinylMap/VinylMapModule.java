@@ -91,12 +91,7 @@ public class VinylMapModule extends MapView implements OnMapReadyCallback {
 
     public void updateMarkerHelper(final String latitude, final String longitude) {
         if (marker != null) {
-            LatLng tmp = marker.getPosition();
-            if (tmp.longitude == 151) {
-                tmp = new LatLng(-34, 150);
-            } else {
-                tmp = new LatLng(-34, 151);
-            }
+            LatLng tmp = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
             LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Linear();
             MarkerAnimation.animateMarkerToGB(marker, tmp, latLngInterpolator);
         }
