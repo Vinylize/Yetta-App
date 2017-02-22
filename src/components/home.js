@@ -70,9 +70,6 @@ export default class Home extends Component {
     });
 
     if (Platform.OS === 'android') {
-      DeviceEventEmitter.addListener('onPressMarker', (e) => {
-        console.log(e);
-      });
       DeviceEventEmitter.addListener('onMarkerPress', (e) => {
         console.log(e);
       });
