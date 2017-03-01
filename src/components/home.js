@@ -856,6 +856,7 @@ export default class Home extends Component {
           {false && this.renderLocationBtn()}
           {false && this.renderAddBtn()}
           {this.renderCardContainer()}
+          <Experimental/>
         </Animated.View>
       </View>
     );
