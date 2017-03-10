@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "VinylMapView.h"
+#import "pingstersApp-Swift.h"
 
 @implementation VinylMapView {
   GMSMapView *_map;
@@ -76,6 +77,8 @@
 
 - (void)addMarker:(NSString *)latitude longitude:(NSString *)longitude id:(NSString*)id {
   GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
+  VinylMapMarkerView *markerView = [[VinylMapMarkerView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+  new_marker.iconView = markerView;
   new_marker.map = _map;
   [_markers addObject:new_marker];
   [_marker_ids addObject:id];
