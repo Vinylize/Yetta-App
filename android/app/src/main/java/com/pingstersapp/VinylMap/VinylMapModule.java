@@ -3,28 +3,13 @@ package com.pingstersapp.VinylMap;
 /**
  * Created by jeyoungchan on 2/10/17.
  */
-import android.os.Bundle;
+
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Looper;
-import android.support.v4.app.FragmentActivity;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.os.Build;
 import android.os.Handler;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.MotionEventCompat;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -44,18 +29,17 @@ import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.pingstersapp.R;
 import com.pingstersapp.VinylMap.latlnginterpolation.LatLngInterpolator;
 import com.pingstersapp.VinylMap.latlnginterpolation.MarkerAnimation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.RunnableFuture;
 
 public class VinylMapModule extends MapView implements OnMapReadyCallback {
     public static GoogleMap mMap;
@@ -81,7 +65,12 @@ public class VinylMapModule extends MapView implements OnMapReadyCallback {
         this.mMap = googleMap;
         // Add a marker in Sydney, Australia, and move the camera.
         LatLng sydney = new LatLng(-34, 151);
-        marker = this.mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+
+        marker = this.mMap.addMarker(new MarkerOptions()
+                .position(sydney)
+                .title("Marker in Sydney")
+                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmap())));
+
         this.mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         this.mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -94,6 +83,16 @@ public class VinylMapModule extends MapView implements OnMapReadyCallback {
                 return false;
             }
         });
+    }
+
+    private Bitmap getMarkerBitmap() {
+        Bitmap markerBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(markerBitmap);
+        // todo: resolve the issue: getDrawable is deprecated
+        Drawable shape = getResources().getDrawable(R.drawable.shape_marker);
+        shape.setBounds(0, 0, markerBitmap.getWidth(), markerBitmap.getHeight());
+        shape.draw(canvas);
+        return markerBitmap;
     }
 
     public void animateToLocationHelper(final String latitude, final String longitude) {
