@@ -21,7 +21,7 @@ import {
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
 import SearchBar from './searchBar';
-import Experimental from './experimental';
+
 let vmm = NativeModules.VinylMapManager;
 
 const styles = {
@@ -812,6 +812,34 @@ export default class Home extends Component {
     ).start();
   }
 
+  renderAddBtn() {
+    return (
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          right: 20,
+          bottom: 20,
+          height: 40,
+          width: 40,
+          borderRadius: 50,
+          backgroundColor: 'white',
+          shadowOffset: {height: 1, width: 2},
+          shadowOpacity: 0.23
+        }}
+        onPress={() => {
+          const { markerTest, latitude, longitude } = this.state;
+          if (markerTest) {
+            vmm.updateMarker(String(latitude), String(longitude));
+          } else {
+            vmm.updateMarker(String(latitude + 1), String(longitude + 1));
+            vmm.addMarker(String(latitude - 0.5), String(longitude), 'testing marker 01');
+          }
+          this.setState({markerTest: !markerTest});
+        }}
+      />
+    )
+  }
+
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
@@ -819,36 +847,14 @@ export default class Home extends Component {
           flex: 1, left: 20, transform: [{scale: this.state.shrinkValue}]
           } : {flex: 1, transform: [{scale: this.state.shrinkValue}]}}>
           {this.renderMap()}
-          {this.renderMenu()}
+          {false && this.renderMenu()}
           {this.renderSwitch()}
           <SearchBar
             latitude={this.state.latitude}
             longitude={this.state.longitude}
           />
           {this.renderLocationBtn()}
-          <TouchableOpacity
-            style={{
-              position: 'absolute',
-              right: 20,
-              bottom: 20,
-              height: 40,
-              width: 40,
-              borderRadius: 50,
-              backgroundColor: 'white',
-              shadowOffset: {height: 1, width: 2},
-              shadowOpacity: 0.23
-            }}
-            onPress={() => {
-              const { markerTest, latitude, longitude } = this.state;
-              if (markerTest) {
-                vmm.updateMarker(String(latitude), String(longitude));
-              } else {
-                vmm.updateMarker(String(latitude + 1), String(longitude + 1));
-                //vmm.addMarker(String(latitude - 0.5), String(longitude), 'testing marker 01');
-              }
-              this.setState({markerTest: !markerTest});
-            }}
-          />
+          {this.renderAddBtn()}
           {this.renderCardContainer()}
         </Animated.View>
       </View>
