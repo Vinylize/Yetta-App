@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
-  PanResponder,
   TouchableOpacity,
   LayoutAnimation,
   Dimensions
@@ -136,7 +135,7 @@ export default class PhoneVerification extends Component {
               showEnterBtn: false
             });
           }).catch(handleError);
-      })
+      });
   }
 
   responseVerificationHelper(code) {
@@ -173,7 +172,7 @@ export default class PhoneVerification extends Component {
             }
           })
           .catch(handleError);
-      })
+      });
   }
 
   handleEnterBtn() {

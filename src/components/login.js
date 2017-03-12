@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   Text,
   TextInput,
   View,
@@ -8,7 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import * as firebase from 'firebase';
-import { URL, handleError, handleFbError } from './../utils';
+import { URL, handleFbError } from './../utils';
 import {
   registerNavigatorRoute,
   homeNavigatorRoute,
@@ -70,7 +69,7 @@ export default class Login extends Component {
         email,
         name
       }
-    }`)
+    }`);
   }
 
   login(email, password) {
