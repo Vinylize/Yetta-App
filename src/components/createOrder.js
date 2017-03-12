@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   Dimensions
 } from 'react-native';
-import { URL } from './../utils';
+import { URL, handleError } from './../utils';
+import * as firebase from 'firebase';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -30,8 +31,49 @@ export default class RegisterOrder extends Component {
   constructor() {
     super();
     this.state = {
-      // TBD
+      orderId: ''
     };
+  }
+
+  createOrderHelper() {
+    firebase.auth().currentUser.getToken()
+      .then(token => {
+        client._transport._httpOptions.headers = {
+          authorization: token
+        };
+        client.mutate(`{
+          userCreateOrder(input:{
+            items:
+            [
+              {nodeId:"dsdsa",itemId:"0",amount:1},
+              {nodeId:"dsdsa",itemId:"0",amount:1},
+              {nodeId:"dsdsa",itemId:"0",amount:1}
+            ],
+            dCategory:0,
+            rCategory:0,
+            currency:"KRW"}) {
+              result
+              clientMutationId
+            }
+        }`)
+          .then(res => {
+            console.log(res);
+            // todo: check ok sign
+            console.log(res.userCreateOrder.result);
+            this.setState({orderId: res.userCreateOrder.result});
+            return res.userCreateOrder.result;
+          })
+          .then(this.addNewRunnerListener)
+          .catch(handleError);
+      });
+  }
+
+  addNewRunnerListener(orderId) {
+    firebase.database().ref().child('order').child(orderId).child('runnerId')
+      .on('value', (childSnapshot, prevChildKey) => {
+        console.log(childSnapshot.val(), prevChildKey);
+        // todo
+      });
   }
 
   renderHeader() {
@@ -58,18 +100,42 @@ export default class RegisterOrder extends Component {
     );
   }
 
+  runnerCatchOrderHelper(orderId) {
+    firebase.auth().currentUser.getToken()
+      .then(token => {
+        client._transport._httpOptions.headers = {
+          authorization: token
+        };
+        client.mutate(`{
+          runnerCatchOrder(input:{
+            orderId:"${orderId}"
+          }) {
+            result
+            clientMutationId
+          }
+        }`)
+          .then(res => {
+            console.log(res);
+          })
+          .catch(console.log);
+      });
+  }
+
   renderOrderBtn() {
     return (
-      <TouchableOpacity style={{
-        position: 'absolute',
-        bottom: 28,
-        height: 40,
-        width: WIDTH * 0.8,
-        borderRadius: 2.5,
-        backgroundColor: '#2d3132',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          bottom: 28,
+          height: 40,
+          width: WIDTH * 0.8,
+          borderRadius: 2.5,
+          backgroundColor: '#2d3132',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+        onPress={this.createOrderHelper.bind(this)}
+      >
         <Text style={{
           color: 'white'
         }}>Register order</Text>
