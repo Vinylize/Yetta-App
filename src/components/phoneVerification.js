@@ -111,10 +111,9 @@ export default class PhoneVerification extends Component {
     clearTimeout(this.timer);
   }
 
-  verificationHelper(phoneNumber) {
+  requestVerificationHelper(phoneNumber) {
     firebase.auth().currentUser.getToken()
       .then(token => {
-        console.log(token);
         client._transport._httpOptions.headers = {
           authorization: token
         };
@@ -147,13 +146,44 @@ export default class PhoneVerification extends Component {
       })
   }
 
+  responseVerificationHelper(code) {
+    console.log(code);
+    firebase.auth().currentUser.getToken()
+      .then(token => {
+        client._transport._httpOptions.headers = {
+          authorization: token
+        };
+        client.mutate(`{
+          userResponsePhoneVerification(
+            input:{
+              code: ${code}
+            }
+          ) {
+            result
+          }
+        }`)
+          .then(res => {
+            console.log(res);
+          }).catch((error) => {
+          console.log(error);
+          const { rawError } = error;
+          if (rawError) {
+            const { message } = rawError[0];
+            Alert.alert(
+              message
+            );
+          }
+        });
+      })
+  }
+
   handleEnterBtn() {
     if (this.state.digit.length > 11) {
       const { showResponse } = this.state;
       if (showResponse === false) {
-        this.verificationHelper(this.state.digit.replace(/\s/g,''));
+        this.requestVerificationHelper(this.state.digit.replace(/\s/g,''));
       } else if (showResponse === true) {
-        // todo
+        this.responseVerificationHelper(Number(this.state.code));
       }
     }
   }
