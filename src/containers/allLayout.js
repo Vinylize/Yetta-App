@@ -1,6 +1,6 @@
 import { Navigator } from 'react-native';
 import React from 'react';
-import { homeNavigatorRoute, loginNavigatorRoute, registerNavigatorRoute } from '../navigator/navigatorRoutes';
+import { homeNavigatorRoute, loginNavigatorRoute, registerNavigatorRoute, phoneVerificationNavigatorRoute } from '../navigator/navigatorRoutes';
 import { connect } from 'react-redux';
 
 const renderScene = (route, navigator) => {
@@ -23,7 +23,7 @@ class All extends React.Component {
   }
 
   render() {
-    const initialRoute = loginNavigatorRoute();
+    const initialRoute = phoneVerificationNavigatorRoute();
     return (
       <Navigator
         initialRoute={initialRoute}

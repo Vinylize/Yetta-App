@@ -7,10 +7,18 @@ import {
   LayoutAnimation,
   Dimensions
 } from 'react-native';
-// import { WIDTH, HEIGHT } from './../utils';
-import { phoneVerificationNavigatorRoute } from './../navigator/navigatorRoutes';
+import * as firebase from 'firebase';
+import { URL } from './../utils';
+const Lokka = require('lokka').Lokka;
+const Transport = require('lokka-transport-http').Transport;
+
+const client = new Lokka({
+  transport: new Transport(URL)
+});
+
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
+
 const styles = {
   phoneVerifKeyboardContainer: {
     position: 'absolute',
@@ -79,34 +87,6 @@ const styles = {
   }
 };
 
-export class PhoneVerificationButton extends Component {
-  componentWillMount() {
-    this.phoneVerifBtnPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.phoneVerifBtnHandlePanResponderGrant.bind(this)
-    });
-  }
-
-  phoneVerifBtnHandlePanResponderGrant() {
-    this.props.navigator.push(phoneVerificationNavigatorRoute());
-  }
-
-  render() {
-    return (
-      <View
-        style={{
-          position: 'absolute',
-          left: WIDTH / 2,
-          top: HEIGHT / 2 + 50
-        }}
-        {...this.phoneVerifBtnPanResponder.panHandlers}
-      >
-        <Text>폰 인증하기</Text>
-      </View>
-    );
-  }
-}
-
 export default class PhoneVerification extends Component {
   constructor() {
     super();
@@ -129,6 +109,53 @@ export default class PhoneVerification extends Component {
 
   componentWillUnmount() {
     clearTimeout(this.timer);
+  }
+
+  verificationHelper(phoneNumber) {
+    firebase.auth().currentUser.getToken()
+      .then(token => {
+        console.log(token);
+        client._transport._httpOptions.headers = {
+          authorization: token
+        };
+        client.mutate(`{
+          userRequestPhoneVerification(
+            input:{
+              phoneNumber: "${phoneNumber}"
+            }
+          ) {
+            result
+          }
+        }`)
+          .then(res => {
+            console.log(res);
+            LayoutAnimation.easeInEaseOut();
+            this.setState({
+              showResponse: true,
+              showEnterBtn: false
+            });
+          }).catch((error) => {
+            console.log(error);
+            const { rawError } = error;
+            if (rawError) {
+              const { message } = rawError[0];
+              Alert.alert(
+                message
+              );
+            }
+          });
+      })
+  }
+
+  handleEnterBtn() {
+    if (this.state.digit.length > 11) {
+      const { showResponse } = this.state;
+      if (showResponse === false) {
+        this.verificationHelper(this.state.digit.replace(/\s/g,''));
+      } else if (showResponse === true) {
+        // todo
+      }
+    }
   }
 
   renderHeader() {
@@ -249,18 +276,8 @@ export default class PhoneVerification extends Component {
       }]}>
         <TouchableOpacity
           style={styles.phoneVerifEnterBtn}
-          onPress={() => {
-            if (this.state.digit.length > 11) {
-              const { showResponse } = this.state;
-              if (showResponse === false) {
-                LayoutAnimation.easeInEaseOut();
-                this.setState({showResponse: true});
-                (!this.check4DigitComplete()) && this.setState({showEnterBtn: false});
-              } else if (showResponse === true) {
-                // todo
-              }
-            }
-          }}>
+          onPress={this.handleEnterBtn.bind(this)}
+        >
           <Text style={styles.textPhoneVerifDelete}>></Text>
         </TouchableOpacity>
       </View>
@@ -354,10 +371,6 @@ export default class PhoneVerification extends Component {
     );
   }
 }
-
-PhoneVerificationButton.propTypes = {
-  navigator: PropTypes.any.isRequired
-};
 
 PhoneVerification.propTypes = {
   navigator: PropTypes.any.isRequired
