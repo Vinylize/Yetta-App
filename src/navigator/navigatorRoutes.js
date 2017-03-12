@@ -1,10 +1,8 @@
 import { Navigator } from 'react-native';
 import Home from './../components/home';
 import Login from './../components/login';
-import Map from './../components/map';
 import Register from './../components/register';
 import Ship from './../components/ship';
-import PortOrShip from './../components/portOrShip';
 import PhoneVerification from './../components/phoneVerification';
 
 const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
@@ -29,23 +27,10 @@ export function registerNavigatorRoute() {
   };
 }
 
-export function mapNavigatorRoute() {
-  return {
-    Component: Map
-  };
-}
-
 export function shipNavigatorRoute() {
   return {
     Component: Ship,
     sceneConfig
-  };
-}
-
-export function portOrShipNavigatorRoute() {
-  return {
-    Component: PortOrShip,
-    sceneConfig: Navigator.SceneConfigs.PushFromRight
   };
 }
 
