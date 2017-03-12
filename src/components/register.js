@@ -81,8 +81,8 @@ export default class Register extends Component {
       }
     }`
     ).then(response => {
-      // todo: handle errors on register
       console.log(response);
+      this.props.navigator.pop();
     }).catch((error) => {
       const { rawError } = error;
       if (rawError) {
@@ -105,8 +105,6 @@ export default class Register extends Component {
     const { userName, password, userEmail } = this.state;
     if (userName && password && userEmail) {
       this.register(userEmail, userName, password);
-      // todo: determine what to do after register completion
-      // this.props.goToLogin();
     } else {
       Alert.alert(
         'OMG, TYPE SOMETHING'

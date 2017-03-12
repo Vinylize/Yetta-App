@@ -8,7 +8,12 @@ import {
   TouchableOpacity
 } from 'react-native';
 import * as firebase from 'firebase';
-import { URL } from './../utils';
+import { URL, handleError, handleFbError } from './../utils';
+import {
+  registerNavigatorRoute,
+  homeNavigatorRoute,
+  phoneVerificationNavigatorRoute
+} from './../navigator/navigatorRoutes';
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
 
@@ -55,31 +60,17 @@ export default class Login extends Component {
   //   (childSnapshot, prevChildKey) => console.log(childSnapshot.val(), prevChildKey));
   // }
 
-  testingAPI() {
-    firebase.auth().currentUser.getToken()
-      .then(token => {
-        client._transport._httpOptions.headers = {
-          authorization: token
-        };
-        return client.query(`{
-          viewer{
-            email,
-            name
-          }
-        }`)
-      })
-      .then(response => {
-      // todo: handle errors on register
-      console.log(response);
-    }).catch((error) => {
-      const { rawError } = error;
-      if (rawError) {
-        const { message } = rawError[0];
-        Alert.alert(
-          message
-        );
+  checkIfPhoneValid(token) {
+    client._transport._httpOptions.headers = {
+      authorization: token
+    };
+    return client.query(`{
+      viewer{
+        isPhoneValid,
+        email,
+        name
       }
-    });
+    }`)
   }
 
   login(email, password) {
@@ -92,15 +83,15 @@ export default class Login extends Component {
     if (this.checkLoginBtnEnabled()) {
       this.login(this.state.userEmail, this.state.password)
         .then(() => firebase.auth().currentUser.getToken())
-        .then(token => {
-          // console.log(token);
-          this.testingAPI();
+        .then(this.checkIfPhoneValid)
+        .then(res => {
+          if (res.viewer.isPhoneValid === true) {
+            this.props.navigator.replace(homeNavigatorRoute());
+          } else {
+            this.props.navigator.push(phoneVerificationNavigatorRoute());
+          }
         })
-        .catch(() => {
-          Alert.alert(
-            'invalid email or password'
-          );
-        });
+        .catch(handleFbError);
     }
   }
 
@@ -123,12 +114,26 @@ export default class Login extends Component {
           placeholder={'password'}
           onSubmitEditing={Keyboard.dismiss}
         />
-        <TouchableOpacity
-          style={styles.textInput}
-          onPress={this.handleLoginButton.bind(this)}
-        >
-          <Text>Login</Text>
-        </TouchableOpacity>
+        <View style={{
+          height: 40,
+          marginLeft: 24,
+          marginRight: 24,
+          marginBottom: 12,
+          flexDirection: 'row'
+        }}>
+          <TouchableOpacity
+            style={styles.textInput}
+            onPress={this.handleLoginButton.bind(this)}
+          >
+            <Text>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.textInput}
+            onPress={() => this.props.navigator.push(registerNavigatorRoute())}
+          >
+            <Text>Register</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

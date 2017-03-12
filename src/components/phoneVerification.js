@@ -8,7 +8,9 @@ import {
   Dimensions
 } from 'react-native';
 import * as firebase from 'firebase';
-import { URL } from './../utils';
+import { URL, handleError } from './../utils';
+import { homeNavigatorRoute } from './../navigator/navigatorRoutes';
+
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
 
@@ -133,21 +135,11 @@ export default class PhoneVerification extends Component {
               showResponse: true,
               showEnterBtn: false
             });
-          }).catch((error) => {
-            console.log(error);
-            const { rawError } = error;
-            if (rawError) {
-              const { message } = rawError[0];
-              Alert.alert(
-                message
-              );
-            }
-          });
+          }).catch(handleError);
       })
   }
 
   responseVerificationHelper(code) {
-    console.log(code);
     firebase.auth().currentUser.getToken()
       .then(token => {
         client._transport._httpOptions.headers = {
@@ -164,16 +156,23 @@ export default class PhoneVerification extends Component {
         }`)
           .then(res => {
             console.log(res);
-          }).catch((error) => {
-          console.log(error);
-          const { rawError } = error;
-          if (rawError) {
-            const { message } = rawError[0];
-            Alert.alert(
-              message
-            );
-          }
-        });
+            // todo: check ok sign
+            return client.query(`{
+              viewer{
+                isPhoneValid
+              }
+            }`);
+          })
+          .then(res => {
+            if (res.viewer.isPhoneValid === true) {
+              this.props.navigator.resetTo(homeNavigatorRoute());
+            } else {
+              // todo: isPhoneValid is still false after phone verification
+              // todo: determine what to do
+              this.props.navigator.pop();
+            }
+          })
+          .catch(handleError);
       })
   }
 
