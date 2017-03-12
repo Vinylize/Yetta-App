@@ -313,6 +313,9 @@ export default class PhoneVerification extends Component {
   }
 
   handleKeyboardBtn(number) {
+    if (number === ' ') {
+      return;
+    }
     if (this.state.showResponse) {
       this.handleKeyboardBtnOnResponse(number);
     } else {
