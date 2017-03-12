@@ -31,7 +31,7 @@ export default class RegisterOrder extends Component {
   constructor() {
     super();
     this.state = {
-      orderId: ''
+      // TBD
     };
   }
 
@@ -56,13 +56,7 @@ export default class RegisterOrder extends Component {
               clientMutationId
             }
         }`)
-          .then(res => {
-            console.log(res);
-            // todo: check ok sign
-            console.log(res.userCreateOrder.result);
-            this.setState({orderId: res.userCreateOrder.result});
-            return res.userCreateOrder.result;
-          })
+          .then(res => res.userCreateOrder.result)
           .then(this.addNewRunnerListener)
           .catch(handleError);
       });
@@ -72,7 +66,7 @@ export default class RegisterOrder extends Component {
     firebase.database().ref().child('order').child(orderId).child('runnerId')
       .on('value', (childSnapshot, prevChildKey) => {
         console.log(childSnapshot.val(), prevChildKey);
-        // todo
+        // todo: implement this
       });
   }
 
@@ -100,6 +94,7 @@ export default class RegisterOrder extends Component {
     );
   }
 
+  // todo: use this
   runnerCatchOrderHelper(orderId) {
     firebase.auth().currentUser.getToken()
       .then(token => {
