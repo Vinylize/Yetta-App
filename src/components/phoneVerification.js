@@ -2,15 +2,24 @@ import React, { Component, PropTypes } from 'react';
 import {
   Text,
   View,
-  PanResponder,
   TouchableOpacity,
   LayoutAnimation,
   Dimensions
 } from 'react-native';
-// import { WIDTH, HEIGHT } from './../utils';
-import { phoneVerificationNavigatorRoute } from './../navigator/navigatorRoutes';
+import * as firebase from 'firebase';
+import { URL, handleError } from './../utils';
+import { homeNavigatorRoute } from './../navigator/navigatorRoutes';
+
+const Lokka = require('lokka').Lokka;
+const Transport = require('lokka-transport-http').Transport;
+
+const client = new Lokka({
+  transport: new Transport(URL)
+});
+
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
+
 const styles = {
   phoneVerifKeyboardContainer: {
     position: 'absolute',
@@ -79,34 +88,6 @@ const styles = {
   }
 };
 
-export class PhoneVerificationButton extends Component {
-  componentWillMount() {
-    this.phoneVerifBtnPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.phoneVerifBtnHandlePanResponderGrant.bind(this)
-    });
-  }
-
-  phoneVerifBtnHandlePanResponderGrant() {
-    this.props.navigator.push(phoneVerificationNavigatorRoute());
-  }
-
-  render() {
-    return (
-      <View
-        style={{
-          position: 'absolute',
-          left: WIDTH / 2,
-          top: HEIGHT / 2 + 50
-        }}
-        {...this.phoneVerifBtnPanResponder.panHandlers}
-      >
-        <Text>폰 인증하기</Text>
-      </View>
-    );
-  }
-}
-
 export default class PhoneVerification extends Component {
   constructor() {
     super();
@@ -129,6 +110,80 @@ export default class PhoneVerification extends Component {
 
   componentWillUnmount() {
     clearTimeout(this.timer);
+  }
+
+  requestVerificationHelper(phoneNumber) {
+    firebase.auth().currentUser.getToken()
+      .then(token => {
+        client._transport._httpOptions.headers = {
+          authorization: token
+        };
+        client.mutate(`{
+          userRequestPhoneVerification(
+            input:{
+              phoneNumber: "${phoneNumber}"
+            }
+          ) {
+            result
+          }
+        }`)
+          .then(res => {
+            console.log(res);
+            LayoutAnimation.easeInEaseOut();
+            this.setState({
+              showResponse: true,
+              showEnterBtn: false
+            });
+          }).catch(handleError);
+      });
+  }
+
+  responseVerificationHelper(code) {
+    firebase.auth().currentUser.getToken()
+      .then(token => {
+        client._transport._httpOptions.headers = {
+          authorization: token
+        };
+        client.mutate(`{
+          userResponsePhoneVerification(
+            input:{
+              code: ${code}
+            }
+          ) {
+            result
+          }
+        }`)
+          .then(res => {
+            console.log(res);
+            // todo: check ok sign
+            return client.query(`{
+              viewer{
+                isPhoneValid
+              }
+            }`);
+          })
+          .then(res => {
+            if (res.viewer.isPhoneValid === true) {
+              this.props.navigator.resetTo(homeNavigatorRoute());
+            } else {
+              // todo: isPhoneValid is still false after phone verification
+              // todo: determine what to do
+              this.props.navigator.pop();
+            }
+          })
+          .catch(handleError);
+      });
+  }
+
+  handleEnterBtn() {
+    if (this.state.digit.length > 11) {
+      const { showResponse } = this.state;
+      if (showResponse === false) {
+        this.requestVerificationHelper(this.state.digit.replace(/\s/g,''));
+      } else if (showResponse === true) {
+        this.responseVerificationHelper(Number(this.state.code));
+      }
+    }
   }
 
   renderHeader() {
@@ -249,18 +304,8 @@ export default class PhoneVerification extends Component {
       }]}>
         <TouchableOpacity
           style={styles.phoneVerifEnterBtn}
-          onPress={() => {
-            if (this.state.digit.length > 11) {
-              const { showResponse } = this.state;
-              if (showResponse === false) {
-                LayoutAnimation.easeInEaseOut();
-                this.setState({showResponse: true});
-                (!this.check4DigitComplete()) && this.setState({showEnterBtn: false});
-              } else if (showResponse === true) {
-                // todo
-              }
-            }
-          }}>
+          onPress={this.handleEnterBtn.bind(this)}
+        >
           <Text style={styles.textPhoneVerifDelete}>></Text>
         </TouchableOpacity>
       </View>
@@ -354,10 +399,6 @@ export default class PhoneVerification extends Component {
     );
   }
 }
-
-PhoneVerificationButton.propTypes = {
-  navigator: PropTypes.any.isRequired
-};
 
 PhoneVerification.propTypes = {
   navigator: PropTypes.any.isRequired
