@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase';
 import {
-  portOrShipNavigatorRoute
+  createOrderNavigatorRoute
 } from '../navigator/navigatorRoutes';
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
@@ -285,11 +285,11 @@ export default class Home extends Component {
             this.setState({markerClicked: !this.state.markerClicked});
           }}
         />
-      )
+      );
     }
     return (
       <VinylMapAndroid style={{flex: 1}}/>
-    )
+    );
   }
 
   renderSearchBar() {
@@ -397,7 +397,7 @@ export default class Home extends Component {
       >
 
       </TouchableOpacity>
-    )
+    );
   }
 
   renderMenu() {
@@ -555,7 +555,7 @@ export default class Home extends Component {
         </View>
         {this.renderCardDetail()}
       </View>
-    )
+    );
   }
 
   renderCardDetail() {
@@ -671,7 +671,7 @@ export default class Home extends Component {
           </View>
         </View>
       </View>
-    )
+    );
   }
 
   renderProcess() {
@@ -689,7 +689,7 @@ export default class Home extends Component {
             backgroundColor: (index <= this.state.processState) ? '#2e3031' : '#eaefef'
           }}/>
         </View>
-      )
+      );
     };
     const renderProcessLine = (index, top) => {
       // todo: fix style
@@ -711,7 +711,7 @@ export default class Home extends Component {
             height: 40
           }}/>
         </View>
-      )
+      );
     };
     const renderTextProcess = (index, text) => {
       return (
@@ -725,7 +725,7 @@ export default class Home extends Component {
             color: (index <= this.state.processState) ? '#2e3031' : '#eaefef'
           }}>{text}</Text>
         </View>
-      )
+      );
     };
     return (
       <View style={{
@@ -756,7 +756,7 @@ export default class Home extends Component {
           {renderTextProcess(3, 'Delivery completed')}
         </View>
       </View>
-    )
+    );
   }
 
   renderCardContainer() {
@@ -827,17 +827,18 @@ export default class Home extends Component {
           shadowOpacity: 0.23
         }}
         onPress={() => {
-          const { markerTest, latitude, longitude } = this.state;
-          if (markerTest) {
-            vmm.updateMarker(String(latitude), String(longitude));
-          } else {
-            vmm.updateMarker(String(latitude + 1), String(longitude + 1));
-            vmm.addMarker(String(latitude - 0.5), String(longitude), 'testing marker 01');
-          }
-          this.setState({markerTest: !markerTest});
+          this.props.navigator.push(createOrderNavigatorRoute());
+          // const { markerTest, latitude, longitude } = this.state;
+          // if (markerTest) {
+          //  vmm.updateMarker(String(latitude), String(longitude));
+          // } else {
+          //  vmm.updateMarker(String(latitude + 1), String(longitude + 1));
+          //  vmm.addMarker(String(latitude - 0.5), String(longitude), 'testing marker 01');
+          // }
+          // this.setState({markerTest: !markerTest});
         }}
       />
-    )
+    );
   }
 
   render() {
