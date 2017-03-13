@@ -55,7 +55,6 @@ export default class Login extends Component {
       if (user) {
         console.log('found user');
         firebase.auth().getToken().then(console.log);
-        // this.props.navigator.push(portOrShipNavigatorRoute());
         // remove this listener after login
         this.fireBaseListener && this.fireBaseListener();
         this.props.navigator.replace(homeNavigatorRoute());
@@ -75,7 +74,6 @@ export default class Login extends Component {
   // }
 
   checkIfPhoneValid(token) {
-    console.log(token);
     client._transport._httpOptions.headers = {
       authorization: token
     };
