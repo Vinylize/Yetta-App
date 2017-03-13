@@ -80,6 +80,10 @@ export default class Home extends Component {
         console.log(e);
       });
     }
+
+    this.state.animMenu.addListener(value => {
+      this.animMenuValue = value.value;
+    });
   }
 
   componentDidMount() {
@@ -412,20 +416,43 @@ export default class Home extends Component {
     ).start();
   }
 
-  menuHandlePanResponderMove(e, gestureState) {
-    this.state.animMenu.stopAnimation();
-    const { dx } = gestureState;
-    console.log(dx);
-    if (dx < 0) {
-      this.refMenu.setNativeProps({style: {left: dx}});
+  animateMenuHide(dx) {
+    if (dx) {
+      this.state.animMenu.setValue(dx);
     }
+    Animated.timing(
+      this.state.animMenu,
+      {
+        toValue: -WIDTH * 0.8,
+        duration: 500
+      }
+    ).start();
+  }
 
+  checkIfMenuInMiddle() {
+    return (this.animMenuValue < 0 || this.animMenuValue > -WIDTH * 0.8);
+  }
+
+  menuHandlePanResponderMove(e, gestureState) {
+    const { dx } = gestureState;
+    console.log(this.animMenuValue);
+    if (this.checkIfMenuInMiddle()) {
+      // menu is touched while animating
+      this.state.animMenu.stopAnimation();
+    }
+    if (this.animMenuValue + dx < 0) {
+      this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
+    }
   }
 
   menuHandlePanResponderRelease(e, gestureState) {
     const { dx } = gestureState;
-    if (dx < 0) {
-      this.animateMenuAppear(dx);
+    if (this.checkIfMenuInMiddle() && (this.animMenuValue + dx) < 0) {
+      if (this.animMenuValue + dx > -WIDTH * 0.4) {
+        this.animateMenuAppear(this.animMenuValue + dx);
+      } else {
+        this.animateMenuHide(this.animMenuValue + dx);
+      }
     }
   }
 
