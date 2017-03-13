@@ -7,7 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import * as firebase from 'firebase';
-import { URL, handleFbError } from './../utils';
+import { URL, handleError, handleFirebaseSignInError } from './../utils';
 import {
   registerNavigatorRoute,
   homeNavigatorRoute,
@@ -50,6 +50,19 @@ export default class Login extends Component {
     };
   }
 
+  componentWillMount() {
+    this.fireBaseListener = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        firebase.auth().getToken().then(console.log);
+        // this.props.navigator.push(portOrShipNavigatorRoute());
+        // remove this listener after login
+        this.fireBaseListener && this.fireBaseListener();
+      } else {
+        // TBD
+      }
+    });
+  }
+
   checkLoginBtnEnabled() {
     return (this.state.userEmail && this.state.password);
   }
@@ -60,6 +73,7 @@ export default class Login extends Component {
   // }
 
   checkIfPhoneValid(token) {
+    console.log(token);
     client._transport._httpOptions.headers = {
       authorization: token
     };
@@ -73,12 +87,34 @@ export default class Login extends Component {
   }
 
   login(email, password) {
-    return new Promise(resolve => {
-      resolve(firebase.auth().signInWithEmailAndPassword(email, password));
-    });
+    return firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(this.getToken.bind(this))
+      .catch(handleFirebaseSignInError);
+  }
+
+  getToken() {
+    firebase.auth().currentUser.getToken()
+      .then(this.checkIfPhoneValid.bind(this))
+      .then(res => res.viewer.isPhoneValid)
+      .then(this.navigateScene.bind(this))
+      .catch(handleError);
+  }
+
+  navigateScene(valid) {
+    if (valid === true) {
+      this.props.navigator.replace(homeNavigatorRoute());
+    } else {
+      this.props.navigator.push(phoneVerificationNavigatorRoute());
+    }
   }
 
   handleLoginButton() {
+    if (this.checkLoginBtnEnabled()) {
+      this.login(this.state.userEmail, this.state.password);
+    }
+  }
+
+  _handleLoginButton() {
     if (this.checkLoginBtnEnabled()) {
       this.login(this.state.userEmail, this.state.password)
         .then(() => firebase.auth().currentUser.getToken())
@@ -90,7 +126,7 @@ export default class Login extends Component {
             this.props.navigator.push(phoneVerificationNavigatorRoute());
           }
         })
-        .catch(handleFbError);
+        .catch(console.log);
     }
   }
 
