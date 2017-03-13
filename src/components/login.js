@@ -53,10 +53,12 @@ export default class Login extends Component {
   componentWillMount() {
     this.fireBaseListener = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
+        console.log('found user');
         firebase.auth().getToken().then(console.log);
         // this.props.navigator.push(portOrShipNavigatorRoute());
         // remove this listener after login
         this.fireBaseListener && this.fireBaseListener();
+        this.props.navigator.replace(homeNavigatorRoute());
       } else {
         // TBD
       }
@@ -111,22 +113,6 @@ export default class Login extends Component {
   handleLoginButton() {
     if (this.checkLoginBtnEnabled()) {
       this.login(this.state.userEmail, this.state.password);
-    }
-  }
-
-  _handleLoginButton() {
-    if (this.checkLoginBtnEnabled()) {
-      this.login(this.state.userEmail, this.state.password)
-        .then(() => firebase.auth().currentUser.getToken())
-        .then(this.checkIfPhoneValid)
-        .then(res => {
-          if (res.viewer.isPhoneValid === true) {
-            this.props.navigator.replace(homeNavigatorRoute());
-          } else {
-            this.props.navigator.push(phoneVerificationNavigatorRoute());
-          }
-        })
-        .catch(console.log);
     }
   }
 
