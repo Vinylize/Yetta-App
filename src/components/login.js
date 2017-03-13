@@ -7,7 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import * as firebase from 'firebase';
-import { URL, handleFbError } from './../utils';
+import { URL, handleError, handleFirebaseSignInError } from './../utils';
 import {
   registerNavigatorRoute,
   homeNavigatorRoute,
@@ -50,6 +50,20 @@ export default class Login extends Component {
     };
   }
 
+  componentWillMount() {
+    this.fireBaseListener = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log('found user');
+        firebase.auth().getToken().then(console.log);
+        // remove this listener after login
+        this.fireBaseListener && this.fireBaseListener();
+        this.props.navigator.replace(homeNavigatorRoute());
+      } else {
+        // TBD
+      }
+    });
+  }
+
   checkLoginBtnEnabled() {
     return (this.state.userEmail && this.state.password);
   }
@@ -73,24 +87,30 @@ export default class Login extends Component {
   }
 
   login(email, password) {
-    return new Promise(resolve => {
-      resolve(firebase.auth().signInWithEmailAndPassword(email, password));
-    });
+    return firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(this.getToken.bind(this))
+      .catch(handleFirebaseSignInError);
+  }
+
+  getToken() {
+    firebase.auth().currentUser.getToken()
+      .then(this.checkIfPhoneValid.bind(this))
+      .then(res => res.viewer.isPhoneValid)
+      .then(this.navigateScene.bind(this))
+      .catch(handleError);
+  }
+
+  navigateScene(valid) {
+    if (valid === true) {
+      this.props.navigator.replace(homeNavigatorRoute());
+    } else {
+      this.props.navigator.push(phoneVerificationNavigatorRoute());
+    }
   }
 
   handleLoginButton() {
     if (this.checkLoginBtnEnabled()) {
-      this.login(this.state.userEmail, this.state.password)
-        .then(() => firebase.auth().currentUser.getToken())
-        .then(this.checkIfPhoneValid)
-        .then(res => {
-          if (res.viewer.isPhoneValid === true) {
-            this.props.navigator.replace(homeNavigatorRoute());
-          } else {
-            this.props.navigator.push(phoneVerificationNavigatorRoute());
-          }
-        })
-        .catch(handleFbError);
+      this.login(this.state.userEmail, this.state.password);
     }
   }
 

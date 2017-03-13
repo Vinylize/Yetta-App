@@ -77,17 +77,6 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    console.log(NativeModules.VinylMap);
-    // if (this.state.first) {
-    //   firebase.auth().onAuthStateChanged((user) => {
-    //     if (user) {
-    //       // firebase.auth().getToken().then(console.log);
-    //       this.props.navigator.push(portOrShipNavigatorRoute());
-    //     } else {
-    //       // TBD
-    //     }
-    //   });
-    // }
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { longitude, latitude } = position.coords;
