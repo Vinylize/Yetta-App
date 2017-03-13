@@ -52,6 +52,7 @@ export default class Home extends Component {
       clickedMarkerID: undefined,
       animatedCardLeftVal: new Animated.Value(0),
       animatedCardBottomVal: new Animated.Value(cardInitBottom),
+      animMenu: new Animated.Value(-WIDTH * 0.8),
       cardIndex: 0,
       cardExpanded: false,
       busyOnCardMoveX: false,
@@ -68,12 +69,21 @@ export default class Home extends Component {
       onPanResponderMove: this.cardHandlePanResponderMove.bind(this),
       onPanResponderRelease: this.cardHandlePanResponderRelease.bind(this)
     });
+    this.menuPanResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: this.menuHandlePanResponderMove.bind(this),
+      onPanResponderRelease: this.menuHandlePanResponderRelease.bind(this)
+    });
 
     if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener('onMarkerPress', (e) => {
         console.log(e);
       });
     }
+
+    this.state.animMenu.addListener(value => {
+      this.animMenuValue = value.value;
+    });
   }
 
   componentDidMount() {
@@ -257,6 +267,10 @@ export default class Home extends Component {
     });
   }
 
+  handleLogout() {
+    firebase.auth().signOut();
+  }
+
   renderMap() {
     if (Platform.OS === 'ios') {
       return (
@@ -305,7 +319,7 @@ export default class Home extends Component {
           />
         </View>
       </View>
-    )
+    );
   }
 
   renderSwitch() {
@@ -389,7 +403,157 @@ export default class Home extends Component {
     );
   }
 
+  animateMenuAppear(dx) {
+    if (dx) {
+      this.state.animMenu.setValue(dx);
+    }
+    Animated.timing(
+      this.state.animMenu,
+      {
+        toValue: 0,
+        duration: 500
+      }
+    ).start();
+  }
+
+  animateMenuHide(dx) {
+    if (dx) {
+      this.state.animMenu.setValue(dx);
+    }
+    Animated.timing(
+      this.state.animMenu,
+      {
+        toValue: -WIDTH * 0.8,
+        duration: 500
+      }
+    ).start();
+  }
+
+  checkIfMenuInMiddle() {
+    return (this.animMenuValue < 0 || this.animMenuValue > -WIDTH * 0.8);
+  }
+
+  menuHandlePanResponderMove(e, gestureState) {
+    const { dx } = gestureState;
+    console.log(this.animMenuValue);
+    if (this.checkIfMenuInMiddle()) {
+      // menu is touched while animating
+      this.state.animMenu.stopAnimation();
+    }
+    if (this.animMenuValue + dx < 0) {
+      this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
+    }
+  }
+
+  menuHandlePanResponderRelease(e, gestureState) {
+    const { dx } = gestureState;
+    if (this.checkIfMenuInMiddle() && (this.animMenuValue + dx) < 0) {
+      if (this.animMenuValue + dx > -WIDTH * 0.4) {
+        this.animateMenuAppear(this.animMenuValue + dx);
+      } else {
+        this.animateMenuHide(this.animMenuValue + dx);
+      }
+    }
+  }
+
   renderMenu() {
+    return (
+      <Animated.View
+        ref={component => this.refMenu = component}
+        style={{
+          position: 'absolute',
+          left: this.state.animMenu,
+          top: 0,
+          zIndex: 200,
+          backgroundColor: 'white',
+          width: WIDTH * 0.75,
+          height: HEIGHT,
+          flexDirection: 'column',
+          shadowOffset: {height: 1, width: 1},
+          shadowOpacity: 0.2
+        }}
+        {...this.menuPanResponder.panHandlers}
+      >
+        <View style={{
+          flex: 1,
+          marginLeft: 28,
+          marginRight: 28,
+          paddingLeft: 20,
+          borderBottomWidth: 1,
+          borderColor: '#e0e3e5'
+        }}>
+          <View style={{
+            height: 105,
+            width: 105,
+            borderRadius: 52.5,
+            marginTop: 56,
+            backgroundColor: '#d8d8d8'
+          }}>
+
+          </View>
+          <View style={{
+            marginTop: 20,
+            flexDirection: 'row'
+          }}>
+            <Text style={{fontSize: 15}}>Rachel Williams</Text>
+            <View style={{marginLeft: 24, marginTop: 3}}>
+              <Text style={{fontSize: 10}}>edit</Text>
+            </View>
+          </View>
+          <View style={{marginTop: 9}}>
+            <Text style={{fontSize: 13}}>Rachelw@email.com</Text>
+          </View>
+        </View>
+        <View style={{
+          flex: 1,
+          marginLeft: 28,
+          paddingLeft: 20
+        }}>
+          <TouchableOpacity>
+            <Text style={{
+              fontSize: 18,
+              marginTop: 48
+            }}>Bank account</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={{
+              fontSize: 18,
+              marginTop: 31
+            }}>Your orders</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={{
+              fontSize: 18,
+              marginTop: 31
+            }}>Help</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={{
+              fontSize: 18,
+              marginTop: 31
+            }}>Settings</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{
+          flex: 0.5,
+          justifyContent: 'flex-end',
+          alignItems: 'flex-end'
+        }}>
+          <TouchableOpacity
+            style={{
+              marginRight: 26,
+              marginBottom: 20
+            }}
+            onPress={this.handleLogout.bind(this)}
+          >
+            <Text style={{fontSize: 15}}>Logout</Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+    );
+  }
+
+  renderMenuButton() {
     const { menuClicked } = this.state;
     return (
       <TouchableOpacity
@@ -398,70 +562,19 @@ export default class Home extends Component {
           left: 20,
           top: 46,
           backgroundColor: 'transparent',
-          width: 24,
-          height: 20
+          width: 30,
+          height: 24,
+          justifyContent: 'center',
+          alignItems: 'center'
         }}
         onPress={() => {
-          LayoutAnimation.easeInEaseOut();
-          this.setState({menuClicked: !menuClicked});
-          if (this.state.menuClicked) {
-            this.animateBack();
-          } else {
-            this.animateShrink();
-          }
+          // this.setState({menuClicked: !menuClicked});
+          this.animateMenuAppear(-WIDTH * 0.8);
         }}
-        activeOpacity={1}
       >
-        <View style={(menuClicked) ? {
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          width: 15,
-          height: 3,
-          backgroundColor: '#2E3031',
-          transform: [{rotate: '45deg'}]
-          } : {
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          width: 24,
-          height: 3,
-          backgroundColor: '#2E3031',
-        }}/>
-        <View style={(menuClicked) ? {
-          position: 'absolute',
-          left: 9,
-          top: 0,
-          width: 15,
-          height: 3,
-          backgroundColor: '#2E3031',
-          transform: [{rotate: '-45deg'}]
-          } : {
-          position: 'absolute',
-          left: 0,
-          top: 7,
-          width: 24,
-          height: 3,
-          backgroundColor: '#2E3031',
-        }}/>
-        <View style={(menuClicked) ? {
-          position: 'absolute',
-          left: 4.5,
-          top: 12,
-          width: 15,
-          height: 3,
-          backgroundColor: '#2E3031',
-          transform: [{rotate: '90deg'}]
-          } : {
-          position: 'absolute',
-          left: 0,
-          top: 14,
-          width: 24,
-          height: 3,
-          backgroundColor: '#2E3031',
-        }}/>
+       <Text style={{fontSize: 11}}>Menu</Text>
       </TouchableOpacity>
-    )
+    );
   }
 
   renderCard(left, header) {
@@ -776,29 +889,7 @@ export default class Home extends Component {
         {this.renderCard(10, cardIndex)}
         {this.renderCard(cardWidth + 20, cardIndex + 1)}
       </Animated.View>
-    )
-  }
-
-  animateShrink() {
-    this.state.shrinkValue.setValue(1);
-    Animated.timing(
-      this.state.shrinkValue,
-      {
-        toValue: 0.7,
-        duration: 100
-      }
-    ).start();
-  }
-
-  animateBack() {
-    this.state.shrinkValue.setValue(0.7);
-    Animated.timing(
-      this.state.shrinkValue,
-      {
-        toValue: 1,
-        duration: 100
-      }
-    ).start();
+    );
   }
 
   renderAddBtn() {
@@ -837,7 +928,8 @@ export default class Home extends Component {
           flex: 1, left: 20, transform: [{scale: this.state.shrinkValue}]
           } : {flex: 1, transform: [{scale: this.state.shrinkValue}]}}>
           {this.renderMap()}
-          {false && this.renderMenu()}
+          {this.renderMenuButton()}
+          {this.renderMenu()}
           {this.renderSwitch()}
           <SearchBar
             latitude={this.state.latitude}
