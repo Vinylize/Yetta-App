@@ -2,4 +2,6 @@ source 'https://github.com/CocoaPods/Specs.git'
 target 'pingstersApp' do
 pod 'GoogleMaps'
 pod 'GooglePlaces'
+pod 'Firebase/Core'
+pod 'Firebase/Messaging'
 end
