@@ -57,6 +57,9 @@ jspm_packages
 ios/build/
 ios/DerivedData/
 
+## FCM
+ios/GoogleService-Info.plist
+
 ## Various settings
 *.pbxuser
 !default.pbxuser
