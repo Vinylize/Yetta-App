@@ -17,7 +17,8 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase';
 import {
-  createOrderNavigatorRoute
+  createOrderNavigatorRoute,
+  loginNavigatorRoute
 } from '../navigator/navigatorRoutes';
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
@@ -276,6 +277,7 @@ export default class Home extends Component {
     firebase.auth().signOut().then((res) => {
       console.log(res, 'signed out');
       Alert.alert('signed out');
+      this.props.navigator.replace(loginNavigatorRoute());
     });
   }
 
