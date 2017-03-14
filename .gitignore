@@ -59,6 +59,7 @@ ios/DerivedData/
 
 ## FCM
 ios/GoogleService-Info.plist
+android/app/google-services.json
 
 ## Various settings
 *.pbxuser
