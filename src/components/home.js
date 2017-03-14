@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  Alert,
   Text,
   View,
   Dimensions,
@@ -73,6 +74,10 @@ export default class Home extends Component {
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: this.menuHandlePanResponderMove.bind(this),
       onPanResponderRelease: this.menuHandlePanResponderRelease.bind(this)
+    });
+    this.logoutPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: this.handleLogout.bind(this)
     });
 
     if (Platform.OS === 'android') {
@@ -268,7 +273,10 @@ export default class Home extends Component {
   }
 
   handleLogout() {
-    firebase.auth().signOut();
+    firebase.auth().signOut().then((res) => {
+      console.log(res, 'signed out');
+      Alert.alert('signed out');
+    });
   }
 
   renderMap() {
@@ -435,7 +443,7 @@ export default class Home extends Component {
 
   menuHandlePanResponderMove(e, gestureState) {
     const { dx } = gestureState;
-    console.log(this.animMenuValue);
+    // console.log(this.animMenuValue);
     if (this.checkIfMenuInMiddle()) {
       // menu is touched while animating
       this.state.animMenu.stopAnimation();
@@ -539,15 +547,15 @@ export default class Home extends Component {
           justifyContent: 'flex-end',
           alignItems: 'flex-end'
         }}>
-          <TouchableOpacity
+          <View
             style={{
               marginRight: 26,
               marginBottom: 20
             }}
-            onPress={this.handleLogout.bind(this)}
+            {...this.logoutPanResponder.panHandlers}
           >
             <Text style={{fontSize: 15}}>Logout</Text>
-          </TouchableOpacity>
+          </View>
         </View>
       </Animated.View>
     );
