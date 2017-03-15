@@ -44,6 +44,7 @@ public class YettaFirebaseMessagingService extends FirebaseMessagingService {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
+        sendNotification(remoteMessage.getData().get("title"));
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
@@ -53,6 +54,10 @@ public class YettaFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
+
+        Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotification");
+        i.putExtra("message", remoteMessage);
+        sendOrderedBroadcast(i, null);
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.

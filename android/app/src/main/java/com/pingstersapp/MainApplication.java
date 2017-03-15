@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.pingstersapp.VinylMap.VinylMapPackage;
+import com.pingstersapp.fcm.YettaFcmPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -27,7 +28,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-          new VinylMapPackage()
+          new VinylMapPackage(),
+          new YettaFcmPackage()
       );
     }
   };
