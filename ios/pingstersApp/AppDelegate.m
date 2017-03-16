@@ -7,26 +7,12 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-//
-//  Copyright (c) 2016 Google Inc.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//  https://github.com/firebase/quickstart-ios/blob/master/messaging/MessagingExample/AppDelegate.m
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
-//
-
 #import "AppDelegate.h"
 
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
+
+#import "YettaFCM.h"
 
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 @import UserNotifications;
@@ -51,8 +37,6 @@
 #endif
 
 @implementation AppDelegate
-
-NSString *const kGCMMessageIDKey = @"gcm.message_id";
 
 - (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions
 {
@@ -104,139 +88,50 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
   [self.window makeKeyAndVisible];
   
   [FIRApp configure];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenRefreshNotification:)
-                                               name:kFIRInstanceIDTokenRefreshNotification object:nil];
-  
+  [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
+
   return YES;
 }
 
-// [START receive_message]
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo
-{
-  // If you are receiving a notification message while your app is in the background,
-  // this callback will not be fired till the user taps on the notification launching the application.
-  // TODO: Handle data of notification
-  
-  // Print message ID.
-  if (userInfo[kGCMMessageIDKey]) {
-    NSLog(@"Message ID: %@", userInfo[kGCMMessageIDKey]);
-  }
-  
-  // Print full message.
-  NSLog(@"%@", userInfo);
-}
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
-fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
-{
-  // If you are receiving a notification message while your app is in the background,
-  // this callback will not be fired till the user taps on the notification launching the application.
-  // TODO: Handle data of notification
-  
-  // Print message ID.
-  if (userInfo[kGCMMessageIDKey]) {
-    NSLog(@"Message ID: %@", userInfo[kGCMMessageIDKey]);
-  }
-  
-  // Print full message.
-  NSLog(@"%@", userInfo);
-  
-  completionHandler(UIBackgroundFetchResultNewData);
+fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+  [YettaFCM didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
 }
-// [END receive_message]
 
 // [START ios_10_message_handling]
-// Receive displayed notifications for iOS 10 devices.
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-// Handle incoming notification messages while app is in the foreground.
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
        willPresentNotification:(UNNotification *)notification
          withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
-  // Print message ID.
-  NSDictionary *userInfo = notification.request.content.userInfo;
-  if (userInfo[kGCMMessageIDKey]) {
-    NSLog(@"Message ID: %@", userInfo[kGCMMessageIDKey]);
-  }
-  
-  // Print full message.
-  NSLog(@"%@", userInfo);
-  
-  // Change this to your preferred presentation option
-  completionHandler(UNNotificationPresentationOptionNone);
+  [YettaFCM willPresentNotification:notification withCompletionHandler:completionHandler];
 }
 
-// Handle notification messages after display notification is tapped by the user.
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void (^)())completionHandler {
-  NSDictionary *userInfo = response.notification.request.content.userInfo;
-  if (userInfo[kGCMMessageIDKey]) {
-    NSLog(@"Message ID: %@", userInfo[kGCMMessageIDKey]);
-  }
-  
-  // Print full message.
-  NSLog(@"%@", userInfo);
-  
-  completionHandler();
+  [YettaFCM didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
 }
 #endif
+// [END ios_10_message_handling]
 
-// [START ios_10_data_message_handling]
+
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-// Receive data message on iOS 10 devices while app is in the foreground.
-- (void)applicationReceivedRemoteMessage:(FIRMessagingRemoteMessage *)remoteMessage
-{
-  // Print full message
-  NSLog(@"%@", remoteMessage.appData);
+- (void)applicationReceivedRemoteMessage:(FIRMessagingRemoteMessage *)remoteMessage {
+  [YettaFCM applicationReceivedRemoteMessage:remoteMessage];
 }
 #endif
-// [END ios_10_data_message_handling]
 
-// [START refresh_token]
-- (void)tokenRefreshNotification:(NSNotification *)notification
-{
-  NSString *refreshedToken = [[FIRInstanceID instanceID] token];
-  NSLog(@"InstanceID token: %@", refreshedToken);
-  
-  // Connect to FCM since connection may have failed when attempted before having a token.
-  [self connectToFcm];
-  
-  // TODO: send token to application server.
-}
-// [END refresh_token]
-
-- (void)connectToFcm
-{
-  // Won't connect since there is no token
-  if (![[FIRInstanceID instanceID] token]) {
-    NSLog(@"no token!");
-    return;
-  }
-  
-  // Disconnect previous FCM connection if it exists.
-  [[FIRMessaging messaging] disconnect];
-  
-  [[FIRMessaging messaging] connectWithCompletion:^(NSError * _Nullable error) {
-    if (error != nil) {
-      NSLog(@"Unable to connect to FCM. %@", error);
-    } else {
-      NSLog(@"Connected to FCM.");
-    }
-  }];
+- (void)tokenRefreshNotification:(NSNotification *)notification {
+  [YettaFCM tokenRefreshNotification:notification];
 }
 
-// [START connect_on_active]
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-  [self connectToFcm];
+  [YettaFCM applicationDidBecomeActive:application];
 }
-// [END connect_on_active]
 
-// [START disconnect_from_fcm]
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-  [[FIRMessaging messaging] disconnect];
-  NSLog(@"Disconnected from FCM");
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+  [YettaFCM applicationDidEnterBackground:application];
 }
-// [END disconnect_from_fcm]
 
 @end

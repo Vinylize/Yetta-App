@@ -24,6 +24,7 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		171C02BF1E4587F7002DB33B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 171C02BE1E4587F7002DB33B /* Podfile */; };
 		174261D31E77E67100012E9A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 174261D21E77E67100012E9A /* GoogleService-Info.plist */; };
+		1776E6C01E791AC900A31769 /* YettaFCM.m in Sources */ = {isa = PBXBuildFile; fileRef = 1776E6BF1E791AC900A31769 /* YettaFCM.m */; };
 		177913791E4616EA000454F2 /* VinylMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 177913781E4616EA000454F2 /* VinylMapView.m */; };
 		1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1779137E1E464064000454F2 /* VinylMapViewManager.m */; };
 		179BEF581E7156650087C0DB /* VinylMapMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */; };
@@ -254,6 +255,8 @@
 		171C02BE1E4587F7002DB33B /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		174261D11E77E3AD00012E9A /* pingstersApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = pingstersApp.entitlements; path = pingstersApp/pingstersApp.entitlements; sourceTree = "<group>"; };
 		174261D21E77E67100012E9A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		1776E6BE1E791AB300A31769 /* YettaFCM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YettaFCM.h; sourceTree = "<group>"; };
+		1776E6BF1E791AC900A31769 /* YettaFCM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaFCM.m; sourceTree = "<group>"; };
 		177913771E4615F9000454F2 /* VinylMapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VinylMapView.h; sourceTree = "<group>"; };
 		177913781E4616EA000454F2 /* VinylMapView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VinylMapView.m; sourceTree = "<group>"; };
 		1779137D1E46401C000454F2 /* VinylMapViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VinylMapViewManager.h; sourceTree = "<group>"; };
@@ -396,6 +399,8 @@
 				1779137E1E464064000454F2 /* VinylMapViewManager.m */,
 				179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */,
 				179BEF7F1E727BBD0087C0DB /* pingstersApp-Bridging-Header.h */,
+				1776E6BE1E791AB300A31769 /* YettaFCM.h */,
+				1776E6BF1E791AC900A31769 /* YettaFCM.m */,
 			);
 			name = pingstersApp;
 			sourceTree = "<group>";
@@ -919,6 +924,7 @@
 				1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				1776E6C01E791AC900A31769 /* YettaFCM.m in Sources */,
 				179BEF581E7156650087C0DB /* VinylMapMarkerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
