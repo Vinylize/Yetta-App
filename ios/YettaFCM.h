@@ -25,8 +25,9 @@
 
 typedef void (^RCTNotificationResponseCallback)();
 
++ (void)requestPermissions;
+
 + (void)didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo fetchCompletionHandler:(nullable void (^)(UIBackgroundFetchResult))completionHandler;
-+ (void)didReceiveLocalNotification:(nonnull UILocalNotification *)notification;
 
 // Handle notification messages after display notification is tapped by the user.
 + (void)didReceiveNotificationResponse:(nonnull UNNotificationResponse *)response withCompletionHandler:(nonnull RCTNotificationResponseCallback)completionHandler;

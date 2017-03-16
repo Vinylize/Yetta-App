@@ -31,39 +31,10 @@
 @end
 #endif
 
-// Copied from Apple's header in case it is missing in some cases (e.g. pre-Xcode 8 builds).
-#ifndef NSFoundationVersionNumber_iOS_9_x_Max
-#define NSFoundationVersionNumber_iOS_9_x_Max 1299
-#endif
-
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions
-{
-  if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max) {
-    UIUserNotificationType allNotificationTypes =
-    (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
-    UIUserNotificationSettings *settings =
-    [UIUserNotificationSettings settingsForTypes:allNotificationTypes categories:nil];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-  } else {
-    // iOS 10 or later
-    #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-    // For iOS 10 display notification (sent via APNS)
-    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
-    UNAuthorizationOptions authOptions =
-      UNAuthorizationOptionAlert
-      | UNAuthorizationOptionSound
-      | UNAuthorizationOptionBadge;
-    [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:authOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
-    }];
-    
-    // For iOS 10 data message (sent via FCM)
-    [FIRMessaging messaging].remoteMessageDelegate = self;
-    #endif
-  }
-  
-  [[UIApplication sharedApplication] registerForRemoteNotifications];
+- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions {
+  [YettaFCM requestPermissions];
   return YES;
 }
 
