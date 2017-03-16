@@ -12,38 +12,29 @@
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
 
+#import "YettaFCM.h"
+
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+@import UserNotifications;
+#endif
+
 @import GoogleMaps;
 @import Firebase;
-@import UserNotifications;
+@import FirebaseInstanceID;
+@import FirebaseMessaging;
+
+// Implement UNUserNotificationCenterDelegate to receive display notification via APNS for devices
+// running iOS 10 and above. Implement FIRMessagingDelegate to receive data message via FCM for
+// devices running iOS 10 and above.
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+@interface AppDelegate () <UNUserNotificationCenterDelegate, FIRMessagingDelegate>
+@end
+#endif
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions
-{
-  if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max) {
-    UIUserNotificationType allNotificationTypes =
-    (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
-    UIUserNotificationSettings *settings =
-    [UIUserNotificationSettings settingsForTypes:allNotificationTypes categories:nil];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-  } else {
-    // iOS 10 or later
-    #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-    // For iOS 10 display notification (sent via APNS)
-    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
-    UNAuthorizationOptions authOptions =
-      UNAuthorizationOptionAlert
-      | UNAuthorizationOptionSound
-      | UNAuthorizationOptionBadge;
-    [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:authOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
-    }];
-    
-    // For iOS 10 data message (sent via FCM)
-    [FIRMessaging messaging].remoteMessageDelegate = self;
-    #endif
-  }
-  
-  [[UIApplication sharedApplication] registerForRemoteNotifications];
+- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions {
+  [YettaFCM requestPermissions];
   return YES;
 }
 
@@ -66,8 +57,52 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
   [FIRApp configure];
+  [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
+
   return YES;
+}
+
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+  [YettaFCM didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+}
+
+// [START ios_10_message_handling]
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+       willPresentNotification:(UNNotification *)notification
+         withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
+  [YettaFCM willPresentNotification:notification withCompletionHandler:completionHandler];
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+didReceiveNotificationResponse:(UNNotificationResponse *)response
+         withCompletionHandler:(void (^)())completionHandler {
+  [YettaFCM didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
+}
+#endif
+// [END ios_10_message_handling]
+
+
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+- (void)applicationReceivedRemoteMessage:(FIRMessagingRemoteMessage *)remoteMessage {
+  [YettaFCM applicationReceivedRemoteMessage:remoteMessage];
+}
+#endif
+
+- (void)tokenRefreshNotification:(NSNotification *)notification {
+  [YettaFCM tokenRefreshNotification:notification];
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+  [YettaFCM applicationDidBecomeActive:application];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+  [YettaFCM applicationDidEnterBackground:application];
 }
 
 @end
