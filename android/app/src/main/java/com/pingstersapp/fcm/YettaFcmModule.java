@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -21,10 +22,13 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import static android.content.ContentValues.TAG;
+
 public class YettaFcmModule extends ReactContextBaseJavaModule {
     public YettaFcmModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        registerMessageHandler();
+        registerMessageHandlerOnForeground();
+        registerMessageHandlerOnBackgroundedOrKilled();
     }
 
     @Override
@@ -38,7 +42,7 @@ public class YettaFcmModule extends ReactContextBaseJavaModule {
             .emit(eventName, params);
     }
 
-    private void registerMessageHandler() {
+    private void registerMessageHandlerOnForeground() {
         IntentFilter intentFilter = new IntentFilter("com.pingstersapp.fcm.ReceiveNotification");
 
         getReactApplicationContext().registerReceiver(new BroadcastReceiver() {
@@ -65,6 +69,33 @@ public class YettaFcmModule extends ReactContextBaseJavaModule {
                         Set<String> keysIterator = data.keySet();
                         for(String key: keysIterator){
                             params.putString(key, data.get(key));
+                        }
+                    }
+                    sendEvent("FCMNotificationReceived", params);
+                }
+            }
+        }, intentFilter);
+    }
+
+    private void registerMessageHandlerOnBackgroundedOrKilled() {
+        IntentFilter intentFilter = new IntentFilter("com.pingstersapp.fcm.ReceiveNotificationBackgroundedOrKilled");
+
+        System.out.println("노티 리시버 등록");
+        Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationKilled");
+        getReactApplicationContext().sendOrderedBroadcast(i, null);
+
+        getReactApplicationContext().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (getReactApplicationContext().hasActiveCatalystInstance()) {
+                    WritableMap params = Arguments.createMap();
+                    Intent message = intent.getParcelableExtra("message");
+                    if (message.getExtras() != null) {
+                        for (String key : message.getExtras().keySet()) {
+                            Object value = message.getExtras().get(key);
+                            Log.d(TAG, "fcm module Key: " + key + " Value: " + value);
+                            if (value != null)
+                                params.putString(key, value.toString());
                         }
                     }
                     sendEvent("FCMNotificationReceived", params);
