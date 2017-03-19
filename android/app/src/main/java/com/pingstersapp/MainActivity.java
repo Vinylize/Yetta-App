@@ -1,10 +1,18 @@
 package com.pingstersapp;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import javax.annotation.Nullable;
 
 import static android.content.ContentValues.TAG;
 
@@ -23,14 +31,27 @@ public class MainActivity extends ReactActivity {
         //
         // Handle possible data accompanying notification message.
         // [START handle_data_extras]
+        WritableMap params = Arguments.createMap();
         if (getIntent().getExtras() != null) {
-            System.out.println(getIntent().getExtras());
             for (String key : getIntent().getExtras().keySet()) {
-                Object value = getIntent().getExtras().get(key);
-                Log.d(TAG, "Key: " + key + " Value: " + value);
+                String value = getIntent().getExtras().get(key).toString();
+                Log.d(TAG, "on create Key: " + key + " Value: " + value);
+                params.putString(key, value);
             }
         }
         // [END handle_data_extras]
+
+        final Intent message = getIntent();
+
+        IntentFilter intentFilter = new IntentFilter("com.pingstersapp.fcm.ReceiveNotificationKilled");
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationBackgroundedOrKilled");
+                i.putExtra("message", message);
+                sendOrderedBroadcast(i, null);
+            }
+        }, intentFilter);
     }
 
     /**
@@ -45,12 +66,16 @@ public class MainActivity extends ReactActivity {
     @Override
     public void onNewIntent (Intent intent) {
         super.onNewIntent(intent);
+
         if (getIntent().getExtras() != null) {
             for (String key : getIntent().getExtras().keySet()) {
-                Object value = getIntent().getExtras().get(key);
-                Log.d(TAG, "Key: " + key + " Value: " + value);
+                String value = getIntent().getExtras().get(key).toString();
+                Log.d(TAG, "background Key: " + key + " Value: " + value);
             }
         }
-            setIntent(intent);
+        Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationBackgroundedOrKilled");
+        i.putExtra("message", getIntent()); // todo: change getIntent() to appropriate
+        sendOrderedBroadcast(i, null);
+        setIntent(intent);
     }
 }
