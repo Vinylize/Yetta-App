@@ -14,6 +14,7 @@
 #import <FirebaseCore/FIRApp.h>
 
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
 @import Firebase;
 @import FirebaseInstanceID;
@@ -21,7 +22,7 @@
 
 @import UserNotifications;
 
-@interface YettaFCM : NSObject <RCTBridgeModule>
+@interface YettaFCM : RCTEventEmitter <RCTBridgeModule>
 
 typedef void (^RCTNotificationResponseCallback)();
 
