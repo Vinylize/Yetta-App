@@ -28,8 +28,6 @@
 
 #import "YettaFCM.h"
 
-#import <React/RCTEventDispatcher.h>
-
 #import <FirebaseMessaging/FirebaseMessaging.h>
 #import <FirebaseInstanceID/FirebaseInstanceID.h>
 
@@ -46,9 +44,41 @@
 
 @implementation YettaFCM
 
-RCT_EXPORT_MODULE();
+ RCT_EXPORT_MODULE();
 
 NSString *const kGCMMessageIDKey = @"gcm.message_id";
+
+//
+//  the following part was an incomplete attempt to bridge events to JS when FCM messages received.
+//  since react-native/pushNotificationIOS is used from AppDelegate, the following part
+//  is unnecessary for awhile until bridging is needed. However, it is remained and commented out for future usage.
+//
+- (NSArray<NSString *> *)supportedEvents
+{
+  return @[@"FCMNotificationReceived"];
+}
+//- (void)startObserving
+//{
+//  NSLog(@"start observing");
+//  [[NSNotificationCenter defaultCenter] addObserver:self
+//                                           selector:@selector(emitEventJS:)
+//                                               name:@"event-emitted"
+//                                             object:nil];
+//}
+//
+//- (void)emitEventJS:(nullable NSNotification *)notification
+//{
+//  NSLog(@"emit event to JS");
+//  [self sendEventWithName:@"FCMNotificationReceived" body:notification.userInfo];
+//}
+//
+//+ (void)emitEventWithName:(nullable NSString *)name andPayload:(nullable NSDictionary *)payload
+//{
+//  NSLog(@"emit event with name");
+//  [[NSNotificationCenter defaultCenter] postNotificationName:@"event-emitted"
+//                                                      object:self
+//                                                    userInfo:payload];
+//}
 
 + (void)requestPermissions
 {
@@ -80,6 +110,7 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
 
 + (void)didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
+  NSLog(@"did receive remote notification");
   // If you are receiving a notification message while your app is in the background,
   // this callback will not be fired till the user taps on the notification launching the application.
   // TODO: Handle data of notification
@@ -98,7 +129,7 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
 + (void)applicationReceivedRemoteMessage:(nullable FIRMessagingRemoteMessage *)remoteMessage
 {
   // Print full message
-  NSLog(@"%@", remoteMessage.appData);
+  NSLog(@"application received remote message: %@", remoteMessage.appData);
 }
 
 + (void)tokenRefreshNotification:(nullable NSNotification *)notification
@@ -137,7 +168,7 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
   // Print message ID.
   NSDictionary *userInfo = notification.request.content.userInfo;
   if (userInfo[kGCMMessageIDKey]) {
-    NSLog(@"Message ID: %@", userInfo[kGCMMessageIDKey]);
+    NSLog(@"will present notification: Message ID: %@", userInfo[kGCMMessageIDKey]);
   }
   
   // Print full message.
@@ -151,7 +182,7 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
 {
   NSDictionary *userInfo = response.notification.request.content.userInfo;
   if (userInfo[kGCMMessageIDKey]) {
-    NSLog(@"Message ID: %@", userInfo[kGCMMessageIDKey]);
+    NSLog(@"did receive notification response, Message ID: %@", userInfo[kGCMMessageIDKey]);
   }
   
   // Print full message.

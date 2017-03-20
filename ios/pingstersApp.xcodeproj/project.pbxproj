@@ -24,6 +24,7 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		171C02BF1E4587F7002DB33B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 171C02BE1E4587F7002DB33B /* Podfile */; };
 		174261D31E77E67100012E9A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 174261D21E77E67100012E9A /* GoogleService-Info.plist */; };
+		1768ADB01E7FF94F00C8565E /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1768ADAD1E7FF91200C8565E /* libRCTPushNotification.a */; };
 		1776E6C01E791AC900A31769 /* YettaFCM.m in Sources */ = {isa = PBXBuildFile; fileRef = 1776E6BF1E791AC900A31769 /* YettaFCM.m */; };
 		177913791E4616EA000454F2 /* VinylMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 177913781E4616EA000454F2 /* VinylMapView.m */; };
 		1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1779137E1E464064000454F2 /* VinylMapViewManager.m */; };
@@ -97,6 +98,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
+		};
+		1768ADAC1E7FF91200C8565E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1768ADA71E7FF91200C8565E /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTPushNotification;
+		};
+		1768ADAE1E7FF91200C8565E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1768ADA71E7FF91200C8565E /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
+			remoteInfo = "RCTPushNotification-tvOS";
 		};
 		179BEF4A1E7153270087C0DB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -255,6 +270,7 @@
 		171C02BE1E4587F7002DB33B /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		174261D11E77E3AD00012E9A /* pingstersApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = pingstersApp.entitlements; path = pingstersApp/pingstersApp.entitlements; sourceTree = "<group>"; };
 		174261D21E77E67100012E9A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		1768ADA71E7FF91200C8565E /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		1776E6BE1E791AB300A31769 /* YettaFCM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YettaFCM.h; sourceTree = "<group>"; };
 		1776E6BF1E791AC900A31769 /* YettaFCM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaFCM.m; sourceTree = "<group>"; };
 		177913771E4615F9000454F2 /* VinylMapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VinylMapView.h; sourceTree = "<group>"; };
@@ -285,6 +301,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1768ADB01E7FF94F00C8565E /* libRCTPushNotification.a in Frameworks */,
 				179D3A1D1E4F3F6B00038FE8 /* libPods-pingstersApp.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -420,6 +437,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1768ADA81E7FF91200C8565E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1768ADAD1E7FF91200C8565E /* libRCTPushNotification.a */,
+				1768ADAF1E7FF91200C8565E /* libRCTPushNotification-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4C85FBF19A94E2FDD928D332 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -450,6 +476,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				1768ADA71E7FF91200C8565E /* RCTPushNotification.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -618,6 +645,10 @@
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
 				},
 				{
+					ProductGroup = 1768ADA81E7FF91200C8565E /* Products */;
+					ProjectRef = 1768ADA71E7FF91200C8565E /* RCTPushNotification.xcodeproj */;
+				},
+				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
 					ProjectRef = 139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */;
 				},
@@ -701,6 +732,20 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1768ADAD1E7FF91200C8565E /* libRCTPushNotification.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPushNotification.a;
+			remoteRef = 1768ADAC1E7FF91200C8565E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1768ADAF1E7FF91200C8565E /* libRCTPushNotification-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTPushNotification-tvOS.a";
+			remoteRef = 1768ADAE1E7FF91200C8565E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		179BEF4B1E7153270087C0DB /* libyoga.a */ = {
@@ -1017,6 +1062,7 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native/ReactCommon/**",
 					"$(SRCROOT)/../node_modules/React/**",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS",
 				);
 				INFOPLIST_FILE = pingstersApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1054,6 +1100,7 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native/ReactCommon/**",
 					"$(SRCROOT)/../node_modules/React/**",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS",
 				);
 				INFOPLIST_FILE = pingstersApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -11,6 +11,7 @@
 
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
+#import "RCTPushNotificationManager.h"
 
 #import "YettaFCM.h"
 
@@ -33,16 +34,23 @@
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions {
-  [YettaFCM requestPermissions];
-  return YES;
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
   
   [GMSServices provideAPIKey:@""];
+  
+  // Create a Mutable Dictionary to hold the appProperties to pass to React Native.
+  NSMutableDictionary *appProperties = [NSMutableDictionary dictionary];
+  
+  if (launchOptions != nil) {
+    // get notification used to launch application.
+    NSDictionary *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    
+    if (notification) {
+      [appProperties setObject:notification forKey:@"initialNotification"];
+    }
+  }
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
 
@@ -51,7 +59,8 @@
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
-
+  rootView.appProperties = appProperties;
+  
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
@@ -61,13 +70,21 @@
   [FIRApp configure];
   [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
 
+  [YettaFCM requestPermissions];
+  
   return YES;
 }
-
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
   [YettaFCM didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+  [RCTPushNotificationManager didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+  
+  [self alertForDebugging:@"didReceiveRemoteNotification" body:userInfo];
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+  [RCTPushNotificationManager didReceiveLocalNotification:notification];
 }
 
 // [START ios_10_message_handling]
@@ -76,12 +93,17 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
        willPresentNotification:(UNNotification *)notification
          withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
   [YettaFCM willPresentNotification:notification withCompletionHandler:completionHandler];
+  
+  [self alertForDebugging:@"willPresentNotification" body:notification.request.content.userInfo];
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void (^)())completionHandler {
+  [RCTPushNotificationManager didReceiveRemoteNotification:response.notification.request.content.userInfo fetchCompletionHandler:completionHandler];
   [YettaFCM didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
+  
+  [self alertForDebugging:@"didReceiveNotificationResponse" body:response.notification.request.content.userInfo];
 }
 #endif
 // [END ios_10_message_handling]
@@ -90,6 +112,8 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 - (void)applicationReceivedRemoteMessage:(FIRMessagingRemoteMessage *)remoteMessage {
   [YettaFCM applicationReceivedRemoteMessage:remoteMessage];
+  
+  [self alertForDebugging:@"applicationReceivedRemoteMessage" body:remoteMessage.appData];
 }
 #endif
 
@@ -105,4 +129,41 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
   [YettaFCM applicationDidEnterBackground:application];
 }
 
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+  NSLog(@"Unable to register for remote notifications: %@", error);
+  
+  [RCTPushNotificationManager didFailToRegisterForRemoteNotificationsWithError:error];
+}
+
+// This function is added here only for debugging purposes, and can be removed if swizzling is enabled.
+// If swizzling is disabled then this function must be implemented so that the APNs token can be paired to
+// the InstanceID token.
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  NSLog(@"APNs token retrieved: %@", deviceToken);
+  NSString *refreshedToken = [[FIRInstanceID instanceID] token];
+  NSLog(@"InstanceID token in requesting permission: %@", refreshedToken);
+  // With swizzling disabled you must set the APNs token here.
+  // [[FIRInstanceID instanceID] setAPNSToken:deviceToken type:FIRInstanceIDAPNSTokenTypeSandbox];
+  
+  [RCTPushNotificationManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+}
+
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(nonnull UIUserNotificationSettings *)notificationSettings {
+  [RCTPushNotificationManager didRegisterUserNotificationSettings:notificationSettings];
+}
+
+#ifdef DEBUG
+// alert messages for debugging when xcode or chrome debugger are not being helpful
+- (void)alertForDebugging:(NSString *)title body:(NSDictionary *)body {
+  NSError * err;
+  UIAlertController *alertvc = [UIAlertController alertControllerWithTitle:title message:[[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:body options:0 error:&err] encoding:NSUTF8StringEncoding] preferredStyle:UIAlertControllerStyleAlert];
+  UIAlertAction *actionOk = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    
+  }];
+  [alertvc addAction:actionOk];
+  
+  UIViewController *vc = self.window.rootViewController;
+  [vc presentViewController:alertvc animated:YES completion:nil];
+}
+#endif
 @end
