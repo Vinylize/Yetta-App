@@ -11,6 +11,7 @@
 
 #import "YettaLocationService.h"
 
+#import "YettaLocationServiceManager.h"
 
 @implementation YettaLocationService
 
@@ -26,7 +27,8 @@
     [locationManager requestAlwaysAuthorization];
   
   if ([CLLocationManager locationServicesEnabled]) {
-    // [locationManager startUpdatingLocation];
+    // todo: handle this to less consume battery
+    [locationManager startUpdatingLocation];
     NSLog(@"start location update");
   } else {
     NSLog(@"Location services is not enabled");
@@ -50,7 +52,14 @@
   
   NSLog(@"Latidude %f Longitude: %f", newLocation.coordinate.latitude, newLocation.coordinate.longitude);
   
-  [self saveNotification:@"test notification" :@"unique id" :NO :newLocation.coordinate];
+  // converts CLLocationCoordinate to NSString
+  NSString * latitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.latitude];
+  NSString * longitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.longitude];
+  // sending events to JS
+  [YettaLocationServiceManger didUpdateToLocation:latitude :longitude];
+  
+  // the following was to test location update when app is terminated by showing local notification.
+  // [self saveNotification:@"test notification" :@"unique id" :NO :newLocation.coordinate];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {

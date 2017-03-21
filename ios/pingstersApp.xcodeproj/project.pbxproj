@@ -26,6 +26,7 @@
 		174261D31E77E67100012E9A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 174261D21E77E67100012E9A /* GoogleService-Info.plist */; };
 		1768ADB01E7FF94F00C8565E /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1768ADAD1E7FF91200C8565E /* libRCTPushNotification.a */; };
 		1768ADF01E80469300C8565E /* YettaLocationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1768ADEF1E80469300C8565E /* YettaLocationService.m */; };
+		1768AE351E80F59E00C8565E /* YettaLocationServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1768AE341E80F59E00C8565E /* YettaLocationServiceManager.m */; };
 		1776E6C01E791AC900A31769 /* YettaFCM.m in Sources */ = {isa = PBXBuildFile; fileRef = 1776E6BF1E791AC900A31769 /* YettaFCM.m */; };
 		177913791E4616EA000454F2 /* VinylMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = 177913781E4616EA000454F2 /* VinylMapView.m */; };
 		1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1779137E1E464064000454F2 /* VinylMapViewManager.m */; };
@@ -274,6 +275,8 @@
 		1768ADA71E7FF91200C8565E /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		1768ADEF1E80469300C8565E /* YettaLocationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaLocationService.m; sourceTree = "<group>"; };
 		1768AE0C1E8046A100C8565E /* YettaLocationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YettaLocationService.h; sourceTree = "<group>"; };
+		1768AE341E80F59E00C8565E /* YettaLocationServiceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaLocationServiceManager.m; sourceTree = "<group>"; };
+		1768AE361E80F5B300C8565E /* YettaLocationServiceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YettaLocationServiceManager.h; sourceTree = "<group>"; };
 		1776E6BE1E791AB300A31769 /* YettaFCM.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YettaFCM.h; sourceTree = "<group>"; };
 		1776E6BF1E791AC900A31769 /* YettaFCM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaFCM.m; sourceTree = "<group>"; };
 		177913771E4615F9000454F2 /* VinylMapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VinylMapView.h; sourceTree = "<group>"; };
@@ -423,6 +426,8 @@
 				1776E6BF1E791AC900A31769 /* YettaFCM.m */,
 				1768ADEF1E80469300C8565E /* YettaLocationService.m */,
 				1768AE0C1E8046A100C8565E /* YettaLocationService.h */,
+				1768AE341E80F59E00C8565E /* YettaLocationServiceManager.m */,
+				1768AE361E80F5B300C8565E /* YettaLocationServiceManager.h */,
 			);
 			name = pingstersApp;
 			sourceTree = "<group>";
@@ -974,6 +979,7 @@
 				1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				1768AE351E80F59E00C8565E /* YettaLocationServiceManager.m in Sources */,
 				1768ADF01E80469300C8565E /* YettaLocationService.m in Sources */,
 				1776E6C01E791AC900A31769 /* YettaFCM.m in Sources */,
 				179BEF581E7156650087C0DB /* VinylMapMarkerView.swift in Sources */,
