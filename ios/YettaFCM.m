@@ -6,24 +6,6 @@
 //  Copyright © 2017 Facebook. All rights reserved.
 //
 
-//
-//  Copyright (c) 2016 Google Inc.
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//  http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
-//
-//  from https://github.com/firebase/quickstart-ios/blob/master/messaging/MessagingExample/AppDelegate.m
-//
-
 #import <Foundation/Foundation.h>
 
 #import "YettaFCM.h"
@@ -48,37 +30,10 @@
 
 NSString *const kGCMMessageIDKey = @"gcm.message_id";
 
-//
-//  the following part was an incomplete attempt to bridge events to JS when FCM messages received.
-//  since react-native/pushNotificationIOS is used from AppDelegate, the following part
-//  is unnecessary for awhile until bridging is needed. However, it is remained and commented out for future usage.
-//
 - (NSArray<NSString *> *)supportedEvents
 {
   return @[@"FCMNotificationReceived"];
 }
-//- (void)startObserving
-//{
-//  NSLog(@"start observing");
-//  [[NSNotificationCenter defaultCenter] addObserver:self
-//                                           selector:@selector(emitEventJS:)
-//                                               name:@"event-emitted"
-//                                             object:nil];
-//}
-//
-//- (void)emitEventJS:(nullable NSNotification *)notification
-//{
-//  NSLog(@"emit event to JS");
-//  [self sendEventWithName:@"FCMNotificationReceived" body:notification.userInfo];
-//}
-//
-//+ (void)emitEventWithName:(nullable NSString *)name andPayload:(nullable NSDictionary *)payload
-//{
-//  NSLog(@"emit event with name");
-//  [[NSNotificationCenter defaultCenter] postNotificationName:@"event-emitted"
-//                                                      object:self
-//                                                    userInfo:payload];
-//}
 
 + (void)requestPermissions
 {

@@ -14,6 +14,7 @@
 #import "RCTPushNotificationManager.h"
 
 #import "YettaFCM.h"
+#import "YettaLocationService.h"
 
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
 @import UserNotifications;
@@ -28,7 +29,9 @@
 // running iOS 10 and above. Implement FIRMessagingDelegate to receive data message via FCM for
 // devices running iOS 10 and above.
 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
-@interface AppDelegate () <UNUserNotificationCenterDelegate, FIRMessagingDelegate>
+@interface AppDelegate () <UNUserNotificationCenterDelegate, FIRMessagingDelegate> {
+  YettaLocationService * _yettaLocationService;
+}
 @end
 #endif
 
@@ -72,6 +75,28 @@
 
   [YettaFCM requestPermissions];
   
+  _yettaLocationService = [[YettaLocationService alloc] init];
+  [_yettaLocationService startLocationService];
+  
+#ifdef DEBUG
+  // register the app for local notifications.
+  if ([application respondsToSelector:@selector(registerUserNotificationSettings:)])
+    [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil]];
+  
+  // setup the local notification check.
+  UILocalNotification *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+  
+  // check if a local notification has been received.
+  if (notification) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self alertForDebugging:@"got local message!" body:notification.userInfo];
+    });
+  }
+#endif
+  
+  // ensure the notification badge number is hidden.
+  application.applicationIconBadgeNumber = 0;
+  
   return YES;
 }
 
@@ -84,6 +109,9 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+#ifdef DEBUG
+  [self alertForDebugging:@"local notification" body:notification.userInfo];
+#endif
   [RCTPushNotificationManager didReceiveLocalNotification:notification];
 }
 

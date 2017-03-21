@@ -36,9 +36,12 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>please allow locaion when in use</string>
+  <key>NSLocationAlwaysUsageDescription</key>
+  <string>please allow location always</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
