@@ -58,6 +58,14 @@ public class LocationUpdatesBroadcastReceiver extends BroadcastReceiver {
                     Utils.sendNotification(context, Utils.getLocationResultTitle(context, locations));
                     Log.i(TAG, "location update in background/terminated");
                     Log.i(TAG, Utils.getLocationUpdatesResult(context));
+
+                    /**
+                     * {@link YettaLocationModule#registerLocationUpdateBroadcastReceiver()} receives
+                     * the following broadcast in order to send location info to JS.
+                     */
+                    Intent i = new Intent("com.pingstersapp.LocationService.ReceiveLocationUpdateBackground");
+                    i.putExtra("locations", result);
+                    context.sendOrderedBroadcast(i, null);
                 }
             }
         }

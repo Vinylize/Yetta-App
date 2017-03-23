@@ -13,6 +13,7 @@ import com.facebook.soloader.SoLoader;
 import java.util.Arrays;
 import java.util.List;
 
+import com.pingstersapp.LocationService.YettaLocationPackage;
 import com.pingstersapp.VinylMap.VinylMapPackage;
 import com.pingstersapp.fcm.YettaFcmPackage;
 
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new YettaFcmPackage(),
+          new YettaLocationPackage(),
           new VinylMapPackage()
       );
     }

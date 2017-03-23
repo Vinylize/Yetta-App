@@ -5,6 +5,7 @@ import {
   NativeModules,
   PushNotificationIOS,
   Platform,
+  Alert,
   AlertIOS
 } from 'react-native';
 import { Provider } from 'react-redux';
@@ -21,8 +22,17 @@ export default class Vinyl extends Component {
 
   componentWillMount() {
     if (Platform.OS === 'android') {
+      // todo: research how to remove these listeners from DeviceEventEmitter for possible memory leaks
       DeviceEventEmitter.addListener('FCMNotificationReceived', async(data) => {
         console.log(data);
+      });
+      DeviceEventEmitter.addListener('didUpdateToLocationAndroidForeground', async(data) => {
+        console.log('foreground location update: ', data);
+        Alert.alert('foreground location update', JSON.stringify(data));
+      });
+      DeviceEventEmitter.addListener('didUpdateToLocationAndroidBackground', async(data) => {
+        console.log('background location update: ', data);
+        Alert.alert('background location update', JSON.stringify(data));
       });
     } else {
       PushNotificationIOS.addEventListener('register', console.log);

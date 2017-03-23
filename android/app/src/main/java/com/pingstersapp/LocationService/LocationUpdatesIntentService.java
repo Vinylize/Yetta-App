@@ -63,6 +63,14 @@ public class LocationUpdatesIntentService extends IntentService {
                     Utils.setLocationUpdatesResult(this, locations);
                     Utils.sendNotification(this, Utils.getLocationResultTitle(this, locations));
                     Log.i(TAG, Utils.getLocationUpdatesResult(this));
+
+                    /**
+                     * {@link YettaLocationModule#registerLocationUpdateBroadcastReceiver()} receives
+                     * the following broadcast in order to send location info to JS.
+                     */
+                    Intent i = new Intent("com.pingstersapp.LocationService.ReceiveLocationUpdateBackground");
+                    i.putExtra("locations", result);
+                    getApplicationContext().sendOrderedBroadcast(i, null);
                 }
             }
         }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -504,6 +505,14 @@ public class MainActivity extends ReactActivity implements
                 Toast.LENGTH_LONG).show();
 
         Log.d(TAG, "위치 변경중!");
+
+        /**
+         * {@link com.pingstersapp.LocationService.YettaLocationModule#registerForegroundLocationUpdateBroadcastReceiver(ReactApplicationContext)}
+         * receives the intent including {@link location}
+         */
+        Intent i = new Intent("com.pingstersapp.LocationService.ReceiveLocationUpdateForeground");
+        i.putExtra("locations", location);
+        getApplicationContext().sendOrderedBroadcast(i, null);
     }
 
     @Override
