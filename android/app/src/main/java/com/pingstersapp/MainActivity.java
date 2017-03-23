@@ -42,7 +42,8 @@ import com.pingstersapp.LocationService.*;
 public class MainActivity extends ReactActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     protected static final String TAG = "MainActivity";
 
@@ -342,6 +343,34 @@ public class MainActivity extends ReactActivity implements
     }
 
     /**
+     * request location update when app in background/terminated
+     * This should be called when app goes background/terminated
+     * calling it from onPause() should be fine since background/terminated invokes onPause() either way
+     */
+    public void requestLocationUpdatesBackground() {
+        try {
+            Log.i(TAG, "Starting location updates BACKGROUND");
+            Utils.setRequestingLocationUpdates(this, true);
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, getPendingIntent());
+        } catch (SecurityException e) {
+            Utils.setRequestingLocationUpdates(this, false);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * remove location update when app in background/terminated
+     * This is called from onStart() when app starts up
+     */
+    public void removeLocationUpdatesBackground() {
+        Log.i(TAG, "Removing location updates");
+        Utils.setRequestingLocationUpdates(this, false);
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,
+                getPendingIntent());
+    }
+
+    /**
      * Removes location updates from the FusedLocationApi.
      */
     protected void stopLocationUpdates() {
@@ -363,10 +392,10 @@ public class MainActivity extends ReactActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "on startttttt");
         mGoogleApiClient.connect();
-//        PreferenceManager.getDefaultSharedPreferences(this)
-//                .registerOnSharedPreferenceChangeListener(this);
+        Log.d(TAG, "ON START");
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -375,8 +404,10 @@ public class MainActivity extends ReactActivity implements
         // Within {@code onPause()}, we pause location updates, but leave the
         // connection to GoogleApiClient intact.  Here, we resume receiving
         // location updates if the user has requested them.
+        Log.d(TAG, "ON RESUME");
         if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
             startLocationUpdates();
+            Log.d(TAG, "CONNECT AGAIN");
         }
         // updateUI();
     }
@@ -387,15 +418,15 @@ public class MainActivity extends ReactActivity implements
         // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
         Log.d(TAG, "ON PAUSE");
         if (mGoogleApiClient.isConnected()) {
-            Log.d(TAG, "DISCONNECT!!");
-            stopLocationUpdates();
+            // stopLocationUpdates();
+            requestLocationUpdatesBackground();
         }
     }
 
     @Override
     protected void onStop() {
-//        PreferenceManager.getDefaultSharedPreferences(this)
-//                .unregisterOnSharedPreferenceChangeListener(this);
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
         super.onStop();
         Log.d(TAG,"DISCONNECT");
         mGoogleApiClient.disconnect();
@@ -422,6 +453,9 @@ public class MainActivity extends ReactActivity implements
             // updateLocationUI();
         }
         if (mRequestingLocationUpdates) {
+            Log.d(TAG, "removing background location update");
+            removeLocationUpdatesBackground();
+
             Log.i(TAG, "in onConnected(), starting location updates");
             startLocationUpdates();
         }
@@ -434,36 +468,24 @@ public class MainActivity extends ReactActivity implements
         // PendingIntent.getBroadcast() should be used. This is due to the limits placed on services
         // started in the background in "O".
 
-        Intent intent = new Intent(this, LocationUpdatesIntentService.class);
-        intent.setAction(LocationUpdatesIntentService.ACTION_PROCESS_UPDATES);
-        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // UNCOMMENT TO USE PendingIntent.getService()
+//        Intent intent = new Intent(this, LocationUpdatesIntentService.class);
+//        intent.setAction(LocationUpdatesIntentService.ACTION_PROCESS_UPDATES);
+//        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-//        Intent intent = new Intent(this, LocationUpdatesBroadcastReceiver.class);
-//        intent.setAction(LocationUpdatesBroadcastReceiver.ACTION_PROCESS_UPDATES);
-//        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(this, LocationUpdatesBroadcastReceiver.class);
+        intent.setAction(LocationUpdatesBroadcastReceiver.ACTION_PROCESS_UPDATES);
+        return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-
-//    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-//        if (s.equals(Utils.KEY_LOCATION_UPDATES_RESULT)) {
-//            // mLocationUpdatesResultView.setText(Utils.getLocationUpdatesResult(this));
-//        } else if (s.equals(Utils.KEY_LOCATION_UPDATES_REQUESTED)) {
-//            // updateButtonsState(Utils.getRequestingLocationUpdates(this));
-//        }
-//    }
-
-    /**
-     * Handles the Request Updates button and requests start of location updates.
-     */
-    public void requestLocationUpdates() {
-        try {
-            Log.i(TAG, "Starting location updates");
-            Utils.setRequestingLocationUpdates(this, true);
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, getPendingIntent());
-        } catch (SecurityException e) {
-            Utils.setRequestingLocationUpdates(this, false);
-            e.printStackTrace();
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        Log.d(TAG, "on shared preference changed");
+        if (s.equals(Utils.KEY_LOCATION_UPDATES_RESULT)) {
+            // mLocationUpdatesResultView.setText(Utils.getLocationUpdatesResult(this));
+            Log.d(TAG, Utils.getLocationUpdatesResult(this));
+        } else if (s.equals(Utils.KEY_LOCATION_UPDATES_REQUESTED)) {
+            // updateButtonsState(Utils.getRequestingLocationUpdates(this));
+            Log.d(TAG, Boolean.toString(Utils.getRequestingLocationUpdates(this)));
         }
     }
 

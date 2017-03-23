@@ -40,8 +40,16 @@
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
         <!-- [START location_service] -->
-        <service android:name=".LocationService.YettaLocationService"
-            android:exported="false" />
+        <!--<service -->
+            <!--android:name=".LocationService.LocationUpdatesIntentService"-->
+            <!--android:exported="false" />-->
+        <receiver
+            android:name=".LocationService.LocationUpdatesBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.pingstersapp.LocationService.LocationUpdatesBroadcastReceiver.ACTION_PROCESS_UPDATES" />
+            </intent-filter>
+        </receiver>
         <!-- [END location_service] -->
 
         <!-- [START firebase_service] -->
