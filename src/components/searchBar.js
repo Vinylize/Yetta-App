@@ -1,15 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   TextInput,
   View,
-  Image,
-  LayoutAnimation,
   Keyboard,
-  PanResponder,
   Dimensions,
   Animated,
-  Easing,
   Text,
   TouchableOpacity,
   ListView
@@ -25,91 +20,9 @@ export default class SearchBar extends Component {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       onFocused: false,
-      afterOnFocused: false,
-      animateSearchBoxTop: new Animated.Value(100),
-      animRotateX: new Animated.Value(0),
-      animRotateY: new Animated.Value(0),
       listViewDataSource: ds.cloneWithRows([])
     };
     this.renderListView = this.renderListView.bind(this);
-  }
-
-  componentWillMount() {
-    this.searchBarPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.searchBarHandlePanResponderGrant.bind(this),
-      onPanResponderMove: this.searchBarHandlePanResponderMove.bind(this),
-      onPanResponderRelease: this.searchBarHandlePanResponderRelease.bind(this)
-    });
-  }
-
-  searchBarHandlePanResponderMove(e, gestureState) {
-    const {dx, dy} = gestureState;
-    console.log(dx);
-    const y = `${dx / 11}deg`;
-    const x = `${-dy / 8}deg`;
-    this.refViewSearchBar.setNativeProps({style: {transform: [{perspective: 1000}, {rotateX: x}, {rotateY: y}]}});
-
-  }
-
-  searchBarHandlePanResponderGrant() {
-
-  }
-
-  searchBarHandlePanResponderRelease(e, gestureState) {
-    const {dx, dy} = gestureState;
-    this.animateSearchBoxRepos(dx, dy);
-  }
-
-  animateSearchBoxRepos(dx, dy) {
-    this.state.animRotateX.setValue(-dy / 10);
-    this.state.animRotateY.setValue(dx / 10);
-    Animated.parallel([
-      Animated.timing(
-        this.state.animRotateX,
-        {
-          toValue: 0,
-          duration: 500
-        }
-      ),
-      Animated.timing(
-        this.state.animRotateY,
-        {
-          toValue: 0,
-          duration: 500
-        }
-      )
-    ]).start();
-  }
-
-  animateSearchBoxUp() {
-    return;
-    this.state.animateSearchBoxTop.setValue(100);
-    Animated.timing(
-      this.state.animateSearchBoxTop,
-      {
-        toValue: 50,
-        duration: 300,
-        easing: Easing.linear
-      }).start();
-    LayoutAnimation.easeInEaseOut();
-    this.setState({onFocused: true});
-    setTimeout(() => this.setState({afterOnFocused: true}), 100);
-  }
-
-  animateSearchBoxDown() {
-    this.state.animateSearchBoxTop.setValue(50);
-    Animated.timing(
-      this.state.animateSearchBoxTop,
-      {
-        toValue: 100,
-        duration: 300,
-        easing: Easing.linear
-      }).start();
-    LayoutAnimation.easeInEaseOut();
-    this.setState({onFocused: false});
-    setTimeout(() => this.setState({afterOnFocused: false}), 100);
   }
 
   renderRow(rowData) {
@@ -149,15 +62,14 @@ export default class SearchBar extends Component {
     this.setState({
       text: text
     });
-    fetch(AUTOCOMPLETEURL,{method: 'GET'})
+    fetch(AUTOCOMPLETEURL, {method: 'GET'})
       .then(response => response.json())
       .then(rjson => {
         if (rjson.status === 'OK') {
           console.log(rjson);
           return rjson.predictions;
-        } else {
-          throw new Error(rjson.error_message);
         }
+        throw new Error(rjson.error_message);
       })
       .then(predictions => {
         console.log(predictions);
@@ -166,38 +78,24 @@ export default class SearchBar extends Component {
         });
         this.setState({listViewDataSource: this.state.listViewDataSource.cloneWithRows(arr)});
       })
-      .catch(console.log)
+      .catch(console.log);
   }
 
   render() {
-    const mappedOpacity = this.state.animateSearchBoxTop.interpolate({
-      inputRange: [50, 100],
-      outputRange: [1, 0]
-    });
-    const { onFocused, afterOnFocused, animRotateX, animRotateY } = this.state;
-    const interpolatedRotateX = animRotateX.interpolate({
-      inputRange: [0, 100],
-      outputRange: ['0deg', '100deg']
-    });
-    const interpolatedRotateY = animRotateY.interpolate({
-      inputRange: [0, 100],
-      outputRange: ['0deg', '100deg']
-    });
+    const { onFocused } = this.state;
     return (
       <View
         style={{
           position: 'absolute',
-          left: (WIDTH - WIDTH * 0.8) / 2,
-          top: 100,
+          left: (onFocused) ? 0 : (WIDTH - WIDTH * 0.8) / 2,
+          top: 0,
           width: WIDTH * 0.8,
           height: 40,
           backgroundColor: 'transparent',
           zIndex: 100
         }}
-        {...this.searchBarPanResponder.panHandlers}
       >
-        <Animated.View
-          ref={component => this.refViewSearchBar = component}
+        <View
           style={(onFocused) ? {
             position: 'absolute',
             left: 0,
@@ -209,21 +107,20 @@ export default class SearchBar extends Component {
           } : {
             position: 'absolute',
             left: 0,
-            top: this.state.animateSearchBoxTop - 100,
+            top: 100,
             width: WIDTH * 0.8,
             height: 40,
             backgroundColor: 'white',
             shadowOffset: {height: 1, width: 1},
             shadowOpacity: 0.2,
-            flexDirection: 'row',
-            transform: [{perspective: 1000}, {rotateX: interpolatedRotateX}, {rotateY: interpolatedRotateY}]
+            flexDirection: 'row'
           }
         }>
-          <View style={(onFocused) ? {
+          <TouchableOpacity style={(onFocused) ? {
               flex: 1,
               backgroundColor: 'white',
               shadowOffset: {height: 1, width: 1},
-              shadowOpacity: (afterOnFocused) ? 0.2 : 0,
+              shadowOpacity: 0.2,
               justifyContent: 'space-between',
               paddingLeft: 17,
               paddingRight: 20,
@@ -232,23 +129,26 @@ export default class SearchBar extends Component {
               zIndex: 1
             } : {
               flex: 10
-            }}>
-            <Animated.View style={[{
+            }}
+            onPress={() => {
+              this.setState({onFocused: !onFocused});
+            }}
+          >
+            <View style={{
               width: 30,
               height: 20,
               alignSelf: 'center',
-              marginTop: 5,
-              opacity: mappedOpacity
-            }, (onFocused) ? null : {position: 'absolute'}]}>
-              <TouchableOpacity
-                onPress={() => {
-                  this.animateSearchBoxDown();
+              marginTop: 5
+            }}>
+              {(onFocused) ?
+                <TouchableOpacity onPress={() => {
+                  this.setState({onFocused: false});
                   Keyboard.dismiss();
-                }}
-              >
-                <Text style={{fontSize: 10}}>back</Text>
-              </TouchableOpacity>
-            </Animated.View>
+                }}>
+                  <Text style={{fontSize: 10}}>back</Text>
+                </TouchableOpacity>
+                : null}
+            </View>
             {(onFocused) ?
               <TextInput
                 style={(onFocused) ? {
@@ -261,16 +161,15 @@ export default class SearchBar extends Component {
                   } : {height: 40, paddingLeft: 10}}
                 onChangeText={this.handleTextChange.bind(this)}
                 value={this.state.text}
-                onFocus={() => this.animateSearchBoxUp()}
               />
               : null}
-          </View>
+          </TouchableOpacity>
           {(onFocused) ?
             <View style={{flex: 6.5}}>
               {this.renderListView()}
             </View>
             : null}
-        </Animated.View>
+        </View>
       </View>
     );
   }

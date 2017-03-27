@@ -38,10 +38,10 @@ export default class Vinyl extends Component {
       PushNotificationIOS.addEventListener('register', console.log);
       PushNotificationIOS.addEventListener('registrationError', console.log);
       PushNotificationIOS.addEventListener('notification', this.receivedRemoteNotification);
-      this.subscriptionLocationServiceIOS = locationServiceManagerEmitter.addListener(
-        'didUpdateToLocation',
-        (data) => AlertIOS.alert('location update in JS', JSON.stringify(data))
-      );
+      // this.subscriptionLocationServiceIOS = locationServiceManagerEmitter.addListener(
+      //   'didUpdateToLocation',
+      //   (data) => AlertIOS.alert('location update in JS', JSON.stringify(data))
+      // );
     }
   }
 
