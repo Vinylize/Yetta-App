@@ -3,7 +3,7 @@ import Home from './../components/home';
 import Login from './../components/login';
 import Register from './../components/register';
 import PhoneVerification from './../components/phoneVerification';
-import CreateOrder from './../components/createOrder';
+import CreateOrder from '../components/createOrder/createOrder';
 
 const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
 

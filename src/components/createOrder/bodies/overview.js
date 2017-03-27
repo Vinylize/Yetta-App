@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Dimensions
 } from 'react-native';
-import { URL, handleError } from './../utils';
+import { URL, handleError } from '../../../utils';
 import * as firebase from 'firebase';
 
 const HEIGHT = Dimensions.get('window').height;
