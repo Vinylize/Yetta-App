@@ -5,6 +5,7 @@ import {
 
 import Header from './header/header';
 import Overview from './bodies/overview';
+import FindBrand from './bodies/findBrand';
 import FindStore from './bodies/findStore';
 
 const styles = {
@@ -20,7 +21,7 @@ export default class RegisterOrder extends Component {
   constructor() {
     super();
     this.state = {
-      // TBD
+      step: 0
     };
   }
 
@@ -28,11 +29,25 @@ export default class RegisterOrder extends Component {
     this.props.navigator.pop();
   }
 
+  handleBrandBtn() {
+    this.setState({step: this.state.step + 1});
+  }
+
+  renderBody() {
+    const { step } = this.state;
+    if (step === 0) {
+      return (<FindBrand handleBrandBtn={this.handleBrandBtn.bind(this)}/>);
+    } else if (step === 1) {
+      return (<FindStore/>);
+    }
+    return null;
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Header back={this.handleHeaderBackBtn.bind(this)}/>
-        <FindStore/>
+        {this.renderBody()}
       </View>
     );
   }

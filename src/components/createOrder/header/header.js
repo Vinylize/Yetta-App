@@ -19,8 +19,14 @@ const styles = {
     backgroundColor: '#feffff',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingTop: 20,
     zIndex: 1
+  },
+  headerLeftItem: {
+    position: 'absolute',
+    left: 22,
+    top: 47
   }
 };
 
@@ -29,11 +35,16 @@ export default class Header extends Component {
     return (
       <View style={styles.headerContainer}>
         <TouchableOpacity
-          style={{left: 22}}
+          style={styles.headerLeftItem}
           onPress={this.props.back}
         >
           <Text>back</Text>
         </TouchableOpacity>
+        <Text style={{
+          fontSize: 16
+        }}>
+          Find store
+        </Text>
       </View>
     );
   }

@@ -22,7 +22,8 @@ import {
 } from '../navigator/navigatorRoutes';
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
-import SearchBar from './searchBar';
+import SearchBar from './searchAddress/searchBar';
+import ApproveCard from './searchAddress/approveCard';
 
 let vmm = NativeModules.VinylMapManager;
 
@@ -59,7 +60,9 @@ export default class Home extends Component {
       cardExpanded: false,
       busyOnCardMoveX: false,
       busyOnCardMoveY: false,
-      processState: 2
+      processState: 2,
+      showApproveAddressCard: false,
+      searchedAddress: undefined
     };
   }
 
@@ -281,6 +284,21 @@ export default class Home extends Component {
     });
   }
 
+  handleSearchBarAddressBtn(address) {
+    // todo: change location to searched address
+    const { latitude, longitude } = this.state;
+    vmm.animateToLocation(String(latitude), String(longitude));
+    this.setState({
+      showApproveAddressCard: true,
+      searchedAddress: address
+    });
+  }
+
+  handleSearchedAddressApproveBtn() {
+    this.props.navigator.push(createOrderNavigatorRoute());
+    this.setState({showApproveAddressCard: false});
+  }
+
   renderMap() {
     if (Platform.OS === 'ios') {
       return (
@@ -302,33 +320,6 @@ export default class Home extends Component {
     }
     return (
       <VinylMapAndroid style={{flex: 1}}/>
-    );
-  }
-
-  renderSearchBar() {
-    return (
-      <View style={{
-        position: 'absolute',
-        left: (WIDTH - WIDTH * 0.8) / 2,
-        top: 100,
-        width: WIDTH * 0.8,
-        height: 40,
-        backgroundColor: 'white',
-        shadowOffset: {height: 1, width: 1},
-        shadowOpacity: 0.2,
-        flexDirection: 'row'
-      }}>
-        <View style={{flex: 1}}>
-
-        </View>
-        <View style={{flex: 10}}>
-          <TextInput
-            style={{height: 40, borderColor: 'gray', borderWidth: 0}}
-            onChangeText={(text) => this.setState({text})}
-            value={this.state.text}
-          />
-        </View>
-      </View>
     );
   }
 
@@ -944,9 +935,15 @@ export default class Home extends Component {
           <SearchBar
             latitude={this.state.latitude}
             longitude={this.state.longitude}
+            handleAddressBtn={this.handleSearchBarAddressBtn.bind(this)}
           />
+          {this.state.showApproveAddressCard ?
+            <ApproveCard
+              address={this.state.searchedAddress}
+              handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
+            />
+            : null}
           {this.renderLocationBtn()}
-          {this.renderAddBtn()}
           {this.renderCardContainer()}
         </Animated.View>
       </View>

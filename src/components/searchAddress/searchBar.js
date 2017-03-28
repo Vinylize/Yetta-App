@@ -4,12 +4,11 @@ import {
   View,
   Keyboard,
   Dimensions,
-  Animated,
   Text,
   TouchableOpacity,
   ListView
 } from 'react-native';
-import {APIKEY} from './../utils';
+import {APIKEY} from '../../utils';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -28,18 +27,24 @@ export default class SearchBar extends Component {
   renderRow(rowData) {
     console.log(rowData);
     return (
-      <View style={{
-        height: 50,
-        width: WIDTH,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f7f9f9',
-        justifyContent: 'center',
-        paddingLeft: 40
-      }}>
+      <TouchableOpacity
+        style={{
+          height: 50,
+          width: WIDTH,
+          borderBottomWidth: 1,
+          borderBottomColor: '#f7f9f9',
+          justifyContent: 'center',
+          paddingLeft: 40
+        }}
+        onPress={() => {
+          this.setState({onFocused: false});
+          this.props.handleAddressBtn(rowData);
+        }}
+      >
         <Text style={{
           color: '#303233'
         }}>{rowData}</Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -177,5 +182,6 @@ export default class SearchBar extends Component {
 
 SearchBar.propTypes = {
   latitude: PropTypes.number,
-  longitude: PropTypes.number
+  longitude: PropTypes.number,
+  handleAddressBtn: PropTypes.func.isRequired
 };
