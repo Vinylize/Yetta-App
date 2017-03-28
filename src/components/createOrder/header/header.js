@@ -45,11 +45,27 @@ export default class Header extends Component {
         }}>
           Find store
         </Text>
+        {(this.props.next) ?
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 22,
+            paddingTop: 47,
+            zIndex: 1
+          }}
+          onPress={this.props.next}
+        >
+          <Text>next</Text>
+        </TouchableOpacity>
+          : null
+        }
       </View>
     );
   }
 }
 
 Header.propTypes = {
-  back: PropTypes.func.isRequired
+  back: PropTypes.func.isRequired,
+  next: PropTypes.func
 };

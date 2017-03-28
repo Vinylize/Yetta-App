@@ -294,6 +294,11 @@ export default class Home extends Component {
     });
   }
 
+  handleCreateOrderDone() {
+    this.props.navigator.pop();
+    this.animateCardAppear();
+  }
+
   handleSearchedAddressApproveBtn() {
     this.props.navigator.push(createOrderNavigatorRoute());
     this.setState({showApproveAddressCard: false});

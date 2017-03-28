@@ -34,9 +34,11 @@ export function phoneVerificationNavigatorRoute() {
   };
 }
 
-export function createOrderNavigatorRoute() {
+export function createOrderNavigatorRoute(handleCreateOrderDone) {
+  console.log(handleCreateOrderDone);
   return {
     Component: CreateOrder,
+    props: {handleCreateOrderDone},
     sceneConfig
   };
 }

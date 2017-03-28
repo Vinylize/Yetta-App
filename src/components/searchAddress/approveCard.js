@@ -64,7 +64,7 @@ export default class ApproveCard extends Component {
             }}
             onPress={this.props.handleApproveBtn}
           >
-            <Text>
+            <Text style={{color: 'white'}}>
               이 주소로 주문하기
             </Text>
           </TouchableOpacity>
