@@ -35,10 +35,10 @@ export function phoneVerificationNavigatorRoute() {
 }
 
 export function createOrderNavigatorRoute(handleCreateOrderDone) {
-  console.log(handleCreateOrderDone);
+  console.log('from routes: ', handleCreateOrderDone);
   return {
     Component: CreateOrder,
-    props: {handleCreateOrderDone},
+    func: {handleCreateOrderDone},
     sceneConfig
   };
 }

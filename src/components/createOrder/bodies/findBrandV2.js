@@ -16,10 +16,8 @@ export default class FindBrandV2 extends Component {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       verticalListViewDataSource: ds.cloneWithRows([
-        ['편의점', '음식점', '수퍼'],
-        ['약국', '113', 'asdf'],
-        ['Stationery shop', 'others', 'yangwoo'],
-        ['events', 'hooka']
+        ['편의점', '음식점'],
+        ['수퍼', '약국']
       ])
     };
   }
@@ -46,9 +44,11 @@ export default class FindBrandV2 extends Component {
     return (
       <View style={{
         height: 174,
-        marginTop: 10,
+        marginTop: 40,
         backgroundColor: 'white',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
       }}>
         {arr}
       </View>
@@ -61,12 +61,10 @@ export default class FindBrandV2 extends Component {
         key={i}
         style={{
           height: 150,
-          width: 100,
+          width: WIDTH * 0.3,
           backgroundColor: 'white',
           borderRadius: 2,
-          marginTop: 16,
-          marginRight: 18,
-          marginLeft: 10,
+          margin: 20,
           marginBottom: 14,
           shadowOffset: {height: 3, width: 3},
           shadowOpacity: 0.3,
@@ -76,15 +74,14 @@ export default class FindBrandV2 extends Component {
         }}
         onPress={() => this.props.handleBrandBtn(rowData, index)}
       >
-        <View style={{
+        {false ? <View style={{
           width: 55,
           height: 55,
           backgroundColor: '#eeeff3',
           marginTop: 5,
           marginBottom: 20
         }}>
-
-        </View>
+        </View> : null}
         <Text>{rowData}</Text>
       </TouchableOpacity>
     );

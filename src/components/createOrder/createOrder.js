@@ -19,7 +19,7 @@ const styles = {
   }
 };
 
-export default class RegisterOrder extends Component {
+export default class CreateOrder extends Component {
   constructor() {
     super();
     this.state = {
@@ -33,6 +33,10 @@ export default class RegisterOrder extends Component {
         ['events', 'hooka']
       ]
     };
+  }
+
+  componentDidMount() {
+    console.log(this.props.func);
   }
 
   handleHeaderBackBtn() {
@@ -53,12 +57,14 @@ export default class RegisterOrder extends Component {
 
   handleNextBtn() {
     this.setState({step: this.state.step + 1});
+    console.log(this.props.func);
+
   }
 
   renderBody() {
     const { step, brandList, brandListDataSource, selectedBrand } = this.state;
     if (step === 0) {
-      return (<FindBrand handleBrandBtn={this.handleBrandBtn.bind(this)}/>);
+      return (<FindBrandV2 handleBrandBtn={this.handleBrandBtn.bind(this)}/>);
     } else if (step === 1) {
       return (
         <FindStore
@@ -74,6 +80,10 @@ export default class RegisterOrder extends Component {
     } else if (step === 3) {
       console.log(this.props);
       this.props.navigator.pop();
+      if (this.props.func) {
+        const { handleCreateOrderDone } = this.props.func;
+        handleCreateOrderDone();
+      }
     }
     return null;
   }
@@ -95,7 +105,8 @@ export default class RegisterOrder extends Component {
   }
 }
 
-RegisterOrder.propTypes = {
+CreateOrder.propTypes = {
   navigator: PropTypes.any,
-  handleCreateOrderDone: PropTypes.func
+  handleCreateOrderDone: PropTypes.func,
+  func: PropTypes.any
 };

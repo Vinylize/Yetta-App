@@ -51,7 +51,6 @@ export default class Home extends Component {
       menuClicked: false,
       shrinkValue: new Animated.Value(1),
       markerTest: false,
-      markerClicked: false,
       clickedMarkerID: undefined,
       animatedCardLeftVal: new Animated.Value(0),
       animatedCardBottomVal: new Animated.Value(cardInitBottom),
@@ -62,7 +61,7 @@ export default class Home extends Component {
       busyOnCardMoveY: false,
       processState: 2,
       showApproveAddressCard: false,
-      searchedAddress: undefined
+      searchedAddressTextView: []
     };
   }
 
@@ -284,13 +283,13 @@ export default class Home extends Component {
     });
   }
 
-  handleSearchBarAddressBtn(address) {
+  handleSearchBarAddressBtn(firstAddressToken, addressTextView) {
     // todo: change location to searched address
     const { latitude, longitude } = this.state;
     vmm.animateToLocation(String(latitude), String(longitude));
     this.setState({
       showApproveAddressCard: true,
-      searchedAddress: address
+      searchedAddressTextView: {firstAddressToken, addressTextView}
     });
   }
 
@@ -300,7 +299,7 @@ export default class Home extends Component {
   }
 
   handleSearchedAddressApproveBtn() {
-    this.props.navigator.push(createOrderNavigatorRoute());
+    this.props.navigator.push(createOrderNavigatorRoute(this.handleCreateOrderDone.bind(this)));
     this.setState({showApproveAddressCard: false});
   }
 
@@ -869,15 +868,10 @@ export default class Home extends Component {
 
   renderCardContainer() {
     const {
-      markerClicked,
       animatedCardLeftVal,
       animatedCardBottomVal,
       cardIndex
     } = this.state;
-
-    if (!markerClicked) {
-      return null;
-    }
 
     return (
       <Animated.View
@@ -913,7 +907,8 @@ export default class Home extends Component {
           shadowOpacity: 0.23
         }}
         onPress={() => {
-          this.props.navigator.push(createOrderNavigatorRoute());
+          //this.props.navigator.push(createOrderNavigatorRoute());
+          this.animateCardAppear();
           // const { markerTest, latitude, longitude } = this.state;
           // if (markerTest) {
           //  vmm.updateMarker(String(latitude), String(longitude));
@@ -936,7 +931,8 @@ export default class Home extends Component {
           {this.renderMap()}
           {this.renderMenuButton()}
           {this.renderMenu()}
-          {this.renderSwitch()}
+          {false && this.renderSwitch()}
+          {this.renderAddBtn()}
           <SearchBar
             latitude={this.state.latitude}
             longitude={this.state.longitude}
@@ -944,7 +940,7 @@ export default class Home extends Component {
           />
           {this.state.showApproveAddressCard ?
             <ApproveCard
-              address={this.state.searchedAddress}
+              address={this.state.searchedAddressTextView}
               handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
             />
             : null}

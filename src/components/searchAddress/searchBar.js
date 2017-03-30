@@ -26,6 +26,23 @@ export default class SearchBar extends Component {
 
   renderRow(rowData) {
     console.log(rowData);
+    let arr = [];
+    rowData.map((term, i) => {
+      if (i > 0) {
+        arr.push(
+          <Text
+            key={i}
+            style={{
+              fontSize: 10,
+              color: 'grey',
+              marginRight: 5
+            }}
+          >
+            {term.value}
+          </Text>
+        );
+      }
+    });
     return (
       <TouchableOpacity
         style={{
@@ -38,12 +55,27 @@ export default class SearchBar extends Component {
         }}
         onPress={() => {
           this.setState({onFocused: false});
-          this.props.handleAddressBtn(rowData);
+          this.props.handleAddressBtn(rowData[0].value, arr);
         }}
       >
-        <Text style={{
-          color: '#303233'
-        }}>{rowData}</Text>
+        <Text
+          style={{
+            color: '#303233'
+          }}
+          numberOfLines={1}
+        >
+          {rowData[0].value}
+        </Text>
+        {(arr.length === 0) ? null :
+          <View style={{
+            height: 20,
+            width: WIDTH,
+            flexDirection: 'row',
+            alignItems: 'center'
+          }}>
+            {arr}
+          </View>
+        }
       </TouchableOpacity>
     );
   }
@@ -62,25 +94,25 @@ export default class SearchBar extends Component {
   handleTextChange(text) {
     const AUTOCOMPLETEURL = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${text}` +
       `&location=${this.props.latitude},${this.props.longitude}&radius=500&key=${APIKEY}`;
-    console.log(AUTOCOMPLETEURL);
-    const arr = [];
     this.setState({
       text: text
     });
+    const arr = [];
+    arr.push([{value: '내 위치'}]);
     fetch(AUTOCOMPLETEURL, {method: 'GET'})
       .then(response => response.json())
       .then(rjson => {
-        if (rjson.status === 'OK') {
-          console.log(rjson);
+        const { status } = rjson;
+        if (status === 'OK') {
           return rjson.predictions;
         }
         throw new Error(rjson.error_message);
       })
       .then(predictions => {
-        console.log(predictions);
         predictions.map(place => {
-          arr.push(place.description);
+          arr.push(place.terms);
         });
+        arr.push([{value: '핀으로 찾기'}]);
         this.setState({listViewDataSource: this.state.listViewDataSource.cloneWithRows(arr)});
       })
       .catch(console.log);

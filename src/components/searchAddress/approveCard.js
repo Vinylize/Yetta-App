@@ -33,18 +33,18 @@ export default class ApproveCard extends Component {
           justifyContent: 'center',
           alignItems: 'center',
           marginLeft: 5,
-          marginRight: 5
+          marginRight: 5,
+          flexDirection: 'column'
         }}>
-          <Text
-            numberOfLines={2}
-            style={{
-              textAlign: 'center',
-              fontSize: 12,
-              marginTop: 10
-            }}
-          >
-            {this.props.address}
+          <Text style={{marginTop: 5}}>
+            {this.props.address.firstAddressToken}
           </Text>
+          <View style={{
+            flexDirection: 'row',
+            marginTop: 4
+          }}>
+            {this.props.address.addressTextView}
+          </View>
         </View>
         <View style={{
           flex: 1,
@@ -75,6 +75,6 @@ export default class ApproveCard extends Component {
 }
 
 ApproveCard.propTypes = {
-  address: PropTypes.string,
+  address: PropTypes.object,
   handleApproveBtn: PropTypes.func
 };
