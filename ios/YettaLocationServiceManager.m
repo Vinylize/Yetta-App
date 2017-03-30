@@ -58,4 +58,14 @@ RCT_EXPORT_MODULE();
                                                     userInfo:@{@"latitude": latitude, @"longitude": longitude}];
 }
 
+RCT_EXPORT_METHOD(startLocationService)
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"startLocationService" object:self];
+}
+
+RCT_EXPORT_METHOD(stopLocationService)
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"stopLocationService" object:self];
+}
+
 @end

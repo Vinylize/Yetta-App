@@ -24,6 +24,7 @@
 @property (nonatomic, retain) CLLocation *currentLocation;
 
 - (void)startLocationService;
+- (void)stopLocationService;
 
 @end
 

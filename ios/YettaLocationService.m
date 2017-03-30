@@ -37,6 +37,12 @@
   [self startSignificantChangeUpdates];
 }
 
+- (void)stopLocationService {
+  if (locationManager != nil) {
+    [locationManager stopUpdatingLocation];
+  }
+}
+
 - (void)startSignificantChangeUpdates
 {
   // Create the location manager if this object does not already have one.
