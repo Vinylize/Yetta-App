@@ -75,8 +75,7 @@
 
   [YettaFCM requestPermissions];
   
-  _yettaLocationService = [[YettaLocationService alloc] init];
-  [_yettaLocationService startLocationService];
+  [self addLocationServiceObservers];
   
 #ifdef DEBUG
   // register the app for local notifications.
@@ -100,12 +99,39 @@
   return YES;
 }
 
+- (void)addLocationServiceObservers
+{
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(startLocationService)
+                                               name:@"startLocationService"
+                                             object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(stopLocationService)
+                                               name:@"stopLocationService"
+                                             object:nil];
+}
+
+- (void)startLocationService
+{
+  _yettaLocationService = [[YettaLocationService alloc] init];
+  [_yettaLocationService startLocationService];
+  NSLog(@"start location service");
+}
+
+- (void)stopLocationService
+{
+  [_yettaLocationService stopLocationService];
+  NSLog(@"stop location service");
+}
+
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
   [YettaFCM didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
   [RCTPushNotificationManager didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
   
+  #ifdef DEBUG
   [self alertForDebugging:@"didReceiveRemoteNotification" body:userInfo];
+  #endif
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
@@ -122,7 +148,9 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
          withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
   [YettaFCM willPresentNotification:notification withCompletionHandler:completionHandler];
   
+  #ifdef DEBUG
   [self alertForDebugging:@"willPresentNotification" body:notification.request.content.userInfo];
+  #endif
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
@@ -131,7 +159,9 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
   [RCTPushNotificationManager didReceiveRemoteNotification:response.notification.request.content.userInfo fetchCompletionHandler:completionHandler];
   [YettaFCM didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
   
+  #ifdef DEBUG
   [self alertForDebugging:@"didReceiveNotificationResponse" body:response.notification.request.content.userInfo];
+  #endif
 }
 #endif
 // [END ios_10_message_handling]
@@ -141,7 +171,9 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 - (void)applicationReceivedRemoteMessage:(FIRMessagingRemoteMessage *)remoteMessage {
   [YettaFCM applicationReceivedRemoteMessage:remoteMessage];
   
+  #ifdef DEBUG
   [self alertForDebugging:@"applicationReceivedRemoteMessage" body:remoteMessage.appData];
+  #endif
 }
 #endif
 
