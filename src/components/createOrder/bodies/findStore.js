@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import {
   Dimensions,
   TouchableOpacity,
@@ -14,7 +14,7 @@ const styles = {
   // TBD
 };
 
-export default class FindStore extends Component {
+export default class FindStore extends PureComponent {
   constructor() {
     super();
   }
