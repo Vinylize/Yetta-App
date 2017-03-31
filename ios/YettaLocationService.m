@@ -28,7 +28,7 @@
   
   if ([CLLocationManager locationServicesEnabled]) {
     // todo: handle this to less consume battery
-    [locationManager startUpdatingLocation];
+    //[locationManager startUpdatingLocation];
     NSLog(@"start location update");
   } else {
     NSLog(@"Location services is not enabled");
