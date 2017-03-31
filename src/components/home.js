@@ -13,7 +13,8 @@ import {
   TouchableOpacity,
   Animated,
   Easing,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  ActivityIndicator
 } from 'react-native';
 import * as firebase from 'firebase';
 import {
@@ -39,6 +40,7 @@ const cardWidth = WIDTH * 0.92;
 const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
 const cardInitBottom = -expandedCardHeight + cardHeight;
+const cardHidedBottom = -expandedCardHeight;
 
 export default class Home extends Component {
   constructor() {
@@ -53,12 +55,13 @@ export default class Home extends Component {
       markerTest: false,
       clickedMarkerID: undefined,
       animatedCardLeftVal: new Animated.Value(0),
-      animatedCardBottomVal: new Animated.Value(cardInitBottom),
+      animatedCardBottomVal: new Animated.Value(cardHidedBottom),
       animMenu: new Animated.Value(-WIDTH * 0.8),
       cardIndex: 0,
       cardExpanded: false,
       busyOnCardMoveX: false,
       busyOnCardMoveY: false,
+      busyOnWaitingNewRunner: false,
       processState: 2,
       showApproveAddressCard: false,
       searchedAddressTextView: []
@@ -296,6 +299,7 @@ export default class Home extends Component {
   handleCreateOrderDone() {
     this.props.navigator.pop();
     this.animateCardAppear();
+    this.setState({busyOnWaitingNewRunner: true});
   }
 
   handleSearchedAddressApproveBtn() {
@@ -606,12 +610,23 @@ export default class Home extends Component {
             justifyContent: 'center',
             alignItems: 'flex-end'
           }}>
-            <View style={{
-              width: 56,
-              height: 56,
-              borderRadius: 50,
-              backgroundColor: '#d8d8d8'
-            }}/>
+            {this.state.busyOnWaitingNewRunner ?
+              <ActivityIndicator
+                animating={true}
+                style={{
+                  width: 56,
+                  height: 56
+                }}
+                size="large"
+              />
+              :
+              <View style={{
+                width: 56,
+                height: 56,
+                borderRadius: 50,
+                backgroundColor: '#d8d8d8'
+              }}/>
+            }
           </View>
           <View style={{
             flex: 3.5,
@@ -629,7 +644,9 @@ export default class Home extends Component {
                 <Text style={{
                   marginBottom: 3,
                   marginLeft: 12
-                }}>{header}</Text>
+                }}>{this.state.busyOnWaitingNewRunner ?
+                  '근처의 러너를 찾는중'
+                  : header}</Text>
               </View>
               <View style={{flex: 1}}>
                 <Text style={{
@@ -870,7 +887,8 @@ export default class Home extends Component {
     const {
       animatedCardLeftVal,
       animatedCardBottomVal,
-      cardIndex
+      cardIndex,
+      cardAppeared
     } = this.state;
 
     return (

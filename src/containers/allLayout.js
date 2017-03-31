@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 const renderScene = (route, navigator) => {
   const { Component } = route;
   console.log('from allLayout: ', route);
-  console.log('', route.func);
   return (
     <Component
       navigator={navigator}
