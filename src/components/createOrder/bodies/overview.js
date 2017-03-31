@@ -57,17 +57,18 @@ export default class RegisterOrder extends Component {
             }
         }`)
           .then(res => res.userCreateOrder.result)
-          .then(this.addNewRunnerListener)
+          .then(this.addNewRunnerListener.bind(this))
           .catch(handleError);
       });
   }
 
   addNewRunnerListener(orderId) {
-    firebase.database().ref().child('order').child(orderId).child('runnerId')
-      .on('value', (childSnapshot, prevChildKey) => {
-        console.log(childSnapshot.val(), prevChildKey);
-        // todo: implement this
-      });
+    const ref = firebase.database().ref().child('order').child(orderId).child('runnerId');
+    ref.on('value', (childSnapshot, prevChildKey) => {
+      console.log(childSnapshot.val(), prevChildKey);
+      // todo: implement this
+    });
+    this.props.handleCreateOrderDone();
   }
 
   renderHeader() {
@@ -83,14 +84,7 @@ export default class RegisterOrder extends Component {
         alignItems: 'center',
         paddingTop: 20,
         zIndex: 1
-      }}>
-        <TouchableOpacity
-          style={{left: 20}}
-          onPress={() => this.props.navigator.pop()}
-        >
-          <Text>back</Text>
-        </TouchableOpacity>
-      </View>
+      }}/>
     );
   }
 
@@ -306,5 +300,5 @@ export default class RegisterOrder extends Component {
 }
 
 RegisterOrder.propTypes = {
-  navigator: PropTypes.any
+  handleCreateOrderDone: PropTypes.func
 };
