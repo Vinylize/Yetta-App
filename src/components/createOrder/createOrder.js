@@ -35,10 +35,6 @@ export default class CreateOrder extends Component {
     };
   }
 
-  componentDidMount() {
-    console.log(this.props.func);
-  }
-
   handleHeaderBackBtn() {
     if (this.state.step === 0) {
       this.props.navigator.pop();
@@ -56,9 +52,12 @@ export default class CreateOrder extends Component {
   }
 
   handleNextBtn() {
-    this.setState({step: this.state.step + 1});
-    console.log(this.props.func);
-
+    const { step } = this.state;
+    this.setState({step: step + 1});
+    if (step === 2 && this.props.func) {
+      const { handleCreateOrderDone } = this.props.func;
+      handleCreateOrderDone();
+    }
   }
 
   renderBody() {
@@ -77,13 +76,6 @@ export default class CreateOrder extends Component {
       return (
         <AddProduct/>
       );
-    } else if (step === 3) {
-      console.log(this.props);
-      this.props.navigator.pop();
-      if (this.props.func) {
-        const { handleCreateOrderDone } = this.props.func;
-        handleCreateOrderDone();
-      }
     }
     return null;
   }
