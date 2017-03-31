@@ -41,6 +41,7 @@ const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
 const cardInitBottom = -expandedCardHeight + cardHeight;
 const cardHidedBottom = -expandedCardHeight;
+const menuWidth = WIDTH * 0.8;
 
 export default class Home extends Component {
   constructor() {
@@ -56,7 +57,7 @@ export default class Home extends Component {
       clickedMarkerID: undefined,
       animatedCardLeftVal: new Animated.Value(0),
       animatedCardBottomVal: new Animated.Value(cardHidedBottom),
-      animMenu: new Animated.Value(-WIDTH * 0.8),
+      animMenu: new Animated.Value(-menuWidth),
       cardIndex: 0,
       cardExpanded: false,
       busyOnCardMoveX: false,
@@ -94,6 +95,7 @@ export default class Home extends Component {
 
     this.state.animMenu.addListener(value => {
       this.animMenuValue = value.value;
+      this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
     });
   }
 
@@ -451,6 +453,7 @@ export default class Home extends Component {
     }
     if (this.animMenuValue + dx < 0) {
       this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
+      this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
     }
   }
 
@@ -943,12 +946,15 @@ export default class Home extends Component {
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
-        <Animated.View style={(this.state.menuClicked) ? {
-          flex: 1, left: 20, transform: [{scale: this.state.shrinkValue}]
-          } : {flex: 1, transform: [{scale: this.state.shrinkValue}]}}>
+        {this.renderMenu()}
+        <Animated.View
+          ref={component => this.refViewContainerWithoutMenu = component}
+          style={(this.state.menuClicked) ? {
+            flex: 1, left: 20, transform: [{scale: this.state.shrinkValue}]
+          } : {flex: 1, transform: [{scale: this.state.shrinkValue}]}}
+        >
           {this.renderMap()}
           {this.renderMenuButton()}
-          {this.renderMenu()}
           {false && this.renderSwitch()}
           {this.renderAddBtn()}
           <SearchBar
