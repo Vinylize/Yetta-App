@@ -1,19 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import {
   DeviceEventEmitter,
-  NativeEventEmitter,
-  NativeModules,
   PushNotificationIOS,
   Platform,
-  Alert,
   AlertIOS
 } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './store';
 import AllLayout from './containers/allLayout';
-
-const { YettaLocationServiceManger } = NativeModules;
-const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServiceManger);
 
 export default class Vinyl extends Component {
   constructor() {
@@ -26,22 +20,10 @@ export default class Vinyl extends Component {
       DeviceEventEmitter.addListener('FCMNotificationReceived', async(data) => {
         console.log(data);
       });
-      DeviceEventEmitter.addListener('didUpdateToLocationAndroidForeground', async(data) => {
-        console.log('foreground location update: ', data);
-        Alert.alert('foreground location update', JSON.stringify(data));
-      });
-      DeviceEventEmitter.addListener('didUpdateToLocationAndroidBackground', async(data) => {
-        console.log('background location update: ', data);
-        Alert.alert('background location update', JSON.stringify(data));
-      });
     } else {
       PushNotificationIOS.addEventListener('register', console.log);
       PushNotificationIOS.addEventListener('registrationError', console.log);
       PushNotificationIOS.addEventListener('notification', this.receivedRemoteNotification);
-      // this.subscriptionLocationServiceIOS = locationServiceManagerEmitter.addListener(
-      //   'didUpdateToLocation',
-      //   (data) => AlertIOS.alert('location update in JS', JSON.stringify(data))
-      // );
     }
   }
 
@@ -56,10 +38,6 @@ export default class Vinyl extends Component {
     PushNotificationIOS.removeEventListener('register', console.log);
     PushNotificationIOS.removeEventListener('registrationError', console.log);
     PushNotificationIOS.removeEventListener('notification', console.log);
-
-    if (this.subscriptionLocationServiceIOS) {
-      this.subscriptionLocationServiceIOS.remove();
-    }
   }
 
   receivedRemoteNotification(notification) {

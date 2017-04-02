@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Alert,
+  AlertIOS,
   Text,
   View,
   Dimensions,
@@ -9,6 +10,7 @@ import {
   PanResponder,
   Platform,
   NativeModules,
+  NativeEventEmitter,
   TextInput,
   TouchableOpacity,
   Animated,
@@ -25,8 +27,19 @@ import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
 import SearchBar from './searchAddress/searchBar';
 import ApproveCard from './searchAddress/approveCard';
+import { URL } from './../utils';
 
 let vmm = NativeModules.VinylMapManager;
+
+const Lokka = require('lokka').Lokka;
+const Transport = require('lokka-transport-http').Transport;
+
+const client = new Lokka({
+  transport: new Transport(URL)
+});
+
+const { YettaLocationServiceManger } = NativeModules;
+const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServiceManger);
 
 const styles = {
   container: {
@@ -97,6 +110,64 @@ export default class Home extends Component {
       this.animMenuValue = value.value;
       this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
     });
+
+    if (Platform.OS === 'android') {
+      DeviceEventEmitter.addListener('didUpdateToLocationAndroidForeground', async(data) => {
+        console.log('foreground location update: ', data);
+        Alert.alert('foreground location update', JSON.stringify(data));
+      });
+      DeviceEventEmitter.addListener('didUpdateToLocationAndroidBackground', async(data) => {
+        console.log('background location update: ', data);
+        Alert.alert('background location update', JSON.stringify(data));
+      });
+    } else {
+      YettaLocationServiceManger.startLocationService();
+      this.subscriptionLocationServiceIOS = locationServiceManagerEmitter.addListener(
+        'didUpdateToLocation',
+        (data) => {
+          //AlertIOS.alert('location update in JS', JSON.stringify(data));
+          //console.log(data);
+          this.setState({
+            latitude: data.latitude,
+            longitude: data.longitude
+          });
+          if (vmm) {
+            vmm.animateToLocation(data.latitude, data.longitude);
+          }
+          if (firebase.auth().currentUser) {
+            firebase.auth().currentUser.getToken().then(token => this.userUpdateCoordinateHelper(token, data));
+          }
+        }
+      );
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.subscriptionLocationServiceIOS) {
+      console.log('unsubscribe locationServiceIOS');
+      this.subscriptionLocationServiceIOS.remove();
+    }
+    YettaLocationServiceManger.stopLocationService();
+  }
+
+  userUpdateCoordinateHelper(token, data) {
+    //console.log(token);
+    client._transport._httpOptions.headers = {
+      authorization: token
+    };
+    client.mutate(`{
+            userUpdateCoordinate(
+              input:{
+                lat: ${data.latitude},
+                lon: ${data.longitude}
+              }
+            ) {
+              result
+            }
+          }`
+    )
+      .then(console.log)
+      .catch(console.log);
   }
 
   componentDidMount() {
