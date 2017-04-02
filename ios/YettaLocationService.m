@@ -20,7 +20,7 @@
 - (void)startLocationService {
   locationManager = [[CLLocationManager alloc] init];
   locationManager.delegate = self;
-  
+  self.deferringUpdates = NO;
   CLAuthorizationStatus authorizationStatus= [CLLocationManager authorizationStatus];
   // todo: change the following condition to handle more detailed situations
   if (authorizationStatus != kCLAuthorizationStatusAuthorizedAlways)
@@ -28,7 +28,11 @@
   
   if ([CLLocationManager locationServicesEnabled]) {
     // todo: handle this to less consume battery
-    //[locationManager startUpdatingLocation];
+
+    //locationManager.allowsBackgroundLocationUpdates = false;
+    //locationManager.pausesLocationUpdatesAutomatically = false;
+    locationManager.distanceFilter = 10; // meters
+    [locationManager startUpdatingLocation];
     NSLog(@"start location update");
   } else {
     NSLog(@"Location services is not enabled");
@@ -40,6 +44,7 @@
 - (void)stopLocationService {
   if (locationManager != nil) {
     [locationManager stopUpdatingLocation];
+    [locationManager stopMonitoringSignificantLocationChanges];
   }
 }
 
@@ -53,17 +58,50 @@
   [locationManager startMonitoringSignificantLocationChanges];
 }
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-  self.currentLocation = newLocation;
-  
-  NSLog(@"Latidude %f Longitude: %f", newLocation.coordinate.latitude, newLocation.coordinate.longitude);
+- (void)locationManager:(CLLocationManager *)manager didFinishDeferredUpdatesWithError:(NSError *)error
+{
+  NSLog(@"%@", error);
+  self.deferringUpdates = NO;
+}
+
+- (void)updateLocationHelper:(CLLocation *)newLocation
+{
+  NSLog(@"sending events to JS: latitude %f longitude %f", newLocation.coordinate.latitude, newLocation.coordinate.longitude);
   
   // converts CLLocationCoordinate to NSString
   NSString * latitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.latitude];
   NSString * longitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.longitude];
+  
   // sending events to JS
   [YettaLocationServiceManger didUpdateToLocation:latitude :longitude];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(nonnull NSArray<CLLocation *> *)locations
+{
+  CLLocation * lastLocation = [locations lastObject];
+  //self.currentLocation = lastLocation;
+  NSLog(@"didUpdateLocations: latitude %f longitude %f", lastLocation.coordinate.latitude, lastLocation.coordinate.longitude);
   
+  if (!self.deferringUpdates) {
+    CLLocationDistance distance = [currentLocation distanceFromLocation:lastLocation];
+    NSLog(@"거리 %f", distance);
+    if (distance < 10) {
+      [locationManager allowDeferredLocationUpdatesUntilTraveled:10 - distance timeout:3];
+      self.deferringUpdates = YES;
+    }
+    [self updateLocationHelper:lastLocation];
+    self.currentLocation = lastLocation;
+  }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+  NSLog(@"didUpdateToLocation: latitude %f longitude %f", newLocation.coordinate.latitude, newLocation.coordinate.longitude);
+  CLLocationDistance distance = [newLocation distanceFromLocation:currentLocation];
+  if (distance > 10) {
+    self.currentLocation = newLocation;
+    [self updateLocationHelper:newLocation];
+  }
+
   // the following was to test location update when app is terminated by showing local notification.
   // [self saveNotification:@"test notification" :@"unique id" :NO :newLocation.coordinate];
 }

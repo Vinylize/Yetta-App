@@ -125,9 +125,18 @@ export default class Home extends Component {
       this.subscriptionLocationServiceIOS = locationServiceManagerEmitter.addListener(
         'didUpdateToLocation',
         (data) => {
-          AlertIOS.alert('location update in JS', JSON.stringify(data));
-
-          firebase.auth().currentUser.getToken().then(token => this.userUpdateCoordinateHelper(token, data));
+          //AlertIOS.alert('location update in JS', JSON.stringify(data));
+          //console.log(data);
+          this.setState({
+            latitude: data.latitude,
+            longitude: data.longitude
+          });
+          if (vmm) {
+            vmm.animateToLocation(data.latitude, data.longitude);
+          }
+          if (firebase.auth().currentUser) {
+            firebase.auth().currentUser.getToken().then(token => this.userUpdateCoordinateHelper(token, data));
+          }
         }
       );
     }
@@ -135,12 +144,14 @@ export default class Home extends Component {
 
   componentWillUnmount() {
     if (this.subscriptionLocationServiceIOS) {
+      console.log('unsubscribe locationServiceIOS');
       this.subscriptionLocationServiceIOS.remove();
     }
+    YettaLocationServiceManger.stopLocationService();
   }
 
   userUpdateCoordinateHelper(token, data) {
-    console.log(token);
+    //console.log(token);
     client._transport._httpOptions.headers = {
       authorization: token
     };

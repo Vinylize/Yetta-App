@@ -22,6 +22,7 @@
 
 @property (nonatomic, retain) CLLocationManager *locationManager;
 @property (nonatomic, retain) CLLocation *currentLocation;
+@property (nonatomic, assign) BOOL deferringUpdates;
 
 - (void)startLocationService;
 - (void)stopLocationService;
