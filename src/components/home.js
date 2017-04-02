@@ -78,8 +78,10 @@ export default class Home extends Component {
       busyOnWaitingNewRunner: false,
       processState: 2,
       showApproveAddressCard: false,
-      searchedAddressTextView: []
+      searchedAddressTextView: [],
+      trackingCurrentPos: false
     };
+    this.initialLocationUpdate = false;
   }
 
   componentWillMount() {
@@ -125,13 +127,17 @@ export default class Home extends Component {
       this.subscriptionLocationServiceIOS = locationServiceManagerEmitter.addListener(
         'didUpdateToLocation',
         (data) => {
+          if (this.initialLocationUpdate === false) {
+            vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
+            this.initialLocationUpdate = true;
+          }
           //AlertIOS.alert('location update in JS', JSON.stringify(data));
           //console.log(data);
           this.setState({
             latitude: data.latitude,
             longitude: data.longitude
           });
-          if (vmm) {
+          if (vmm && this.state.trackingCurrentPos) {
             vmm.animateToLocation(data.latitude, data.longitude);
           }
           if (firebase.auth().currentUser) {
@@ -171,19 +177,11 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { longitude, latitude } = position.coords;
-        this.setState({
-          longitude: longitude,
-          latitude: latitude
-        });
-      },
-      (error) => {
-        console.log(JSON.stringify(error));
-      },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-    );
+    const { longitude, latitude } = this.state;
+    console.log(longitude, latitude);
+    if (vmm) {
+      vmm.animateToLocationWithZoom(String(longitude), String(latitude), 16.0);
+    }
   }
 
   cardHandlePanResponderGrant() {
@@ -386,7 +384,7 @@ export default class Home extends Component {
         <VinylMapIOS
           style={{flex: 1}}
           onPress={(e) => {
-            // console.log(e.nativeEvent);
+            console.log(e.nativeEvent);
           }}
           onMarkerPress={(e) => {
             // console.log(e.nativeEvent);
@@ -395,6 +393,16 @@ export default class Home extends Component {
               this.animateCardAppear();
             }
             this.setState({markerClicked: !this.state.markerClicked});
+          }}
+          onMapMove={(e) => {
+            console.log('mapmoved', e.nativeEvent);
+            const { gesture } = e.nativeEvent;
+            const { trackingCurrentPos } = this.state;
+            // if gesture is true, map is moved by user
+            if (trackingCurrentPos && gesture) {
+              LayoutAnimation.easeInEaseOut();
+              this.setState({trackingCurrentPos: false});
+            }
           }}
         />
       );
@@ -478,6 +486,8 @@ export default class Home extends Component {
           const { latitude, longitude } = this.state;
           console.log(latitude, longitude);
           vmm.animateToLocation(String(latitude), String(longitude));
+          LayoutAnimation.easeInEaseOut();
+          this.setState({trackingCurrentPos: true});
         }}
       >
 
@@ -1039,7 +1049,7 @@ export default class Home extends Component {
               handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
             />
             : null}
-          {this.renderLocationBtn()}
+          {this.state.trackingCurrentPos ? null : this.renderLocationBtn()}
           {this.renderCardContainer()}
         </Animated.View>
       </View>

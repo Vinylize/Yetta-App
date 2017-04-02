@@ -35,6 +35,13 @@
   return self;
 }
 
+- (id)eventMapMoved:(BOOL)gesture {
+  NSLog(@"sending event map willMove");
+  return @{
+            @"gesture": @(gesture)
+           };
+}
+
 - (id)eventFromCoordinate:(CLLocationCoordinate2D)coordinate {
   return @{
            @"coordinate": @{
@@ -63,6 +70,11 @@
 
 - (void)animateToLocation:(NSString *)latitude longitude:(NSString *)longitude {
   [_map animateToLocation: CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
+}
+
+- (void)animateToLocationWithZoom:(NSString *)latitude longitude:(NSString *)longitude zoom:(float)zoom {
+  [_map animateToLocation:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
+  [_map animateToZoom:zoom];
 }
 
 - (void)moveMarker:(NSString *)latitude longitude:(NSString *)longitude {
@@ -100,6 +112,13 @@
 #pragma mark - GMSMapViewDelegate
 
 - (void)mapView:(GMSMapView *)mapView willMove:(BOOL)gesture {
+  NSLog(@"map moved with yes");
+  if (!self.onMapMove) return;
+  self.onMapMove([self eventMapMoved:gesture]);
+
+}
+
+- (void)mapView:(GMSMapView *)mapView idleAtCameraPosition:(GMSCameraPosition *)position {
   // TBD
 }
 
