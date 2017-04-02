@@ -86,11 +86,12 @@
     CLLocationDistance distance = [currentLocation distanceFromLocation:lastLocation];
     NSLog(@"거리 %f", distance);
     if (distance < 10) {
-      [locationManager allowDeferredLocationUpdatesUntilTraveled:10 - distance timeout:3];
+      [locationManager allowDeferredLocationUpdatesUntilTraveled:10 - distance timeout:CLTimeIntervalMax];
       self.deferringUpdates = YES;
     }
     [self updateLocationHelper:lastLocation];
     self.currentLocation = lastLocation;
+    [locationManager disallowDeferredLocationUpdates];
   }
 }
 
