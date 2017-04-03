@@ -374,7 +374,11 @@ export default class Home extends Component {
   }
 
   handleSearchedAddressApproveBtn() {
-    this.props.navigator.push(createOrderNavigatorRoute(this.handleCreateOrderDone.bind(this)));
+    this.props.navigator.push(createOrderNavigatorRoute(
+      this.handleCreateOrderDone.bind(this),
+      this.state.latitude,
+      this.state.longitude
+    ));
     this.setState({showApproveAddressCard: false});
   }
 

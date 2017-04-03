@@ -34,11 +34,11 @@ export function phoneVerificationNavigatorRoute() {
   };
 }
 
-export function createOrderNavigatorRoute(handleCreateOrderDone) {
-  console.log('from routes: ', handleCreateOrderDone);
+export function createOrderNavigatorRoute(handleCreateOrderDone, latitude, longitude) {
   return {
     Component: CreateOrder,
     func: {handleCreateOrderDone},
+    coordinate: {latitude, longitude},
     sceneConfig
   };
 }

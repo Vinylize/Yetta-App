@@ -4,8 +4,17 @@ import {
   TouchableOpacity,
   Text,
   View,
-  ListView
+  ListView,
+  Alert
 } from 'react-native';
+import { URL } from './../../../utils';
+import * as firebase from 'firebase';
+const Lokka = require('lokka').Lokka;
+const Transport = require('lokka-transport-http').Transport;
+
+const client = new Lokka({
+  transport: new Transport(URL)
+});
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -17,8 +26,18 @@ const styles = {
 export default class FindStore extends PureComponent {
   constructor() {
     super();
+    this.renderBrandListRow = this.renderBrandListRow.bind(this);
+    this.handleBrandNameBtn = this.handleBrandNameBtn.bind(this);
+    this.getStoreListFromServer = this.getStoreListFromServer.bind(this);
+    this.setStoreListFromServer = this.setStoreListFromServer.bind(this);
+    this.queryNodeHelper = this.queryNodeHelper.bind(this);
+    this.state = {
+      dsStore: []
+    };
+    this.getStoreListFromServer();
   }
-  renderVerticalRow() {
+  renderVerticalRow(rowData) {
+    const { address, name, distanceFromMe } = rowData;
     return (
       <TouchableOpacity
         style={{
@@ -30,30 +49,87 @@ export default class FindStore extends PureComponent {
           margin: 10,
           flexDirection: 'column',
           justifyContent: 'center',
-          paddingLeft: 30
+          paddingLeft: 30,
+          paddingRight: 30
         }}
         onPress={this.props.handleNextBtn}
       >
-        <Text>
-          CU Jongro K twin tower
-        </Text>
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <Text>
+            {name}
+          </Text>
+          <Text style={{
+            fontSize: 10
+          }}>
+            {Math.floor(distanceFromMe)} m
+          </Text>
+        </View>
         <Text style={{
           fontSize: 12,
           color: '#abb5b6',
           marginTop: 10
         }}>
-          50 Jong-ro 1-gil, Jongno-gu, Seoul
-          Everyday, 00:00~24:00
+          {address}
         </Text>
       </TouchableOpacity>
     );
   }
 
+  handleBrandNameBtn(name) {
+    this.getStoreListFromServer();
+  }
+
+  queryNodeHelper(token) {
+    client._transport._httpOptions.headers = {
+      authorization: token
+    };
+    const { latitude, longitude } = this.props.coordinate;
+    return client.query(`{
+      viewer{
+        node (lat: ${latitude}, lon: ${longitude}, radius: 10000, category1: "CVS") {
+          name,
+          address,
+          distanceFromMe
+        }
+      }
+    }`);
+  }
+
+  getStoreListFromServer() {
+    return firebase.auth().currentUser.getToken()
+      .then(this.queryNodeHelper)
+      .then(this.setStoreListFromServer)
+      .catch((err) => {
+        Alert.alert('query getStoreList failed', err);
+      });
+  }
+
+  setStoreListFromServer(res) {
+    const { node } = res.viewer;
+    Alert.alert('query success', String(node.length));
+    this.setState({
+      dsStore: node
+    });
+  }
+
   renderBrandListRow(name) {
     return (
-      <Text style={{
-        marginRight: 58
-      }}>{name}</Text>
+      <TouchableOpacity
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginRight: 58
+        }}
+        onPress={() => this.handleBrandNameBtn(name)}
+      >
+        <Text>
+          {name}
+        </Text>
+      </TouchableOpacity>
     );
   }
 
@@ -105,7 +181,7 @@ export default class FindStore extends PureComponent {
           backgroundColor: 'white'
         }}>
           <ListView
-            dataSource={brandList}
+            dataSource={ds.cloneWithRows(this.state.dsStore)}
             renderRow={(rowData) => this.renderVerticalRow(rowData)}
             style={{backgroundColor: 'white'}}
             enableEmptySections
@@ -121,5 +197,6 @@ export default class FindStore extends PureComponent {
 FindStore.propTypes = {
   brandList: PropTypes.array.isRequired,
   selectedBrand: PropTypes.string.isRequired,
-  handleNextBtn: PropTypes.func.isRequired
+  handleNextBtn: PropTypes.func.isRequired,
+  coordinate: PropTypes.object.isRequired
 };

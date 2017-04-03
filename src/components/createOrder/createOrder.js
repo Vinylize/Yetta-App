@@ -68,6 +68,7 @@ export default class CreateOrder extends Component {
           brandList={brandListDataSource[brandList]}
           selectedBrand={selectedBrand}
           handleNextBtn={this.handleNextBtn}
+          coordinate={this.props.coordinate}
         />
       );
     } else if (step === 2) {
@@ -101,5 +102,6 @@ export default class CreateOrder extends Component {
 
 CreateOrder.propTypes = {
   navigator: PropTypes.any,
-  func: PropTypes.any
+  func: PropTypes.any,
+  coordinate: PropTypes.object
 };
