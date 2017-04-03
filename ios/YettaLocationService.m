@@ -107,8 +107,16 @@
   // [self saveNotification:@"test notification" :@"unique id" :NO :newLocation.coordinate];
 }
 
+- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager {
+  NSLog(@"did paused location updates");
+}
+
+- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager {
+  NSLog(@"did resume location updates");
+}
+
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
-  [locationManager stopUpdatingLocation];
+  // [locationManager stopUpdatingLocation];
   NSLog(@"Update failed with error: %@", error);
 }
 
