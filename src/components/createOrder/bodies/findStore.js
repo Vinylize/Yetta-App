@@ -90,7 +90,7 @@ export default class FindStore extends PureComponent {
     const { latitude, longitude } = this.props.coordinate;
     return client.query(`{
       viewer{
-        node (lat: ${latitude}, lon: ${longitude}, radius: 10000, category1: "CVS") {
+        node (lat: ${latitude}, lon: ${-longitude}, radius: 10000, category1: "CVS") {
           name,
           address,
           distanceFromMe
@@ -111,9 +111,7 @@ export default class FindStore extends PureComponent {
   setStoreListFromServer(res) {
     const { node } = res.viewer;
     Alert.alert('query success', String(node.length));
-    this.setState({
-      dsStore: node
-    });
+    this.props.setNode(node);
   }
 
   renderBrandListRow(name) {
@@ -181,7 +179,7 @@ export default class FindStore extends PureComponent {
           backgroundColor: 'white'
         }}>
           <ListView
-            dataSource={ds.cloneWithRows(this.state.dsStore)}
+            dataSource={ds.cloneWithRows(this.props.node)}
             renderRow={(rowData) => this.renderVerticalRow(rowData)}
             style={{backgroundColor: 'white'}}
             enableEmptySections
@@ -198,5 +196,7 @@ FindStore.propTypes = {
   brandList: PropTypes.array.isRequired,
   selectedBrand: PropTypes.string.isRequired,
   handleNextBtn: PropTypes.func.isRequired,
-  coordinate: PropTypes.object.isRequired
+  coordinate: PropTypes.object.isRequired,
+  setNode: PropTypes.func.isRequired,
+  node: PropTypes.array.isRequired
 };
