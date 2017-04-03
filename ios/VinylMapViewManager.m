@@ -78,6 +78,15 @@ RCT_EXPORT_METHOD(updateMarker:(NSString *)latitude: (NSString *)longitude)
   }
 }
 
+RCT_EXPORT_METHOD(enableDidChangeCameraPosition)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap enableDidChangeCameraPosition];
+    });
+  }
+}
+
 RCT_EXPORT_VIEW_PROPERTY(onMapMove, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onPress, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onMarkerPress, RCTBubblingEventBlock);

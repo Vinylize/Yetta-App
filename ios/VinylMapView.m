@@ -25,6 +25,9 @@
   GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:-33.86
                                                           longitude:120.20
                                                                zoom:6];
+  
+  _didChangeCameraPositionEnabled = false;
+  
   _map = [[GMSMapView alloc] initWithFrame:self.bounds];
   _map = [GMSMapView mapWithFrame:CGRectZero camera:camera];
   _map.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -109,6 +112,11 @@
   }
 }
 
+- (void)enableDidChangeCameraPosition
+{
+  _didChangeCameraPositionEnabled = true;
+}
+
 #pragma mark - GMSMapViewDelegate
 
 - (void)mapView:(GMSMapView *)mapView willMove:(BOOL)gesture {
@@ -135,6 +143,14 @@
     self.onMarkerPress([self eventMarkerPress:marker.position markerID:markerID]);
   }
   return YES;
+}
+
+- (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position {
+  double latitude = mapView.camera.target.latitude;
+  double longitude = mapView.camera.target.longitude;
+  if (_didChangeCameraPositionEnabled == true) {
+    // send event with lat lon data to JS
+  }
 }
 
 @end
