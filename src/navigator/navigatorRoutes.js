@@ -3,8 +3,7 @@ import Home from './../components/home';
 import Login from './../components/login';
 import Register from './../components/register';
 import PhoneVerification from './../components/phoneVerification';
-import CreateOrder from '../components/createOrder/createOrder';
-
+import CreateOrderLayout from './../containers/createOrderLayout';
 const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
 
 export function homeNavigatorRoute() {
@@ -34,11 +33,11 @@ export function phoneVerificationNavigatorRoute() {
   };
 }
 
-export function createOrderNavigatorRoute(handleCreateOrderDone) {
-  console.log('from routes: ', handleCreateOrderDone);
+export function createOrderNavigatorRoute(handleCreateOrderDone, latitude, longitude) {
   return {
-    Component: CreateOrder,
+    Component: CreateOrderLayout,
     func: {handleCreateOrderDone},
+    coordinate: {latitude, longitude},
     sceneConfig
   };
 }
