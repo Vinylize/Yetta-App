@@ -64,6 +64,13 @@
            };
 }
 
+- (id)eventCameraPositionChange:(double) latitude longitude:(double)longitude {
+  return @{
+           @"latitude": @(latitude),
+           @"longitude": @(longitude)
+           };
+}
+
 - (void)moveMap:(NSString*)latitude longitude:(NSString *)longitude {
   GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:latitude.doubleValue
                                                           longitude:longitude.doubleValue
@@ -114,7 +121,14 @@
 
 - (void)enableDidChangeCameraPosition
 {
-  _didChangeCameraPositionEnabled = true;
+  NSLog(@"enabled did change camera position");
+  self.didChangeCameraPositionEnabled = true;
+}
+
+- (void)disableDidChangeCameraPosition
+{
+  NSLog(@"disabled did change camera position");
+  self.didChangeCameraPositionEnabled = false;
 }
 
 #pragma mark - GMSMapViewDelegate
@@ -148,8 +162,12 @@
 - (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position {
   double latitude = mapView.camera.target.latitude;
   double longitude = mapView.camera.target.longitude;
-  if (_didChangeCameraPositionEnabled == true) {
+  NSLog(@"ahhahaha");
+  if (self.didChangeCameraPositionEnabled == true) {
+    NSLog(@"did change camera pos");
     // send event with lat lon data to JS
+    if (!self.onChangeCameraPosition) return;
+    self.onChangeCameraPosition([self eventCameraPositionChange:latitude longitude:longitude]);
   }
 }
 

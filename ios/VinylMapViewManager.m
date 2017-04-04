@@ -87,8 +87,18 @@ RCT_EXPORT_METHOD(enableDidChangeCameraPosition)
   }
 }
 
+RCT_EXPORT_METHOD(disableDidChangeCameraPosition)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap disableDidChangeCameraPosition];
+    });
+  }
+}
+
 RCT_EXPORT_VIEW_PROPERTY(onMapMove, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onPress, RCTBubblingEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onMarkerPress, RCTBubblingEventBlock);
+RCT_EXPORT_VIEW_PROPERTY(onChangeCameraPosition, RCTBubblingEventBlock);
 
 @end

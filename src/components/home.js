@@ -408,6 +408,9 @@ export default class Home extends Component {
               this.setState({trackingCurrentPos: false});
             }
           }}
+          onChangeCameraPosition={(e) => {
+            console.log('camera position changed: ', e.nativeEvent);
+          }}
         />
       );
     }
@@ -487,6 +490,8 @@ export default class Home extends Component {
         }}
         activeOpacity={0.8}
         onPress={() => {
+          vmm.enableDidChangeCameraPosition();
+          // vmm.disableDidChangeCameraPosition();
           const { latitude, longitude } = this.state;
           console.log(latitude, longitude);
           vmm.animateToLocation(String(latitude), String(longitude));

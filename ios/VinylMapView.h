@@ -17,15 +17,19 @@
 @property (nonatomic, copy) RCTBubblingEventBlock onMapMove;
 @property (nonatomic, copy) RCTBubblingEventBlock onPress;
 @property (nonatomic, copy) RCTBubblingEventBlock onMarkerPress;
-@property (atomic, assign) BOOL didChangeCameraPositionEnabled;
+@property (nonatomic, copy) RCTBubblingEventBlock onChangeCameraPosition;
+@property (nonatomic, assign) BOOL didChangeCameraPositionEnabled;
 
 - (void)moveMap:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)animateToLocationWithZoom:(NSString*)latitude longitude:(NSString*)longitude zoom:(float)zoom;
+
 - (void)moveMarker:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)addMarker:(NSString *)latitude longitude:(NSString *)longitude id:(NSString*)id;
 - (void)updateMarker:(NSString*)latitude longitude:(NSString*)longitude;
+
 - (void)enableDidChangeCameraPosition;
+- (void)disableDidChangeCameraPosition;
 
 @end
 
