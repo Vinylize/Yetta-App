@@ -37,7 +37,7 @@ export default class FindStore extends PureComponent {
     this.getStoreListFromServer();
   }
   renderVerticalRow(rowData) {
-    const { address, name, distanceFromMe } = rowData;
+    const { addr, name, distance } = rowData;
     return (
       <TouchableOpacity
         style={{
@@ -65,7 +65,7 @@ export default class FindStore extends PureComponent {
           <Text style={{
             fontSize: 10
           }}>
-            {Math.floor(distanceFromMe)} m
+            {Math.floor(distance)} m
           </Text>
         </View>
         <Text style={{
@@ -73,7 +73,7 @@ export default class FindStore extends PureComponent {
           color: '#abb5b6',
           marginTop: 10
         }}>
-          {address}
+          {addr}
         </Text>
       </TouchableOpacity>
     );
@@ -90,10 +90,10 @@ export default class FindStore extends PureComponent {
     const { latitude, longitude } = this.props.coordinate;
     return client.query(`{
       viewer{
-        node (lat: ${latitude}, lon: ${-longitude}, radius: 10000, category1: "CVS") {
+        node (lat: ${latitude}, lon: ${-longitude}, radius: 10000, c1: "CVS", c2: "CU") {
           name,
-          address,
-          distanceFromMe
+          addr,
+          distance
         }
       }
     }`);
