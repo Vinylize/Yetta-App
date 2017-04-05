@@ -141,7 +141,15 @@
 }
 
 - (void)mapView:(GMSMapView *)mapView idleAtCameraPosition:(GMSCameraPosition *)position {
-  // TBD
+  NSLog(@"idle");
+  double latitude = position.target.latitude;
+  double longitude = position.target.longitude;
+  
+  if (self.didChangeCameraPositionEnabled == true) {
+    // send event with lat lon data to JS
+    if (!self.onChangeCameraPosition) return;
+    self.onChangeCameraPosition([self eventCameraPositionChange:latitude longitude:longitude]);
+  }
 }
 
 - (void)mapView:(GMSMapView *)mapView didTapAtCoordinate:(CLLocationCoordinate2D)coordinate {
@@ -160,14 +168,14 @@
 }
 
 - (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position {
-  double latitude = mapView.camera.target.latitude;
-  double longitude = mapView.camera.target.longitude;
-  
-  if (self.didChangeCameraPositionEnabled == true) {
-    // send event with lat lon data to JS
-    if (!self.onChangeCameraPosition) return;
-    self.onChangeCameraPosition([self eventCameraPositionChange:latitude longitude:longitude]);
-  }
+//  double latitude = mapView.camera.target.latitude;
+//  double longitude = mapView.camera.target.longitude;
+//  
+//  if (self.didChangeCameraPositionEnabled == true) {
+//    // send event with lat lon data to JS
+//    if (!self.onChangeCameraPosition) return;
+//    self.onChangeCameraPosition([self eventCameraPositionChange:latitude longitude:longitude]);
+//  }
 }
 
 @end

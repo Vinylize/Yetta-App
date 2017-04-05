@@ -43,7 +43,9 @@ export default class ApproveCard extends Component {
             flexDirection: 'row',
             marginTop: 4
           }}>
-            {this.props.address.addressTextView}
+            <Text>
+              {this.props.address.addressTextView}
+            </Text>
           </View>
         </View>
         <View style={{
