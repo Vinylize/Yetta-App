@@ -148,7 +148,7 @@ export default class Login extends Component {
       this.login(this.state.userEmail, this.state.password);
     }
   }
-'../..'
+
   render() {
     return (
       <View style={styles.container}>
