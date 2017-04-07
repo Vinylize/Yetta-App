@@ -4,7 +4,9 @@ import {
   TextInput,
   View,
   Keyboard,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions,
+  Image
 } from 'react-native';
 import * as firebase from 'firebase';
 import { URL, handleError, handleFirebaseSignInError } from './../utils';
@@ -20,6 +22,8 @@ const client = new Lokka({
   transport: new Transport(URL)
 });
 
+const WIDTH = Dimensions.get('window').width;
+
 const styles = {
   container: {
     flex: 1,
@@ -27,16 +31,47 @@ const styles = {
     alignItems: 'center',
     backgroundColor: 'white'
   },
+  logo: {
+    height:70,
+    resizeMode:'contain',
+    marginLeft:30,
+    marginTop:50,
+    marginBottom:80,
+  },
+  textInputContainer: {
+    width: WIDTH * 0.75,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ff9700',
+    paddingTop: 30
+  },
   textInput: {
-    height: 40,
-    marginLeft: 24,
-    marginRight: 24,
-    marginBottom: 12,
-    padding: 10,
-    borderRadius: 4,
-    backgroundColor: 'white',
-    shadowOffset: {height: 0.2, width: 0.2},
-    shadowOpacity: 0.2
+    height: 20,
+    marginBottom: 10,
+    marginLeft: 10,
+    fontSize: 17,
+    fontWeight: '600'
+    // backgroundColor: 'white'
+  },
+  loginBtn: {
+    width: WIDTH * 0.75,
+    height: 50,
+    marginTop:70,
+    borderWidth: 1.5,
+    borderColor: '#ff9700',
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  loginBtnText: {
+    color:'#ff9700',
+    fontSize: 15,
+    fontWeight: '700'
+  },
+  footer: {
+    height: 50,
+    position: 'absolute',
+    bottom: 0,
+    flexDirection: 'row'
   }
 };
 
@@ -117,40 +152,61 @@ export default class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TextInput
-          ref='inputEmail'
-          style={styles.textInput}
-          onChangeText={(text) => this.setState({userEmail: text})}
-          value={this.state.userEmail}
-          placeholder={'email'}
-          onSubmitEditing={Keyboard.dismiss}
-        />
-        <TextInput
-          ref='inputPassword'
-          style={styles.textInput}
-          onChangeText={(text) => this.setState({password: text})}
-          value={this.state.password}
-          placeholder={'password'}
-          onSubmitEditing={Keyboard.dismiss}
-        />
+        <Image style={styles.logo} source={require('../../assets/logo.png')} />
+        <View
+           style={styles.textInputContainer}
+        >
+          <TextInput
+            ref='inputEmail'
+            style={styles.textInput}
+            onChangeText={(text) => this.setState({userEmail: text})}
+            value={this.state.userEmail}
+            placeholder={'Email address'}
+            onSubmitEditing={Keyboard.dismiss}
+            autoCapitalize={'none'}
+          />
+        </View>
+        <View
+          style={styles.textInputContainer}
+        >
+          <TextInput
+            ref='inputPassword'
+            style={styles.textInput}
+            onChangeText={(text) => this.setState({password: text})}
+            value={this.state.password}
+            placeholder={'Password'}
+            onSubmitEditing={Keyboard.dismiss}
+            autoCapitalize={'none'}
+            secureTextEntry={true}
+          />
+        </View>
         <View style={{
-          height: 40,
-          marginLeft: 24,
-          marginRight: 24,
-          marginBottom: 12,
-          flexDirection: 'row'
         }}>
           <TouchableOpacity
-            style={styles.textInput}
-            onPress={this.handleLoginButton.bind(this)}
-          >
-            <Text>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.textInput}
+            style={{marginTop: 26, width: WIDTH * 0.75, alignItems: 'flex-end'}}
             onPress={() => this.props.navigator.push(registerNavigatorRoute())}
           >
-            <Text>Register</Text>
+            <Text style={{color: '#aaa', fontWeight: '600', fontSize: 13}}>Forgot your password?</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          style={styles.loginBtn}
+          onPress={this.handleLoginButton.bind(this)}
+        >
+          <Text
+            style={styles.loginBtnText}
+          >Login</Text>
+        </TouchableOpacity>
+        <View style={styles.footer}>
+          <Text
+            style={{fontWeight: '500', color: '#bbb'}}
+          >You don't have an account yet? </Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigator.push(registerNavigatorRoute())}
+          >
+            <Text
+              style={{fontWeight: '600',color:'#ff9700'}}
+            >Sign up</Text>
           </TouchableOpacity>
         </View>
       </View>
