@@ -124,36 +124,28 @@ export default class SearchBar extends Component {
       <View
         style={{
           position: 'absolute',
-          left: (onFocused) ? 0 : (WIDTH - WIDTH * 0.8) / 2,
-          top: 0,
-          width: WIDTH * 0.8,
-          height: 40,
-          backgroundColor: 'transparent',
-          zIndex: 100
+          left: onFocused ? 0 : (WIDTH - WIDTH * 0.8) / 2,
+          top: onFocused ? 0 : 100,
+          width: onFocused ? WIDTH : WIDTH * 0.8,
+          height: onFocused ? HEIGHT : 40,
+          backgroundColor: 'white',
+          zIndex: 100,
+          elevation: 4
         }}
       >
-        <View
-          style={(onFocused) ? {
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: WIDTH,
-            height: HEIGHT,
-            backgroundColor: 'white',
-            flexDirection: 'column'
-          } : {
-            position: 'absolute',
-            left: 0,
-            top: 100,
-            width: WIDTH * 0.8,
-            height: 40,
-            backgroundColor: 'white',
-            shadowOffset: {height: 1, width: 1},
-            shadowOpacity: 0.2,
-            flexDirection: 'row'
-          }
-        }>
-          <TouchableOpacity style={(onFocused) ? {
+        <View style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          width: onFocused ? WIDTH : WIDTH * 0.8,
+          height: onFocused ? HEIGHT : 40,
+          backgroundColor: 'white',
+          shadowOffset: {height: 1, width: 1},
+          shadowOpacity: 0.2,
+          flexDirection: onFocused ? 'column' : 'row'
+        }}>
+          <TouchableOpacity
+            style={{
               flex: 1,
               backgroundColor: 'white',
               shadowOffset: {height: 1, width: 1},
@@ -162,10 +154,7 @@ export default class SearchBar extends Component {
               paddingLeft: 17,
               paddingRight: 20,
               paddingTop: 20,
-              flexDirection: 'row',
-              zIndex: 1
-            } : {
-              flex: 10
+              flexDirection: 'row'
             }}
             onPress={() => {
               this.setState({onFocused: !onFocused});
@@ -198,6 +187,7 @@ export default class SearchBar extends Component {
                   } : {height: 40, paddingLeft: 10}}
                 onChangeText={this.handleTextChange.bind(this)}
                 value={this.state.text}
+                underlineColorAndroid={'white'}
               />
               : null}
           </TouchableOpacity>
