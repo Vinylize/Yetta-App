@@ -41,7 +41,12 @@ import com.pingstersapp.VinylMap.latlnginterpolation.MarkerAnimation;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VinylMapModule extends MapView implements OnMapReadyCallback {
+public class VinylMapModule extends MapView implements
+        GoogleMap.OnCameraMoveStartedListener,
+        GoogleMap.OnCameraMoveListener,
+        GoogleMap.OnCameraMoveCanceledListener,
+        GoogleMap.OnCameraIdleListener,
+        OnMapReadyCallback {
     public static GoogleMap mMap;
     private final VinylMapManager manager;
     private final ThemedReactContext context;
@@ -71,6 +76,11 @@ public class VinylMapModule extends MapView implements OnMapReadyCallback {
                 .title("Marker in Sydney")
                 .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmap())));
 
+        mMap.setOnCameraIdleListener(this);
+        mMap.setOnCameraMoveStartedListener(this);
+        // mMap.setOnCameraMoveListener(this);
+        // mMap.setOnCameraMoveCanceledListener(this);
+
         this.mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         this.mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -83,6 +93,42 @@ public class VinylMapModule extends MapView implements OnMapReadyCallback {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onCameraMoveStarted(int reason) {
+        /*
+         *  The reason can be one of the following:
+         *  1. REASON_GESTURE indicates that the camera moved in response to a user's gesture on the
+         *      map, such as panning, tilting, pinching to zoom, or rotating the map.
+         *  2. REASON_API_ANIMATION indicates that the API has moved the camera in response to a
+         *      non-gesture user action, such as tapping the zoom button, tapping the My Location
+         *      button, or clicking a marker.
+         *  3. REASON_DEVELOPER_ANIMATION indicates that your app has initiated the camera movement.
+         */
+
+        WritableMap event = Arguments.createMap();
+        event.putString("gesture", Integer.toString(reason));
+        manager.sendEvent(context, "onMapMove", event);
+    }
+
+    @Override
+    public void onCameraMove() {
+        // TBD
+    }
+
+    @Override
+    public void onCameraMoveCanceled() {
+        // TBD
+    }
+
+    @Override
+    public void onCameraIdle() {
+        LatLng center = mMap.getCameraPosition().target;
+        WritableMap event = Arguments.createMap();
+        event.putString("lat", Double.toString(center.latitude));
+        event.putString("lon", Double.toString(center.longitude));
+        manager.sendEvent(context, "onCameraIdle", event);
     }
 
     private Bitmap getMarkerBitmap() {

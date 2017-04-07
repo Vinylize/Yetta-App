@@ -109,22 +109,65 @@ export default class Home extends Component {
       });
       DeviceEventEmitter.addListener('onMapMove', (e) => {
         console.log(e);
+        const { trackingCurrentPos } = this.state;
+        // map moved by user
+        if (trackingCurrentPos && e.gesture === '1') {
+          this.setState({trackingCurrentPos: false});
+        }
+      });
+      DeviceEventEmitter.addListener('onCameraIdle', (e) => {
+        console.log('camera position idle: ', e);
+        if (this.state.showApproveAddressCard === true) {
+          const { lat, lon } = e;
+          GOOGLE_MAPS_API.geocoding(lat, lon)
+            .then(arr => {
+              // TODO: improve this
+              if (arr) {
+                this.setState({searchedAddressTextView: {
+                  firstAddressToken: arr[0].long_name + ' ' + arr[1].long_name,
+                  addressTextView: arr.slice(2).map(token => token.long_name + ' ')
+                }});
+              }
+            })
+            .catch(console.log);
+        }
       });
     }
 
     this.state.animMenu.addListener(value => {
       this.animMenuValue = value.value;
+      console.log(value);
       this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
     });
 
     if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener('didUpdateToLocationAndroidForeground', async(data) => {
         console.log('foreground location update: ', data);
-        Alert.alert('foreground location update', JSON.stringify(data));
+        // Alert.alert('foreground location update', JSON.stringify(data));
+        this.setState({
+          latitude: data.latitude,
+          longitude: data.longitude
+        });
+        if (vmm && this.state.trackingCurrentPos) {
+          vmm.animateToLocation(data.latitude, data.longitude);
+        }
+        if (firebase.auth().currentUser) {
+          firebase.auth().currentUser.getToken().then(token => this.userUpdateCoordinateHelper(token, data));
+        }
       });
       DeviceEventEmitter.addListener('didUpdateToLocationAndroidBackground', async(data) => {
         console.log('background location update: ', data);
-        Alert.alert('background location update', JSON.stringify(data));
+        // Alert.alert('background location update', JSON.stringify(data));
+        this.setState({
+          latitude: data.latitude,
+          longitude: data.longitude
+        });
+        if (vmm && this.state.trackingCurrentPos) {
+          vmm.animateToLocation(data.latitude, data.longitude);
+        }
+        if (firebase.auth().currentUser) {
+          firebase.auth().currentUser.getToken().then(token => this.userUpdateCoordinateHelper(token, data));
+        }
       });
     } else {
       YettaLocationServiceManger.startLocationService();
@@ -372,7 +415,9 @@ export default class Home extends Component {
      * this enables native API that returns coordinate of the map center
      * todo: implement this in Android
      */
-    vmm.enableDidChangeCameraPosition();
+    if (Platform.OS === 'ios') {
+      vmm.enableDidChangeCameraPosition();
+    }
 
     this.setState({
       showApproveAddressCard: true,
@@ -388,7 +433,9 @@ export default class Home extends Component {
      * this disables native API that returns coordinate of the map center
      * todo: implement this in Android
      */
-    vmm.disableDidChangeCameraPosition();
+    if (Platform.OS === 'android') {
+      vmm.disableDidChangeCameraPosition();
+    }
 
     this.setState({busyOnWaitingNewRunner: true});
   }
@@ -399,7 +446,9 @@ export default class Home extends Component {
       this.state.latitude,
       this.state.longitude
     ));
-    this.setState({showApproveAddressCard: false});
+    this.setState((prevState, props) => {
+      return {showApproveAddressCard: false};
+    });
   }
 
   renderMap() {
@@ -515,20 +564,21 @@ export default class Home extends Component {
           position: 'absolute',
           right: 26,
           bottom: 80,
-          height: 25,
+          height: this.state.trackingCurrentPos ? 0 : 25,
           width: 25,
           borderRadius: 20,
           backgroundColor: '#2E3031',
           shadowOffset: {height: 1, width: 1},
           shadowOpacity: 0.2
         }}
-        activeOpacity={0.8}
+        activeOpacity={1}
         onPress={() => {
           // vmm.disableDidChangeCameraPosition();
           const { latitude, longitude } = this.state;
           console.log(latitude, longitude);
           vmm.animateToLocation(String(latitude), String(longitude));
           LayoutAnimation.easeInEaseOut();
+          console.log(this.state.trackingCurrentPos);
           this.setState({trackingCurrentPos: true});
         }}
       >
@@ -599,7 +649,7 @@ export default class Home extends Component {
           position: 'absolute',
           left: this.state.animMenu,
           top: 0,
-          zIndex: 200,
+          zIndex: 1,
           backgroundColor: 'white',
           width: WIDTH * 0.75,
           height: HEIGHT,
@@ -1104,16 +1154,16 @@ export default class Home extends Component {
             longitude={this.state.longitude}
             handleAddressBtn={this.handleSearchBarAddressBtn.bind(this)}
           />
-          {this.state.showApproveAddressCard ?
-            <ApproveCard
-              address={this.state.searchedAddressTextView}
-              handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
-            />
-            : null}
-          {this.state.trackingCurrentPos ? null : this.renderLocationBtn()}
+
+          {this.renderLocationBtn()}
           {this.renderCardContainer()}
         </Animated.View>
-        {this.state.showApproveAddressCard ? this.renderAddressSearchPin() : null}
+        <ApproveCard
+          showApproveAddressCard = {this.state.showApproveAddressCard}
+          address={this.state.searchedAddressTextView}
+          handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
+        />
+        {this.state.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
       </View>
     );
   }

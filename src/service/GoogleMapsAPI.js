@@ -5,6 +5,7 @@ export const geocoding = (latitude, longitude) => {
   return fetch(uri)
     .then(res => res.json())
     .then(rjson => {
+      console.log(rjson);
       if (rjson.status === 'OK') {
         // todo: use address_components for parsed result as array
         return rjson.results[0].address_components;

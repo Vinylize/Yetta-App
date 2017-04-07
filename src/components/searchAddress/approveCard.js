@@ -22,9 +22,9 @@ export default class ApproveCard extends Component {
         bottom: 0,
         left: WIDTH * 0.1,
         width: WIDTH * 0.8,
-        height: 100,
+        height: this.props.showApproveAddressCard ? 100 : 0,
         backgroundColor: 'white',
-        zIndex: 10,
+        zIndex: 1,
         shadowOffset: {height: 3, width: 3},
         shadowOpacity: 0.3,
         flexDirection: 'column'
@@ -85,5 +85,6 @@ export default class ApproveCard extends Component {
 
 ApproveCard.propTypes = {
   address: PropTypes.object,
-  handleApproveBtn: PropTypes.func
+  handleApproveBtn: PropTypes.func,
+  showApproveAddressCard: PropTypes.bool
 };
