@@ -42,15 +42,17 @@ const styles = {
     width: WIDTH * 0.75,
     borderBottomWidth: 1,
     borderBottomColor: '#ff9700',
-    paddingTop: 30
+    paddingTop: 30,
+    height: 70
   },
   textInput: {
     height: 20,
     marginBottom: 10,
     marginLeft: 10,
     fontSize: 17,
-    fontWeight: '600'
-    // backgroundColor: 'white'
+    fontWeight: '600',
+    color: 'black',
+    padding: 0
   },
   loginBtn: {
     width: WIDTH * 0.75,
@@ -164,6 +166,7 @@ export default class Login extends Component {
             placeholder={'Email address'}
             onSubmitEditing={Keyboard.dismiss}
             autoCapitalize={'none'}
+            underlineColorAndroid={'white'}
           />
         </View>
         <View
@@ -178,6 +181,7 @@ export default class Login extends Component {
             onSubmitEditing={Keyboard.dismiss}
             autoCapitalize={'none'}
             secureTextEntry={true}
+            underlineColorAndroid={'white'}
           />
         </View>
         <View style={{

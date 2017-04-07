@@ -107,6 +107,9 @@ export default class Home extends Component {
       DeviceEventEmitter.addListener('onMarkerPress', (e) => {
         console.log(e);
       });
+      DeviceEventEmitter.addListener('onMapMove', (e) => {
+        console.log(e);
+      });
     }
 
     this.state.animMenu.addListener(value => {
@@ -181,7 +184,9 @@ export default class Home extends Component {
     const { longitude, latitude } = this.state;
     console.log(longitude, latitude);
     if (vmm) {
-      vmm.animateToLocationWithZoom(String(longitude), String(latitude), 16.0);
+      if (Platform.OS === 'ios') {
+        vmm.animateToLocationWithZoom(String(longitude), String(latitude), 16.0);
+      }
     }
   }
 
@@ -263,7 +268,7 @@ export default class Home extends Component {
     ).start(() => {
       this.setState({
         cardExpanded: false
-      })
+      });
     });
   }
 
