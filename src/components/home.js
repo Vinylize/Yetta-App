@@ -430,16 +430,10 @@ export default class Home extends Component {
               GOOGLE_MAPS_API.geocoding(latitude, longitude)
                 .then(arr => {
                   // TODO: improve this
-                  let temp = '';
                   if (arr) {
-                    arr.map((name, i) => {
-                      if (i >= 2) {
-                        temp = temp + ' ' + name.long_name;
-                      }
-                    });
                     this.setState({searchedAddressTextView: {
                       firstAddressToken: arr[0].long_name + ' ' + arr[1].long_name,
-                      addressTextView: temp
+                      addressTextView: arr.slice(2).map(token => token.long_name + ' ')
                     }});
                   }
                 })

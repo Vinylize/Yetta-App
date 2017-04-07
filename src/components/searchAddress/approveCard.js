@@ -15,6 +15,7 @@ const styles = {
 
 export default class ApproveCard extends Component {
   render() {
+    console.log(this.props.address.addressTextView);
     return (
       <View style={{
         position: 'absolute',
@@ -43,7 +44,13 @@ export default class ApproveCard extends Component {
             flexDirection: 'row',
             marginTop: 4
           }}>
-            <Text>
+            <Text
+              style={{
+                fontSize: 10,
+                color: 'grey'
+              }}
+              numberOfLines={1}
+            >
               {this.props.address.addressTextView}
             </Text>
           </View>
