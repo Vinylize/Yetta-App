@@ -5,7 +5,9 @@ import {
   TextInput,
   View,
   Keyboard,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions,
+  Image
 } from 'react-native';
 import { URL } from './../utils';
 
@@ -16,45 +18,62 @@ const client = new Lokka({
   transport: new Transport(URL)
 });
 
+const WIDTH = Dimensions.get('window').width;
+
 const styles = {
   container: {
+    padding: WIDTH * 0.125,
+    flex: 1
+  },
+  topContainer: {
+    height: 100,
+    justifyContent: 'center'
+  },
+  topContainerText: {
+    fontSize: 30,
+    fontWeight: '500'
+  },
+  inputContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white'
+    justifyContent: 'flex-start',
+    paddingTop: 18
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
+  sectionText: {
+    color: '#666',
+    fontSize: 13,
+    fontWeight: '700',
     marginBottom: 5
   },
   textInput: {
     height: 40,
-    marginLeft: 24,
-    marginRight: 24,
+    fontSize: 13,
     marginBottom: 12,
-    padding: 10,
-    borderRadius: 4,
-    backgroundColor: 'white',
-    shadowOffset: {height: 0.2, width: 0.2},
-    shadowOpacity: 0.2
+    paddingLeft: 15,
+    borderColor: '#CCC',
+    borderWidth: 1.2,
+    backgroundColor: 'white'
   },
   registerBtn: {
-    height: 0,
-    width: 0,
+    height: 44,
+    width: 44,
+    borderRadius: 22,
+    backgroundColor: '#AAA',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 20,
     opacity: 0.9
   },
-  registerBtnActive: {
-    height: 70,
-    width: 70,
-    marginTop: 20,
-    opacity: 0.9
+  registerBtnImg: {
+    height: 15,
+    width: 15
+  },
+  footer: {
+    height: 50,
+    width: WIDTH,
+    position: 'absolute',
+    justifyContent: 'center',
+    bottom: 0,
+    flexDirection: 'row'
   }
 };
 
@@ -119,34 +138,68 @@ export default class Register extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={(text) => this.setState({userEmail: text})}
-          value={this.state.userEmail}
-          placeholder={'email'}
-          onSubmitEditing={Keyboard.dismiss}
-        />
+    <View style={styles.container}>
+      <View style={styles.topContainer}>
+        <Text style={styles.topContainerText}>Sign up</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.sectionText}>Name</Text>
+
         <TextInput
           style={styles.textInput}
           onChangeText={(text) => this.setState({userName: text})}
           value={this.state.userName}
-          placeholder={'type your name!'}
         />
+        <Text style={styles.sectionText}>Email</Text>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={(text) => this.setState({userEmail: text})}
+          value={this.state.userEmail}
+          onSubmitEditing={Keyboard.dismiss}
+          autoCapitalize={'none'}
+        />
+        <Text style={styles.sectionText}>Password</Text>
         <TextInput
           style={styles.textInput}
           onChangeText={(text) => this.setState({password: text})}
           value={this.state.password}
-          placeholder={'password'}
           onSubmitEditing={Keyboard.dismiss}
+          autoCapitalize={'none'}
+          secureTextEntry={true}
         />
-        <TouchableOpacity
+        <Text style={styles.sectionText}>Confirm password</Text>
+        <TextInput
           style={styles.textInput}
-          onPress={this.handleRegisterButton.bind(this)}
+          onChangeText={(text) => this.setState({cPassword: text})}
+          value={this.state.cPassword}
+          onSubmitEditing={Keyboard.dismiss}
+          autoCapitalize={'none'}
+          secureTextEntry={true}
+        />
+        <View style={{alignItems: 'flex-end'}}>
+          <TouchableOpacity
+            style={styles.registerBtn}
+            onPress={this.handleRegisterButton.bind(this)}
+          >
+            <Image style={styles.registerBtnImg} source={require('../../assets/right-arrow-forward.png')} />
+          </TouchableOpacity>
+        </View>
+
+      </View>
+      <View style={styles.footer}>
+        <Text
+          style={{fontWeight: '500', color: '#bbb'}}
+        >Already have your account? </Text>
+        <TouchableOpacity
+          onPress={() => this.props.navigator.pop()}
         >
-          <Text>register</Text>
+          <Text
+            style={{fontWeight: '600', color: '#ff9700'}}
+          >Log in</Text>
         </TouchableOpacity>
       </View>
+    </View>
+
     );
   }
 }
