@@ -136,7 +136,6 @@ export default class Home extends Component {
 
     this.state.animMenu.addListener(value => {
       this.animMenuValue = value.value;
-      console.log(value);
       this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
     });
 
@@ -433,7 +432,7 @@ export default class Home extends Component {
      * this disables native API that returns coordinate of the map center
      * todo: implement this in Android
      */
-    if (Platform.OS === 'android') {
+    if (Platform.OS === 'ios') {
       vmm.disableDidChangeCameraPosition();
     }
 
@@ -573,12 +572,9 @@ export default class Home extends Component {
         }}
         activeOpacity={1}
         onPress={() => {
-          // vmm.disableDidChangeCameraPosition();
           const { latitude, longitude } = this.state;
-          console.log(latitude, longitude);
           vmm.animateToLocation(String(latitude), String(longitude));
           LayoutAnimation.easeInEaseOut();
-          console.log(this.state.trackingCurrentPos);
           this.setState({trackingCurrentPos: true});
         }}
       >
