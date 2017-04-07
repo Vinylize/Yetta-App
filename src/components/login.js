@@ -189,8 +189,6 @@ export default class Login extends Component {
             <Text style={{color: '#aaa', fontWeight: '600', fontSize: 13}}>Forgot your password?</Text>
           </TouchableOpacity>
         </View>
-
-
         <TouchableOpacity
           style={styles.loginBtn}
           onPress={this.handleLoginButton.bind(this)}
