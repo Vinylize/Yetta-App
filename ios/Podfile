@@ -1,4 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
+project './pingstersApp.xcodeproj'
 target 'pingstersApp' do
 pod 'GoogleMaps'
 pod 'GooglePlaces'

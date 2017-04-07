@@ -25,6 +25,9 @@
   GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:-33.86
                                                           longitude:120.20
                                                                zoom:6];
+  
+  _didChangeCameraPositionEnabled = false;
+  
   _map = [[GMSMapView alloc] initWithFrame:self.bounds];
   _map = [GMSMapView mapWithFrame:CGRectZero camera:camera];
   _map.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -58,6 +61,13 @@
                @"longitude": @(coordinate.longitude),
                },
            @"id": markerID,
+           };
+}
+
+- (id)eventCameraPositionChange:(double) latitude longitude:(double)longitude {
+  return @{
+           @"latitude": @(latitude),
+           @"longitude": @(longitude)
            };
 }
 
@@ -109,6 +119,18 @@
   }
 }
 
+- (void)enableDidChangeCameraPosition
+{
+  // NSLog(@"enabled did change camera position");
+  self.didChangeCameraPositionEnabled = true;
+}
+
+- (void)disableDidChangeCameraPosition
+{
+  // NSLog(@"disabled did change camera position");
+  self.didChangeCameraPositionEnabled = false;
+}
+
 #pragma mark - GMSMapViewDelegate
 
 - (void)mapView:(GMSMapView *)mapView willMove:(BOOL)gesture {
@@ -119,7 +141,15 @@
 }
 
 - (void)mapView:(GMSMapView *)mapView idleAtCameraPosition:(GMSCameraPosition *)position {
-  // TBD
+  NSLog(@"idle");
+  double latitude = position.target.latitude;
+  double longitude = position.target.longitude;
+  
+  if (self.didChangeCameraPositionEnabled == true) {
+    // send event with lat lon data to JS
+    if (!self.onChangeCameraPosition) return;
+    self.onChangeCameraPosition([self eventCameraPositionChange:latitude longitude:longitude]);
+  }
 }
 
 - (void)mapView:(GMSMapView *)mapView didTapAtCoordinate:(CLLocationCoordinate2D)coordinate {
@@ -135,6 +165,17 @@
     self.onMarkerPress([self eventMarkerPress:marker.position markerID:markerID]);
   }
   return YES;
+}
+
+- (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position {
+//  double latitude = mapView.camera.target.latitude;
+//  double longitude = mapView.camera.target.longitude;
+//  
+//  if (self.didChangeCameraPositionEnabled == true) {
+//    // send event with lat lon data to JS
+//    if (!self.onChangeCameraPosition) return;
+//    self.onChangeCameraPosition([self eventCameraPositionChange:latitude longitude:longitude]);
+//  }
 }
 
 @end

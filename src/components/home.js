@@ -28,6 +28,7 @@ import VinylMapIOS from './VinylMapIOS';
 import SearchBar from './searchAddress/searchBar';
 import ApproveCard from './searchAddress/approveCard';
 import { URL } from './../utils';
+import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
 
 let vmm = NativeModules.VinylMapManager;
 
@@ -361,6 +362,13 @@ export default class Home extends Component {
     // todo: change location to searched address
     const { latitude, longitude } = this.state;
     vmm.animateToLocation(String(latitude), String(longitude));
+
+    /**
+     * this enables native API that returns coordinate of the map center
+     * todo: implement this in Android
+     */
+    vmm.enableDidChangeCameraPosition();
+
     this.setState({
       showApproveAddressCard: true,
       searchedAddressTextView: {firstAddressToken, addressTextView}
@@ -370,6 +378,13 @@ export default class Home extends Component {
   handleCreateOrderDone() {
     this.props.navigator.pop();
     this.animateCardAppear();
+
+    /**
+     * this disables native API that returns coordinate of the map center
+     * todo: implement this in Android
+     */
+    vmm.disableDidChangeCameraPosition();
+
     this.setState({busyOnWaitingNewRunner: true});
   }
 
@@ -406,6 +421,23 @@ export default class Home extends Component {
             if (trackingCurrentPos && gesture) {
               LayoutAnimation.easeInEaseOut();
               this.setState({trackingCurrentPos: false});
+            }
+          }}
+          onChangeCameraPosition={(e) => {
+            console.log('camera position changed: ', e.nativeEvent);
+            if (this.state.showApproveAddressCard === true) {
+              const { latitude, longitude } = e.nativeEvent;
+              GOOGLE_MAPS_API.geocoding(latitude, longitude)
+                .then(arr => {
+                  // TODO: improve this
+                  if (arr) {
+                    this.setState({searchedAddressTextView: {
+                      firstAddressToken: arr[0].long_name + ' ' + arr[1].long_name,
+                      addressTextView: arr.slice(2).map(token => token.long_name + ' ')
+                    }});
+                  }
+                })
+                .catch(console.log);
             }
           }}
         />
@@ -487,6 +519,7 @@ export default class Home extends Component {
         }}
         activeOpacity={0.8}
         onPress={() => {
+          // vmm.disableDidChangeCameraPosition();
           const { latitude, longitude } = this.state;
           console.log(latitude, longitude);
           vmm.animateToLocation(String(latitude), String(longitude));
@@ -1028,6 +1061,25 @@ export default class Home extends Component {
     );
   }
 
+  renderAddressSearchPin() {
+    const length = 40;
+    return (
+      <View style={{
+        position: 'absolute',
+        left: WIDTH / 2 - length / 2,
+        top: HEIGHT / 2 - length / 2,
+        width: length,
+        height: length,
+        zIndex: 10,
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <Text>핀</Text>
+      </View>
+    );
+  }
+
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
@@ -1056,6 +1108,7 @@ export default class Home extends Component {
           {this.state.trackingCurrentPos ? null : this.renderLocationBtn()}
           {this.renderCardContainer()}
         </Animated.View>
+        {this.state.showApproveAddressCard ? this.renderAddressSearchPin() : null}
       </View>
     );
   }

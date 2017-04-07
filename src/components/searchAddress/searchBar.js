@@ -55,7 +55,7 @@ export default class SearchBar extends Component {
         }}
         onPress={() => {
           this.setState({onFocused: false});
-          this.props.handleAddressBtn(rowData[0].value, arr);
+          this.props.handleAddressBtn(rowData[0].value, rowData.slice(1).map(e => e.value + ' '));
         }}
       >
         <Text
