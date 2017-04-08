@@ -23,10 +23,12 @@ const WIDTH = Dimensions.get('window').width;
 const styles = {
   container: {
     padding: WIDTH * 0.125,
-    flex: 1
+    flex: 1,
+    backgroundColor: '#f9f9f9'
   },
   topContainer: {
     height: 100,
+    marginBottom: 23,
     justifyContent: 'center'
   },
   topContainerText: {
@@ -40,8 +42,7 @@ const styles = {
   },
   sectionText: {
     color: '#666',
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 14,
     marginBottom: 5
   },
   textInput: {
@@ -49,9 +50,15 @@ const styles = {
     fontSize: 13,
     marginBottom: 12,
     paddingLeft: 15,
-    borderColor: '#CCC',
-    borderWidth: 1.2,
-    backgroundColor: 'white'
+    backgroundColor: '#fff',
+    borderRadius: 2,
+    // shadowColor: '#000000',
+    shadowOffset: {
+      height: 2,
+      width: 0
+    },
+    shadowRadius: 2,
+    shadowOpacity: 0.1
   },
   registerBtn: {
     height: 44,
@@ -64,8 +71,8 @@ const styles = {
     opacity: 0.9
   },
   registerBtnImg: {
-    height: 15,
-    width: 15
+    height: 40,
+    width: 40
   },
   footer: {
     height: 50,
@@ -140,17 +147,17 @@ export default class Register extends Component {
     return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
-        <Text style={styles.topContainerText}>Sign up</Text>
+        <Text style={styles.topContainerText}>회원가입</Text>
       </View>
       <View style={styles.inputContainer}>
-        <Text style={styles.sectionText}>Name</Text>
-
+        <Text style={styles.sectionText}>이름</Text>
         <TextInput
           style={styles.textInput}
           onChangeText={(text) => this.setState({userName: text})}
           value={this.state.userName}
         />
-        <Text style={styles.sectionText}>Email</Text>
+        <View style={{height: 33}} />
+        <Text style={styles.sectionText}>이메일주소</Text>
         <TextInput
           style={styles.textInput}
           onChangeText={(text) => this.setState({userEmail: text})}
@@ -158,7 +165,7 @@ export default class Register extends Component {
           onSubmitEditing={Keyboard.dismiss}
           autoCapitalize={'none'}
         />
-        <Text style={styles.sectionText}>Password</Text>
+        <Text style={styles.sectionText}>비밀번호</Text>
         <TextInput
           style={styles.textInput}
           onChangeText={(text) => this.setState({password: text})}
@@ -167,7 +174,7 @@ export default class Register extends Component {
           autoCapitalize={'none'}
           secureTextEntry={true}
         />
-        <Text style={styles.sectionText}>Confirm password</Text>
+        <Text style={styles.sectionText}>비밀번호 확인</Text>
         <TextInput
           style={styles.textInput}
           onChangeText={(text) => this.setState({cPassword: text})}
@@ -176,26 +183,21 @@ export default class Register extends Component {
           autoCapitalize={'none'}
           secureTextEntry={true}
         />
-        <View style={{alignItems: 'flex-end'}}>
-          <TouchableOpacity
-            style={styles.registerBtn}
-            onPress={this.handleRegisterButton.bind(this)}
-          >
-            <Image style={styles.registerBtnImg} source={require('../../assets/right-arrow-forward.png')} />
+        <View style={{alignItems: 'flex-end', marginTop: 39}}>
+          <TouchableOpacity onPress={this.handleRegisterButton.bind(this)}>
+            <Image style={styles.registerBtnImg} source={require('../../assets/next-step.png')} />
           </TouchableOpacity>
         </View>
 
       </View>
       <View style={styles.footer}>
-        <Text
-          style={{fontWeight: '500', color: '#bbb'}}
-        >Already have your account? </Text>
-        <TouchableOpacity
-          onPress={() => this.props.navigator.pop()}
-        >
+        <Text style={{fontSize: 14,fontWeight: '500', color: '#bbb'}}>이미 회원이신가요? </Text>
+        <TouchableOpacity onPress={() => this.props.navigator.pop()}>
           <Text
-            style={{fontWeight: '600', color: '#ff9700'}}
-          >Log in</Text>
+            style={{marginTop:1, fontSize: 14, fontWeight: '600', color: '#ff9700'}}
+          >
+            로그인
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
