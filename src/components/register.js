@@ -191,7 +191,7 @@ export default class Register extends Component {
 
       </View>
       <View style={styles.footer}>
-        <Text style={{fontSize: 14,fontWeight: '500', color: '#bbb'}}>이미 회원이신가요?</Text>
+        <Text style={{fontSize: 14,fontWeight: '500', color: '#bbb'}}>이미 회원이신가요? </Text>
         <TouchableOpacity onPress={() => this.props.navigator.pop()}>
           <Text
             style={{marginTop:1, fontSize: 14, fontWeight: '600', color: '#ff9700'}}
