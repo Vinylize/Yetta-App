@@ -126,6 +126,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-linear-gradient')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // From node_modules
 

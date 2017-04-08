@@ -8,6 +8,7 @@ import {
   Dimensions,
   Image
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import * as firebase from 'firebase';
 import { URL, handleError, handleFirebaseSignInError } from './../utils';
 import {
@@ -28,52 +29,53 @@ const styles = {
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white'
+    alignItems: 'center'
   },
   logo: {
-    height:70,
-    resizeMode:'contain',
-    marginLeft:30,
-    marginTop:50,
-    marginBottom:80,
+    height: 45,
+    marginTop: 50,
+    marginBottom: 100
   },
   textInputContainer: {
     width: WIDTH * 0.75,
     borderBottomWidth: 1,
-    borderBottomColor: '#ff9700',
+    borderBottomColor: '#fff',
     paddingTop: 30,
-    height: 70
+    height: 63
   },
   textInput: {
-    height: 20,
-    marginBottom: 10,
+    height: 24,
+    marginBottom: 9,
     marginLeft: 10,
-    fontSize: 17,
-    fontWeight: '600',
-    color: 'black',
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#FFF',
     padding: 0
   },
   loginBtn: {
     width: WIDTH * 0.75,
     height: 50,
-    marginTop:70,
+    marginTop: 52,
     borderWidth: 1.5,
+    backgroundColor: '#fff',
     borderColor: '#ff9700',
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center'
   },
   loginBtnText: {
-    color:'#ff9700',
-    fontSize: 15,
-    fontWeight: '700'
+    color: '#ff9700',
+    fontSize: 16,
+    fontWeight: '900'
   },
   footer: {
     height: 50,
     position: 'absolute',
     bottom: 0,
     flexDirection: 'row'
+  },
+  linearGradient: {
+    flex: 1
   }
 };
 
@@ -153,67 +155,60 @@ export default class Login extends Component {
 
   render() {
     return (
+      <LinearGradient colors={['#ffba56', '#ff9700']} style={styles.linearGradient}>
       <View style={styles.container}>
         <Image style={styles.logo} source={require('../../assets/logo.png')} />
-        <View
-           style={styles.textInputContainer}
-        >
+        <View style={styles.textInputContainer}>
           <TextInput
             ref='inputEmail'
             style={styles.textInput}
             onChangeText={(text) => this.setState({userEmail: text})}
             value={this.state.userEmail}
-            placeholder={'Email address'}
+            placeholderTextColor={'#fff'}
+            placeholder={'이메일주소'}
             onSubmitEditing={Keyboard.dismiss}
             autoCapitalize={'none'}
             underlineColorAndroid={'white'}
           />
         </View>
-        <View
-          style={styles.textInputContainer}
-        >
+        <View style={styles.textInputContainer}>
           <TextInput
             ref='inputPassword'
             style={styles.textInput}
             onChangeText={(text) => this.setState({password: text})}
             value={this.state.password}
-            placeholder={'Password'}
+            placeholderTextColor={'#fff'}
+            placeholder={'비밀번호'}
             onSubmitEditing={Keyboard.dismiss}
             autoCapitalize={'none'}
             secureTextEntry={true}
             underlineColorAndroid={'white'}
           />
         </View>
-        <View style={{
-        }}>
+        <View>
           <TouchableOpacity
-            style={{marginTop: 26, width: WIDTH * 0.75, alignItems: 'flex-end'}}
+            style={{marginTop: 14, width: WIDTH * 0.75, alignItems: 'flex-end'}}
             onPress={() => this.props.navigator.push(registerNavigatorRoute())}
           >
-            <Text style={{color: '#aaa', fontWeight: '600', fontSize: 13}}>Forgot your password?</Text>
+            <Text style={{color: '#FFF', fontWeight: '500', fontSize: 12}}>비밀번호를 잊으셨나요?</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={styles.loginBtn}
           onPress={this.handleLoginButton.bind(this)}
         >
-          <Text
-            style={styles.loginBtnText}
-          >Login</Text>
+          <Text style={styles.loginBtnText}>Login</Text>
         </TouchableOpacity>
         <View style={styles.footer}>
           <Text
-            style={{fontWeight: '500', color: '#bbb'}}
-          >You don't have an account yet? </Text>
-          <TouchableOpacity
-            onPress={() => this.props.navigator.push(registerNavigatorRoute())}
-          >
-            <Text
-              style={{fontWeight: '600',color:'#ff9700'}}
-            >Sign up</Text>
+            style={{fontSize: 14, fontWeight: '500', color: '#fee5c0'}}
+          >아직 회원이 아니신가요? </Text>
+          <TouchableOpacity onPress={() => this.props.navigator.push(registerNavigatorRoute())}>
+            <Text style={{marginTop: 1, fontSize: 14, fontWeight: '500', color: '#FFF'}}>회원가입</Text>
           </TouchableOpacity>
         </View>
       </View>
+      </LinearGradient>
     );
   }
 }
