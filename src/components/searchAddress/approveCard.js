@@ -3,7 +3,8 @@ import {
   Dimensions,
   TouchableOpacity,
   Text,
-  View
+  View,
+  Platform
 } from 'react-native';
 
 const HEIGHT = Dimensions.get('window').height;
@@ -15,14 +16,20 @@ const styles = {
 
 export default class ApproveCard extends Component {
   render() {
-    console.log(this.props.address.addressTextView);
+    if (Platform.OS === 'ios' && !this.props.showApproveAddressCard) {
+      /**
+       * this is due to difference on dynamic components between ios and android
+       * ref: https://github.com/Vinylize/Yetta-App/issues/69
+       */
+      return null;
+    }
     return (
       <View style={{
         position: 'absolute',
         bottom: 0,
         left: WIDTH * 0.1,
         width: WIDTH * 0.8,
-        height: this.props.showApproveAddressCard ? 100 : 0,
+        height: (Platform.OS === 'android' && !this.props.showApproveAddressCard) ? 0 : 100,
         backgroundColor: 'white',
         zIndex: 1,
         shadowOffset: {height: 3, width: 3},

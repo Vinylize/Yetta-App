@@ -199,7 +199,13 @@ export default class Home extends Component {
       console.log('unsubscribe locationServiceIOS');
       this.subscriptionLocationServiceIOS.remove();
     }
-    YettaLocationServiceManger.stopLocationService();
+
+    /*
+     * todo: implement android:stopLocationService
+     */
+    if (Platform.OS === 'ios') {
+      YettaLocationServiceManger.stopLocationService();
+    }
   }
 
   userUpdateCoordinateHelper(token, data) {
