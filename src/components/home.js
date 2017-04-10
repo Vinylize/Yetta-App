@@ -654,7 +654,7 @@ export default class Home extends Component {
           zIndex: 1,
           backgroundColor: 'white',
           width: WIDTH * 0.75,
-          height: HEIGHT,
+          height: HEIGHT - ((Platform.OS === 'android') ? 20 : 0),
           flexDirection: 'column',
           shadowOffset: {height: 1, width: 1},
           shadowOpacity: 0.2
