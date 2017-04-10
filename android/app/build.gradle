@@ -88,7 +88,7 @@ android {
 
     defaultConfig {
         applicationId "com.pingstersapp"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -126,7 +126,7 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-linear-gradient')
+    compile (project(':react-native-linear-gradient')) { exclude module: 'react-native' }
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // From node_modules
 
