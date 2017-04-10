@@ -58,7 +58,8 @@ const styles = {
       width: 0
     },
     shadowRadius: 2,
-    shadowOpacity: 0.1
+    shadowOpacity: 0.1,
+    elevation: 2
   },
   registerBtn: {
     height: 44,

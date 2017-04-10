@@ -168,7 +168,7 @@ export default class Login extends Component {
             placeholder={'이메일주소'}
             onSubmitEditing={Keyboard.dismiss}
             autoCapitalize={'none'}
-            underlineColorAndroid={'white'}
+            underlineColorAndroid={'transparent'}
           />
         </View>
         <View style={styles.textInputContainer}>
@@ -182,7 +182,7 @@ export default class Login extends Component {
             onSubmitEditing={Keyboard.dismiss}
             autoCapitalize={'none'}
             secureTextEntry={true}
-            underlineColorAndroid={'white'}
+            underlineColorAndroid={'transparent'}
           />
         </View>
         <View>

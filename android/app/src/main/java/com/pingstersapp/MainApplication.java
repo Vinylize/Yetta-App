@@ -17,6 +17,8 @@ import com.pingstersapp.LocationService.YettaLocationPackage;
 import com.pingstersapp.VinylMap.VinylMapPackage;
 import com.pingstersapp.fcm.YettaFcmPackage;
 
+import com.BV.LinearGradient.LinearGradientPackage;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -31,7 +33,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
           new YettaFcmPackage(),
           new YettaLocationPackage(),
-          new VinylMapPackage()
+          new VinylMapPackage(),
+          new LinearGradientPackage()
       );
     }
   };
