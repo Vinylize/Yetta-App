@@ -559,22 +559,30 @@ export default class Home extends Component {
           </View>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 
   renderLocationBtn() {
+    if (Platform.OS === 'ios' && this.state.trackingCurrentPos) {
+      /**
+       * this is due to difference on dynamic components between ios and android
+       * ref: https://github.com/Vinylize/Yetta-App/issues/69
+       */
+      return null;
+    }
     return (
       <TouchableOpacity
         style={{
           position: 'absolute',
           right: 26,
           bottom: 80,
-          height: this.state.trackingCurrentPos ? 0 : 25,
+          height: (Platform.OS === 'android' && this.state.trackingCurrentPos) ? 0 : 25,
           width: 25,
           borderRadius: 20,
           backgroundColor: '#2E3031',
           shadowOffset: {height: 1, width: 1},
-          shadowOpacity: 0.2
+          shadowOpacity: 0.2,
+          elevation: 3
         }}
         activeOpacity={1}
         onPress={() => {
@@ -1100,7 +1108,8 @@ export default class Home extends Component {
           borderRadius: 50,
           backgroundColor: 'white',
           shadowOffset: {height: 1, width: 2},
-          shadowOpacity: 0.23
+          shadowOpacity: 0.23,
+          elevation: 3
         }}
         onPress={() => {
           //this.props.navigator.push(createOrderNavigatorRoute());
