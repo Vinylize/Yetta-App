@@ -121,7 +121,7 @@ export default class PhoneVerification extends Component {
         client.mutate(`{
           userRequestPhoneVerification(
             input:{
-              phoneNumber: "${phoneNumber}"
+              p: "${phoneNumber}"
             }
           ) {
             result
@@ -158,7 +158,7 @@ export default class PhoneVerification extends Component {
             // todo: check ok sign
             return client.query(`{
               viewer{
-                isPhoneValid
+                isPV
               }
             }`);
           })

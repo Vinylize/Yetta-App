@@ -55,7 +55,12 @@ const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
 const cardInitBottom = -expandedCardHeight + cardHeight;
 const cardHidedBottom = -expandedCardHeight;
-const menuWidth = WIDTH * 0.8;
+// const menuWidth = WIDTH * 0.8;
+const menuWidth = WIDTH;
+
+const PLATFORM_SPECIFIC = {
+  animatedCardLeftVal: (Platform.OS === 'ios') ? 0 : -WIDTH
+};
 
 export default class Home extends Component {
   constructor() {
@@ -69,11 +74,12 @@ export default class Home extends Component {
       shrinkValue: new Animated.Value(1),
       markerTest: false,
       clickedMarkerID: undefined,
-      animatedCardLeftVal: new Animated.Value(0),
+      animatedCardLeftVal: new Animated.Value(PLATFORM_SPECIFIC.animatedCardLeftVal),
       animatedCardBottomVal: new Animated.Value(cardHidedBottom),
       animMenu: new Animated.Value(-menuWidth),
       cardIndex: 0,
       cardExpanded: false,
+      cardAppeared: false,
       busyOnCardMoveX: false,
       busyOnCardMoveY: false,
       busyOnWaitingNewRunner: false,
@@ -136,7 +142,13 @@ export default class Home extends Component {
 
     this.state.animMenu.addListener(value => {
       this.animMenuValue = value.value;
-      this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
+      /**
+       * todo: resolve issue only in Android
+       * msg: The specified child already has a parent. You must call removeView() on the child's parent first.
+       */
+      if (Platform.OS === 'ios') {
+        this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
+      }
     });
 
     if (Platform.OS === 'android') {
@@ -199,7 +211,13 @@ export default class Home extends Component {
       console.log('unsubscribe locationServiceIOS');
       this.subscriptionLocationServiceIOS.remove();
     }
-    YettaLocationServiceManger.stopLocationService();
+
+    /*
+     * todo: implement android:stopLocationService
+     */
+    if (Platform.OS === 'ios') {
+      YettaLocationServiceManger.stopLocationService();
+    }
   }
 
   userUpdateCoordinateHelper(token, data) {
@@ -393,7 +411,8 @@ export default class Home extends Component {
         easing: Easing.linear
       }
     ).start(() => {
-      this.setState({markerClicked: false});
+      LayoutAnimation.easeInEaseOut();
+      this.setState({cardAppeared: false});
     });
   }
 
@@ -553,22 +572,31 @@ export default class Home extends Component {
           </View>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 
   renderLocationBtn() {
+    if (Platform.OS === 'ios' && this.state.trackingCurrentPos) {
+      /**
+       * this is due to difference on dynamic components between ios and android
+       * ref: https://github.com/Vinylize/Yetta-App/issues/69
+       */
+      return null;
+    }
     return (
       <TouchableOpacity
         style={{
           position: 'absolute',
           right: 26,
           bottom: 80,
-          height: this.state.trackingCurrentPos ? 0 : 25,
+          height: (Platform.OS === 'android' && this.state.trackingCurrentPos) ? 0 : 25,
           width: 25,
           borderRadius: 20,
           backgroundColor: '#2E3031',
           shadowOffset: {height: 1, width: 1},
-          shadowOpacity: 0.2
+          shadowOpacity: 0.2,
+          elevation: 3,
+          zIndex: 1
         }}
         activeOpacity={1}
         onPress={() => {
@@ -603,7 +631,7 @@ export default class Home extends Component {
     Animated.timing(
       this.state.animMenu,
       {
-        toValue: -WIDTH * 0.8,
+        toValue: -WIDTH,
         duration: 500
       }
     ).start();
@@ -611,6 +639,10 @@ export default class Home extends Component {
 
   checkIfMenuInMiddle() {
     return (this.animMenuValue < 0 || this.animMenuValue > -WIDTH * 0.8);
+  }
+
+  hideMenuWhenBackgroundTapped() {
+    this.animateMenuHide();
   }
 
   menuHandlePanResponderMove(e, gestureState) {
@@ -622,7 +654,9 @@ export default class Home extends Component {
     }
     if (this.animMenuValue + dx < 0) {
       this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
-      this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
+      if (Platform.OS === 'ios') {
+        this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
+      }
     }
   }
 
@@ -645,23 +679,27 @@ export default class Home extends Component {
           position: 'absolute',
           left: this.state.animMenu,
           top: 0,
-          zIndex: 1,
-          backgroundColor: 'white',
-          width: WIDTH * 0.75,
-          height: HEIGHT,
-          flexDirection: 'column',
+          zIndex: 2,
+          backgroundColor: 'transparent',
+          width: WIDTH,
+          height: HEIGHT - ((Platform.OS === 'android') ? 20 : 0),
+          flexDirection: 'row',
           shadowOffset: {height: 1, width: 1},
-          shadowOpacity: 0.2
+          shadowOpacity: 0.2,
+          elevation: 100
         }}
         {...this.menuPanResponder.panHandlers}
       >
         <View style={{
-          flex: 1,
-          marginLeft: 28,
-          marginRight: 28,
-          paddingLeft: 20,
+          flex: 75,
+          paddingLeft: 48,
           borderBottomWidth: 1,
-          borderColor: '#e0e3e5'
+          borderColor: '#e0e3e5',
+          width: WIDTH * 0.75,
+          height: HEIGHT,
+          backgroundColor: 'white',
+          flexDirection: 'column',
+          elevation: 30
         }}>
           <View style={{
             height: 105,
@@ -684,53 +722,68 @@ export default class Home extends Component {
           <View style={{marginTop: 9}}>
             <Text style={{fontSize: 13}}>Rachelw@email.com</Text>
           </View>
-        </View>
-        <View style={{
-          flex: 1,
-          marginLeft: 28,
-          paddingLeft: 20
-        }}>
-          <TouchableOpacity>
-            <Text style={{
-              fontSize: 18,
-              marginTop: 48
-            }}>Bank account</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={{
-              fontSize: 18,
-              marginTop: 31
-            }}>Your orders</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={{
-              fontSize: 18,
-              marginTop: 31
-            }}>Help</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={{
-              fontSize: 18,
-              marginTop: 31
-            }}>Settings</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{
-          flex: 0.5,
-          justifyContent: 'flex-end',
-          alignItems: 'flex-end'
-        }}>
-          <View
-            style={{
-              marginRight: 26,
-              marginBottom: 20
-            }}
-            {...this.logoutPanResponder.panHandlers}
-          >
-            <Text style={{fontSize: 15}}>Logout</Text>
+          <View style={{
+            elevation: 30,
+            marginTop: HEIGHT * 0.06,
+            width: WIDTH * 0.75 - 48
+          }}>
+            <TouchableOpacity>
+              <Text style={{
+                fontSize: 18,
+                marginTop: 48
+              }}>Bank account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={{
+                fontSize: 18,
+                marginTop: 31
+              }}>Your orders</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={{
+                fontSize: 18,
+                marginTop: 31
+              }}>Help</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={{
+                fontSize: 18,
+                marginTop: 31
+              }}>Settings</Text>
+            </TouchableOpacity>
+            {this.renderLogoutBtn()}
           </View>
         </View>
+        <TouchableOpacity
+          style={{
+            flex: 30,
+            backgroundColor: 'transparent'
+          }}
+          onPress={this.hideMenuWhenBackgroundTapped.bind(this)}
+        >
+        </TouchableOpacity>
       </Animated.View>
+    );
+  }
+
+  renderLogoutBtn() {
+    return (
+      <View style={{
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        marginTop: (Platform.OS === 'ios') ? HEIGHT * 0.19 : HEIGHT * 0.15,
+        marginRight: 10
+      }}>
+        <View
+          style={{
+            marginRight: 26,
+            marginBottom: 20
+          }}
+          {...this.logoutPanResponder.panHandlers}
+        >
+          <Text style={{fontSize: 15}}>Logout</Text>
+        </View>
+      </View>
     );
   }
 
@@ -769,7 +822,8 @@ export default class Home extends Component {
           left: left,
           flexDirection: 'column',
           shadowOffset: {height: 1, width: 2},
-          shadowOpacity: 0.23
+          shadowOpacity: 0.23,
+          elevation: 2
         }}
         {...this.cardPanResponder.panHandlers}
       >
@@ -1059,8 +1113,7 @@ export default class Home extends Component {
     const {
       animatedCardLeftVal,
       animatedCardBottomVal,
-      cardIndex,
-      cardAppeared
+      cardIndex
     } = this.state;
 
     return (
@@ -1070,9 +1123,9 @@ export default class Home extends Component {
           position: 'absolute',
           left: animatedCardLeftVal,
           bottom: animatedCardBottomVal,
-          width: WIDTH,
+          width: WIDTH * 3,
           height: expandedCardHeight,
-          backgroundColor: 'transparent'
+          zIndex: 1
         }}
       >
         {this.renderCard(-cardWidth, cardIndex - 1)}
@@ -1083,22 +1136,31 @@ export default class Home extends Component {
   }
 
   renderAddBtn() {
+    if (Platform.OS === 'ios' && this.state.cardAppeared) {
+      /**
+       * this is due to difference on dynamic components between ios and android
+       * ref: https://github.com/Vinylize/Yetta-App/issues/69
+       */
+      return null;
+    }
     return (
       <TouchableOpacity
         style={{
           position: 'absolute',
           right: 20,
           bottom: 20,
-          height: 40,
+          height: (Platform.OS === 'android' && this.state.cardAppeared) ? 0 : 40,
           width: 40,
           borderRadius: 50,
           backgroundColor: 'white',
           shadowOffset: {height: 1, width: 2},
-          shadowOpacity: 0.23
+          shadowOpacity: 0.23,
+          elevation: 3,
+          zIndex: 0
         }}
         onPress={() => {
-          //this.props.navigator.push(createOrderNavigatorRoute());
           this.animateCardAppear();
+          this.setState({cardAppeared: true});
           // const { markerTest, latitude, longitude } = this.state;
           // if (markerTest) {
           //  vmm.updateMarker(String(latitude), String(longitude));
@@ -1137,20 +1199,16 @@ export default class Home extends Component {
         {this.renderMenu()}
         <Animated.View
           ref={component => this.refViewContainerWithoutMenu = component}
-          style={(this.state.menuClicked) ? {
-            flex: 1, left: 20, transform: [{scale: this.state.shrinkValue}]
-          } : {flex: 1, transform: [{scale: this.state.shrinkValue}]}}
+          style={{flex: 1}}
         >
           {this.renderMap()}
-          {this.renderMenuButton()}
-          {false && this.renderSwitch()}
           {this.renderAddBtn()}
+          {this.renderMenuButton()}
           <SearchBar
             latitude={this.state.latitude}
             longitude={this.state.longitude}
             handleAddressBtn={this.handleSearchBarAddressBtn.bind(this)}
           />
-
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
         </Animated.View>

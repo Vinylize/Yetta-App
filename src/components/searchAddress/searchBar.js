@@ -129,7 +129,6 @@ export default class SearchBar extends Component {
           width: onFocused ? WIDTH : WIDTH * 0.8,
           height: onFocused ? HEIGHT : 40,
           backgroundColor: 'white',
-          zIndex: 100,
           elevation: 4
         }}
       >
