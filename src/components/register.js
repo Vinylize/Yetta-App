@@ -99,9 +99,9 @@ export default class Register extends Component {
     client.mutate(`{
       createUser(
         input:{
-          email: "${email}",
-          name: "${name}",
-          password: "${password}"
+          e: "${email}",
+          n: "${name}",
+          pw: "${password}"
         }
       ) {
         result

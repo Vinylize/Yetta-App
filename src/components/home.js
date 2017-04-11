@@ -57,6 +57,10 @@ const cardInitBottom = -expandedCardHeight + cardHeight;
 const cardHidedBottom = -expandedCardHeight;
 const menuWidth = WIDTH * 0.8;
 
+const PLATFORM_SPECIFIC = {
+  animatedCardLeftVal: (Platform.OS === 'ios') ? 0 : -WIDTH
+};
+
 export default class Home extends Component {
   constructor() {
     super();
@@ -69,11 +73,12 @@ export default class Home extends Component {
       shrinkValue: new Animated.Value(1),
       markerTest: false,
       clickedMarkerID: undefined,
-      animatedCardLeftVal: new Animated.Value(0),
+      animatedCardLeftVal: new Animated.Value(PLATFORM_SPECIFIC.animatedCardLeftVal),
       animatedCardBottomVal: new Animated.Value(cardHidedBottom),
       animMenu: new Animated.Value(-menuWidth),
       cardIndex: 0,
       cardExpanded: false,
+      cardAppeared: false,
       busyOnCardMoveX: false,
       busyOnCardMoveY: false,
       busyOnWaitingNewRunner: false,
@@ -136,7 +141,13 @@ export default class Home extends Component {
 
     this.state.animMenu.addListener(value => {
       this.animMenuValue = value.value;
-      this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
+      /**
+       * todo: resolve issue only in Android
+       * msg: The specified child already has a parent. You must call removeView() on the child's parent first.
+       */
+      if (Platform.OS === 'ios') {
+        this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
+      }
     });
 
     if (Platform.OS === 'android') {
@@ -399,7 +410,8 @@ export default class Home extends Component {
         easing: Easing.linear
       }
     ).start(() => {
-      this.setState({markerClicked: false});
+      LayoutAnimation.easeInEaseOut();
+      this.setState({cardAppeared: false});
     });
   }
 
@@ -582,7 +594,8 @@ export default class Home extends Component {
           backgroundColor: '#2E3031',
           shadowOffset: {height: 1, width: 1},
           shadowOpacity: 0.2,
-          elevation: 3
+          elevation: 3,
+          zIndex: 1
         }}
         activeOpacity={1}
         onPress={() => {
@@ -636,7 +649,9 @@ export default class Home extends Component {
     }
     if (this.animMenuValue + dx < 0) {
       this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
-      this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
+      if (Platform.OS === 'ios') {
+        this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
+      }
     }
   }
 
@@ -659,13 +674,14 @@ export default class Home extends Component {
           position: 'absolute',
           left: this.state.animMenu,
           top: 0,
-          zIndex: 1,
+          zIndex: 2,
           backgroundColor: 'white',
           width: WIDTH * 0.75,
           height: HEIGHT - ((Platform.OS === 'android') ? 20 : 0),
           flexDirection: 'column',
           shadowOffset: {height: 1, width: 1},
-          shadowOpacity: 0.2
+          shadowOpacity: 0.2,
+          elevation: 100
         }}
         {...this.menuPanResponder.panHandlers}
       >
@@ -760,7 +776,8 @@ export default class Home extends Component {
           width: 30,
           height: 24,
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
+          zIndex: 1
         }}
         onPress={() => {
           // this.setState({menuClicked: !menuClicked});
@@ -783,7 +800,8 @@ export default class Home extends Component {
           left: left,
           flexDirection: 'column',
           shadowOffset: {height: 1, width: 2},
-          shadowOpacity: 0.23
+          shadowOpacity: 0.23,
+          elevation: 2
         }}
         {...this.cardPanResponder.panHandlers}
       >
@@ -1073,8 +1091,7 @@ export default class Home extends Component {
     const {
       animatedCardLeftVal,
       animatedCardBottomVal,
-      cardIndex,
-      cardAppeared
+      cardIndex
     } = this.state;
 
     return (
@@ -1084,9 +1101,10 @@ export default class Home extends Component {
           position: 'absolute',
           left: animatedCardLeftVal,
           bottom: animatedCardBottomVal,
-          width: WIDTH,
+          width: WIDTH * 3,
           height: expandedCardHeight,
-          backgroundColor: 'transparent'
+          backgroundColor: 'yellow',
+          zIndex: 1
         }}
       >
         {this.renderCard(-cardWidth, cardIndex - 1)}
@@ -1097,23 +1115,31 @@ export default class Home extends Component {
   }
 
   renderAddBtn() {
+    if (Platform.OS === 'ios' && this.state.cardAppeared) {
+      /**
+       * this is due to difference on dynamic components between ios and android
+       * ref: https://github.com/Vinylize/Yetta-App/issues/69
+       */
+      return null;
+    }
     return (
       <TouchableOpacity
         style={{
           position: 'absolute',
           right: 20,
           bottom: 20,
-          height: 40,
+          height: (Platform.OS === 'android' && this.state.cardAppeared) ? 0 : 40,
           width: 40,
           borderRadius: 50,
           backgroundColor: 'white',
           shadowOffset: {height: 1, width: 2},
           shadowOpacity: 0.23,
-          elevation: 3
+          elevation: 3,
+          zIndex: 0
         }}
         onPress={() => {
-          //this.props.navigator.push(createOrderNavigatorRoute());
           this.animateCardAppear();
+          this.setState({cardAppeared: true});
           // const { markerTest, latitude, longitude } = this.state;
           // if (markerTest) {
           //  vmm.updateMarker(String(latitude), String(longitude));
@@ -1150,22 +1176,18 @@ export default class Home extends Component {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
         {this.renderMenu()}
+        {this.renderMenuButton()}
         <Animated.View
           ref={component => this.refViewContainerWithoutMenu = component}
-          style={(this.state.menuClicked) ? {
-            flex: 1, left: 20, transform: [{scale: this.state.shrinkValue}]
-          } : {flex: 1, transform: [{scale: this.state.shrinkValue}]}}
+          style={{flex: 1}}
         >
           {this.renderMap()}
-          {this.renderMenuButton()}
-          {false && this.renderSwitch()}
           {this.renderAddBtn()}
           <SearchBar
             latitude={this.state.latitude}
             longitude={this.state.longitude}
             handleAddressBtn={this.handleSearchBarAddressBtn.bind(this)}
           />
-
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
         </Animated.View>

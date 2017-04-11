@@ -91,7 +91,7 @@ export default class FindStore extends PureComponent {
     return client.query(`{
       viewer{
         node (lat: ${latitude}, lon: ${longitude}, radius: 10000, c1: "CVS", c2: "CU") {
-          name,
+          n,
           addr,
           distance
         }

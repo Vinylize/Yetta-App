@@ -118,9 +118,9 @@ export default class Login extends Component {
     };
     return client.query(`{
       viewer{
-        isPhoneValid,
-        email,
-        name
+        isPV,
+        e,
+        n
       }
     }`);
   }
