@@ -1125,7 +1125,6 @@ export default class Home extends Component {
           bottom: animatedCardBottomVal,
           width: WIDTH * 3,
           height: expandedCardHeight,
-          backgroundColor: 'yellow',
           zIndex: 1
         }}
       >
