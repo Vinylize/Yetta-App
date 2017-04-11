@@ -55,7 +55,8 @@ const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
 const cardInitBottom = -expandedCardHeight + cardHeight;
 const cardHidedBottom = -expandedCardHeight;
-const menuWidth = WIDTH * 0.8;
+// const menuWidth = WIDTH * 0.8;
+const menuWidth = WIDTH;
 
 const PLATFORM_SPECIFIC = {
   animatedCardLeftVal: (Platform.OS === 'ios') ? 0 : -WIDTH
@@ -630,7 +631,7 @@ export default class Home extends Component {
     Animated.timing(
       this.state.animMenu,
       {
-        toValue: -WIDTH * 0.8,
+        toValue: -WIDTH,
         duration: 500
       }
     ).start();
@@ -638,6 +639,10 @@ export default class Home extends Component {
 
   checkIfMenuInMiddle() {
     return (this.animMenuValue < 0 || this.animMenuValue > -WIDTH * 0.8);
+  }
+
+  hideMenuWhenBackgroundTapped() {
+    this.animateMenuHide();
   }
 
   menuHandlePanResponderMove(e, gestureState) {
@@ -675,10 +680,10 @@ export default class Home extends Component {
           left: this.state.animMenu,
           top: 0,
           zIndex: 2,
-          backgroundColor: 'white',
-          width: WIDTH * 0.75,
+          backgroundColor: 'transparent',
+          width: WIDTH,
           height: HEIGHT - ((Platform.OS === 'android') ? 20 : 0),
-          flexDirection: 'column',
+          flexDirection: 'row',
           shadowOffset: {height: 1, width: 1},
           shadowOpacity: 0.2,
           elevation: 100
@@ -686,12 +691,15 @@ export default class Home extends Component {
         {...this.menuPanResponder.panHandlers}
       >
         <View style={{
-          flex: 1,
-          marginLeft: 28,
-          marginRight: 28,
-          paddingLeft: 20,
+          flex: 75,
+          paddingLeft: 48,
           borderBottomWidth: 1,
-          borderColor: '#e0e3e5'
+          borderColor: '#e0e3e5',
+          width: WIDTH * 0.75,
+          height: HEIGHT,
+          backgroundColor: 'white',
+          flexDirection: 'column',
+          elevation: 30
         }}>
           <View style={{
             height: 105,
@@ -714,53 +722,68 @@ export default class Home extends Component {
           <View style={{marginTop: 9}}>
             <Text style={{fontSize: 13}}>Rachelw@email.com</Text>
           </View>
-        </View>
-        <View style={{
-          flex: 1,
-          marginLeft: 28,
-          paddingLeft: 20
-        }}>
-          <TouchableOpacity>
-            <Text style={{
-              fontSize: 18,
-              marginTop: 48
-            }}>Bank account</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={{
-              fontSize: 18,
-              marginTop: 31
-            }}>Your orders</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={{
-              fontSize: 18,
-              marginTop: 31
-            }}>Help</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={{
-              fontSize: 18,
-              marginTop: 31
-            }}>Settings</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{
-          flex: 0.5,
-          justifyContent: 'flex-end',
-          alignItems: 'flex-end'
-        }}>
-          <View
-            style={{
-              marginRight: 26,
-              marginBottom: 20
-            }}
-            {...this.logoutPanResponder.panHandlers}
-          >
-            <Text style={{fontSize: 15}}>Logout</Text>
+          <View style={{
+            elevation: 30,
+            marginTop: HEIGHT * 0.06,
+            width: WIDTH * 0.75 - 48
+          }}>
+            <TouchableOpacity>
+              <Text style={{
+                fontSize: 18,
+                marginTop: 48
+              }}>Bank account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={{
+                fontSize: 18,
+                marginTop: 31
+              }}>Your orders</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={{
+                fontSize: 18,
+                marginTop: 31
+              }}>Help</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={{
+                fontSize: 18,
+                marginTop: 31
+              }}>Settings</Text>
+            </TouchableOpacity>
+            {this.renderLogoutBtn()}
           </View>
         </View>
+        <TouchableOpacity
+          style={{
+            flex: 30,
+            backgroundColor: 'transparent'
+          }}
+          onPress={this.hideMenuWhenBackgroundTapped.bind(this)}
+        >
+        </TouchableOpacity>
       </Animated.View>
+    );
+  }
+
+  renderLogoutBtn() {
+    return (
+      <View style={{
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        marginTop: (Platform.OS === 'ios') ? HEIGHT * 0.19 : HEIGHT * 0.15,
+        marginRight: 10
+      }}>
+        <View
+          style={{
+            marginRight: 26,
+            marginBottom: 20
+          }}
+          {...this.logoutPanResponder.panHandlers}
+        >
+          <Text style={{fontSize: 15}}>Logout</Text>
+        </View>
+      </View>
     );
   }
 
