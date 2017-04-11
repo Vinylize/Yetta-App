@@ -776,8 +776,7 @@ export default class Home extends Component {
           width: 30,
           height: 24,
           justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1
+          alignItems: 'center'
         }}
         onPress={() => {
           // this.setState({menuClicked: !menuClicked});
@@ -1176,13 +1175,13 @@ export default class Home extends Component {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
         {this.renderMenu()}
-        {this.renderMenuButton()}
         <Animated.View
           ref={component => this.refViewContainerWithoutMenu = component}
           style={{flex: 1}}
         >
           {this.renderMap()}
           {this.renderAddBtn()}
+          {this.renderMenuButton()}
           <SearchBar
             latitude={this.state.latitude}
             longitude={this.state.longitude}
