@@ -130,7 +130,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // From node_modules
 
-    compile project(':ReactAndroid')
+    compile 'com.facebook.react:react-native:+'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.google.android.gms:play-services-maps:10.0.1'
     compile 'com.google.android.gms:play-services-location:10.0.1'
