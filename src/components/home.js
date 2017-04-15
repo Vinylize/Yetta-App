@@ -146,8 +146,11 @@ export default class Home extends Component {
        * todo: resolve issue only in Android
        * msg: The specified child already has a parent. You must call removeView() on the child's parent first.
        */
+
       if (Platform.OS === 'ios') {
         this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
+      } else if (Platform.OS === 'android') {
+        this.refMapAndroid.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
       }
     });
 
@@ -516,7 +519,10 @@ export default class Home extends Component {
       );
     }
     return (
-      <VinylMapAndroid style={{flex: 1}}/>
+      <VinylMapAndroid
+        ref={component => this.refMapAndroid = component}
+        style={{flex: 1}}
+      />
     );
   }
 
@@ -656,6 +662,8 @@ export default class Home extends Component {
       this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
       if (Platform.OS === 'ios') {
         this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
+      } else if (Platform.OS === 'android') {
+        this.refMapAndroid.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
       }
     }
   }
@@ -1211,13 +1219,13 @@ export default class Home extends Component {
           />
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
+          <ApproveCard
+            showApproveAddressCard = {this.state.showApproveAddressCard}
+            address={this.state.searchedAddressTextView}
+            handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
+          />
+          {this.state.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>
-        <ApproveCard
-          showApproveAddressCard = {this.state.showApproveAddressCard}
-          address={this.state.searchedAddressTextView}
-          handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
-        />
-        {this.state.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
       </View>
     );
   }
