@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import AllLayout from './containers/allLayout';
 
-export default class Vinyl extends Component {
+export default class Yetta extends Component {
   constructor() {
     super();
   }
@@ -62,6 +62,6 @@ export default class Vinyl extends Component {
   }
 }
 
-Vinyl.propTypes = {
+Yetta.propTypes = {
   initialNotification: PropTypes.any
 };

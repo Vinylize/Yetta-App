@@ -1,2 +1,2 @@
-export const setUserName = 'SET_USER_NAME';
+export const setUser = 'SET_USER';
 export const setNode = 'SET_NODE';
