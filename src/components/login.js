@@ -145,6 +145,7 @@ class Login extends Component {
 
   login(email, password) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
+      .catch(handleFirebaseSignInError);
       .then(this.internalAuth.bind(this));
   }
 
