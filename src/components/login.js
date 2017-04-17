@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
   Text,
   TextInput,
@@ -10,6 +11,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as firebase from 'firebase';
+
+import { setUser } from '../actions/authActions';
 import { URL, handleError, handleFirebaseSignInError } from './../utils';
 import {
   registerNavigatorRoute,
@@ -79,7 +82,7 @@ const styles = {
   }
 };
 
-export default class Login extends Component {
+class Login extends Component {
   constructor() {
     super();
     this.state = {
@@ -91,12 +94,9 @@ export default class Login extends Component {
 
   componentWillMount() {
     this.fireBaseListener = firebase.auth().onAuthStateChanged((user) => {
+      this.fireBaseListener && this.fireBaseListener();
       if (user) {
-        console.log('found user');
-        firebase.auth().getToken().then(console.log);
-        // remove this listener after login
-        this.fireBaseListener && this.fireBaseListener();
-        this.props.navigator.replace(homeNavigatorRoute());
+        this.internalAuth();
       } else {
         // TBD
       }
@@ -112,7 +112,7 @@ export default class Login extends Component {
   //   (childSnapshot, prevChildKey) => console.log(childSnapshot.val(), prevChildKey));
   // }
 
-  checkIfPhoneValid(token) {
+  queryUser(token) {
     client._transport._httpOptions.headers = {
       authorization: token
     };
@@ -120,31 +120,43 @@ export default class Login extends Component {
       viewer{
         isPV,
         e,
-        n
+        n,
+        p
       }
-    }`);
+    }`)
+      .then(({viewer}) => {
+        this.props.setUser(viewer);
+        return viewer;
+      })
+      .catch(handleError);
+  }
+
+  internalAuth() {
+    firebase.auth().currentUser.getToken()
+      .then(this.queryUser.bind(this))
+      .then((viewer) => {
+        if (viewer.isPV) {
+          this.navigateToHome();
+        } else {
+          this.navigateToHome();
+          this.navigateToPhoneVerification();
+        }
+      });
   }
 
   login(email, password) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(this.getToken.bind(this))
-      .catch(handleFirebaseSignInError);
+      .catch(handleFirebaseSignInError)
+      .then(this.internalAuth.bind(this));
   }
 
-  getToken() {
-    firebase.auth().currentUser.getToken()
-      .then(this.checkIfPhoneValid.bind(this))
-      .then(res => res.viewer.isPhoneValid)
-      .then(this.navigateScene.bind(this))
-      .catch(handleError);
+  navigateToHome() {
+    this.props.navigator.replace(homeNavigatorRoute());
   }
 
-  navigateScene(valid) {
-    if (valid === true) {
-      this.props.navigator.replace(homeNavigatorRoute());
-    } else {
-      this.props.navigator.push(phoneVerificationNavigatorRoute());
-    }
+  navigateToPhoneVerification() {
+    this.props.navigator.replace(homeNavigatorRoute());
+    this.props.navigator.push(phoneVerificationNavigatorRoute());
   }
 
   handleLoginButton() {
@@ -214,5 +226,16 @@ export default class Login extends Component {
 }
 
 Login.propTypes = {
-  navigator: PropTypes.any
+  navigator: PropTypes.any,
+  setUser: PropTypes.func
 };
+
+let mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => dispatch(setUser(user))
+  };
+};
+
+export default connect(undefined, mapDispatchToProps)(Login);
+
+

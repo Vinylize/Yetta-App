@@ -2,14 +2,14 @@ import * as types from '../actions/actionTypes';
 import update from 'react-addons-update';
 
 const initialState = {
-  userName: ''
+  user: {}
 };
 
 const auth = (state = initialState, action = {}) => {
   switch (action.type) {
-  case types.setUserName: {
+  case types.setUser: {
     return update(state, {
-      userName: { $set: action.userName }
+      user: { $set: action.user }
     });
   }
   default:
