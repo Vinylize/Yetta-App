@@ -94,12 +94,9 @@ class Login extends Component {
 
   componentWillMount() {
     this.fireBaseListener = firebase.auth().onAuthStateChanged((user) => {
+      this.fireBaseListener && this.fireBaseListener();
       if (user) {
-        console.log('found user');
-        firebase.auth().getToken().then(console.log);
-        // remove this listener after login
-        this.fireBaseListener && this.fireBaseListener();
-        this.props.navigator.replace(homeNavigatorRoute());
+        this.internalAuth();
       } else {
         // TBD
       }
@@ -115,7 +112,7 @@ class Login extends Component {
   //   (childSnapshot, prevChildKey) => console.log(childSnapshot.val(), prevChildKey));
   // }
 
-  checkIfPhoneValid(token) {
+  queryUser(token) {
     client._transport._httpOptions.headers = {
       authorization: token
     };
@@ -126,34 +123,38 @@ class Login extends Component {
         n,
         p
       }
-    }`);
+    }`)
+      .then(({viewer}) => {
+        this.props.setUser(viewer);
+        return viewer;
+      });
+  }
+
+  internalAuth() {
+    firebase.auth().currentUser.getToken()
+      .then(this.queryUser.bind(this))
+      .then((viewer) => {
+        if (viewer.isPV) {
+          this.navigateToHome();
+        } else {
+          this.navigateToHome();
+          this.navigateToPhoneVerification();
+        }
+      });
   }
 
   login(email, password) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(this.getToken.bind(this))
-      .then()
-      .catch(handleFirebaseSignInError);
+      .then(this.internalAuth.bind(this));
   }
 
-  getToken() {
-    firebase.auth().currentUser.getToken()
-      .then(this.checkIfPhoneValid.bind(this))
-      .then(res => {
-        console.log(res.viewer);
-        this.props.setUser(res.viewer);
-        return res.viewer.isPhoneValid;
-      })
-      .then(this.navigateScene.bind(this))
-      .catch(handleError);
+  navigateToHome() {
+    this.props.navigator.replace(homeNavigatorRoute());
   }
 
-  navigateScene(valid) {
-    if (valid === true) {
-      this.props.navigator.replace(homeNavigatorRoute());
-    } else {
-      this.props.navigator.push(phoneVerificationNavigatorRoute());
-    }
+  navigateToPhoneVerification() {
+    this.props.navigator.replace(homeNavigatorRoute());
+    this.props.navigator.push(phoneVerificationNavigatorRoute());
   }
 
   handleLoginButton() {
