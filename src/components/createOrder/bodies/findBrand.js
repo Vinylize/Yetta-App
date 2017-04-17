@@ -110,9 +110,7 @@ export default class FindBrand extends Component {
           backgroundColor: '#eeeff3',
           marginTop: 5,
           marginBottom: 20
-        }}>
-
-        </View>
+        }} />
         <Text>{rowData}</Text>
       </TouchableOpacity>
     );

@@ -177,13 +177,13 @@ export default class SearchBar extends Component {
             {(onFocused) ?
               <TextInput
                 style={(onFocused) ? {
-                    height: 40,
-                    width: WIDTH * 0.8,
-                    backgroundColor: '#f9f9f9',
-                    alignSelf: 'center',
-                    borderRadius: 4,
-                    paddingLeft: 10
-                  } : {height: 40, paddingLeft: 10}}
+                  height: 40,
+                  width: WIDTH * 0.8,
+                  backgroundColor: '#f9f9f9',
+                  alignSelf: 'center',
+                  borderRadius: 4,
+                  paddingLeft: 10
+                } : {height: 40, paddingLeft: 10}}
                 onChangeText={this.handleTextChange.bind(this)}
                 value={this.state.text}
                 underlineColorAndroid={'white'}

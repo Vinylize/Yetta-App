@@ -141,7 +141,7 @@ export default class FindStore extends PureComponent {
     } else if (selectedBrand === '음식점') {
       arr = ['한식', '중식', '양식', '기타'];
     } else {
-      arr = [1,2,3,4,5,6,7,8,9];
+      arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     }
     brandList = ds.cloneWithRows(arr);
     return (

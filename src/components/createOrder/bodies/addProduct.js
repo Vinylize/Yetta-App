@@ -35,9 +35,7 @@ export default class AddProduct extends PureComponent {
             marginBottom: 38,
             shadowOffset: {height: 3, width: 0},
             shadowOpacity: 0.2
-          }}>
-
-          </View>
+          }} />
           <Text>Add product</Text>
           <View style={{
             height: 70,
@@ -46,9 +44,7 @@ export default class AddProduct extends PureComponent {
             shadowOpacity: 0.2,
             marginTop: 12,
             marginBottom: 12
-          }}>
-
-          </View>
+          }} />
           <View style={{
             height: 70,
             width: WIDTH - 80,
@@ -56,9 +52,7 @@ export default class AddProduct extends PureComponent {
             shadowOpacity: 0.2,
             marginTop: 12,
             marginBottom: 12
-          }}>
-
-          </View>
+          }} />
           <View style={{
             height: 70,
             width: WIDTH - 80,
@@ -66,9 +60,7 @@ export default class AddProduct extends PureComponent {
             shadowOpacity: 0.2,
             marginTop: 12,
             marginBottom: 12
-          }}>
-
-          </View>
+          }} />
         </ScrollView>
       </View>
     );
