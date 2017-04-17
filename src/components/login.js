@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
   Text,
   TextInput,
@@ -10,6 +11,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as firebase from 'firebase';
+
+import { setUser } from '../actions/authActions';
 import { URL, handleError, handleFirebaseSignInError } from './../utils';
 import {
   registerNavigatorRoute,
@@ -79,7 +82,7 @@ const styles = {
   }
 };
 
-export default class Login extends Component {
+class Login extends Component {
   constructor() {
     super();
     this.state = {
@@ -120,7 +123,8 @@ export default class Login extends Component {
       viewer{
         isPV,
         e,
-        n
+        n,
+        p
       }
     }`);
   }
@@ -128,13 +132,18 @@ export default class Login extends Component {
   login(email, password) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
       .then(this.getToken.bind(this))
+      .then()
       .catch(handleFirebaseSignInError);
   }
 
   getToken() {
     firebase.auth().currentUser.getToken()
       .then(this.checkIfPhoneValid.bind(this))
-      .then(res => res.viewer.isPhoneValid)
+      .then(res => {
+        console.log(res.viewer);
+        this.props.setUser(res.viewer);
+        return res.viewer.isPhoneValid;
+      })
       .then(this.navigateScene.bind(this))
       .catch(handleError);
   }
@@ -214,5 +223,16 @@ export default class Login extends Component {
 }
 
 Login.propTypes = {
-  navigator: PropTypes.any
+  navigator: PropTypes.any,
+  setUser: PropTypes.func
 };
+
+let mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => dispatch(setUser(user))
+  };
+};
+
+export default connect(undefined, mapDispatchToProps)(Login);
+
+

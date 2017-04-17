@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
   Alert,
   AlertIOS,
@@ -62,7 +63,7 @@ const PLATFORM_SPECIFIC = {
   animatedCardLeftVal: (Platform.OS === 'ios') ? 0 : -WIDTH
 };
 
-export default class Home extends Component {
+class Home extends Component {
   constructor() {
     super();
     this.state = {
@@ -722,13 +723,13 @@ export default class Home extends Component {
             marginTop: 20,
             flexDirection: 'row'
           }}>
-            <Text style={{fontSize: 15}}>Rachel Williams</Text>
+            <Text style={{fontSize: 15}}>{this.props.user.n}</Text>
             <View style={{marginLeft: 24, marginTop: 3}}>
               <Text style={{fontSize: 10}}>edit</Text>
             </View>
           </View>
           <View style={{marginTop: 9}}>
-            <Text style={{fontSize: 13}}>Rachelw@email.com</Text>
+            <Text style={{fontSize: 13}}>{this.props.user.e}</Text>
           </View>
           <View style={{
             elevation: 30,
@@ -1231,6 +1232,14 @@ export default class Home extends Component {
   }
 }
 
+let mapStateToProps = (state) => {
+  return {
+    user: state.auth.user
+  };
+};
+
 Home.propTypes = {
   navigator: PropTypes.any
 };
+
+export default connect(mapStateToProps, undefined)(Home);

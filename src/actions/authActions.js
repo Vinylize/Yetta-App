@@ -1,8 +1,8 @@
 import * as types from './actionTypes';
 
-export const setUserName = (userName) => {
+export const setUser = (user) => {
   return {
-    type: types.setUserName,
-    userName
+    type: types.setUser,
+    user
   };
 };
