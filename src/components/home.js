@@ -43,11 +43,11 @@ const client = new Lokka({
 const { YettaLocationServiceManger } = NativeModules;
 const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServiceManger);
 
-const styles = {
-  container: {
-    flex: 1
-  }
-};
+// const styles = {
+//   container: {
+//     flex: 1
+//   }
+// };
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -268,7 +268,9 @@ class Home extends Component {
       } else if (cardInitBottom - dy <= 0 && !busyOnCardMoveX) {
         if (busyOnCardMoveX === false) {
           let cardBottomValOnTouch;
+          /* eslint-disable max-depth */
           if (cardExpanded) {
+            /* eslint-enable max-depth */
             cardBottomValOnTouch = (dy >= 0) ? -dy : 0;
           } else {
             cardBottomValOnTouch = cardInitBottom - dy;
@@ -468,7 +470,7 @@ class Home extends Component {
       this.state.latitude,
       this.state.longitude
     ));
-    this.setState((prevState, props) => {
+    this.setState(() => {
       return {showApproveAddressCard: false};
     });
   }
@@ -481,8 +483,8 @@ class Home extends Component {
           onPress={(e) => {
             console.log(e.nativeEvent);
           }}
-          onMarkerPress={(e) => {
-            // console.log(e.nativeEvent);
+          onMarkerPress={() => {
+             //console.log(e.nativeEvent);
             if (this.state.markerClicked === false) {
               // marker is clicked
               this.animateCardAppear();
@@ -724,7 +726,7 @@ class Home extends Component {
             flexDirection: 'row'
           }}>
             <Text style={{fontSize: 15}}>{this.props.user.n}</Text>
-            <View style={{marginLeft: 24, marginTop: 3, backgroundColor:'black'}}>
+            <View style={{marginLeft: 24, marginTop: 3, backgroundColor: 'black'}}>
               <Text style={{fontSize: 10}}>edit</Text>
             </View>
           </View>
@@ -1240,7 +1242,8 @@ let mapStateToProps = (state) => {
 };
 
 Home.propTypes = {
-  navigator: PropTypes.any
+  navigator: PropTypes.any,
+  user: PropTypes.object
 };
 
 export default connect(mapStateToProps, undefined)(Home);

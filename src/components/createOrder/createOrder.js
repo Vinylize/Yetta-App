@@ -5,7 +5,6 @@ import {
 
 import Header from './header/header';
 import Overview from './bodies/overview';
-import FindBrand from './bodies/findBrand';
 import FindStore from './bodies/findStore';
 import FindBrandV2 from './bodies/findBrandV2';
 import AddProduct from './bodies/addProduct';

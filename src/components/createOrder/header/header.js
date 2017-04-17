@@ -6,7 +6,6 @@ import {
   View
 } from 'react-native';
 
-const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
 const styles = {
