@@ -127,7 +127,8 @@ class Login extends Component {
       .then(({viewer}) => {
         this.props.setUser(viewer);
         return viewer;
-      });
+      })
+      .catch(handleError);
   }
 
   internalAuth() {
@@ -140,13 +141,13 @@ class Login extends Component {
           this.navigateToHome();
           this.navigateToPhoneVerification();
         }
-      });
+      })
   }
 
   login(email, password) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
-      .catch(handleFirebaseSignInError);
-      .then(this.internalAuth.bind(this));
+      .catch(handleFirebaseSignInError)
+      .then(this.internalAuth.bind(this))
   }
 
   navigateToHome() {
