@@ -179,7 +179,7 @@ export default class PhoneVerification extends Component {
     if (this.state.digit.length > 11) {
       const { showResponse } = this.state;
       if (showResponse === false) {
-        this.requestVerificationHelper(this.state.digit.replace(/\s/g,''));
+        this.requestVerificationHelper(this.state.digit.replace(/\s/g, ''));
       } else if (showResponse === true) {
         this.responseVerificationHelper(Number(this.state.code));
       }

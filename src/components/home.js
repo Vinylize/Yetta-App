@@ -1,17 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Alert,
-  AlertIOS,
+  // AlertIOS,
   Text,
   View,
   Dimensions,
   LayoutAnimation,
-  Keyboard,
+  // Keyboard,
   PanResponder,
   Platform,
   NativeModules,
   NativeEventEmitter,
-  TextInput,
+  // TextInput,
   TouchableOpacity,
   Animated,
   Easing,
@@ -192,8 +192,8 @@ export default class Home extends Component {
             vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
             this.initialLocationUpdate = true;
           }
-          //AlertIOS.alert('location update in JS', JSON.stringify(data));
-          //console.log(data);
+          // AlertIOS.alert('location update in JS', JSON.stringify(data));
+          // console.log(data);
           this.setState({
             latitude: data.latitude,
             longitude: data.longitude
@@ -224,7 +224,7 @@ export default class Home extends Component {
   }
 
   userUpdateCoordinateHelper(token, data) {
-    //console.log(token);
+    // console.log(token);
     client._transport._httpOptions.headers = {
       authorization: token
     };
@@ -520,7 +520,9 @@ export default class Home extends Component {
     }
     return (
       <VinylMapAndroid
-        ref={component => this.refMapAndroid = component}
+        ref={component => {
+          this.refMapAndroid = component;
+        }}
         style={{flex: 1}}
       />
     );
@@ -553,12 +555,12 @@ export default class Home extends Component {
           activeOpacity={1}
         >
           <View style={[{
-              position: 'absolute',
-              top: 2,
-              width: WIDTH * 0.25,
-              height: 31 - 5,
-              backgroundColor: 'white',
-              borderRadius: 20,
+            position: 'absolute',
+            top: 2,
+            width: WIDTH * 0.25,
+            height: 31 - 5,
+            backgroundColor: 'white',
+            borderRadius: 20
           }, (toggle) ? {right: 4} : {left: 4}]}/>
           <View style={{
             flex: 1,
@@ -611,9 +613,7 @@ export default class Home extends Component {
           LayoutAnimation.easeInEaseOut();
           this.setState({trackingCurrentPos: true});
         }}
-      >
-
-      </TouchableOpacity>
+       />
     );
   }
 
@@ -682,7 +682,9 @@ export default class Home extends Component {
   renderMenu() {
     return (
       <Animated.View
-        ref={component => this.refMenu = component}
+        ref={component => {
+          this.refMenu = component;
+        }}
         style={{
           position: 'absolute',
           left: this.state.animMenu,
@@ -715,9 +717,7 @@ export default class Home extends Component {
             borderRadius: 52.5,
             marginTop: 56,
             backgroundColor: '#d8d8d8'
-          }}>
-
-          </View>
+          }} />
           <View style={{
             marginTop: 20,
             flexDirection: 'row'
@@ -768,8 +768,7 @@ export default class Home extends Component {
             backgroundColor: 'transparent'
           }}
           onPress={this.hideMenuWhenBackgroundTapped.bind(this)}
-        >
-        </TouchableOpacity>
+         />
       </Animated.View>
     );
   }
@@ -796,7 +795,7 @@ export default class Home extends Component {
   }
 
   renderMenuButton() {
-    const { menuClicked } = this.state;
+    // const { menuClicked } = this.state;
     return (
       <TouchableOpacity
         style={{
@@ -905,9 +904,7 @@ export default class Home extends Component {
                 shadowOpacity: 0.4,
                 shadowRadius: 5,
                 marginRight: 25
-              }}>
-
-              </View>
+              }} />
             </View>
           </View>
         </View>
@@ -1063,7 +1060,7 @@ export default class Home extends Component {
             left: (index < this.state.processState) ? 20 : 19,
             top: top,
             borderWidth: (index < this.state.processState) ? 1 : 2,
-            borderStyle: (index < this.state.processState) ? 'solid': 'dotted',
+            borderStyle: (index < this.state.processState) ? 'solid' : 'dotted',
             borderColor: (index < this.state.processState) ? '#2e3031' : '#eaefef',
             width: 0.1,
             height: 40
@@ -1126,7 +1123,9 @@ export default class Home extends Component {
 
     return (
       <Animated.View
-        ref={component => this.refViewCardContainer = component} // eslint-disable-line
+        ref={component => {
+          this.refViewCardContainer = component;
+        }}
         style={{
           position: 'absolute',
           left: animatedCardLeftVal,
@@ -1206,7 +1205,9 @@ export default class Home extends Component {
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
         {this.renderMenu()}
         <Animated.View
-          ref={component => this.refViewContainerWithoutMenu = component}
+          ref={component => {
+            this.refViewContainerWithoutMenu = component;
+          }}
           style={{flex: 1}}
         >
           {this.renderMap()}

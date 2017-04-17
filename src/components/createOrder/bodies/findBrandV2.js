@@ -80,8 +80,7 @@ export default class FindBrandV2 extends Component {
           backgroundColor: '#eeeff3',
           marginTop: 5,
           marginBottom: 20
-        }}>
-        </View> : null}
+        }} /> : null}
         <Text>{rowData}</Text>
       </TouchableOpacity>
     );
