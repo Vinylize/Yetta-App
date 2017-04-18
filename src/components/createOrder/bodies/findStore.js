@@ -90,7 +90,7 @@ export default class FindStore extends PureComponent {
     const { latitude, longitude } = this.props.coordinate;
     return client.query(`{
       viewer{
-        node (lat: ${latitude}, lon: ${longitude}, radius: 432532434234, c1:0, c2: 0) {
+        node (lat: ${latitude}, lon: ${longitude}, radius: 432532434234, c1: 0, c2: 0) {
           n,
           addr,
           distance
