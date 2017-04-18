@@ -8,7 +8,7 @@ import {
 import { URL, handleError } from '../../../utils';
 import * as firebase from 'firebase';
 
-const HEIGHT = Dimensions.get('window').height;
+// const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
 const Lokka = require('lokka').Lokka;

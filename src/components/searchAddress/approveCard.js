@@ -7,12 +7,12 @@ import {
   Platform
 } from 'react-native';
 
-const HEIGHT = Dimensions.get('window').height;
+// const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
-const styles = {
-  // TBD
-};
+// const styles = {
+//   // TBD
+// };
 
 export default class ApproveCard extends Component {
   render() {

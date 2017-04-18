@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, PureComponent } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   TextInput,
   View,

@@ -74,13 +74,17 @@ export default class FindBrandV2 extends Component {
         }}
         onPress={() => this.props.handleBrandBtn(rowData, index)}
       >
-        {false ? <View style={{
-          width: 55,
-          height: 55,
-          backgroundColor: '#eeeff3',
-          marginTop: 5,
-          marginBottom: 20
-        }} /> : null}
+        {
+          /* eslint-disable no-constant-condition */
+          false ? <View style={{
+            width: 55,
+            height: 55,
+            backgroundColor: '#eeeff3',
+            marginTop: 5,
+            marginBottom: 20
+          }} /> : null
+          /* eslint-enable no-constant-condition */
+        }
         <Text>{rowData}</Text>
       </TouchableOpacity>
     );

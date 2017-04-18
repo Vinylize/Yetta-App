@@ -16,12 +16,12 @@ const client = new Lokka({
   transport: new Transport(URL)
 });
 
-const HEIGHT = Dimensions.get('window').height;
+// const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
-const styles = {
-  // TBD
-};
+// const styles = {
+//   // TBD
+// };
 
 export default class FindStore extends PureComponent {
   constructor() {
@@ -79,7 +79,7 @@ export default class FindStore extends PureComponent {
     );
   }
 
-  handleBrandNameBtn(name) {
+  handleBrandNameBtn() {
     this.getStoreListFromServer();
   }
 

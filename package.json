@@ -5,8 +5,11 @@
   "scripts": {
     "start": "react-native run-android & react-native run-ios & node node_modules/react-native/local-cli/cli.js start --port 8082",
     "test": "eslint src/**/*.js && jest",
-    "lint": "eslint --fix *.js"
+    "lint": "eslint --ignore-path .gitignore src"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "dependencies": {
     "firebase": "^3.6.6",
     "lokka": "^1.7.0",
@@ -33,6 +36,7 @@
     "eslint-plugin-react": "^6.8.0",
     "graphql": "^0.8.2",
     "jest": "18.0.0",
+    "pre-commit": "^1.2.2",
     "react-test-renderer": "15.4.1",
     "rnpm-plugin-upgrade": "^0.26.0"
   },

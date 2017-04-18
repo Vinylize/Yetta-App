@@ -1,18 +1,18 @@
 import React, { PureComponent, PropTypes } from 'react';
 import {
   Dimensions,
-  TouchableOpacity,
+  // TouchableOpacity,
   ScrollView,
   Text,
   View
 } from 'react-native';
 
-const HEIGHT = Dimensions.get('window').height;
+// const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
-const styles = {
-  // TBD
-};
+// const styles = {
+//   // TBD
+// };
 
 export default class AddProduct extends PureComponent {
   render() {
