@@ -22,7 +22,8 @@ import {
 import * as firebase from 'firebase';
 import {
   createOrderNavigatorRoute,
-  loginNavigatorRoute
+  loginNavigatorRoute,
+  profileNavigatorRoute
 } from '../navigator/navigatorRoutes';
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
@@ -108,6 +109,11 @@ class Home extends Component {
     this.logoutPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: this.handleLogout.bind(this)
+    });
+
+    this.profilePanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: this.handleProfile.bind(this)
     });
 
     if (Platform.OS === 'android') {
@@ -430,6 +436,10 @@ class Home extends Component {
     });
   }
 
+  handleProfile() {
+    this.props.navigator.push(profileNavigatorRoute());
+  }
+
   handleSearchBarAddressBtn(firstAddressToken, addressTextView) {
     // todo: change location to searched address
     const { latitude, longitude } = this.state;
@@ -484,7 +494,7 @@ class Home extends Component {
             console.log(e.nativeEvent);
           }}
           onMarkerPress={() => {
-             //console.log(e.nativeEvent);
+            // console.log(e.nativeEvent);
             if (this.state.markerClicked === false) {
               // marker is clicked
               this.animateCardAppear();
@@ -725,8 +735,11 @@ class Home extends Component {
             marginTop: 20,
             flexDirection: 'row'
           }}>
-            <Text style={{fontSize: 15}}>{this.props.user.n}</Text>
-            <View style={{marginLeft: 24, marginTop: 3, backgroundColor: 'black'}}>
+            <Text style={{fontSize: 15, flex: 1}}>{this.props.user.n}</Text>
+            <View
+              style={{marginRight: 50, padding: 3, alignItems: 'flex-end'}}
+              {...this.profilePanResponder.panHandlers}
+            >
               <Text style={{fontSize: 10}}>edit</Text>
             </View>
           </View>
@@ -738,32 +751,44 @@ class Home extends Component {
             marginTop: HEIGHT * 0.06,
             width: WIDTH * 0.75 - 48
           }}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              style ={{
+                marginRight: 10
+              }}>
               <Text style={{
                 fontSize: 18,
                 marginTop: 48
               }}>결제정보</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              style ={{
+                marginRight: 10
+              }}>
               <Text style={{
                 fontSize: 18,
                 marginTop: 31
               }}>주문내역</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              style ={{
+                marginRight: 10
+              }}>
               <Text style={{
                 fontSize: 18,
                 marginTop: 31
               }}>고객센터</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              style ={{
+                marginRight: 10
+              }}>
               <Text style={{
                 fontSize: 18,
                 marginTop: 31
               }}>설정</Text>
             </TouchableOpacity>
-            {this.renderLogoutBtn()}
           </View>
+          {this.renderLogoutBtn()}
         </View>
         <TouchableOpacity
           style={{
@@ -778,22 +803,17 @@ class Home extends Component {
 
   renderLogoutBtn() {
     return (
-      <View style={{
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-        marginTop: (Platform.OS === 'ios') ? HEIGHT * 0.19 : HEIGHT * 0.15,
-        marginRight: 10
-      }}>
         <View
           style={{
-            marginRight: 26,
-            marginBottom: 20
+            position: 'absolute',
+            bottom: 35,
+            right: 35,
+            padding: 5
           }}
           {...this.logoutPanResponder.panHandlers}
         >
-          <Text style={{fontSize: 15}}>Logout</Text>
+          <Text style={{fontSize: 15}}>로그아웃</Text>
         </View>
-      </View>
     );
   }
 
