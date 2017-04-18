@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Alert,
+  findNodeHandle,
   Text,
   TextInput,
   View,
@@ -10,6 +11,7 @@ import {
   Image
 } from 'react-native';
 import { URL } from './../utils';
+import GlobalLoading from './globalViews/loading';
 
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
@@ -91,7 +93,9 @@ export default class Register extends Component {
     this.state = {
       userName: undefined,
       password: undefined,
-      userEmail: undefined
+      userEmail: undefined,
+      refViewForBlurView: null,
+      busyWaiting: false
     };
   }
 
@@ -109,8 +113,10 @@ export default class Register extends Component {
     }`
     ).then(response => {
       console.log(response);
+      this.hideLoading();
       this.props.navigator.pop();
     }).catch((error) => {
+      this.hideLoading();
       const { rawError } = error;
       if (rawError) {
         const { message } = rawError[0];
@@ -131,12 +137,25 @@ export default class Register extends Component {
   handleRegisterButton() {
     const { userName, password, userEmail } = this.state;
     if (userName && password && userEmail) {
+      this.showLoading();
       this.register(userEmail, userName, password);
     } else {
       Alert.alert(
         'OMG, TYPE SOMETHING'
       );
     }
+  }
+
+  showLoading() {
+    this.setState(() => {
+      return {busyWaiting: true};
+    });
+  }
+
+  hideLoading() {
+    this.setState(() => {
+      return {busyWaiting: false};
+    });
   }
 
   checkTextInputAllFilled() {
@@ -146,7 +165,15 @@ export default class Register extends Component {
 
   render() {
     return (
-    <View style={styles.container}>
+    <View
+      ref={component => {
+        this.refViewContainer = component;
+      }}
+      onLayout={() => {
+        this.setState({ refViewForBlurView: findNodeHandle(this.refViewContainer) });
+      }}
+      style={styles.container}
+    >
       <View style={styles.topContainer}>
         <Text style={styles.topContainerText}>회원가입</Text>
       </View>
@@ -201,8 +228,11 @@ export default class Register extends Component {
           </Text>
         </TouchableOpacity>
       </View>
+      <GlobalLoading
+        refViewForBlurView={this.state.refViewForBlurView}
+        show={this.state.busyWaiting}
+      />
     </View>
-
     );
   }
 }

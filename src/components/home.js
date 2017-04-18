@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
   Alert,
-  // AlertIOS,
+  findNodeHandle,
   Text,
   View,
   Dimensions,
@@ -44,12 +44,6 @@ const client = new Lokka({
 const { YettaLocationServiceManger } = NativeModules;
 const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServiceManger);
 
-// const styles = {
-//   container: {
-//     flex: 1
-//   }
-// };
-
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 const cardWidth = WIDTH * 0.92;
@@ -88,7 +82,8 @@ class Home extends Component {
       processState: 2,
       showApproveAddressCard: false,
       searchedAddressTextView: [],
-      trackingCurrentPos: false
+      trackingCurrentPos: false,
+      refViewForBlurView: null
     };
     this.initialLocationUpdate = false;
   }
@@ -1225,7 +1220,19 @@ class Home extends Component {
 
   render() {
     return (
-      <View style={{flex: 1, backgroundColor: '#2E3031'}}>
+      <View
+        onLayout={() => {
+          /**
+           * invoke when this view did mount
+           * todo: use this ref for globalViews/loading's viewRef prop in order to blur whole screen
+           */
+          this.setState({ refViewForBlurView: findNodeHandle(this.refViewContainer) });
+        }}
+        ref={component => {
+          this.refViewContainer = component;
+        }}
+        style={{flex: 1, backgroundColor: '#2E3031'}}
+      >
         {this.renderMenu()}
         <Animated.View
           ref={component => {
