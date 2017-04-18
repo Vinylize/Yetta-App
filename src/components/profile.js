@@ -141,5 +141,3 @@ let mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(undefined, mapDispatchToProps)(Profile);
-
-
