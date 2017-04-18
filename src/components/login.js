@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
+  findNodeHandle,
   Text,
   TextInput,
   View,
@@ -12,6 +13,8 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import * as firebase from 'firebase';
 
+import GlobalLoading from './globalViews/loading';
+
 import { setUser } from '../actions/authActions';
 import { URL, handleError, handleFirebaseSignInError } from './../utils';
 import {
@@ -19,6 +22,7 @@ import {
   homeNavigatorRoute,
   phoneVerificationNavigatorRoute
 } from './../navigator/navigatorRoutes';
+
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
 
@@ -88,7 +92,8 @@ class Login extends Component {
     this.state = {
       password: undefined,
       userEmail: undefined,
-      registerOnProgress: false
+      registerOnProgress: false,
+      busyWaiting: false
     };
   }
 
@@ -96,10 +101,23 @@ class Login extends Component {
     this.fireBaseListener = firebase.auth().onAuthStateChanged((user) => {
       this.fireBaseListener && this.fireBaseListener();
       if (user) {
+        this.showLoading();
         this.internalAuth();
       } else {
         // TBD
       }
+    });
+  }
+
+  showLoading() {
+    this.setState(() => {
+      return {busyWaiting: true};
+    });
+  }
+
+  hideLoading() {
+    this.setState(() => {
+      return {busyWaiting: false};
     });
   }
 
@@ -126,15 +144,20 @@ class Login extends Component {
     }`)
       .then(({viewer}) => {
         this.props.setUser(viewer);
+        this.hideLoading();
         return viewer;
       })
-      .catch(handleError);
+      .catch(e => {
+        this.hideLoading();
+        handleError(e);
+      });
   }
 
   internalAuth() {
     firebase.auth().currentUser.getToken()
       .then(this.queryUser.bind(this))
       .then((viewer) => {
+        this.hideLoading();
         if (viewer.isPV) {
           this.navigateToHome();
         } else {
@@ -146,8 +169,11 @@ class Login extends Component {
 
   login(email, password) {
     return firebase.auth().signInWithEmailAndPassword(email, password)
-      .catch(handleFirebaseSignInError)
-      .then(this.internalAuth.bind(this));
+      .then(this.internalAuth.bind(this))
+      .catch(e => {
+        this.hideLoading();
+        handleFirebaseSignInError(e);
+      });
   }
 
   navigateToHome() {
@@ -161,65 +187,78 @@ class Login extends Component {
 
   handleLoginButton() {
     if (this.checkLoginBtnEnabled()) {
+      this.showLoading();
       this.login(this.state.userEmail, this.state.password);
     }
   }
 
   render() {
     return (
-      <LinearGradient colors={['#ffba56', '#ff9700']} style={styles.linearGradient}>
-      <View style={styles.container}>
-        <Image style={styles.logo} source={require('../../assets/logo.png')} />
-        <View style={styles.textInputContainer}>
-          <TextInput
-            ref='inputEmail'
-            style={styles.textInput}
-            onChangeText={(text) => this.setState({userEmail: text})}
-            value={this.state.userEmail}
-            placeholderTextColor={'#fff'}
-            placeholder={'이메일주소'}
-            onSubmitEditing={Keyboard.dismiss}
-            autoCapitalize={'none'}
-            underlineColorAndroid={'transparent'}
-          />
-        </View>
-        <View style={styles.textInputContainer}>
-          <TextInput
-            ref='inputPassword'
-            style={styles.textInput}
-            onChangeText={(text) => this.setState({password: text})}
-            value={this.state.password}
-            placeholderTextColor={'#fff'}
-            placeholder={'비밀번호'}
-            onSubmitEditing={Keyboard.dismiss}
-            autoCapitalize={'none'}
-            secureTextEntry={true}
-            underlineColorAndroid={'transparent'}
-          />
-        </View>
-        <View>
+      <LinearGradient
+        ref={component => {
+          this.refViewContainer = component;
+        }}
+        onLayout={() => {
+          this.setState({ refViewForBlurView: findNodeHandle(this.refViewContainer) });
+        }}
+        colors={['#ffba56', '#ff9700']}
+        style={styles.linearGradient}
+      >
+        <View style={styles.container}>
+          <Image style={styles.logo} source={require('../../assets/logo.png')} />
+          <View style={styles.textInputContainer}>
+            <TextInput
+              ref='inputEmail'
+              style={styles.textInput}
+              onChangeText={(text) => this.setState({userEmail: text})}
+              value={this.state.userEmail}
+              placeholderTextColor={'#fff'}
+              placeholder={'이메일주소'}
+              onSubmitEditing={Keyboard.dismiss}
+              autoCapitalize={'none'}
+              underlineColorAndroid={'transparent'}
+            />
+          </View>
+          <View style={styles.textInputContainer}>
+            <TextInput
+              ref='inputPassword'
+              style={styles.textInput}
+              onChangeText={(text) => this.setState({password: text})}
+              value={this.state.password}
+              placeholderTextColor={'#fff'}
+              placeholder={'비밀번호'}
+              onSubmitEditing={Keyboard.dismiss}
+              autoCapitalize={'none'}
+              secureTextEntry={true}
+              underlineColorAndroid={'transparent'}
+            />
+          </View>
+          <View>
+            <TouchableOpacity
+              style={{marginTop: 14, width: WIDTH * 0.75, alignItems: 'flex-end'}}
+              onPress={() => this.props.navigator.push(registerNavigatorRoute())}
+            >
+              <Text style={{color: '#FFF', fontWeight: '500', fontSize: 12}}>비밀번호를 잊으셨나요?</Text>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity
-            style={{marginTop: 14, width: WIDTH * 0.75, alignItems: 'flex-end'}}
-            onPress={() => this.props.navigator.push(registerNavigatorRoute())}
+            style={styles.loginBtn}
+            onPress={this.handleLoginButton.bind(this)}
           >
-            <Text style={{color: '#FFF', fontWeight: '500', fontSize: 12}}>비밀번호를 잊으셨나요?</Text>
+            <Text style={styles.loginBtnText}>Login</Text>
           </TouchableOpacity>
+          <View style={styles.footer}>
+            <Text
+              style={{fontSize: 14, fontWeight: '500', color: '#fee5c0'}}
+            >아직 회원이 아니신가요? </Text>
+            <TouchableOpacity onPress={() => this.props.navigator.push(registerNavigatorRoute())}>
+              <Text style={{marginTop: 1, fontSize: 14, fontWeight: '500', color: '#FFF'}}>회원가입</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity
-          style={styles.loginBtn}
-          onPress={this.handleLoginButton.bind(this)}
-        >
-          <Text style={styles.loginBtnText}>Login</Text>
-        </TouchableOpacity>
-        <View style={styles.footer}>
-          <Text
-            style={{fontSize: 14, fontWeight: '500', color: '#fee5c0'}}
-          >아직 회원이 아니신가요? </Text>
-          <TouchableOpacity onPress={() => this.props.navigator.push(registerNavigatorRoute())}>
-            <Text style={{marginTop: 1, fontSize: 14, fontWeight: '500', color: '#FFF'}}>회원가입</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+        <GlobalLoading
+          refViewForBlurView={this.state.refViewContainer}
+          show={this.state.busyWaiting}/>
       </LinearGradient>
     );
   }

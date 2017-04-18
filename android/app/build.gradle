@@ -95,6 +95,8 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        renderscriptTargetApi 23
+        renderscriptSupportModeEnabled true
     }
     splits {
         abi {
@@ -126,6 +128,7 @@ android {
 }
 
 dependencies {
+    compile (project(':react-native-blur')) { exclude module: 'react-native' }
     compile (project(':react-native-linear-gradient')) { exclude module: 'react-native' }
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // From node_modules

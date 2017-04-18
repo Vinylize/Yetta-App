@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -22,6 +21,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		162CD9A850044D519C4A2A4C /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C8AC4B507614E2A98A49FF7 /* libBVLinearGradient.a */; };
 		171C02BF1E4587F7002DB33B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 171C02BE1E4587F7002DB33B /* Podfile */; };
 		174261D31E77E67100012E9A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 174261D21E77E67100012E9A /* GoogleService-Info.plist */; };
 		1768ADB01E7FF94F00C8565E /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1768ADAD1E7FF91200C8565E /* libRCTPushNotification.a */; };
@@ -35,6 +35,7 @@
 		41E423D59A32F0EA37376C9C /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		C9073CD2CD68420ABB4F7E87 /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CFC6279F8F4848AFB0803E08 /* libRNBlur.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +115,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
 			remoteInfo = "RCTPushNotification-tvOS";
+		};
+		176F36A01E9938F300C42121 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 62095179FA5F4D73A2D1AE04 /* BVLinearGradient.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = BVLinearGradient;
 		};
 		179BEF4A1E7153270087C0DB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -286,12 +294,16 @@
 		179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VinylMapMarkerView.swift; sourceTree = "<group>"; };
 		179BEF7F1E727BBD0087C0DB /* pingstersApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pingstersApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-pingstersApp.a"; path = "../../../Library/Developer/Xcode/DerivedData/pingstersApp-djwrprktbzexhdgdqgptqhvxgiwn/Build/Products/Debug-iphonesimulator/libPods-pingstersApp.a"; sourceTree = "<group>"; };
+		3C8AC4B507614E2A98A49FF7 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-pingstersApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		541CB24A49262EC50D77A6B1 /* Pods-pingstersApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pingstersApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-pingstersApp/Pods-pingstersApp.release.xcconfig"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		62095179FA5F4D73A2D1AE04 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		D298115BD0EB9190BBD4918E /* Pods-pingstersApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pingstersApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pingstersApp/Pods-pingstersApp.debug.xcconfig"; sourceTree = "<group>"; };
+		C8705B08BDA644D0A9C1F372 /* RNBlur.xcodeproj */ = {isa = PBXFileReference; name = "RNBlur.xcodeproj"; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		CFC6279F8F4848AFB0803E08 /* libRNBlur.a */ = {isa = PBXFileReference; name = "libRNBlur.a"; path = "libRNBlur.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -321,6 +333,8 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				41E423D59A32F0EA37376C9C /* libPods-pingstersApp.a in Frameworks */,
+				162CD9A850044D519C4A2A4C /* libBVLinearGradient.a in Frameworks */,
+				C9073CD2CD68420ABB4F7E87 /* libRNBlur.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +470,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		176F369D1E9938F300C42121 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				176F36A11E9938F300C42121 /* libBVLinearGradient.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4C85FBF19A94E2FDD928D332 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -498,6 +520,8 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
+				62095179FA5F4D73A2D1AE04 /* BVLinearGradient.xcodeproj */,
+				C8705B08BDA644D0A9C1F372 /* RNBlur.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -631,6 +655,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 176F369D1E9938F300C42121 /* Products */;
+					ProjectRef = 62095179FA5F4D73A2D1AE04 /* BVLinearGradient.xcodeproj */;
+				},
+				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
 					ProjectRef = 00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */;
 				},
@@ -756,6 +784,13 @@
 			fileType = archive.ar;
 			path = "libRCTPushNotification-tvOS.a";
 			remoteRef = 1768ADAE1E7FF91200C8565E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		176F36A11E9938F300C42121 /* libBVLinearGradient.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libBVLinearGradient.a;
+			remoteRef = 176F36A01E9938F300C42121 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		179BEF4B1E7153270087C0DB /* libyoga.a */ = {
@@ -1019,10 +1054,19 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+				);
 				INFOPLIST_FILE = pingstersAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -1040,10 +1084,19 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 6R7WR4PG43;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
+				);
 				INFOPLIST_FILE = pingstersAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -1075,6 +1128,8 @@
 					"$(SRCROOT)/../node_modules/react-native/ReactCommon/**",
 					"$(SRCROOT)/../node_modules/React/**",
 					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS",
+					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = pingstersApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1113,6 +1168,8 @@
 					"$(SRCROOT)/../node_modules/react-native/ReactCommon/**",
 					"$(SRCROOT)/../node_modules/React/**",
 					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS",
+					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
+					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 				);
 				INFOPLIST_FILE = pingstersApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
