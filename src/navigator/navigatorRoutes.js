@@ -1,6 +1,7 @@
 import { Navigator } from 'react-native';
 import Home from './../components/home';
 import Login from './../components/login';
+import Profile from './../components/profile';
 import Register from './../components/register';
 import PhoneVerification from './../components/phoneVerification';
 import CreateOrderLayout from './../containers/createOrderLayout';
@@ -38,6 +39,13 @@ export function createOrderNavigatorRoute(handleCreateOrderDone, latitude, longi
     Component: CreateOrderLayout,
     func: {handleCreateOrderDone},
     coordinate: {latitude, longitude},
+    sceneConfig
+  };
+}
+
+export function profileNavigatorRoute() {
+  return {
+    Component: Profile,
     sceneConfig
   };
 }
