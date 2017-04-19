@@ -46,7 +46,7 @@ const styles = {
   },
   phoneVerifKeyboardRowBtn: {
     flex: 1,
-    borderRadius: 5,
+    borderRadius: 7,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -82,7 +82,7 @@ const styles = {
   textPhoneVerifDelete: {
     backgroundColor: 'transparent',
     fontSize: 30,
-    color: '#1b83d3',
+    color: '#ff9700',
     top: -1,
     left: 2
   }
@@ -201,7 +201,7 @@ export default class PhoneVerification extends Component {
             }
           }}
         >
-          <Text>back</Text>
+          <Text style={{color: 'white'}}>back</Text>
         </TouchableOpacity>
       </View>
     );
@@ -218,14 +218,14 @@ export default class PhoneVerification extends Component {
         (this.state.showResponse) ? requestViewOnResponse : {}
       ]}>
         <View style={styles.phoneVerifInstrContainer}>
-          <Text>휴대폰 인증을 위한 전화번호를 입력해주세요</Text>
+          <Text style={{color: 'white', fontWeight: '700'}}>휴대폰 인증을 위한 전화번호를 입력해주세요</Text>
         </View>
         <View style={styles.phoneVerifDigitContainer}>
-          <Text style={{fontSize: 30, marginBottom: 20}}>{this.state.digit}</Text>
+          <Text style={{fontSize: 30, marginBottom: 20, color: 'white'}}>{this.state.digit}</Text>
           <Text style={{
             fontSize: 30,
             marginBottom: 23,
-            color: (this.state.toggleCursor && !this.checkPuttingNumComplete()) ? 'black' : '#1b83d3'
+            color: (this.state.toggleCursor && !this.checkPuttingNumComplete()) ? 'black' : '#ff9700'
           }}>
             |
           </Text>
@@ -245,14 +245,14 @@ export default class PhoneVerification extends Component {
         (!this.state.showResponse) ? requestViewOnResponse : {}
       ]}>
         <View style={styles.phoneVerifInstrContainer}>
-          <Text>전송된 4자리 인증번호를 입력해주세요</Text>
+          <Text style={{color: 'white', fontWeight: '700'}}>전송된 4자리 인증번호를 입력해주세요</Text>
         </View>
         <View style={styles.phoneVerifDigitContainer}>
           <Text style={{fontSize: 30, marginBottom: 20}}>{this.state.code}</Text>
           <Text style={{
             fontSize: 30,
             marginBottom: 23,
-            color: (this.state.toggleCursor && !this.check4DigitComplete()) ? 'black' : '#1b83d3'
+            color: (this.state.toggleCursor && !this.check4DigitComplete()) ? 'black' : '#ff9700'
           }}>
             |
           </Text>
@@ -279,8 +279,9 @@ export default class PhoneVerification extends Component {
         onPress={() => this.handleKeyboardBtn(number)}
         onPressIn={() => this.setState({pressedDigit: number})}
         onPressOut={() => this.setState({pressedDigit: ''})}
-        activeOpacity={0.9}>
-        <Text>{number}</Text>
+        activeOpacity={0.9}
+      >
+        <Text style={{fontSize: 23, fontWeight: '500'}}>{number}</Text>
       </TouchableOpacity>
     );
   }
@@ -394,7 +395,7 @@ export default class PhoneVerification extends Component {
 
   render() {
     return (
-      <View style={{flex: 1, backgroundColor: '#1b83d3'}}>
+      <View style={{flex: 1, backgroundColor: '#ff9700'}}>
         {this.renderHeader()}
         {this.renderBody()}
         {this.renderKeyboard()}

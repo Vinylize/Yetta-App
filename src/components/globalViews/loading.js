@@ -1,7 +1,7 @@
 import React, { PureComponent, PropTypes } from 'react';
 import {
   ActivityIndicator,
-  Dimensions,
+  // Dimensions,
   Platform,
   View
 } from 'react-native';
@@ -12,8 +12,8 @@ const BlurView = ({children, ...rest}) => Platform.select({
   android: <View style={[rest.style, {backgroundColor: 'rgba(16,16,16,0.9)'}]}>{children}</View>
 });
 
-const HEIGHT = Dimensions.get('window').height;
-const WIDTH = Dimensions.get('window').width;
+// const HEIGHT = Dimensions.get('window').height;
+// const WIDTH = Dimensions.get('window').width;
 
 const styles = {
   globalContainer: {
