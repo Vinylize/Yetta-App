@@ -1,85 +1,68 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
+  Image,
   Text,
   View,
   Dimensions
 } from 'react-native';
-import * as firebase from 'firebase';
 
-import { setUser } from '../actions/authActions';
-import { URL, handleError, handleFirebaseSignInError } from './../utils';
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
+// const Lokka = require('lokka').Lokka;
+// const Transport = require('lokka-transport-http').Transport;
+//
+// const client = new Lokka({
+//   transport: new Transport(URL)
+// });
 
 const WIDTH = Dimensions.get('window').width;
+const DEFAULT_LEFT = WIDTH * 0.1;
+const LIST_BORDER_COLOR = '#f3f3f3';
 
 const styles = {
   container: {
-    padding: WIDTH * 0.125,
     flex: 1,
     backgroundColor: '#f9f9f9'
   },
   topContainer: {
     height: 100,
-    marginBottom: 23,
+    padding: DEFAULT_LEFT,
+    marginTop: 30,
     justifyContent: 'center'
   },
   topContainerText: {
     fontSize: 30,
     fontWeight: '500'
   },
+  profileImage: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    marginLeft: DEFAULT_LEFT,
+    marginBottom: 30,
+    backgroundColor: '#ddd'
+  },
+  profileList: {
+    height: 60,
+    paddingLeft: DEFAULT_LEFT,
+    backgroundColor: 'white',
+    borderBottomWidth: 0.5,
+    borderBottomColor: LIST_BORDER_COLOR
+  },
+  profileSubject: {
+    marginTop: 14,
+    color: 'gray',
+    fontSize: 10,
+    fontWeight: '500'
+  },
+  profileContent: {
+    marginTop: 4,
+    fontSize: 16,
+    fontWeight: '500'
+  },
   inputContainer: {
     flex: 1,
     justifyContent: 'flex-start',
     paddingTop: 18
-  },
-  sectionText: {
-    color: '#666',
-    fontSize: 14,
-    marginBottom: 5
-  },
-  textInput: {
-    height: 40,
-    fontSize: 13,
-    marginBottom: 12,
-    paddingLeft: 15,
-    backgroundColor: '#fff',
-    borderRadius: 2,
-    // shadowColor: '#000000',
-    shadowOffset: {
-      height: 2,
-      width: 0
-    },
-    shadowRadius: 2,
-    shadowOpacity: 0.1,
-    elevation: 2
-  },
-  registerBtn: {
-    height: 44,
-    width: 44,
-    borderRadius: 22,
-    backgroundColor: '#AAA',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-    opacity: 0.9
-  },
-  registerBtnImg: {
-    height: 40,
-    width: 40
-  },
-  footer: {
-    height: 50,
-    width: WIDTH,
-    position: 'absolute',
-    justifyContent: 'center',
-    bottom: 0,
-    flexDirection: 'row'
   }
 };
 
@@ -88,33 +71,20 @@ class Profile extends Component {
     super();
   }
 
-  componentWillMount() {
+
+  renderProfileList(subject, content) {
+    return (
+      <View style={styles.profileList}>
+        <Text style={styles.profileSubject}>{subject}</Text>
+        <Text style={styles.profileContent}>{content}</Text>
+      </View>);
   }
 
-  queryUser(token) {
-    client._transport._httpOptions.headers = {
-      authorization: token
-    };
-    return client.query(`{
-      viewer{
-        isPV,
-        e,
-        n,
-        p
-      }
-    }`)
-      .then(({viewer}) => {
-        this.props.setUser(viewer);
-        return viewer;
-      })
-      .catch(handleError);
+  renderBorder() {
+    return (
+      <View style={{borderBottomWidth: 1, borderBottomColor: LIST_BORDER_COLOR}}/>);
   }
 
-  login(email, password) {
-    return firebase.auth().signInWithEmailAndPassword(email, password)
-      .catch(handleFirebaseSignInError)
-      .then(this.internalAuth.bind(this));
-  }
 
   render() {
     return (
@@ -122,22 +92,24 @@ class Profile extends Component {
         <View style={styles.topContainer}>
           <Text style={styles.topContainerText}>프로필</Text>
         </View>
-        <View style={styles.inputContainer} />
+        <Image style={styles.profileImage} />
+        {this.renderProfileList('이름', this.props.user.n)}
+        {this.renderProfileList('이메일', this.props.user.e)}
+        {this.renderProfileList('전화 번호', this.props.user.p)}
       </View>
-
     );
   }
 }
 
 Profile.propTypes = {
   navigator: PropTypes.any,
-  setUser: PropTypes.func
+  user: PropTypes.object
 };
 
-let mapDispatchToProps = (dispatch) => {
+let mapStateToProps = (state) => {
   return {
-    setUser: (user) => dispatch(setUser(user))
+    user: state.auth.user
   };
 };
 
-export default connect(undefined, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, undefined)(Profile);
