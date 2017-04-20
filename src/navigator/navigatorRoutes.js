@@ -4,6 +4,7 @@ import Login from './../components/login';
 import Profile from './../components/profile';
 import Register from './../components/register';
 import PhoneVerification from './../components/phoneVerification';
+import PaymentInfo from './../components/paymentInfo/paymentInfo';
 import CreateOrderLayout from './../containers/createOrderLayout';
 const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
 
@@ -39,6 +40,13 @@ export function createOrderNavigatorRoute(handleCreateOrderDone, latitude, longi
     Component: CreateOrderLayout,
     func: {handleCreateOrderDone},
     coordinate: {latitude, longitude},
+    sceneConfig
+  };
+}
+
+export function paymentInfoNavigatorRoute() {
+  return {
+    Component: PaymentInfo,
     sceneConfig
   };
 }

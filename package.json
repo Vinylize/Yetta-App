@@ -11,6 +11,7 @@
     "lint"
   ],
   "dependencies": {
+    "braintree-web": "^3.12.1",
     "firebase": "^3.6.6",
     "lokka": "^1.7.0",
     "lokka-transport-http": "1.3.2",
