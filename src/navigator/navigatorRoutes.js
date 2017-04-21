@@ -5,6 +5,7 @@ import Profile from './../components/profile';
 import Register from './../components/register';
 import PhoneVerification from './../components/phoneVerification';
 import CreateOrderLayout from './../containers/createOrderLayout';
+import Setting from './../components/settings/setting';
 const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
 
 export function homeNavigatorRoute() {
@@ -46,6 +47,13 @@ export function createOrderNavigatorRoute(handleCreateOrderDone, latitude, longi
 export function profileNavigatorRoute() {
   return {
     Component: Profile,
+    sceneConfig
+  };
+}
+
+export function settingsNavigatorRoute() {
+  return {
+    Component: Setting,
     sceneConfig
   };
 }

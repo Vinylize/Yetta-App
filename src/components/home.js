@@ -23,7 +23,8 @@ import * as firebase from 'firebase';
 import {
   createOrderNavigatorRoute,
   loginNavigatorRoute,
-  profileNavigatorRoute
+  profileNavigatorRoute,
+  settingsNavigatorRoute
 } from '../navigator/navigatorRoutes';
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
@@ -776,7 +777,9 @@ class Home extends Component {
             <TouchableOpacity
               style ={{
                 marginRight: 10
-              }}>
+              }}
+              onPress={this.navigateToSettings.bind(this)}
+            >
               <Text style={{
                 fontSize: 18,
                 marginTop: 31
@@ -794,6 +797,10 @@ class Home extends Component {
          />
       </Animated.View>
     );
+  }
+
+  navigateToSettings() {
+    this.props.navigator.push(settingsNavigatorRoute());
   }
 
   renderLogoutBtn() {
