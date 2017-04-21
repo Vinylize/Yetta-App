@@ -7,6 +7,7 @@ import {
   View,
   Dimensions,
   LayoutAnimation,
+  Image,
   // Keyboard,
   PanResponder,
   Platform,
@@ -23,7 +24,8 @@ import * as firebase from 'firebase';
 import {
   createOrderNavigatorRoute,
   loginNavigatorRoute,
-  profileNavigatorRoute
+  profileNavigatorRoute,
+  paymentInfoNavigatorRoute
 } from '../navigator/navigatorRoutes';
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
@@ -110,6 +112,12 @@ class Home extends Component {
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: this.handleProfile.bind(this)
     });
+
+    this.paymentInfoPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: this.handlePaymentInfo.bind(this)
+    });
+
 
     if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener('onMarkerPress', (e) => {
@@ -435,6 +443,10 @@ class Home extends Component {
     this.props.navigator.push(profileNavigatorRoute());
   }
 
+  handlePaymentInfo() {
+    this.props.navigator.push(paymentInfoNavigatorRoute());
+  }
+
   handleSearchBarAddressBtn(firstAddressToken, addressTextView) {
     // todo: change location to searched address
     const { latitude, longitude } = this.state;
@@ -719,13 +731,12 @@ class Home extends Component {
           flexDirection: 'column',
           elevation: 30
         }}>
-          <View style={{
+          <Image style={{
             height: 105,
             width: 105,
             borderRadius: 52.5,
-            marginTop: 56,
-            backgroundColor: '#d8d8d8'
-          }} />
+            marginTop: 56
+          }} source={require('../../assets/defaultProfileImg.png')}/>
           <View style={{
             marginTop: 20,
             flexDirection: 'row'
@@ -749,11 +760,13 @@ class Home extends Component {
             <TouchableOpacity
               style ={{
                 marginRight: 10
-              }}>
-              <Text style={{
-                fontSize: 18,
-                marginTop: 48
-              }}>결제정보</Text>
+              }}
+            >
+              <Text
+                style={{fontSize: 18, marginTop: 48}}
+                {...this.paymentInfoPanResponder.panHandlers}
+              >
+                결제정보</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style ={{
