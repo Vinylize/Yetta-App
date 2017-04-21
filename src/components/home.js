@@ -102,9 +102,9 @@ class Home extends Component {
       onPanResponderMove: this.menuHandlePanResponderMove.bind(this),
       onPanResponderRelease: this.menuHandlePanResponderRelease.bind(this)
     });
-    this.logoutPanResponder = PanResponder.create({
+    this.switchPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.handleLogout.bind(this)
+      onPanResponderGrant: this.handleSwitch.bind(this)
     });
 
     this.profilePanResponder = PanResponder.create({
@@ -424,12 +424,8 @@ class Home extends Component {
     });
   }
 
-  handleLogout() {
-    firebase.auth().signOut().then((res) => {
-      console.log(res, 'signed out');
-      Alert.alert('signed out');
-      this.props.navigator.replace(loginNavigatorRoute());
-    });
+  handleSwitch() {
+    // todo: implement this
   }
 
   handleProfile() {
@@ -786,7 +782,7 @@ class Home extends Component {
               }}>설정</Text>
             </TouchableOpacity>
           </View>
-          {this.renderLogoutBtn()}
+          {this.renderSwitchBtn()}
         </View>
         <TouchableOpacity
           style={{
@@ -803,18 +799,24 @@ class Home extends Component {
     this.props.navigator.push(settingsNavigatorRoute());
   }
 
-  renderLogoutBtn() {
+  renderSwitchBtn() {
     return (
+      // todo: improve the platform specific bottom value
         <View
           style={{
             position: 'absolute',
-            bottom: 35,
-            right: 35,
-            padding: 5
+            bottom: (Platform.OS === 'ios') ? -1 : 23,
+            left: 0,
+            paddingRight: 16,
+            backgroundColor: '#ff9700',
+            height: 40,
+            width: WIDTH * 0.75,
+            justifyContent: 'center',
+            alignItems: 'flex-end'
           }}
-          {...this.logoutPanResponder.panHandlers}
+          {...this.switchPanResponder.panHandlers}
         >
-          <Text style={{fontSize: 15}}>로그아웃</Text>
+          <Text style={{fontSize: 15, color: 'white'}}>배달하기</Text>
         </View>
     );
   }
