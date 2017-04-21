@@ -108,15 +108,21 @@ class Home extends Component {
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: this.handleSwitch.bind(this)
     });
-
     this.profilePanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: this.handleProfile.bind(this)
     });
-
     this.paymentInfoPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: this.handlePaymentInfo.bind(this)
+    });
+    this.settingsPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: this.navigateToSettings.bind(this)
+    });
+    this.menuBackgroundPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderRelease: this.hideMenuWhenBackgroundTapped.bind(this)
     });
 
 
@@ -432,7 +438,7 @@ class Home extends Component {
     });
   }
 
-  /**
+  /*
    * switch to either runner/order
    */
   handleSwitch() {
@@ -735,22 +741,19 @@ class Home extends Component {
               style ={{
                 marginRight: 10
               }}
-              onPress={this.navigateToSettings.bind(this)}
             >
-              <Text style={{
-                fontSize: 18,
-                marginTop: 31
-              }}>설정</Text>
+              <Text
+                style={{fontSize: 18, marginTop: 31}}
+                {...this.settingsPanResponder.panHandlers}
+              >
+                설정</Text>
             </TouchableOpacity>
           </View>
           {this.renderSwitchBtn()}
         </View>
-        <TouchableOpacity
-          style={{
-            flex: 30,
-            backgroundColor: 'transparent'
-          }}
-          onPress={this.hideMenuWhenBackgroundTapped.bind(this)}
+        <View
+          style={{flex: 30, backgroundColor: 'transparent'}}
+          {...this.menuBackgroundPanResponder.panHandlers}
          />
       </Animated.View>
     );
