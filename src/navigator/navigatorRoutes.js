@@ -6,6 +6,7 @@ import Register from './../components/register';
 import PhoneVerification from './../components/phoneVerification';
 import PaymentInfo from './../components/paymentInfo/paymentInfo';
 import CreateOrderLayout from './../containers/createOrderLayout';
+import Setting from './../components/settings/setting';
 const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
 
 export function homeNavigatorRoute() {
@@ -54,6 +55,13 @@ export function paymentInfoNavigatorRoute() {
 export function profileNavigatorRoute() {
   return {
     Component: Profile,
+    sceneConfig
+  };
+}
+
+export function settingsNavigatorRoute() {
+  return {
+    Component: Setting,
     sceneConfig
   };
 }

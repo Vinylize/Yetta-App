@@ -23,8 +23,8 @@ import {
 import * as firebase from 'firebase';
 import {
   createOrderNavigatorRoute,
-  loginNavigatorRoute,
   profileNavigatorRoute,
+  settingsNavigatorRoute,
   paymentInfoNavigatorRoute
 } from '../navigator/navigatorRoutes';
 import VinylMapAndroid from './VinylMapAndroid';
@@ -33,6 +33,7 @@ import SearchBar from './searchAddress/searchBar';
 import ApproveCard from './searchAddress/approveCard';
 import { URL } from './../utils';
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
+import { setIsRunner } from './../actions/userStatusActions';
 
 let vmm = NativeModules.VinylMapManager;
 
@@ -103,19 +104,25 @@ class Home extends Component {
       onPanResponderMove: this.menuHandlePanResponderMove.bind(this),
       onPanResponderRelease: this.menuHandlePanResponderRelease.bind(this)
     });
-    this.logoutPanResponder = PanResponder.create({
+    this.switchPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.handleLogout.bind(this)
+      onPanResponderGrant: this.handleSwitch.bind(this)
     });
-
     this.profilePanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: this.handleProfile.bind(this)
     });
-
     this.paymentInfoPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: this.handlePaymentInfo.bind(this)
+    });
+    this.settingsPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: this.navigateToSettings.bind(this)
+    });
+    this.menuBackgroundPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderRelease: this.hideMenuWhenBackgroundTapped.bind(this)
     });
 
 
@@ -431,12 +438,11 @@ class Home extends Component {
     });
   }
 
-  handleLogout() {
-    firebase.auth().signOut().then((res) => {
-      console.log(res, 'signed out');
-      Alert.alert('signed out');
-      this.props.navigator.replace(loginNavigatorRoute());
-    });
+  /*
+   * switch to either runner/order
+   */
+  handleSwitch() {
+    this.props.setIsRunner(!this.props.isRunner);
   }
 
   handleProfile() {
@@ -545,61 +551,6 @@ class Home extends Component {
         }}
         style={{flex: 1}}
       />
-    );
-  }
-
-  renderSwitch() {
-    const { toggle } = this.state;
-    return (
-      <View style={{
-        position: 'absolute',
-        left: (WIDTH - WIDTH * 0.5) / 2,
-        top: 40,
-        width: WIDTH * 0.5,
-        height: 30,
-        backgroundColor: '#75797a',
-        borderRadius: 20,
-        shadowOffset: {height: 1, width: 1},
-        shadowOpacity: 0.2
-      }}>
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            flexDirection: 'row'
-          }}
-          onPress={() => {
-            LayoutAnimation.easeInEaseOut();
-            this.setState({toggle: !toggle});
-          }}
-          activeOpacity={1}
-        >
-          <View style={[{
-            position: 'absolute',
-            top: 2,
-            width: WIDTH * 0.25,
-            height: 31 - 5,
-            backgroundColor: 'white',
-            borderRadius: 20
-          }, (toggle) ? {right: 4} : {left: 4}]}/>
-          <View style={{
-            flex: 1,
-            backgroundColor: 'transparent',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <Text style={{color: (toggle) ? 'white' : '#75797a'}}>Port</Text>
-          </View>
-          <View style={{
-            flex: 1,
-            backgroundColor: 'transparent',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <Text style={{color: (toggle) ? '#75797a' : 'white'}}>Ship</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
     );
   }
 
@@ -789,38 +740,49 @@ class Home extends Component {
             <TouchableOpacity
               style ={{
                 marginRight: 10
-              }}>
-              <Text style={{
-                fontSize: 18,
-                marginTop: 31
-              }}>설정</Text>
+              }}
+            >
+              <Text
+                style={{fontSize: 18, marginTop: 31}}
+                {...this.settingsPanResponder.panHandlers}
+              >
+                설정</Text>
             </TouchableOpacity>
           </View>
-          {this.renderLogoutBtn()}
+          {this.renderSwitchBtn()}
         </View>
-        <TouchableOpacity
-          style={{
-            flex: 30,
-            backgroundColor: 'transparent'
-          }}
-          onPress={this.hideMenuWhenBackgroundTapped.bind(this)}
+        <View
+          style={{flex: 30, backgroundColor: 'transparent'}}
+          {...this.menuBackgroundPanResponder.panHandlers}
          />
       </Animated.View>
     );
   }
 
-  renderLogoutBtn() {
+  navigateToSettings() {
+    this.props.navigator.push(settingsNavigatorRoute());
+  }
+
+  renderSwitchBtn() {
     return (
+      // todo: improve the platform specific bottom value
         <View
           style={{
             position: 'absolute',
-            bottom: 35,
-            right: 35,
-            padding: 5
+            bottom: (Platform.OS === 'ios') ? -1 : 23,
+            left: 0,
+            paddingRight: 16,
+            backgroundColor: '#ff9700',
+            height: 40,
+            width: WIDTH * 0.75,
+            justifyContent: 'center',
+            alignItems: 'flex-end'
           }}
-          {...this.logoutPanResponder.panHandlers}
+          {...this.switchPanResponder.panHandlers}
         >
-          <Text style={{fontSize: 15}}>로그아웃</Text>
+          <Text style={{fontSize: 15, color: 'white'}}>
+            {(this.props.isRunner) ? '주문받기' : '배달하기'}
+          </Text>
         </View>
     );
   }
@@ -1275,15 +1237,24 @@ class Home extends Component {
   }
 }
 
-let mapStateToProps = (state) => {
+const mapStateToProps = (state) => {
   return {
-    user: state.auth.user
+    user: state.auth.user,
+    isRunner: state.userStatus.isRunner
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner))
   };
 };
 
 Home.propTypes = {
   navigator: PropTypes.any,
-  user: PropTypes.object
+  user: PropTypes.object,
+  isRunner: PropTypes.bool,
+  setIsRunner: PropTypes.func
 };
 
-export default connect(mapStateToProps, undefined)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
