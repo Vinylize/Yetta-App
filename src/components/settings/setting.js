@@ -97,7 +97,7 @@ export default class Setting extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.topContainer}>
-          <Text style={styles.topContainerText}>프로필</Text>
+          <Text style={styles.topContainerText}>설정</Text>
         </View>
         {this.renderSettingsList('공지사항', () => {})}
         {this.renderSettingsList('이벤트', () => {})}
