@@ -1,8 +1,8 @@
 import * as types from './actionTypes';
 
-export const setUserMode = (isRunner) => {
+export const setIsRunner = (isRunner) => {
   return {
-    type: types.setUserMode,
+    type: types.setIsRunner,
     isRunner
   };
 };

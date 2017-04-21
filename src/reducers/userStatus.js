@@ -10,7 +10,7 @@ const initialState = {
 
 const userStatus = (state = initialState, action = {}) => {
   switch (action.type) {
-  case types.setUserMode:
+  case types.setIsRunner:
     return update(state, {
       isRunner: { $set: action.isRunner }
     });

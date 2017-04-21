@@ -22,7 +22,6 @@ import {
 import * as firebase from 'firebase';
 import {
   createOrderNavigatorRoute,
-  loginNavigatorRoute,
   profileNavigatorRoute,
   settingsNavigatorRoute
 } from '../navigator/navigatorRoutes';
@@ -32,6 +31,7 @@ import SearchBar from './searchAddress/searchBar';
 import ApproveCard from './searchAddress/approveCard';
 import { URL } from './../utils';
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
+import { setIsRunner } from './../actions/userStatusActions';
 
 let vmm = NativeModules.VinylMapManager;
 
@@ -424,8 +424,11 @@ class Home extends Component {
     });
   }
 
+  /**
+   * switch to either runner/order
+   */
   handleSwitch() {
-    // todo: implement this
+    this.props.setIsRunner(!this.props.isRunner);
   }
 
   handleProfile() {
@@ -530,61 +533,6 @@ class Home extends Component {
         }}
         style={{flex: 1}}
       />
-    );
-  }
-
-  renderSwitch() {
-    const { toggle } = this.state;
-    return (
-      <View style={{
-        position: 'absolute',
-        left: (WIDTH - WIDTH * 0.5) / 2,
-        top: 40,
-        width: WIDTH * 0.5,
-        height: 30,
-        backgroundColor: '#75797a',
-        borderRadius: 20,
-        shadowOffset: {height: 1, width: 1},
-        shadowOpacity: 0.2
-      }}>
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            flexDirection: 'row'
-          }}
-          onPress={() => {
-            LayoutAnimation.easeInEaseOut();
-            this.setState({toggle: !toggle});
-          }}
-          activeOpacity={1}
-        >
-          <View style={[{
-            position: 'absolute',
-            top: 2,
-            width: WIDTH * 0.25,
-            height: 31 - 5,
-            backgroundColor: 'white',
-            borderRadius: 20
-          }, (toggle) ? {right: 4} : {left: 4}]}/>
-          <View style={{
-            flex: 1,
-            backgroundColor: 'transparent',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <Text style={{color: (toggle) ? 'white' : '#75797a'}}>Port</Text>
-          </View>
-          <View style={{
-            flex: 1,
-            backgroundColor: 'transparent',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <Text style={{color: (toggle) ? '#75797a' : 'white'}}>Ship</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
     );
   }
 
@@ -816,7 +764,9 @@ class Home extends Component {
           }}
           {...this.switchPanResponder.panHandlers}
         >
-          <Text style={{fontSize: 15, color: 'white'}}>배달하기</Text>
+          <Text style={{fontSize: 15, color: 'white'}}>
+            {(this.props.isRunner) ? '주문받기' : '배달하기'}
+          </Text>
         </View>
     );
   }
@@ -1271,15 +1221,24 @@ class Home extends Component {
   }
 }
 
-let mapStateToProps = (state) => {
+const mapStateToProps = (state) => {
   return {
-    user: state.auth.user
+    user: state.auth.user,
+    isRunner: state.userStatus.isRunner
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner))
   };
 };
 
 Home.propTypes = {
   navigator: PropTypes.any,
-  user: PropTypes.object
+  user: PropTypes.object,
+  isRunner: PropTypes.bool,
+  setIsRunner: PropTypes.func
 };
 
-export default connect(mapStateToProps, undefined)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
