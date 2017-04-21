@@ -161,7 +161,6 @@ class Login extends Component {
         if (viewer.isPV) {
           this.navigateToHome();
         } else {
-          this.navigateToHome();
           this.navigateToPhoneVerification();
         }
       });
