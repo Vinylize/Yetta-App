@@ -28,6 +28,8 @@ import com.pingstersapp.R;
 import com.pingstersapp.VinylMap.latlnginterpolation.LatLngInterpolator;
 import com.pingstersapp.VinylMap.latlnginterpolation.MarkerAnimation;
 
+import org.apache.http.conn.scheme.HostNameResolver;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -137,6 +139,11 @@ public class VinylMapModule extends MapView implements
         ));
     }
 
+    public void animateToLocationWithZoomHelper(final String latitude, final String longitude, final float zoom) {
+        this.mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+            new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude)), zoom));
+    }
+
     public void updateMarkerHelper(final String latitude, final String longitude) {
         if (marker != null) {
             LatLng tmp = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
@@ -158,6 +165,18 @@ public class VinylMapModule extends MapView implements
         }
     }
 
+    public void animateTolocationWithZoom(final String latitude, final String longitude, final float zoom) {
+        if (mMap != null) {
+            Handler uiHandler = new Handler(Looper.getMainLooper());
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    animateToLocationWithZoomHelper(latitude, longitude, zoom);
+                }
+            };
+            uiHandler.post(runnable);
+        }
+    }
     public void updateMarker(final String latitude, final String longitude) {
         if (mMap != null) {
             Handler uiHandler = new Handler(Looper.getMainLooper());

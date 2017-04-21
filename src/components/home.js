@@ -180,7 +180,8 @@ class Home extends Component {
           longitude: data.longitude
         });
         if (vmm && this.state.trackingCurrentPos) {
-          vmm.animateToLocation(data.latitude, data.longitude);
+          //vmm.animateToLocation(data.latitude, data.longitude);
+          vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
         }
         if (firebase.auth().currentUser) {
           firebase.auth().currentUser.getToken().then(token => this.userUpdateCoordinateHelper(token, data));
@@ -580,7 +581,11 @@ class Home extends Component {
         activeOpacity={1}
         onPress={() => {
           const { latitude, longitude } = this.state;
-          vmm.animateToLocation(String(latitude), String(longitude));
+          if (Platform.OS === 'android') {
+            vmm.animateToLocationWithZoom(latitude, longitude, 16.0);
+          } else {
+            vmm.animateToLocation(String(latitude), String(longitude));
+          }
           LayoutAnimation.easeInEaseOut();
           this.setState({trackingCurrentPos: true});
         }}

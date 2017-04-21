@@ -71,6 +71,13 @@ public class VinylMapManager extends ViewGroupManager<VinylMapModule> {
     }
 
     @ReactMethod
+    public void animateToLocationWithZoom(final String latitude, final String longitude, final float zoom) {
+        if (this._vinylMapModule != null) {
+            this._vinylMapModule.animateTolocationWithZoom(latitude, longitude, zoom);
+        }
+    }
+
+    @ReactMethod
     public void updateMarker(final String latitude, final String longitude) {
         if (this._vinylMapModule != null) {
             this._vinylMapModule.updateMarker(latitude, longitude);
