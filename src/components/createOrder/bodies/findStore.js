@@ -37,7 +37,7 @@ export default class FindStore extends PureComponent {
     this.getStoreListFromServer();
   }
   renderVerticalRow(rowData) {
-    const { addr, name, distance } = rowData;
+    const { addr, n, distance } = rowData;
     return (
       <TouchableOpacity
         style={{
@@ -60,7 +60,7 @@ export default class FindStore extends PureComponent {
           justifyContent: 'space-between'
         }}>
           <Text>
-            {name}
+            {n}
           </Text>
           <Text style={{
             fontSize: 10

@@ -7,6 +7,7 @@ import {
   View,
   Dimensions,
   LayoutAnimation,
+  Image,
   // Keyboard,
   PanResponder,
   Platform,
@@ -730,13 +731,12 @@ class Home extends Component {
           flexDirection: 'column',
           elevation: 30
         }}>
-          <View style={{
+          <Image style={{
             height: 105,
             width: 105,
             borderRadius: 52.5,
-            marginTop: 56,
-            backgroundColor: '#d8d8d8'
-          }} />
+            marginTop: 56
+          }} source={require('../../assets/defaultProfileImg.png')}/>
           <View style={{
             marginTop: 20,
             flexDirection: 'row'

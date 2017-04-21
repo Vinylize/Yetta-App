@@ -38,8 +38,7 @@ const styles = {
     height: 110,
     borderRadius: 55,
     marginLeft: DEFAULT_LEFT,
-    marginBottom: 30,
-    backgroundColor: '#ddd'
+    marginBottom: 30
   },
   profileList: {
     height: 60,
@@ -52,17 +51,12 @@ const styles = {
     marginTop: 14,
     color: 'gray',
     fontSize: 10,
-    fontWeight: '500'
+    fontWeight: '600'
   },
   profileContent: {
     marginTop: 4,
     fontSize: 16,
-    fontWeight: '500'
-  },
-  inputContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    paddingTop: 18
+    fontWeight: '300'
   }
 };
 
@@ -92,7 +86,7 @@ class Profile extends Component {
         <View style={styles.topContainer}>
           <Text style={styles.topContainerText}>프로필</Text>
         </View>
-        <Image style={styles.profileImage} />
+        <Image style={styles.profileImage} source={require('../../assets/defaultProfileImg.png')}/>
         {this.renderProfileList('이름', this.props.user.n)}
         {this.renderProfileList('이메일', this.props.user.e)}
         {this.renderProfileList('전화 번호', this.props.user.p)}

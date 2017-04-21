@@ -57,17 +57,12 @@ const styles = {
     marginTop: 14,
     color: 'gray',
     fontSize: 10,
-    fontWeight: '500'
+    fontWeight: '600'
   },
   profileContent: {
     marginTop: 4,
     fontSize: 16,
-    fontWeight: '500'
-  },
-  inputContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    paddingTop: 18
+    fontWeight: '300'
   }
 };
 
