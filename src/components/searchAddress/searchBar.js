@@ -202,7 +202,7 @@ export default class SearchBar extends Component {
 }
 
 SearchBar.propTypes = {
-  latitude: PropTypes.number,
-  longitude: PropTypes.number,
+  latitude: PropTypes.any,
+  longitude: PropTypes.any,
   handleAddressBtn: PropTypes.func.isRequired
 };

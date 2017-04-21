@@ -91,7 +91,7 @@ export default class ApproveCard extends Component {
 }
 
 ApproveCard.propTypes = {
-  address: PropTypes.object,
+  address: PropTypes.any,
   handleApproveBtn: PropTypes.func,
   showApproveAddressCard: PropTypes.bool
 };
