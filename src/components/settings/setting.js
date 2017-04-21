@@ -4,6 +4,7 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
+  StyleSheet,
   View
 } from 'react-native';
 import { loginNavigatorRoute } from './../../navigator/navigatorRoutes';
@@ -11,7 +12,7 @@ import * as firebase from 'firebase';
 
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
-const LIST_BORDER_COLOR = '#f3f3f3';
+const LIST_BORDER_COLOR = '#eee';
 
 const styles = {
   container: {
@@ -32,7 +33,7 @@ const styles = {
     height: 60,
     paddingLeft: DEFAULT_LEFT,
     backgroundColor: 'white',
-    borderBottomWidth: 0.5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: LIST_BORDER_COLOR,
     justifyContent: 'center'
   },

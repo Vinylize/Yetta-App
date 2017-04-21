@@ -4,7 +4,8 @@ import {
   // Image,
   Text,
   View,
-  Dimensions
+  Dimensions,
+  StyleSheet
 } from 'react-native';
 // import BTclient from 'braintree-web/client';
 // const createClient = BTclient.create;
@@ -21,7 +22,7 @@ const client = new Lokka({
 
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
-const LIST_BORDER_COLOR = '#f3f3f3';
+const LIST_BORDER_COLOR = '#eee';
 
 const styles = {
   container: {
@@ -50,7 +51,7 @@ const styles = {
     height: 60,
     paddingLeft: DEFAULT_LEFT,
     backgroundColor: 'white',
-    borderBottomWidth: 0.5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: LIST_BORDER_COLOR
   },
   profileSubject: {

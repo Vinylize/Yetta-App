@@ -1,10 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import {
   Image,
   Text,
   View,
-  Dimensions
+  Dimensions,
+  StyleSheet
 } from 'react-native';
 
 // const Lokka = require('lokka').Lokka;
@@ -16,7 +17,7 @@ import {
 
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
-const LIST_BORDER_COLOR = '#f3f3f3';
+const LIST_BORDER_COLOR = '#eee';
 
 const styles = {
   container: {
@@ -44,7 +45,7 @@ const styles = {
     height: 60,
     paddingLeft: DEFAULT_LEFT,
     backgroundColor: 'white',
-    borderBottomWidth: 0.5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: LIST_BORDER_COLOR
   },
   profileSubject: {
