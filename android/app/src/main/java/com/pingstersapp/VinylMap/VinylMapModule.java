@@ -10,7 +10,6 @@ import android.os.Looper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.view.View;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
@@ -27,8 +26,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.pingstersapp.R;
 import com.pingstersapp.VinylMap.latlnginterpolation.LatLngInterpolator;
 import com.pingstersapp.VinylMap.latlnginterpolation.MarkerAnimation;
-
-import org.apache.http.conn.scheme.HostNameResolver;
 
 import java.util.HashMap;
 import java.util.Map;
