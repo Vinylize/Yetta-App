@@ -10,7 +10,6 @@ import android.os.Looper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.view.View;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
@@ -137,6 +136,11 @@ public class VinylMapModule extends MapView implements
         ));
     }
 
+    public void animateToLocationWithZoomHelper(final String latitude, final String longitude, final float zoom) {
+        this.mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+            new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude)), zoom));
+    }
+
     public void updateMarkerHelper(final String latitude, final String longitude) {
         if (marker != null) {
             LatLng tmp = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
@@ -158,6 +162,18 @@ public class VinylMapModule extends MapView implements
         }
     }
 
+    public void animateTolocationWithZoom(final String latitude, final String longitude, final float zoom) {
+        if (mMap != null) {
+            Handler uiHandler = new Handler(Looper.getMainLooper());
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    animateToLocationWithZoomHelper(latitude, longitude, zoom);
+                }
+            };
+            uiHandler.post(runnable);
+        }
+    }
     public void updateMarker(final String latitude, final String longitude) {
         if (mMap != null) {
             Handler uiHandler = new Handler(Looper.getMainLooper());
