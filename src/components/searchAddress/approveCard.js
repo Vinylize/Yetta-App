@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   Text,
   View,
+  StyleSheet,
   Platform
 } from 'react-native';
 
@@ -27,14 +28,15 @@ export default class ApproveCard extends Component {
       <View style={{
         position: 'absolute',
         bottom: 0,
-        left: WIDTH * 0.1,
-        width: WIDTH * 0.8,
-        height: (Platform.OS === 'android' && !this.props.showApproveAddressCard) ? 0 : 100,
+        left: 0,
+        width: WIDTH,
+        height: (Platform.OS === 'android' && !this.props.showApproveAddressCard) ? 0 : 110,
         backgroundColor: 'white',
         zIndex: 1,
         shadowOffset: {height: 3, width: 3},
         shadowOpacity: 0.3,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        elevation: 10
       }}>
         <View style={{
           flex: 1,
@@ -44,7 +46,10 @@ export default class ApproveCard extends Component {
           marginRight: 5,
           flexDirection: 'column'
         }}>
-          <Text style={{marginTop: 5}}>
+          <Text style={{
+            marginTop: 5,
+            color: 'black'
+          }}>
             {this.props.address.firstAddressToken}
           </Text>
           <View style={{
@@ -63,24 +68,26 @@ export default class ApproveCard extends Component {
           </View>
         </View>
         <View style={{
-          flex: 1,
+          flex: 0.6,
           justifyContent: 'center',
           alignItems: 'center'
         }}>
           <TouchableOpacity
             style={{
-              height: 30,
-              width: WIDTH * 0.7,
-              backgroundColor: '#75797a',
+              flex: 1,
+              width: WIDTH,
+              backgroundColor: 'white',
               justifyContent: 'center',
               alignItems: 'center',
-              margin: 10,
-              borderRadius: 5,
-              marginBottom: 15
+              borderWidth: StyleSheet.hairlineWidth,
+              borderLeftColor: 'white',
+              borderRightColor: 'white',
+              borderTopColor: 'grey',
+              borderBottomColor: 'white'
             }}
             onPress={this.props.handleApproveBtn}
           >
-            <Text style={{color: 'white'}}>
+            <Text style={{color: 'black'}}>
               이 주소로 주문하기
             </Text>
           </TouchableOpacity>
