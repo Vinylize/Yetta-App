@@ -288,8 +288,7 @@ export default class RegisterOrder extends Component {
           {this.renderTriangles()}
           <View style={{top: 64}}>
             <Text style={{textAlign: 'center'}}>
-              Would you like to proceed {'\n'}
-              with the order details above?
+              위의 내용을 주문하시겠습니까?
             </Text>
           </View>
           {this.renderOrderBtn()}

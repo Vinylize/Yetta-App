@@ -26,7 +26,7 @@ export default class AddProduct extends PureComponent {
             paddingTop: 74
           }}
         >
-          <Text>Find store</Text>
+          <Text>상점 정보</Text>
           <View style={{
             width: WIDTH - 80,
             height: 174,
@@ -36,7 +36,7 @@ export default class AddProduct extends PureComponent {
             shadowOffset: {height: 3, width: 0},
             shadowOpacity: 0.2
           }} />
-          <Text>Add product</Text>
+          <Text>물품 추가</Text>
           <View style={{
             height: 70,
             width: WIDTH - 80,
