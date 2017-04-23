@@ -584,7 +584,7 @@ class Home extends Component {
         style={{
           position: 'absolute',
           right: 26,
-          bottom: 80,
+          bottom: (this.state.showApproveAddressCard) ? 130 : 80,
           height: (Platform.OS === 'android' && this.state.trackingCurrentPos) ? 0 : 25,
           width: 25,
           borderRadius: 20,
