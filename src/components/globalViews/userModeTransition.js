@@ -1,7 +1,7 @@
 import React, { PureComponent, PropTypes } from 'react';
 import {
   Animated,
-  Dimensions,
+  // Dimensions,
   Platform,
   Text,
   View
@@ -24,8 +24,8 @@ const styles = {
   }
 };
 
-const HEIGHT = Dimensions.get('window').height;
-const WIDTH = Dimensions.get('window').width;
+// const HEIGHT = Dimensions.get('window').height;
+// const WIDTH = Dimensions.get('window').width;
 
 const BlurView = ({children, ...rest}) => Platform.select({
   ios: <RNBlur.BlurView {...rest}>{children}</RNBlur.BlurView>,
