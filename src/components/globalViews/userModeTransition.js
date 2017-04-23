@@ -1,14 +1,13 @@
 import React, { PureComponent, PropTypes } from 'react';
 import {
-  ActivityIndicator,
   Animated,
+  Dimensions,
   Platform,
   Text,
-  View,
-  LayoutAnimation,
-  UIManager
+  View
 } from 'react-native';
 import RNBlur from 'react-native-blur';
+import Animation from 'lottie-react-native';
 
 const styles = {
   globalContainer: {
@@ -24,6 +23,9 @@ const styles = {
     backgroundColor: 'transparent'
   }
 };
+
+const HEIGHT = Dimensions.get('window').height;
+const WIDTH = Dimensions.get('window').width;
 
 const BlurView = ({children, ...rest}) => Platform.select({
   ios: <RNBlur.BlurView {...rest}>{children}</RNBlur.BlurView>,
@@ -50,18 +52,34 @@ export default class UserModeTransition extends PureComponent {
           style={{
             width: 200,
             height: 200,
-            justifyContent: 'center',
-            alignItems: 'center',
             borderRadius: 20
           }}
           viewRef={this.props.refViewForBlurView}
           blurType="light"
           blurAmount={20}
         >
+          <Animation
+            onLayout={() => {
+              // run animation when this did mount
+              this.lottieAnimation.play();
+            }}
+            ref={animation => {
+              this.lottieAnimation = animation;
+            }}
+            style={{
+              width: 200,
+              height: 160
+            }}
+            speed={1}
+            source={require('./../../../assets/lottie/preloader.json')}
+            loop
+          />
           <Text style={{
             fontSize: 24,
             fontWeight: '600',
-            color: 'black'
+            color: 'black',
+            top: -24,
+            alignSelf: 'center'
           }}>
             {(this.props.isRunner) ? '러너로 변신중' : '오더로 변신중'}
           </Text>

@@ -83,7 +83,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 25
     buildToolsVersion "23.0.3"
 
     defaultConfig {
@@ -128,6 +128,7 @@ android {
 }
 
 dependencies {
+    compile project(':lottie-react-native')
     compile (project(':react-native-blur')) { exclude module: 'react-native' }
     compile (project(':react-native-linear-gradient')) { exclude module: 'react-native' }
     compile fileTree(include: ['*.jar'], dir: 'libs')

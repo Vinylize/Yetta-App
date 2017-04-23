@@ -456,7 +456,7 @@ class Home extends Component {
       this.setState(() => {
         return {userModeSwitchBtnClicked: false};
       });
-    }, 1000);
+    }, 2000);
   }
 
   handleProfile() {
