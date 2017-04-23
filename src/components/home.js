@@ -33,6 +33,7 @@ import ApproveCard from './searchAddress/approveCard';
 import { URL } from './../utils';
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
 import { setIsRunner } from './../actions/userStatusActions';
+import UserModeTransition from './globalViews/userModeTransition';
 
 let vmm = NativeModules.VinylMapManager;
 
@@ -85,7 +86,8 @@ class Home extends Component {
       showApproveAddressCard: false,
       searchedAddressTextView: [],
       trackingCurrentPos: false,
-      refViewForBlurView: null
+      refViewForBlurView: null,
+      userModeSwitchBtnClicked: false
     };
     this.initialLocationUpdate = false;
   }
@@ -443,6 +445,18 @@ class Home extends Component {
    */
   handleSwitch() {
     this.props.setIsRunner(!this.props.isRunner);
+    this.setState(() => {
+      return {userModeSwitchBtnClicked: true};
+    });
+
+    this.animateMenuHide();
+
+    // todo: this should be done dynamically. Remove.
+    setTimeout(() => {
+      this.setState(() => {
+        return {userModeSwitchBtnClicked: false};
+      });
+    }, 1000);
   }
 
   handleProfile() {
@@ -546,6 +560,9 @@ class Home extends Component {
     }
     return (
       <VinylMapAndroid
+        onLayout={() => {
+          this.setState({ refViewForBlurView: findNodeHandle(this.refMapAndroid) });
+        }}
         ref={component => {
           this.refMapAndroid = component;
         }}
@@ -1199,19 +1216,7 @@ class Home extends Component {
 
   render() {
     return (
-      <View
-        onLayout={() => {
-          /**
-           * invoke when this view did mount
-           * todo: use this ref for globalViews/loading's viewRef prop in order to blur whole screen
-           */
-          this.setState({ refViewForBlurView: findNodeHandle(this.refViewContainer) });
-        }}
-        ref={component => {
-          this.refViewContainer = component;
-        }}
-        style={{flex: 1, backgroundColor: '#2E3031'}}
-      >
+      <View style={{flex: 1, backgroundColor: '#2E3031'}}>
         {this.renderMenu()}
         <Animated.View
           ref={component => {
@@ -1236,6 +1241,10 @@ class Home extends Component {
           />
           {this.state.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>
+        <UserModeTransition
+          show={this.state.userModeSwitchBtnClicked}
+          isRunner={this.props.isRunner}
+          refViewForBlurView={this.state.refViewForBlurView}/>
       </View>
     );
   }
