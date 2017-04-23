@@ -38,7 +38,7 @@ const styles = {
     width: 110,
     height: 110,
     borderRadius: 55,
-    marginLeft: DEFAULT_LEFT,
+    marginLeft: WIDTH / 2 - 55,
     marginBottom: 30
   },
   profileList: {
@@ -74,12 +74,6 @@ class Profile extends Component {
         <Text style={styles.profileContent}>{content}</Text>
       </View>);
   }
-
-  renderBorder() {
-    return (
-      <View style={{borderBottomWidth: 1, borderBottomColor: LIST_BORDER_COLOR}}/>);
-  }
-
 
   render() {
     return (
