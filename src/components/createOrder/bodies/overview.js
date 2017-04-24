@@ -54,7 +54,7 @@ export default class RegisterOrder extends Component {
                 manu:"농심",
                 n:"바나나 우유3",
                 cnt:2}],
-            nId: "dsdssdds",
+            nId: "-KiTzNSVH6ETa-RU_z5U",
             dest:{
               n1:"서울시 강동구 길동 한신휴플러스",
               n2:"910호",

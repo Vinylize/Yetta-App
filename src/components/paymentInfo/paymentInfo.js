@@ -83,7 +83,7 @@ class PaymentInfo extends Component {
         }
       }`
       );
-    })
+    });
     // .then(res => {
     //   createClient({
     //     authorization: res.viewer.braintreeToken
@@ -118,7 +118,6 @@ class PaymentInfo extends Component {
     //     });
     //   });
     // });
-
   }
 
   renderProfileList(subject, content) {
