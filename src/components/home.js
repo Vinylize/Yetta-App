@@ -202,7 +202,7 @@ class Home extends Component {
           longitude: data.longitude
         });
         if (vmm && this.state.trackingCurrentPos) {
-          //vmm.animateToLocation(data.latitude, data.longitude);
+          // vmm.animateToLocation(data.latitude, data.longitude);
           vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
         }
         if (firebase.auth().currentUser) {

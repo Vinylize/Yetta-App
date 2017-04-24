@@ -11,7 +11,7 @@ export const geocoding = (latitude, longitude) => {
         return rjson.results[0].address_components;
       }
       throw new Error();
-    })
+    });
 };
 
 export const placeDetails = (placeid) => {
