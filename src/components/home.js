@@ -7,12 +7,10 @@ import {
   Dimensions,
   LayoutAnimation,
   Image,
-  // Keyboard,
   PanResponder,
   Platform,
   NativeModules,
   NativeEventEmitter,
-  // TextInput,
   TouchableOpacity,
   Animated,
   Easing,
@@ -26,14 +24,24 @@ import {
   settingsNavigatorRoute,
   paymentInfoNavigatorRoute
 } from '../navigator/navigatorRoutes';
+
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
 import SearchBar from './searchAddress/searchBar';
 import ApproveCard from './searchAddress/approveCard';
 import { URL } from './../utils';
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
+
+// [start redux functions]
 import { setIsRunner } from './../actions/userStatusActions';
+import {
+  setBusyWaitingPlaceDetailAPI,
+  setBusyWaitingGeocodingAPI
+} from './../actions/busyWaitingActions';
+// [end redux functions]
+
 import UserModeTransition from './globalViews/userModeTransition';
+import GlobalLoading from './globalViews/loading';
 
 let vmm = NativeModules.VinylMapManager;
 
@@ -54,7 +62,6 @@ const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
 const cardInitBottom = -expandedCardHeight + cardHeight;
 const cardHidedBottom = -expandedCardHeight;
-// const menuWidth = WIDTH * 0.8;
 const menuWidth = WIDTH;
 
 const PLATFORM_SPECIFIC = {
@@ -65,6 +72,7 @@ class Home extends Component {
   constructor() {
     super();
     this.state = {
+      // todo: remove unnecessary states
       text: '',
       toggle: false,
       longitude: undefined,
@@ -87,7 +95,8 @@ class Home extends Component {
       searchedAddressTextView: [],
       trackingCurrentPos: false,
       refViewForBlurView: null,
-      userModeSwitchBtnClicked: false
+      userModeSwitchBtnClicked: false,
+      cameraWillMoveByPlaceDetailAPI: false
     };
     this.initialLocationUpdate = false;
   }
@@ -141,10 +150,19 @@ class Home extends Component {
       });
       DeviceEventEmitter.addListener('onCameraIdle', (e) => {
         console.log('camera position idle: ', e);
-        if (this.state.showApproveAddressCard === true) {
+        if (this.state.cameraWillMoveByPlaceDetailAPI) {
+          // intention: avoid unnecessary geocoding from placeAutocomplete API prediction
+          this.setState(() => {
+            return {cameraWillMoveByPlaceDetailAPI: false};
+          });
+        } else if (this.state.showApproveAddressCard === true) {
           const { lat, lon } = e;
+
+          this.props.setBusyWaitingGeocodingAPI(true);
+
           GOOGLE_MAPS_API.geocoding(lat, lon)
             .then(arr => {
+              this.props.setBusyWaitingGeocodingAPI(false);
               // TODO: improve this
               if (arr) {
                 this.setState({searchedAddressTextView: {
@@ -153,7 +171,10 @@ class Home extends Component {
                 }});
               }
             })
-            .catch(console.log);
+            .catch(err => {
+              this.props.setBusyWaitingGeocodingAPI(false);
+              console.log(err);
+            });
         }
       });
     }
@@ -181,7 +202,7 @@ class Home extends Component {
           longitude: data.longitude
         });
         if (vmm && this.state.trackingCurrentPos) {
-          //vmm.animateToLocation(data.latitude, data.longitude);
+          // vmm.animateToLocation(data.latitude, data.longitude);
           vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
         }
         if (firebase.auth().currentUser) {
@@ -467,10 +488,23 @@ class Home extends Component {
     this.props.navigator.push(paymentInfoNavigatorRoute());
   }
 
-  handleSearchBarAddressBtn(firstAddressToken, addressTextView) {
+  handleSearchBarAddressBtn(firstAddressToken, addressTextView, coordinate) {
     // todo: change location to searched address
-    const { latitude, longitude } = this.state;
-    vmm.animateToLocation(String(latitude), String(longitude));
+    if (coordinate) {
+      // user tapped new predicted place.
+
+      // avoiding unnecessary geocoding API use
+      this.setState(() => {
+        return {cameraWillMoveByPlaceDetailAPI: true};
+      });
+
+      const { lat, lng } = coordinate;
+      vmm.animateToLocation(String(lat), String(lng));
+    } else {
+      // user tapped my-location/search-with-pin
+      const { latitude, longitude } = this.state;
+      vmm.animateToLocation(String(latitude), String(longitude));
+    }
 
     /**
      * this enables native API that returns coordinate of the map center
@@ -539,11 +573,20 @@ class Home extends Component {
             }
           }}
           onChangeCameraPosition={(e) => {
+            // todo: rename this method since it is actually when camera position idle
             console.log('camera position changed: ', e.nativeEvent);
-            if (this.state.showApproveAddressCard === true) {
+            if (this.state.cameraWillMoveByPlaceDetailAPI) {
+              this.setState(() => {
+                return {cameraWillMoveByPlaceDetailAPI: false};
+              });
+            } else if (this.state.showApproveAddressCard === true) {
               const { latitude, longitude } = e.nativeEvent;
+
+              this.props.setBusyWaitingGeocodingAPI(true);
+
               GOOGLE_MAPS_API.geocoding(latitude, longitude)
                 .then(arr => {
+                  this.props.setBusyWaitingGeocodingAPI(false);
                   // TODO: improve this
                   if (arr) {
                     this.setState({searchedAddressTextView: {
@@ -552,7 +595,10 @@ class Home extends Component {
                     }});
                   }
                 })
-                .catch(console.log);
+                .catch(err => {
+                  this.props.setBusyWaitingGeocodingAPI(false);
+                  console.log(err);
+                });
             }
           }}
         />
@@ -1231,6 +1277,7 @@ class Home extends Component {
             latitude={this.state.latitude}
             longitude={this.state.longitude}
             handleAddressBtn={this.handleSearchBarAddressBtn.bind(this)}
+            setBusyWaitingPlaceDetailAPI={this.props.setBusyWaitingPlaceDetailAPI}
           />
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
@@ -1238,6 +1285,7 @@ class Home extends Component {
             showApproveAddressCard = {this.state.showApproveAddressCard}
             address={this.state.searchedAddressTextView}
             handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
+            busyWaitingGeocodingAPI={this.props.busyWaitingGeocodingAPI}
           />
           {this.state.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>
@@ -1245,6 +1293,11 @@ class Home extends Component {
           show={this.state.userModeSwitchBtnClicked}
           isRunner={this.props.isRunner}
           refViewForBlurView={this.state.refViewForBlurView}/>
+        <GlobalLoading
+          show={this.props.busyWaitingPlaceDetailAPI}
+          refViewForBlurView={this.state.refViewForBlurView}
+          msg={'위치 찾는중'}
+        />
       </View>
     );
   }
@@ -1253,13 +1306,19 @@ class Home extends Component {
 const mapStateToProps = (state) => {
   return {
     user: state.auth.user,
-    isRunner: state.userStatus.isRunner
+    isRunner: state.userStatus.isRunner,
+    busyWaitingPlaceDetailAPI: state.busyWaiting.busyWaitingPlaceDetailAPI,
+    busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner))
+    setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner)),
+    setBusyWaitingPlaceDetailAPI: (busyWaitingPlaceDetailAPI) =>
+      dispatch(setBusyWaitingPlaceDetailAPI(busyWaitingPlaceDetailAPI)),
+    setBusyWaitingGeocodingAPI: (busyWaitingGeocodingAPI) =>
+      dispatch(setBusyWaitingGeocodingAPI(busyWaitingGeocodingAPI))
   };
 };
 
@@ -1267,7 +1326,11 @@ Home.propTypes = {
   navigator: PropTypes.any,
   user: PropTypes.object,
   isRunner: PropTypes.bool,
-  setIsRunner: PropTypes.func
+  busyWaitingPlaceDetailAPI: PropTypes.bool,
+  busyWaitingGeocodingAPI: PropTypes.bool,
+  setIsRunner: PropTypes.func,
+  setBusyWaitingPlaceDetailAPI: PropTypes.func,
+  setBusyWaitingGeocodingAPI: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  ActivityIndicator,
   Dimensions,
   TouchableOpacity,
   Text,
@@ -46,12 +47,19 @@ export default class ApproveCard extends Component {
           marginRight: 5,
           flexDirection: 'column'
         }}>
-          <Text style={{
-            marginTop: 5,
-            color: 'black'
-          }}>
-            {this.props.address.firstAddressToken}
-          </Text>
+          {(this.props.busyWaitingGeocodingAPI) ?
+            <ActivityIndicator
+              animating={true}
+              style={{width: 20, height: 20}}
+              size="small"
+            /> :
+            <Text style={{
+              marginTop: 5,
+              color: 'black'
+            }}>
+              {this.props.address.firstAddressToken}
+            </Text>
+          }
           <View style={{
             flexDirection: 'row',
             marginTop: 4
@@ -63,7 +71,9 @@ export default class ApproveCard extends Component {
               }}
               numberOfLines={1}
             >
-              {this.props.address.addressTextView}
+              {(this.props.busyWaitingGeocodingAPI) ?
+                '주소를 불러오는중'
+                : this.props.address.addressTextView}
             </Text>
           </View>
         </View>
@@ -100,5 +110,6 @@ export default class ApproveCard extends Component {
 ApproveCard.propTypes = {
   address: PropTypes.any,
   handleApproveBtn: PropTypes.func,
-  showApproveAddressCard: PropTypes.bool
+  showApproveAddressCard: PropTypes.bool,
+  busyWaitingGeocodingAPI: PropTypes.bool.isRequired
 };
