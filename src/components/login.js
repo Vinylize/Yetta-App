@@ -131,10 +131,11 @@ class Login extends Component {
   // }
 
   queryUser(token) {
-    client._transport._httpOptions.headers = {
-      authorization: token
-    };
-    return client.query(`{
+    return new Promise((resolve, reject) => {
+      client._transport._httpOptions.headers = {
+        authorization: token
+      };
+      client.query(`{
       viewer{
         isPV,
         e,
@@ -142,15 +143,16 @@ class Login extends Component {
         p
       }
     }`)
-      .then(({viewer}) => {
-        this.props.setUser(viewer);
-        this.hideLoading();
-        return viewer;
-      })
-      .catch(e => {
-        this.hideLoading();
-        handleError(e);
-      });
+        .then(({viewer}) => {
+          this.props.setUser(viewer);
+          this.hideLoading();
+          return resolve(viewer);
+        })
+        .catch(e => {
+          this.hideLoading();
+          return reject(e);
+        });
+    });
   }
 
   internalAuth() {
@@ -163,7 +165,8 @@ class Login extends Component {
         } else {
           this.navigateToPhoneVerification();
         }
-      });
+      })
+      .catch(console.log);
   }
 
   login(email, password) {
