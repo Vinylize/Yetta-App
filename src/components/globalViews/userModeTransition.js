@@ -1,7 +1,5 @@
 import React, { PureComponent, PropTypes } from 'react';
 import {
-  Animated,
-  // Dimensions,
   Platform,
   Text,
   View
@@ -45,7 +43,7 @@ export default class UserModeTransition extends PureComponent {
       return null;
     }
     return (
-      <Animated.View style={[styles.globalContainer,
+      <View style={[styles.globalContainer,
         (this.props.show) ? null : {opacity: 0, height: 0}
       ]}>
         <BlurView
@@ -84,7 +82,7 @@ export default class UserModeTransition extends PureComponent {
             {(this.props.isRunner) ? '러너로 변신중' : '오더로 변신중'}
           </Text>
         </BlurView>
-      </Animated.View>
+      </View>
     );
   }
 }

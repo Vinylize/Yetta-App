@@ -9,7 +9,7 @@ import {
   ListView
 } from 'react-native';
 import { APIKEY } from './../../utils';
-import * as GoogleMapsAPI from './../../service/GoogleMapsAPI';
+import * as GOOGLE_MAPS_API from './../../service/GoogleMapsAPI';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -69,9 +69,13 @@ export default class SearchBar extends Component {
           if (terms) {
             // when predicted address clicked
 
+            this.props.setBusyWaitingPlaceDetailAPI(true);
+
             // search the predicted address in detail
-            GoogleMapsAPI.placeDetails(rowData.place_id)
+            GOOGLE_MAPS_API.placeDetails(rowData.place_id)
               .then((res) => {
+                this.props.setBusyWaitingPlaceDetailAPI(false);
+
                 // res: coordinate of predicted place
                 // keys: lat, lon
                 this.props.handleAddressBtn(terms[0].value, terms.slice(1).map(e => e.value + ' '), res);
@@ -228,5 +232,6 @@ export default class SearchBar extends Component {
 SearchBar.propTypes = {
   latitude: PropTypes.any,
   longitude: PropTypes.any,
-  handleAddressBtn: PropTypes.func.isRequired
+  handleAddressBtn: PropTypes.func.isRequired,
+  setBusyWaitingPlaceDetailAPI: PropTypes.func.isRequired
 };

@@ -7,12 +7,10 @@ import {
   Dimensions,
   LayoutAnimation,
   Image,
-  // Keyboard,
   PanResponder,
   Platform,
   NativeModules,
   NativeEventEmitter,
-  // TextInput,
   TouchableOpacity,
   Animated,
   Easing,
@@ -26,14 +24,21 @@ import {
   settingsNavigatorRoute,
   paymentInfoNavigatorRoute
 } from '../navigator/navigatorRoutes';
+
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
 import SearchBar from './searchAddress/searchBar';
 import ApproveCard from './searchAddress/approveCard';
 import { URL } from './../utils';
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
+
+// [start redux functions]
 import { setIsRunner } from './../actions/userStatusActions';
+import { setBusyWaitingPlaceDetailAPI } from './../actions/busyWaitingActions';
+// [end redux functions]
+
 import UserModeTransition from './globalViews/userModeTransition';
+import GlobalLoading from './globalViews/loading';
 
 let vmm = NativeModules.VinylMapManager;
 
@@ -54,7 +59,6 @@ const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
 const cardInitBottom = -expandedCardHeight + cardHeight;
 const cardHidedBottom = -expandedCardHeight;
-// const menuWidth = WIDTH * 0.8;
 const menuWidth = WIDTH;
 
 const PLATFORM_SPECIFIC = {
@@ -1238,6 +1242,7 @@ class Home extends Component {
             latitude={this.state.latitude}
             longitude={this.state.longitude}
             handleAddressBtn={this.handleSearchBarAddressBtn.bind(this)}
+            setBusyWaitingPlaceDetailAPI={this.props.setBusyWaitingPlaceDetailAPI}
           />
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
@@ -1252,6 +1257,11 @@ class Home extends Component {
           show={this.state.userModeSwitchBtnClicked}
           isRunner={this.props.isRunner}
           refViewForBlurView={this.state.refViewForBlurView}/>
+        <GlobalLoading
+          show={this.props.busyWaitingPlaceDetailAPI}
+          refViewForBlurView={this.state.refViewForBlurView}
+          msg={'위치 찾는중'}
+        />
       </View>
     );
   }
@@ -1260,13 +1270,16 @@ class Home extends Component {
 const mapStateToProps = (state) => {
   return {
     user: state.auth.user,
-    isRunner: state.userStatus.isRunner
+    isRunner: state.userStatus.isRunner,
+    busyWaitingPlaceDetailAPI: state.busyWaiting.busyWaitingPlaceDetailAPI
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner))
+    setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner)),
+    setBusyWaitingPlaceDetailAPI: (busyWaitingPlaceDetailAPI) =>
+      dispatch(setBusyWaitingPlaceDetailAPI(busyWaitingPlaceDetailAPI))
   };
 };
 
@@ -1274,7 +1287,9 @@ Home.propTypes = {
   navigator: PropTypes.any,
   user: PropTypes.object,
   isRunner: PropTypes.bool,
-  setIsRunner: PropTypes.func
+  busyWaitingPlaceDetailAPI: PropTypes.bool,
+  setIsRunner: PropTypes.func,
+  setBusyWaitingPlaceDetailAPI: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
