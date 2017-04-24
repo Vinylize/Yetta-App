@@ -16,7 +16,7 @@ import * as firebase from 'firebase';
 import GlobalLoading from './globalViews/loading';
 
 import { setUser } from '../actions/authActions';
-import { URL, handleError, handleFirebaseSignInError } from './../utils';
+import { URL, handleFirebaseSignInError } from './../utils';
 import {
   registerNavigatorRoute,
   homeNavigatorRoute,

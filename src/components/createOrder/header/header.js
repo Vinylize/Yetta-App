@@ -15,7 +15,7 @@ const styles = {
     left: 0,
     height: 90,
     width: WIDTH,
-    backgroundColor: '#feffff',
+    backgroundColor: '#ff9700',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

@@ -35,11 +35,10 @@ export default class FindBrandV2 extends Component {
 
   renderVerticalListView() {
     return (
-      <View style={{height: HEIGHT - 90, backgroundColor: 'yellow', marginTop: 90}}>
+      <View style={{height: HEIGHT - 90, marginTop: 90}}>
         <ListView
           dataSource={this.state.verticalListViewDataSource}
           renderRow={(rowData, sectionID, rowID) => this.renderVerticalRow(rowData, rowID)}
-          style={{backgroundColor: 'white'}}
           enableEmptySections
           removeClippedSubviews={false}
         />
@@ -97,7 +96,8 @@ export default class FindBrandV2 extends Component {
     return (
       <View style={{
         flex: 1,
-        width: WIDTH
+        width: WIDTH,
+        backgroundColor: '#ff9700'
       }}>
         {this.renderVerticalListView()}
       </View>
