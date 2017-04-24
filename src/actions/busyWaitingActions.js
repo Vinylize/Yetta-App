@@ -6,3 +6,10 @@ export const setBusyWaitingPlaceDetailAPI = (busyWaitingPlaceDetailAPI) => {
     busyWaitingPlaceDetailAPI
   };
 };
+
+export const setBusyWaitingGeocodingAPI = (busyWaitingGeocodingAPI) => {
+  return {
+    type: types.setBusyWaitingGeocodingAPI,
+    busyWaitingGeocodingAPI
+  };
+};

@@ -12,7 +12,6 @@ export const geocoding = (latitude, longitude) => {
       }
       throw new Error();
     })
-    .catch(console.log);
 };
 
 export const placeDetails = (placeid) => {

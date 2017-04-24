@@ -34,7 +34,10 @@ import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
 
 // [start redux functions]
 import { setIsRunner } from './../actions/userStatusActions';
-import { setBusyWaitingPlaceDetailAPI } from './../actions/busyWaitingActions';
+import {
+  setBusyWaitingPlaceDetailAPI,
+  setBusyWaitingGeocodingAPI
+} from './../actions/busyWaitingActions';
 // [end redux functions]
 
 import UserModeTransition from './globalViews/userModeTransition';
@@ -154,8 +157,12 @@ class Home extends Component {
           });
         } else if (this.state.showApproveAddressCard === true) {
           const { lat, lon } = e;
+
+          this.props.setBusyWaitingGeocodingAPI(true);
+
           GOOGLE_MAPS_API.geocoding(lat, lon)
             .then(arr => {
+              this.props.setBusyWaitingGeocodingAPI(false);
               // TODO: improve this
               if (arr) {
                 this.setState({searchedAddressTextView: {
@@ -164,7 +171,10 @@ class Home extends Component {
                 }});
               }
             })
-            .catch(console.log);
+            .catch(err => {
+              this.props.setBusyWaitingGeocodingAPI(false);
+              console.log(err);
+            });
         }
       });
     }
@@ -571,8 +581,12 @@ class Home extends Component {
               });
             } else if (this.state.showApproveAddressCard === true) {
               const { latitude, longitude } = e.nativeEvent;
+
+              this.props.setBusyWaitingGeocodingAPI(true);
+
               GOOGLE_MAPS_API.geocoding(latitude, longitude)
                 .then(arr => {
+                  this.props.setBusyWaitingGeocodingAPI(false);
                   // TODO: improve this
                   if (arr) {
                     this.setState({searchedAddressTextView: {
@@ -581,7 +595,10 @@ class Home extends Component {
                     }});
                   }
                 })
-                .catch(console.log);
+                .catch(err => {
+                  this.props.setBusyWaitingGeocodingAPI(false);
+                  console.log(err);
+                });
             }
           }}
         />
@@ -1268,6 +1285,7 @@ class Home extends Component {
             showApproveAddressCard = {this.state.showApproveAddressCard}
             address={this.state.searchedAddressTextView}
             handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
+            busyWaitingGeocodingAPI={this.props.busyWaitingGeocodingAPI}
           />
           {this.state.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>
@@ -1289,7 +1307,8 @@ const mapStateToProps = (state) => {
   return {
     user: state.auth.user,
     isRunner: state.userStatus.isRunner,
-    busyWaitingPlaceDetailAPI: state.busyWaiting.busyWaitingPlaceDetailAPI
+    busyWaitingPlaceDetailAPI: state.busyWaiting.busyWaitingPlaceDetailAPI,
+    busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI
   };
 };
 
@@ -1297,7 +1316,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner)),
     setBusyWaitingPlaceDetailAPI: (busyWaitingPlaceDetailAPI) =>
-      dispatch(setBusyWaitingPlaceDetailAPI(busyWaitingPlaceDetailAPI))
+      dispatch(setBusyWaitingPlaceDetailAPI(busyWaitingPlaceDetailAPI)),
+    setBusyWaitingGeocodingAPI: (busyWaitingGeocodingAPI) =>
+      dispatch(setBusyWaitingGeocodingAPI(busyWaitingGeocodingAPI))
   };
 };
 
@@ -1306,8 +1327,10 @@ Home.propTypes = {
   user: PropTypes.object,
   isRunner: PropTypes.bool,
   busyWaitingPlaceDetailAPI: PropTypes.bool,
+  busyWaitingGeocodingAPI: PropTypes.bool,
   setIsRunner: PropTypes.func,
-  setBusyWaitingPlaceDetailAPI: PropTypes.func
+  setBusyWaitingPlaceDetailAPI: PropTypes.func,
+  setBusyWaitingGeocodingAPI: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
