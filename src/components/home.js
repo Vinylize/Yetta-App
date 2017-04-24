@@ -467,10 +467,17 @@ class Home extends Component {
     this.props.navigator.push(paymentInfoNavigatorRoute());
   }
 
-  handleSearchBarAddressBtn(firstAddressToken, addressTextView) {
+  handleSearchBarAddressBtn(firstAddressToken, addressTextView, coordinate) {
     // todo: change location to searched address
-    const { latitude, longitude } = this.state;
-    vmm.animateToLocation(String(latitude), String(longitude));
+    if (coordinate) {
+      // user tapped new predicted place.
+      const { lat, lng } = coordinate;
+      vmm.animateToLocation(String(lat), String(lng));
+    } else {
+      // user tapped my-location/search-with-pin
+      const { latitude, longitude } = this.state;
+      vmm.animateToLocation(String(latitude), String(longitude));
+    }
 
     /**
      * this enables native API that returns coordinate of the map center
