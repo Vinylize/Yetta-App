@@ -69,6 +69,7 @@ class Home extends Component {
   constructor() {
     super();
     this.state = {
+      // todo: remove unnecessary states
       text: '',
       toggle: false,
       longitude: undefined,
@@ -91,7 +92,8 @@ class Home extends Component {
       searchedAddressTextView: [],
       trackingCurrentPos: false,
       refViewForBlurView: null,
-      userModeSwitchBtnClicked: false
+      userModeSwitchBtnClicked: false,
+      cameraWillMoveByPlaceDetailAPI: false
     };
     this.initialLocationUpdate = false;
   }
@@ -145,7 +147,12 @@ class Home extends Component {
       });
       DeviceEventEmitter.addListener('onCameraIdle', (e) => {
         console.log('camera position idle: ', e);
-        if (this.state.showApproveAddressCard === true) {
+        if (this.state.cameraWillMoveByPlaceDetailAPI) {
+          // intention: avoid unnecessary geocoding from placeAutocomplete API prediction
+          this.setState(() => {
+            return {cameraWillMoveByPlaceDetailAPI: false};
+          });
+        } else if (this.state.showApproveAddressCard === true) {
           const { lat, lon } = e;
           GOOGLE_MAPS_API.geocoding(lat, lon)
             .then(arr => {
@@ -475,6 +482,12 @@ class Home extends Component {
     // todo: change location to searched address
     if (coordinate) {
       // user tapped new predicted place.
+
+      // avoiding unnecessary geocoding API use
+      this.setState(() => {
+        return {cameraWillMoveByPlaceDetailAPI: true};
+      });
+
       const { lat, lng } = coordinate;
       vmm.animateToLocation(String(lat), String(lng));
     } else {
@@ -550,8 +563,13 @@ class Home extends Component {
             }
           }}
           onChangeCameraPosition={(e) => {
+            // todo: rename this method since it is actually when camera position idle
             console.log('camera position changed: ', e.nativeEvent);
-            if (this.state.showApproveAddressCard === true) {
+            if (this.state.cameraWillMoveByPlaceDetailAPI) {
+              this.setState(() => {
+                return {cameraWillMoveByPlaceDetailAPI: false};
+              });
+            } else if (this.state.showApproveAddressCard === true) {
               const { latitude, longitude } = e.nativeEvent;
               GOOGLE_MAPS_API.geocoding(latitude, longitude)
                 .then(arr => {
