@@ -120,6 +120,7 @@ export default class SearchBar extends Component {
 
   render() {
     const { onFocused } = this.state;
+    const SEARCHBAR_HEIGHT = 50;
     return (
       <View
         style={{
@@ -127,9 +128,10 @@ export default class SearchBar extends Component {
           left: onFocused ? 0 : (WIDTH - WIDTH * 0.8) / 2,
           top: onFocused ? 0 : 100,
           width: onFocused ? WIDTH : WIDTH * 0.8,
-          height: onFocused ? HEIGHT : 40,
+          height: onFocused ? HEIGHT : SEARCHBAR_HEIGHT,
           backgroundColor: 'white',
-          elevation: 4
+          elevation: 4,
+          zIndex: 2
         }}
       >
         <View style={{
@@ -137,7 +139,7 @@ export default class SearchBar extends Component {
           left: 0,
           top: 0,
           width: onFocused ? WIDTH : WIDTH * 0.8,
-          height: onFocused ? HEIGHT : 40,
+          height: onFocused ? HEIGHT : SEARCHBAR_HEIGHT,
           backgroundColor: 'white',
           shadowOffset: {height: 1, width: 1},
           shadowOpacity: 0.2,
@@ -156,9 +158,20 @@ export default class SearchBar extends Component {
               flexDirection: 'row'
             }}
             onPress={() => {
-              this.setState({onFocused: !onFocused});
+              // only work when not focused
+              if (!onFocused) {
+                this.setState({onFocused: true});
+              }
             }}
+            activeOpacity={(onFocused) ? 1 : 0.5}
           >
+            {(onFocused) ? null :
+              <Text style={{
+                alignSelf: 'center',
+                color: '#979797',
+                top: -9,
+                fontSize: 16
+              }}>어디로 배달하시겠어요?</Text>}
             <View style={{
               width: 30,
               height: 20,
