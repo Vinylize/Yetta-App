@@ -7,6 +7,8 @@ import PhoneVerification from './../components/phoneVerification';
 import PaymentInfo from './../components/paymentInfo/paymentInfo';
 import CreateOrderLayout from './../containers/createOrderLayout';
 import Setting from './../components/settings/setting';
+import OrderHistory from './../components/orderHistory/orderHistory';
+import RunnerHistory from './../components/runnerHistory/runnerHistory';
 const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
 
 export function homeNavigatorRoute() {
@@ -62,6 +64,20 @@ export function profileNavigatorRoute() {
 export function settingsNavigatorRoute() {
   return {
     Component: Setting,
+    sceneConfig
+  };
+}
+
+export function orderHistoryNavigatorRoute() {
+  return {
+    Component: OrderHistory,
+    sceneConfig
+  };
+}
+
+export function runnerHistoryNavigatorRoute() {
+  return {
+    Component: RunnerHistory,
     sceneConfig
   };
 }

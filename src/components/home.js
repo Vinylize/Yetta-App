@@ -22,7 +22,8 @@ import {
   createOrderNavigatorRoute,
   profileNavigatorRoute,
   settingsNavigatorRoute,
-  paymentInfoNavigatorRoute
+  paymentInfoNavigatorRoute,
+  orderHistoryNavigatorRoute
 } from '../navigator/navigatorRoutes';
 
 import VinylMapAndroid from './VinylMapAndroid';
@@ -127,6 +128,10 @@ class Home extends Component {
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: this.handlePaymentInfo.bind(this)
     });
+    this.orderHistoryPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: this.handleOrderHistory.bind(this)
+    });
     this.settingsPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderGrant: this.navigateToSettings.bind(this)
@@ -154,7 +159,7 @@ class Home extends Component {
         const { lat, lon } = e;
 
         this.setState(() => {
-          return {mapCameraPos: {lat, lon}}
+          return {mapCameraPos: {lat, lon}};
         });
         if (this.state.cameraWillMoveByPlaceDetailAPI) {
           // intention: avoid unnecessary geocoding from placeAutocomplete API prediction
@@ -162,7 +167,6 @@ class Home extends Component {
             return {cameraWillMoveByPlaceDetailAPI: false};
           });
         } else if (this.state.showApproveAddressCard === true) {
-
           this.props.setBusyWaitingGeocodingAPI(true);
 
           GOOGLE_MAPS_API.geocoding(lat, lon)
@@ -493,6 +497,10 @@ class Home extends Component {
     this.props.navigator.push(paymentInfoNavigatorRoute());
   }
 
+  handleOrderHistory() {
+    this.props.navigator.push(orderHistoryNavigatorRoute());
+  }
+
   handleSearchBarAddressBtn(firstAddressToken, addressTextView, coordinate) {
     // todo: change location to searched address
     if (coordinate) {
@@ -769,12 +777,12 @@ class Home extends Component {
             marginTop: 20,
             flexDirection: 'row'
           }}>
-            <Text style={{fontSize: 15, flex: 1}}>{this.props.user.n}</Text>
+            <Text style={{fontSize: 17, flex: 1, fontWeight: '600'}}>{this.props.user.n}</Text>
             <View
               style={{marginRight: 50, padding: 3, alignItems: 'flex-end'}}
               {...this.profilePanResponder.panHandlers}
             >
-              <Text style={{fontSize: 10}}>edit</Text>
+              <Text style={{fontSize: 11}}>EDIT</Text>
             </View>
           </View>
           <View style={{marginTop: 9}}>
@@ -794,7 +802,18 @@ class Home extends Component {
                 style={{fontSize: 18, marginTop: 48}}
                 {...this.paymentInfoPanResponder.panHandlers}
               >
-                결제정보</Text>
+                결제정보
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style ={{
+                marginRight: 10
+              }}>
+              <Text style={{fontSize: 18, marginTop: 31}}
+                    {...this.orderHistoryPanResponder.panHandlers}
+              >
+                주문내역
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style ={{
@@ -803,16 +822,9 @@ class Home extends Component {
               <Text style={{
                 fontSize: 18,
                 marginTop: 31
-              }}>주문내역</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style ={{
-                marginRight: 10
               }}>
-              <Text style={{
-                fontSize: 18,
-                marginTop: 31
-              }}>고객센터</Text>
+                고객센터
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style ={{
@@ -823,7 +835,8 @@ class Home extends Component {
                 style={{fontSize: 18, marginTop: 31}}
                 {...this.settingsPanResponder.panHandlers}
               >
-                설정</Text>
+                설정
+              </Text>
             </TouchableOpacity>
           </View>
           {this.renderSwitchBtn()}
