@@ -1,11 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import {
   Dimensions,
+  Image,
   ListView,
   View,
   Text,
   TouchableOpacity
 } from 'react-native';
+
+import picFood from './../../../../assets/category/food.jpg';
+import picConvenienceStore from './../../../../assets/category/convenienceStore.jpg';
+import picGroceries from './../../../../assets/category/groceries.jpg';
+import picDrugStore from './../../../../assets/category/Drugstore.jpg';
+import picCosmetics from './../../../../assets/category/cosmetics.jpg';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -16,8 +23,12 @@ export default class FindBrandV2 extends Component {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       verticalListViewDataSource: ds.cloneWithRows([
-        ['편의점', '음식점'],
-        ['수퍼', '약국']
+        ['음식 배달시키기', picFood],
+        ['편의점에서 배달시키기', picConvenienceStore],
+        ['수퍼에서 배달시키기', picGroceries],
+        ['약 배달시키기', picDrugStore],
+        ['화장품 배달시키기', picCosmetics],
+        ['기타', '']
       ])
     };
   }
@@ -36,57 +47,49 @@ export default class FindBrandV2 extends Component {
     );
   }
 
-  renderVerticalRow(data, index) {
-    let arr = [];
-    data.map((name, i) => {
-      arr.push(this.renderHorizontalListView(name, i, index));
-    });
+  renderVerticalRow(rowData, rowID) {
     return (
       <View style={{
-        height: 174,
-        marginTop: 40,
+        height: 140,
+        width: WIDTH,
+        marginTop: 0,
+        marginBottom: 1,
         backgroundColor: 'white',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
       }}>
-        {arr}
+        <Image
+          style={{
+            height: 140,
+            width: WIDTH,
+            opacity: 0.5,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+          source={rowData[1]}
+          resizeMode={Image.resizeMode.cover}
+        />
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            height: 140,
+            width: WIDTH,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+          onPress={() => this.props.handleBrandBtn(rowData, rowID)}
+        >
+          <Text style={{
+            backgroundColor: 'transparent',
+            fontSize: 26,
+            fontWeight: '600',
+            color: 'black'
+          }}>{rowData[0]}</Text>
+        </TouchableOpacity>
       </View>
-    );
-  }
-
-  renderHorizontalListView(rowData, i, index) {
-    return (
-      <TouchableOpacity
-        key={i}
-        style={{
-          height: 150,
-          width: WIDTH * 0.3,
-          backgroundColor: 'white',
-          borderRadius: 2,
-          margin: 20,
-          marginBottom: 14,
-          shadowOffset: {height: 3, width: 3},
-          shadowOpacity: 0.3,
-          shadowRadius: 5,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-        onPress={() => this.props.handleBrandBtn(rowData, index)}
-      >
-        {
-          /* eslint-disable no-constant-condition */
-          false ? <View style={{
-            width: 55,
-            height: 55,
-            backgroundColor: '#eeeff3',
-            marginTop: 5,
-            marginBottom: 20
-          }} /> : null
-          /* eslint-enable no-constant-condition */
-        }
-        <Text>{rowData}</Text>
-      </TouchableOpacity>
     );
   }
 
