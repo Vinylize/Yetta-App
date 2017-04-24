@@ -37,7 +37,7 @@ export default class FindStore extends PureComponent {
     this.getStoreListFromServer();
   }
   renderVerticalRow(rowData) {
-    const { addr, n, distance } = rowData;
+    const { addr, n, formattedDistance } = rowData;
     return (
       <TouchableOpacity
         style={{
@@ -65,7 +65,7 @@ export default class FindStore extends PureComponent {
           <Text style={{
             fontSize: 10
           }}>
-            {Math.floor(distance)} m
+            {formattedDistance}
           </Text>
         </View>
         <Text style={{
@@ -93,7 +93,7 @@ export default class FindStore extends PureComponent {
         node (lat: ${latitude}, lon: ${longitude}, radius: 432532434234, c1: 0, c2: 0) {
           n,
           addr,
-          distance
+          formattedDistance
         }
       }
     }`);

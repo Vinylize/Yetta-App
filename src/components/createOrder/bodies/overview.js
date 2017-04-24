@@ -43,18 +43,30 @@ export default class RegisterOrder extends Component {
         };
         client.mutate(`{
           userCreateOrder(input:{
-            items:
-            [
-              {nodeId:"dsdsa",itemId:"0",amount:1},
-              {nodeId:"dsdsa",itemId:"0",amount:1},
-              {nodeId:"dsdsa",itemId:"0",amount:1}
-            ],
-            dCategory:0,
-            rCategory:0,
-            currency:"KRW"}) {
-              result
-              clientMutationId
-            }
+            regItems:[
+              {
+                iId:"4334423",
+                n:"바나나킥3",
+                p:2300,
+                cnt:1}],
+            customItems:[
+              {
+                manu:"농심",
+                n:"바나나 우유3",
+                cnt:2}],
+            nId: "dsdssdds",
+            dest:{
+              n1:"서울시 강동구 길동 한신휴플러스",
+              n2:"910호",
+              lat:12.3232,
+              lon:23.3232
+            },
+            dC:0,
+            rC:0,
+            curr:"KRW"
+          }) {
+            result
+          }
         }`)
           .then(res => res.userCreateOrder.result)
           .then(this.addNewRunnerListener.bind(this))
