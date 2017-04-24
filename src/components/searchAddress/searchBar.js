@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   ListView
 } from 'react-native';
-import {APIKEY} from '../../utils';
+import { APIKEY } from './../../utils';
+import * as GOOGLE_MAPS_API from './../../service/GoogleMapsAPI';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -25,9 +26,9 @@ export default class SearchBar extends Component {
   }
 
   renderRow(rowData) {
-    console.log(rowData);
     let arr = [];
-    rowData.map((term, i) => {
+    const { terms } = rowData;
+    terms && terms.map((term, i) => {
       if (i > 0) {
         arr.push(
           <Text
@@ -43,6 +44,16 @@ export default class SearchBar extends Component {
         );
       }
     });
+
+    let textHead;
+    if (rowData.first) {
+      textHead = rowData.first;
+    } else if (rowData.last) {
+      textHead = rowData.last;
+    } else if (terms) {
+      textHead = terms[0].value;
+    }
+
     return (
       <TouchableOpacity
         style={{
@@ -55,7 +66,24 @@ export default class SearchBar extends Component {
         }}
         onPress={() => {
           this.setState({onFocused: false});
-          this.props.handleAddressBtn(rowData[0].value, rowData.slice(1).map(e => e.value + ' '));
+          if (terms) {
+            // when predicted address clicked
+
+            this.props.setBusyWaitingPlaceDetailAPI(true);
+
+            // search the predicted address in detail
+            GOOGLE_MAPS_API.placeDetails(rowData.place_id)
+              .then((res) => {
+                this.props.setBusyWaitingPlaceDetailAPI(false);
+
+                // res: coordinate of predicted place
+                // keys: lat, lon
+                this.props.handleAddressBtn(terms[0].value, terms.slice(1).map(e => e.value + ' '), res);
+              });
+          } else {
+            // when 현재 내 위치/핀으로 찾기 clicked
+            this.props.handleAddressBtn('현재 내 위치', []);
+          }
         }}
       >
         <Text
@@ -64,7 +92,7 @@ export default class SearchBar extends Component {
           }}
           numberOfLines={1}
         >
-          {rowData[0].value}
+          {textHead}
         </Text>
         {(arr.length === 0) ? null :
           <View style={{
@@ -98,7 +126,7 @@ export default class SearchBar extends Component {
       text: text
     });
     const arr = [];
-    arr.push([{value: '내 위치'}]);
+    arr.push({first: '내 위치'});
     fetch(AUTOCOMPLETEURL, {method: 'GET'})
       .then(response => response.json())
       .then(rjson => {
@@ -110,9 +138,9 @@ export default class SearchBar extends Component {
       })
       .then(predictions => {
         predictions.map(place => {
-          arr.push(place.terms);
+          arr.push(place);
         });
-        arr.push([{value: '핀으로 찾기'}]);
+        arr.push({last: '핀으로 찾기'});
         this.setState({listViewDataSource: this.state.listViewDataSource.cloneWithRows(arr)});
       })
       .catch(console.log);
@@ -217,5 +245,6 @@ export default class SearchBar extends Component {
 SearchBar.propTypes = {
   latitude: PropTypes.any,
   longitude: PropTypes.any,
-  handleAddressBtn: PropTypes.func.isRequired
+  handleAddressBtn: PropTypes.func.isRequired,
+  setBusyWaitingPlaceDetailAPI: PropTypes.func.isRequired
 };
