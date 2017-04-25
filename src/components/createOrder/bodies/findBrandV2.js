@@ -23,11 +23,11 @@ export default class FindBrandV2 extends Component {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       verticalListViewDataSource: ds.cloneWithRows([
-        ['음식 배달시키기', picFood],
-        ['편의점에서 배달시키기', picConvenienceStore],
-        ['수퍼에서 배달시키기', picGroceries],
-        ['약 배달시키기', picDrugStore],
-        ['화장품 배달시키기', picCosmetics],
+        ['음식 배달', picFood],
+        ['편의점에서 배달', picConvenienceStore],
+        ['수퍼에서 배달', picGroceries],
+        ['약 배달', picDrugStore],
+        ['화장품 배달', picCosmetics],
         ['기타', '']
       ])
     };
@@ -52,8 +52,8 @@ export default class FindBrandV2 extends Component {
         height: 140,
         width: WIDTH,
         marginTop: 0,
-        marginBottom: 1,
-        backgroundColor: 'white',
+        marginBottom: 3,
+        backgroundColor: 'black',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
@@ -85,7 +85,7 @@ export default class FindBrandV2 extends Component {
             backgroundColor: 'transparent',
             fontSize: 26,
             fontWeight: '600',
-            color: 'black'
+            color: 'white'
           }}>{rowData[0]}</Text>
         </TouchableOpacity>
       </View>
@@ -97,7 +97,7 @@ export default class FindBrandV2 extends Component {
       <View style={{
         flex: 1,
         width: WIDTH,
-        backgroundColor: '#ff9700'
+        backgroundColor: 'transparent'
       }}>
         {this.renderVerticalListView()}
       </View>

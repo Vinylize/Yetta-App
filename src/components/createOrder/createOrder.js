@@ -14,7 +14,7 @@ const styles = {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ff9700'
+    backgroundColor: 'white'
   }
 };
 

@@ -1,6 +1,5 @@
 import React, { PureComponent, PropTypes } from 'react';
 import {
-  Dimensions,
   Platform,
   Text,
   View
@@ -23,14 +22,12 @@ const styles = {
   }
 };
 
-const WIDTH = Dimensions.get('window').width;
-
 const BlurView = ({children, ...rest}) => Platform.select({
   ios: <RNBlur.BlurView {...rest}>{children}</RNBlur.BlurView>,
   android: <View style={[rest.style, {backgroundColor: '#f9f9f9', opacity: 0.8}]}>{children}</View>
 });
 
-export default class GlobalLoading extends PureComponent {
+export default class WholeScreenLoading extends PureComponent {
   render() {
     if (Platform.OS === 'ios' && this.props.show === false) {
       return null;
@@ -41,13 +38,15 @@ export default class GlobalLoading extends PureComponent {
       ]}>
         <BlurView
           style={{
-            width: 200,
-            height: 200,
-            borderRadius: 20
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0
           }}
           viewRef={this.props.refViewForBlurView}
-          blurType="light"
-          blurAmount={10}
+          blurType="dark"
+          blurAmount={6}
         >
           <Animation
             onLayout={() => {
@@ -58,13 +57,12 @@ export default class GlobalLoading extends PureComponent {
               this.lottieAnimation = animation;
             }}
             style={{
-              width: 150,
-              height: 150,
-              left: (Platform.OS === 'ios') ? WIDTH / 30 : WIDTH / 18,
-              backgroundColor: 'transparent'
+              width: 200,
+              height: 160,
+              top: 100
             }}
             speed={1}
-            source={require('./../../../assets/lottie/loading-2.json')}
+            source={require('./../../../assets/lottie/darkPreloader.json')}
             loop
           />
           <Text style={{
@@ -82,7 +80,7 @@ export default class GlobalLoading extends PureComponent {
   }
 }
 
-GlobalLoading.propTypes = {
+WholeScreenLoading.propTypes = {
   show: PropTypes.bool.isRequired,
   refViewForBlurView: PropTypes.any,
   msg: PropTypes.string
