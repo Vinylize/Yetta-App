@@ -25,8 +25,6 @@ import {
   phoneVerificationNavigatorRoute
 } from './../navigator/navigatorRoutes';
 
-let iOSFCMManager = NativeModules.YettaFCMManager;
-
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
 
@@ -135,6 +133,10 @@ class Login extends Component {
   // }
 
   getFCMToken() {
+    // this is for readability
+    const iOSFCMManager = NativeModules.YettaFCMManager;
+    const AndroidFCMManager = NativeModules.YettaFCMManager;
+
     if (Platform.OS === 'ios') {
       iOSFCMManager.getToken((error, events) => {
         if (error) {
@@ -145,6 +147,16 @@ class Login extends Component {
           this.userUpdateDeviceToken(events[0]);
         }
       });
+    } else if (Platform.OS === 'android') {
+      AndroidFCMManager.getToken(
+        (msg) => {
+          console.log(msg);
+        },
+        (FCMToken) => {
+          console.log(FCMToken);
+          this.userUpdateDeviceToken(FCMToken);
+        }
+      );
     }
   }
 
