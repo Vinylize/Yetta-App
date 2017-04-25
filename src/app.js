@@ -41,14 +41,11 @@ export default class Yetta extends Component {
   }
 
   receivedRemoteNotification(notification) {
+    console.log(notification);
     console.log(notification.getMessage());
+    console.log(notification.getData());
     AlertIOS.alert(
-      notification.getMessage().title,
-      notification.getMessage().body,
-      [{
-        text: 'Dismiss',
-        onPress: null
-      }]
+      notification.getMessage()
     );
     notification.finish(PushNotificationIOS.FetchResult.NewData);
   }

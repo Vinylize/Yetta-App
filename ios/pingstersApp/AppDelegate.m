@@ -56,7 +56,7 @@
   }
 
 #ifdef DEBUG
-  jsCodeLocation = [NSURL URLWithString:@"http://localhost:8082/index.ios.bundle?platform=ios&dev=true"];
+  jsCodeLocation = [NSURL URLWithString:@"http://192.168.0.7:8082/index.ios.bundle?platform=ios&dev=true"];
 #else
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
 #endif
@@ -74,10 +74,10 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   
-  [FIRApp configure];
-  [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
-
   [YettaFCM requestPermissions];
+  [FIRApp configure];
+  
+  [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
   
   [self addLocationServiceObservers];
   
@@ -207,7 +207,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
   NSString *refreshedToken = [[FIRInstanceID instanceID] token];
   NSLog(@"InstanceID token in requesting permission: %@", refreshedToken);
   // With swizzling disabled you must set the APNs token here.
-  // [[FIRInstanceID instanceID] setAPNSToken:deviceToken type:FIRInstanceIDAPNSTokenTypeSandbox];
+  [[FIRInstanceID instanceID] setAPNSToken:deviceToken type:FIRInstanceIDAPNSTokenTypeSandbox];
   
   [RCTPushNotificationManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
