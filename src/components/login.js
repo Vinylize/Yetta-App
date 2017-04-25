@@ -138,9 +138,11 @@ class Login extends Component {
     if (Platform.OS === 'ios') {
       iOSFCMManager.getToken((error, events) => {
         if (error) {
+          // todo: handle error or edge cases
           console.log(error);
         } else {
           console.log(events);
+          this.userUpdateDeviceToken(events[0]);
         }
       });
     }
@@ -169,6 +171,20 @@ class Login extends Component {
           return reject(e);
         });
     });
+  }
+
+  userUpdateDeviceToken(token) {
+    client.mutate(`{
+      userUpdateDeviceToken(
+        input:{
+          dt: "${token}"
+        }
+      ) {
+        result
+      }
+    }`)
+      .then(console.log)
+      .catch(console.log);
   }
 
   internalAuth() {
