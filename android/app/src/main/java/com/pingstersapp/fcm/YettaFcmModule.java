@@ -11,10 +11,13 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
@@ -33,7 +36,7 @@ public class YettaFcmModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "YettaFcm";
+        return "YettaFCMManager";
     }
 
     private void sendEvent(String eventName, @Nullable WritableMap params) {
@@ -102,5 +105,16 @@ public class YettaFcmModule extends ReactContextBaseJavaModule {
                 }
             }
         }, intentFilter);
+    }
+
+    @ReactMethod
+    public void getToken(Callback errorCallback, Callback successCallback) {
+        try {
+            String FCMToken = FirebaseInstanceId.getInstance().getToken();
+            Log.d(TAG, "fcm token: " + FCMToken);
+            successCallback.invoke(FCMToken);
+        } catch (Exception e) {
+            errorCallback.invoke(e.getMessage());
+        }
     }
 }
