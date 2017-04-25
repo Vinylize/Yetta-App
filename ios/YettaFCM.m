@@ -53,6 +53,13 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
     | UNAuthorizationOptionSound
     | UNAuthorizationOptionBadge;
     [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:authOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
+      if (granted == true) {
+        NSLog(@"granted");
+      } else {
+        NSLog(@"not granted");
+        // TODO: IMPLEMENT WHAT TO DO WHEN PERMISSION REQUEST DENIED
+      }
+      NSLog(@"%@", error);
     }];
     
     // For iOS 10 data message (sent via FCM)
@@ -90,7 +97,7 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
 + (void)tokenRefreshNotification:(nullable NSNotification *)notification
 {
   NSString *refreshedToken = [[FIRInstanceID instanceID] token];
-  NSLog(@"InstanceID token: %@", refreshedToken);
+  NSLog(@"Refreshed InstanceID token: %@", refreshedToken);
   
   // Connect to FCM since connection may have failed when attempted before having a token.
   [self connectToFcm];
@@ -155,6 +162,12 @@ NSString *const kGCMMessageIDKey = @"gcm.message_id";
 {
   [[FIRMessaging messaging] disconnect];
   NSLog(@"Disconnected from FCM");
+}
+
++ (NSString *)getFCMToken
+{
+  NSString *token = [[FIRInstanceID instanceID] token];
+  return token;
 }
 
 @end

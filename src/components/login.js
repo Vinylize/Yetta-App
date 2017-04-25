@@ -8,7 +8,9 @@ import {
   Keyboard,
   TouchableOpacity,
   Dimensions,
-  Image
+  Image,
+  NativeModules,
+  Platform
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as firebase from 'firebase';
@@ -22,6 +24,8 @@ import {
   homeNavigatorRoute,
   phoneVerificationNavigatorRoute
 } from './../navigator/navigatorRoutes';
+
+let iOSFCMManager = NativeModules.YettaFCMManager;
 
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
@@ -130,6 +134,18 @@ class Login extends Component {
   //   (childSnapshot, prevChildKey) => console.log(childSnapshot.val(), prevChildKey));
   // }
 
+  getFCMToken() {
+    if (Platform.OS === 'ios') {
+      iOSFCMManager.getToken((error, events) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(events);
+        }
+      });
+    }
+  }
+
   queryUser(token) {
     return new Promise((resolve, reject) => {
       client._transport._httpOptions.headers = {
@@ -160,6 +176,7 @@ class Login extends Component {
       .then(this.queryUser.bind(this))
       .then((viewer) => {
         this.hideLoading();
+        this.getFCMToken();
         if (viewer.isPV) {
           this.navigateToHome();
         } else {

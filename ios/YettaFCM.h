@@ -48,6 +48,7 @@ typedef void (^RCTNotificationResponseCallback)();
 // [disconnect_from_fcm]
 + (void)applicationDidEnterBackground:(nullable UIApplication *)application;
 
++ (NSString *)getFCMToken;
 @end
 
 #endif /* YettaFCM_h */
