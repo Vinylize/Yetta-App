@@ -16,6 +16,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.react.ReactActivity;
+import com.airbnb.android.react.lottie.LottiePackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.cmcewen.blurview.BlurViewPackage;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;

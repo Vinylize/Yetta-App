@@ -27,6 +27,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
+        <activity android:name="net.hockeyapp.android.FeedbackActivity" />
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

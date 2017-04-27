@@ -29,6 +29,7 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.1.1)
   - GoogleToolboxForMac/NSData+zlib (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
+  - HockeySDK/AllFeaturesLib (4.1.4)
   - Protobuf (3.2.1)
 
 DEPENDENCIES:
@@ -36,6 +37,7 @@ DEPENDENCIES:
   - Firebase/Messaging
   - GoogleMaps
   - GooglePlaces
+  - HockeySDK/AllFeaturesLib
 
 SPEC CHECKSUMS:
   Firebase: 2b1cdfba1cda8589f32904a697cc753322bff9d8
@@ -46,8 +48,9 @@ SPEC CHECKSUMS:
   GoogleMaps: 104c418d61ab8a05dff06ed0784c25ea9d37da45
   GooglePlaces: bca867d5e9da15384c794b945e4226848bc6e9d9
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
+  HockeySDK: 78a3f8bb9100277b531defc56c970369a3ca267a
   Protobuf: 2ccbaf193f6c65adc67745453ca0c13234c32796
 
-PODFILE CHECKSUM: 52cba6adab57ef1e6f1f1945bad1903d1cc0e2fe
+PODFILE CHECKSUM: dbfc09210bd937e09f7c4eaf6e03e2ad444758fd
 
 COCOAPODS: 1.2.0
