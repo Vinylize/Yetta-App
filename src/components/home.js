@@ -40,6 +40,7 @@ import {
   setBusyWaitingPlaceDetailAPI,
   setBusyWaitingGeocodingAPI
 } from './../actions/busyWaitingActions';
+import { setWaitingNewOrder } from './../actions/runnerStatusActions';
 // [end redux functions]
 
 import UserModeTransition from './globalViews/userModeTransition';
@@ -57,6 +58,7 @@ const client = new Lokka({
 const { YettaLocationServiceManger } = NativeModules;
 const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServiceManger);
 
+// constants
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 const cardWidth = WIDTH * 0.92;
@@ -1330,6 +1332,8 @@ class Home extends Component {
         />
         <RunnerView
           isRunner={this.state.showRunnerView}
+          waitingNewOrder={this.props.waitingNewOrder}
+          setWaitingNewOrder={this.props.setWaitingNewOrder}
         />
       </View>
     );
@@ -1341,7 +1345,8 @@ const mapStateToProps = (state) => {
     user: state.auth.user,
     isRunner: state.userStatus.isRunner,
     busyWaitingPlaceDetailAPI: state.busyWaiting.busyWaitingPlaceDetailAPI,
-    busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI
+    busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI,
+    waitingNewOrder: state.runnerStatus.waitingNewOrder
   };
 };
 
@@ -1351,19 +1356,29 @@ const mapDispatchToProps = (dispatch) => {
     setBusyWaitingPlaceDetailAPI: (busyWaitingPlaceDetailAPI) =>
       dispatch(setBusyWaitingPlaceDetailAPI(busyWaitingPlaceDetailAPI)),
     setBusyWaitingGeocodingAPI: (busyWaitingGeocodingAPI) =>
-      dispatch(setBusyWaitingGeocodingAPI(busyWaitingGeocodingAPI))
+      dispatch(setBusyWaitingGeocodingAPI(busyWaitingGeocodingAPI)),
+    setWaitingNewOrder: (waitingNewOrder) =>
+      dispatch(setWaitingNewOrder(waitingNewOrder))
   };
 };
 
 Home.propTypes = {
   navigator: PropTypes.any,
   user: PropTypes.object,
+
+  // userStatus
   isRunner: PropTypes.bool,
+  setIsRunner: PropTypes.func,
+
+  // busyWaiting
   busyWaitingPlaceDetailAPI: PropTypes.bool,
   busyWaitingGeocodingAPI: PropTypes.bool,
-  setIsRunner: PropTypes.func,
   setBusyWaitingPlaceDetailAPI: PropTypes.func,
-  setBusyWaitingGeocodingAPI: PropTypes.func
+  setBusyWaitingGeocodingAPI: PropTypes.func,
+
+  // runnerStatus
+  waitingNewOrder: PropTypes.bool,
+  setWaitingNewOrder: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

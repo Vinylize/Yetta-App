@@ -30,6 +30,8 @@ const BlurView = ({children, ...rest}) => Platform.select({
   android: <View style={[rest.style, {backgroundColor: '#f9f9f9', opacity: 0.8}]}>{children}</View>
 });
 
+import loadingJSON from './../../../assets/lottie/loading-2.json';
+
 export default class GlobalLoading extends PureComponent {
   render() {
     if (Platform.OS === 'ios' && this.props.show === false) {
@@ -64,7 +66,7 @@ export default class GlobalLoading extends PureComponent {
               backgroundColor: 'transparent'
             }}
             speed={1}
-            source={require('./../../../assets/lottie/loading-2.json')}
+            source={loadingJSON}
             loop
           />
           <Text style={{
