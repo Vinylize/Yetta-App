@@ -30,6 +30,7 @@ import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
 import SearchBar from './searchAddress/searchBar';
 import ApproveCard from './searchAddress/approveCard';
+import RunnerView from './runnerView';
 import { URL } from './../utils';
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
 
@@ -98,7 +99,8 @@ class Home extends Component {
       refViewForBlurView: null,
       userModeSwitchBtnClicked: false,
       cameraWillMoveByPlaceDetailAPI: false,
-      mapCameraPos: {lat: undefined, lon: undefined}
+      mapCameraPos: {lat: undefined, lon: undefined},
+      showRunnerView: false
     };
     this.initialLocationUpdate = false;
   }
@@ -484,7 +486,10 @@ class Home extends Component {
     // todo: this should be done dynamically. Remove.
     setTimeout(() => {
       this.setState(() => {
-        return {userModeSwitchBtnClicked: false};
+        return {
+          userModeSwitchBtnClicked: false,
+          showRunnerView: !this.state.showRunnerView
+        };
       });
     }, 2000);
   }
@@ -745,7 +750,7 @@ class Home extends Component {
           position: 'absolute',
           left: this.state.animMenu,
           top: 0,
-          zIndex: 2,
+          zIndex: 3,
           backgroundColor: 'transparent',
           width: WIDTH,
           height: HEIGHT - ((Platform.OS === 'android') ? 20 : 0),
@@ -889,7 +894,9 @@ class Home extends Component {
           width: 30,
           height: 24,
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
+          zIndex: 2,
+          elevation: 70
         }}
         onPress={() => {
           // this.setState({menuClicked: !menuClicked});
@@ -1287,6 +1294,7 @@ class Home extends Component {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
         {this.renderMenu()}
+        {this.renderMenuButton()}
         <Animated.View
           ref={component => {
             this.refViewContainerWithoutMenu = component;
@@ -1295,7 +1303,6 @@ class Home extends Component {
         >
           {this.renderMap()}
           {this.renderAddBtn()}
-          {this.renderMenuButton()}
           <SearchBar
             latitude={this.state.latitude}
             longitude={this.state.longitude}
@@ -1320,6 +1327,9 @@ class Home extends Component {
           show={this.props.busyWaitingPlaceDetailAPI}
           refViewForBlurView={this.state.refViewForBlurView}
           msg={'위치 찾는중'}
+        />
+        <RunnerView
+          isRunner={this.state.showRunnerView}
         />
       </View>
     );

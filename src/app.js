@@ -2,8 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import {
   DeviceEventEmitter,
   PushNotificationIOS,
-  Platform,
-  AlertIOS
+  Platform
 } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './store';
@@ -30,7 +29,7 @@ export default class Yetta extends Component {
   componentDidMount() {
     const { initialNotification } = this.props;
     if (initialNotification) {
-      AlertIOS.alert(JSON.stringify(initialNotification));
+      // todo:
     }
   }
 
@@ -44,9 +43,6 @@ export default class Yetta extends Component {
     console.log(notification);
     console.log(notification.getMessage());
     console.log(notification.getData());
-    AlertIOS.alert(
-      notification.getMessage()
-    );
     notification.finish(PushNotificationIOS.FetchResult.NewData);
   }
 
