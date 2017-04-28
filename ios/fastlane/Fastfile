@@ -31,6 +31,7 @@ platform :ios do
 
     commit_version_bump(
       message: "Deployed new build #{lane_context[SharedValues::BUILD_NUMBER]}",
+      xcodeproj: ‘./pingstersApp.xcodeproj’
     )
 
   end
