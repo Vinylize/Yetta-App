@@ -195,15 +195,20 @@ export default class RunnerView extends Component {
           backgroundColor="#3d5875">
           {
             () => (
-              <TouchableOpacity style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: 280,
-                height: 280,
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: 280,
+                  height: 280,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+                onPress={() => {
+                  this.props.setOnDelivery(true);
+                }}
+              >
                 <Text style={{
                   fontSize: 30,
                   marginBottom: 10,
@@ -254,7 +259,7 @@ export default class RunnerView extends Component {
   render() {
     return (
       <View style={[styles.container,
-        {top: (this.props.isRunner) ? 0 : HEIGHT}]}>
+        {top: (this.props.isRunner && !this.props.onDelivery) ? 0 : HEIGHT}]}>
         {this.renderHeadText()}
         {this.renderBody()}
         {this.renderBottom()}
@@ -268,5 +273,7 @@ RunnerView.propTypes = {
   isRunner: PropTypes.bool.isRequired,
   waitingNewOrder: PropTypes.bool.isRequired,
   setWaitingNewOrder: PropTypes.func.isRequired,
-  runnerNotification: PropTypes.any.isRequired
+  runnerNotification: PropTypes.any.isRequired,
+  onDelivery: PropTypes.bool.isRequired,
+  setOnDelivery: PropTypes.func.isRequired
 };

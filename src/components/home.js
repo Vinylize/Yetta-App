@@ -40,7 +40,10 @@ import {
   setBusyWaitingPlaceDetailAPI,
   setBusyWaitingGeocodingAPI
 } from './../actions/busyWaitingActions';
-import { setWaitingNewOrder } from './../actions/runnerStatusActions';
+import {
+  setWaitingNewOrder,
+  setOnDelivery
+} from './../actions/runnerStatusActions';
 import { setRunnerNotification } from './../actions/pushNotificationActions';
 // [end redux functions]
 
@@ -1315,6 +1318,8 @@ class Home extends Component {
             handleAddressBtn={this.handleSearchBarAddressBtn.bind(this)}
             setBusyWaitingPlaceDetailAPI={this.props.setBusyWaitingPlaceDetailAPI}
             setSearchBarExpanded={(bool) => this.setState({searchBarExpanded: bool})}
+            onDelivery={this.props.onDelivery}
+            isRunner={this.props.isRunner}
           />
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
@@ -1340,6 +1345,8 @@ class Home extends Component {
           waitingNewOrder={this.props.waitingNewOrder}
           setWaitingNewOrder={this.props.setWaitingNewOrder}
           runnerNotification={this.props.runnerNotification}
+          onDelivery={this.props.onDelivery}
+          setOnDelivery={this.props.setOnDelivery}
         />
       </View>
     );
@@ -1353,6 +1360,7 @@ const mapStateToProps = (state) => {
     busyWaitingPlaceDetailAPI: state.busyWaiting.busyWaitingPlaceDetailAPI,
     busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI,
     waitingNewOrder: state.runnerStatus.waitingNewOrder,
+    onDelivery: state.runnerStatus.onDelivery,
     runnerNotification: state.pushNotification.runnerNotification
   };
 };
@@ -1366,7 +1374,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setBusyWaitingGeocodingAPI(busyWaitingGeocodingAPI)),
     setWaitingNewOrder: (waitingNewOrder) =>
       dispatch(setWaitingNewOrder(waitingNewOrder)),
-    setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner))
+    setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner)),
+    setOnDelivery: (onDelivery) => dispatch(setOnDelivery(onDelivery))
   };
 };
 
@@ -1387,6 +1396,8 @@ Home.propTypes = {
   // runnerStatus
   waitingNewOrder: PropTypes.bool,
   setWaitingNewOrder: PropTypes.func,
+  onDelivery: PropTypes.bool,
+  setOnDelivery: PropTypes.func,
 
   // pushNotification
   runnerNotification: PropTypes.any,

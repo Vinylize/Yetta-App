@@ -6,3 +6,10 @@ export const setWaitingNewOrder = (waitingNewOrder) => {
     waitingNewOrder
   };
 };
+
+export const setOnDelivery = (onDelivery) => {
+  return {
+    type: types.setOnDelivery,
+    onDelivery
+  };
+};

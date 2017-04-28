@@ -8,6 +8,7 @@ export const setBusyWaitingGeocodingAPI = 'SET_BUSY_WAITING_GEOCODING_API';
 
 // runnerStatus
 export const setWaitingNewOrder = 'SET_WAITING_NEW_ORDER';
+export const setOnDelivery = 'SET_ON_DELIEVERY';
 
 // pushNotification
 export const setRunnerNotification = 'SET_RUNNER_NOTIFICATION';
