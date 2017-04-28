@@ -129,6 +129,7 @@ android {
 
 dependencies {
     compile project(':lottie-react-native')
+    compile (project(':react-native-hockeyapp')) { exclude module: 'react-native' }
     compile (project(':react-native-blur')) { exclude module: 'react-native' }
     compile (project(':react-native-linear-gradient')) { exclude module: 'react-native' }
     compile fileTree(include: ['*.jar'], dir: 'libs')

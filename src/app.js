@@ -6,6 +6,7 @@ import {
   AlertIOS
 } from 'react-native';
 import { Provider } from 'react-redux';
+import HockeyApp from 'react-native-hockeyapp';
 import store from './store';
 import AllLayout from './containers/allLayout';
 
@@ -15,6 +16,8 @@ export default class Yetta extends Component {
   }
 
   componentWillMount() {
+    const HOCKEY_APP_ID = 'ec0ff0ab93cd4efb8c92add8c17bb819';
+    HockeyApp.configure(HOCKEY_APP_ID, true);
     if (Platform.OS === 'android') {
       // todo: research how to remove these listeners from DeviceEventEmitter for possible memory leaks
       DeviceEventEmitter.addListener('FCMNotificationReceived', async(data) => {
@@ -28,6 +31,8 @@ export default class Yetta extends Component {
   }
 
   componentDidMount() {
+    HockeyApp.start();
+    HockeyApp.checkForUpdate();
     const { initialNotification } = this.props;
     if (initialNotification) {
       AlertIOS.alert(JSON.stringify(initialNotification));

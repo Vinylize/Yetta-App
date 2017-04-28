@@ -23,6 +23,7 @@
     "react-native": "0.42",
     "react-native-blur": "^3.0.0-alpha",
     "react-native-cli": "^2.0.1",
+    "react-native-hockeyapp": "^0.5.1",
     "react-native-linear-gradient": "^2.0.0",
     "react-redux": "^5.0.1",
     "react-timer-mixin": "^0.13.3",
