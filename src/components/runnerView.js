@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Animation from 'lottie-react-native';
+import BackgroundTimer from 'react-native-background-timer';
 
 // const Lokka = require('lokka').Lokka;
 // const Transport = require('lokka-transport-http').Transport;
@@ -44,16 +45,45 @@ export default class RunnerView extends Component {
   constructor() {
     super();
     this.state = {
-      fill: 100
+      fill: 100,
+      receivedNewOrder: false
     };
+    this.startCount = this.startCount.bind(this);
   }
 
   componentWillUpdate() {
     LayoutAnimation.easeInEaseOut();
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { runnerNotification } = nextProps;
+    console.log('asdfsdf');
+    console.log(runnerNotification);
+    if (this.state.receivedNewOrder === false) {
+      if (runnerNotification && runnerNotification.length > 0) {
+        this.setState({
+          receivedNewOrder: true,
+          fill: 0
+        });
+        this.startCount();
+      }
+    }
+  }
+
+  startCount() {
+    const maxTimeout = 3000;
+    const interval = 200;
+    this.intervalId = BackgroundTimer.setInterval(() => {
+      this.setState({fill: this.state.fill + maxTimeout / interval});
+      if (this.state.fill === 0) {
+        BackgroundTimer.clearTimeout(this.intervalId);
+      }
+    }, interval);
+  }
+
   handleStartRunnerBtn() {
     this.props.setWaitingNewOrder(!this.props.waitingNewOrder);
+    this.setState({receivedNewOrder: false});
   }
 
   renderHeadText() {
@@ -72,6 +102,9 @@ export default class RunnerView extends Component {
 
   renderBody() {
     if (this.props.waitingNewOrder === true) {
+      if (this.state.receivedNewOrder === true) {
+        return this.renderBodyFoundNewOrder();
+      }
       return this.renderBodyWaitingNewOrder();
     }
     return this.renderBodyDefault();
@@ -131,7 +164,7 @@ export default class RunnerView extends Component {
           tintColor="#00e0ff"
           backgroundColor="#3d5875">
           {
-            (fill) => (
+            () => (
               <Text style={{}}>
                 {this.state.fill}
               </Text>
@@ -187,5 +220,6 @@ RunnerView.propTypes = {
   navigator: PropTypes.any,
   isRunner: PropTypes.bool.isRequired,
   waitingNewOrder: PropTypes.bool.isRequired,
-  setWaitingNewOrder: PropTypes.func.isRequired
+  setWaitingNewOrder: PropTypes.func.isRequired,
+  runnerNotification: PropTypes.any.isRequired
 };

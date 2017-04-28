@@ -18,6 +18,8 @@ import * as firebase from 'firebase';
 import GlobalLoading from './globalViews/loading';
 
 import { setUser } from '../actions/authActions';
+import { setRunnerNotification } from './../actions/pushNotificationActions';
+
 import { URL, handleFirebaseSignInError } from './../utils';
 import {
   registerNavigatorRoute,
@@ -313,15 +315,22 @@ class Login extends Component {
 
 Login.propTypes = {
   navigator: PropTypes.any,
-  setUser: PropTypes.func
+  setUser: PropTypes.func,
+  runnerNotification: PropTypes.any,
+  setRunnerNotification: PropTypes.func
 };
+
+function mapStateToProps(state) {
+  return {
+    runnerNotification: state.pushNotification.runnerNotification
+  };
+}
 
 let mapDispatchToProps = (dispatch) => {
   return {
-    setUser: (user) => dispatch(setUser(user))
+    setUser: (user) => dispatch(setUser(user)),
+    setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner))
   };
 };
 
-export default connect(undefined, mapDispatchToProps)(Login);
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

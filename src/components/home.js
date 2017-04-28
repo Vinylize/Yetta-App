@@ -41,6 +41,7 @@ import {
   setBusyWaitingGeocodingAPI
 } from './../actions/busyWaitingActions';
 import { setWaitingNewOrder } from './../actions/runnerStatusActions';
+import { setRunnerNotification } from './../actions/pushNotificationActions';
 // [end redux functions]
 
 import UserModeTransition from './globalViews/userModeTransition';
@@ -102,7 +103,8 @@ class Home extends Component {
       userModeSwitchBtnClicked: false,
       cameraWillMoveByPlaceDetailAPI: false,
       mapCameraPos: {lat: undefined, lon: undefined},
-      showRunnerView: false
+      showRunnerView: false,
+      searchBarExpanded: false
     };
     this.initialLocationUpdate = false;
   }
@@ -889,10 +891,10 @@ class Home extends Component {
     return (
       <TouchableOpacity
         style={{
+          backgroundColor: 'transparent',
           position: 'absolute',
           left: 20,
-          top: 46,
-          backgroundColor: 'transparent',
+          top: (this.state.searchBarExpanded) ? -50 : 46,
           width: 30,
           height: 24,
           justifyContent: 'center',
@@ -902,7 +904,9 @@ class Home extends Component {
         }}
         onPress={() => {
           // this.setState({menuClicked: !menuClicked});
-          this.animateMenuAppear(-WIDTH * 0.8);
+          if (this.state.searchBarExpanded === false) {
+            this.animateMenuAppear(-WIDTH * 0.8);
+          }
         }}
       >
        <Text style={{fontSize: 11}}>Menu</Text>
@@ -1310,6 +1314,7 @@ class Home extends Component {
             longitude={this.state.longitude}
             handleAddressBtn={this.handleSearchBarAddressBtn.bind(this)}
             setBusyWaitingPlaceDetailAPI={this.props.setBusyWaitingPlaceDetailAPI}
+            setSearchBarExpanded={(bool) => this.setState({searchBarExpanded: bool})}
           />
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
@@ -1334,6 +1339,7 @@ class Home extends Component {
           isRunner={this.state.showRunnerView}
           waitingNewOrder={this.props.waitingNewOrder}
           setWaitingNewOrder={this.props.setWaitingNewOrder}
+          runnerNotification={this.props.runnerNotification}
         />
       </View>
     );
@@ -1346,7 +1352,8 @@ const mapStateToProps = (state) => {
     isRunner: state.userStatus.isRunner,
     busyWaitingPlaceDetailAPI: state.busyWaiting.busyWaitingPlaceDetailAPI,
     busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI,
-    waitingNewOrder: state.runnerStatus.waitingNewOrder
+    waitingNewOrder: state.runnerStatus.waitingNewOrder,
+    runnerNotification: state.pushNotification.runnerNotification
   };
 };
 
@@ -1358,7 +1365,8 @@ const mapDispatchToProps = (dispatch) => {
     setBusyWaitingGeocodingAPI: (busyWaitingGeocodingAPI) =>
       dispatch(setBusyWaitingGeocodingAPI(busyWaitingGeocodingAPI)),
     setWaitingNewOrder: (waitingNewOrder) =>
-      dispatch(setWaitingNewOrder(waitingNewOrder))
+      dispatch(setWaitingNewOrder(waitingNewOrder)),
+    setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner))
   };
 };
 
@@ -1378,7 +1386,11 @@ Home.propTypes = {
 
   // runnerStatus
   waitingNewOrder: PropTypes.bool,
-  setWaitingNewOrder: PropTypes.func
+  setWaitingNewOrder: PropTypes.func,
+
+  // pushNotification
+  runnerNotification: PropTypes.any,
+  setRunnerNotification: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
