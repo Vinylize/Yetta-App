@@ -46,7 +46,8 @@ export default class RunnerView extends Component {
     super();
     this.state = {
       fill: 100,
-      receivedNewOrder: false
+      receivedNewOrder: false,
+      lastOrderId: undefined
     };
     this.startCount = this.startCount.bind(this);
   }
@@ -61,29 +62,40 @@ export default class RunnerView extends Component {
     console.log(runnerNotification);
     if (this.state.receivedNewOrder === false) {
       if (runnerNotification && runnerNotification.length > 0) {
-        this.setState({
-          receivedNewOrder: true,
-          fill: 0
-        });
-        this.startCount();
+        const { data } = runnerNotification[runnerNotification.length - 1].data;
+        // if newly received notification's data id is different from the previous one
+        if (data && data !== this.state.lastOrderId) {
+          console.log('dat', data);
+          this.setState({
+            receivedNewOrder: true,
+            lastOrderId: data
+          });
+          this.startCount();
+        }
       }
     }
   }
 
   startCount() {
-    const maxTimeout = 3000;
+    const startedTime = Date.now();
+    const maxTimeoutFactor = 10;
     const interval = 200;
+    BackgroundTimer.clearTimeout(this.intervalId);
     this.intervalId = BackgroundTimer.setInterval(() => {
-      this.setState({fill: this.state.fill + maxTimeout / interval});
-      if (this.state.fill === 0) {
+      const timeDiff = Date.now() - startedTime;
+      this.setState({fill: timeDiff * maxTimeoutFactor / 1000});
+      console.log(timeDiff);
+      if (this.state.fill <= 0) {
         BackgroundTimer.clearTimeout(this.intervalId);
       }
     }, interval);
   }
 
   handleStartRunnerBtn() {
-    this.props.setWaitingNewOrder(!this.props.waitingNewOrder);
     this.setState({receivedNewOrder: false});
+    BackgroundTimer.clearTimeout(this.intervalId);
+    console.log(this.state.receivedNewOrder, this.props.waitingNewOrder);
+    this.props.setWaitingNewOrder(!this.props.waitingNewOrder);
   }
 
   renderHeadText() {
