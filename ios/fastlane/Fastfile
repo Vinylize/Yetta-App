@@ -1,0 +1,51 @@
+fastlane_version "2.28.5"
+
+default_platform :ios
+
+platform :ios do
+  before_all do
+    sh "cd ../.. && react-native bundle --dev false --platform ios --entry-file ./index.ios.js --bundle-output ./ios/main.jsbundle"
+    cocoapods
+  end
+
+  lane :test do
+    gym(
+          scheme: "pingstersApp",
+          export_method: "ad-hoc"
+        )
+  end
+
+  lane :beta do
+    desc "delpoy alpha"
+
+    increment_build_number
+
+    gym(
+      scheme: "pingstersApp",
+      export_method: "ad-hoc"
+    )
+
+    hockey(
+        api_token: "ddb1d989ca3d48abb5d88d476147ef5c"
+    )
+
+    commit_version_bump(
+      message: "Deployed new build #{lane_context[SharedValues::BUILD_NUMBER]}",
+    )
+
+  end
+
+  after_all do |lane|
+    slack(
+       slack_url: "https://hooks.slack.com/services/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"
+    )
+  end
+
+  error do |lane, exception|
+    slack(
+      slack_url: "https://hooks.slack.com/services/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",
+      message: exception.message,
+      success: false
+    )
+  end
+end
