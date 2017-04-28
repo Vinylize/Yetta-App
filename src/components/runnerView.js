@@ -83,10 +83,13 @@ export default class RunnerView extends Component {
     BackgroundTimer.clearTimeout(this.intervalId);
     this.intervalId = BackgroundTimer.setInterval(() => {
       const timeDiff = Date.now() - startedTime;
-      this.setState({fill: timeDiff * maxTimeoutFactor / 1000});
+      this.setState({fill: 100 - timeDiff * maxTimeoutFactor / 1000});
       console.log(timeDiff);
       if (this.state.fill <= 0) {
+        // when timeout
         BackgroundTimer.clearTimeout(this.intervalId);
+        this.setState({receivedNewOrder: false});
+        this.props.setWaitingNewOrder(true);
       }
     }, interval);
   }
@@ -94,7 +97,6 @@ export default class RunnerView extends Component {
   handleStartRunnerBtn() {
     this.setState({receivedNewOrder: false});
     BackgroundTimer.clearTimeout(this.intervalId);
-    console.log(this.state.receivedNewOrder, this.props.waitingNewOrder);
     this.props.setWaitingNewOrder(!this.props.waitingNewOrder);
   }
 
@@ -166,6 +168,22 @@ export default class RunnerView extends Component {
   }
 
   renderBodyFoundNewOrder() {
+    let lastNotif = '';
+    let title = '';
+    let body = '';
+    if (this.props.runnerNotification) {
+      lastNotif = this.props.runnerNotification[this.props.runnerNotification.length - 1];
+      const { message } = lastNotif;
+      if (message) {
+        title = message.title;
+        body = message.body;
+      }
+    }
+
+    let remainingTime = Math.floor(10 - (100 - this.state.fill) / 10);
+    if (remainingTime < 0) {
+      remainingTime = 0;
+    }
     return (
       <View style={{flex: 1.5, backgroundColor: 'transparent'}}>
         <AnimatedCircularProgress
@@ -177,9 +195,26 @@ export default class RunnerView extends Component {
           backgroundColor="#3d5875">
           {
             () => (
-              <Text style={{}}>
-                {this.state.fill}
-              </Text>
+              <TouchableOpacity style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: 280,
+                height: 280,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <Text style={{
+                  fontSize: 30,
+                  marginBottom: 10,
+                  color: 'black',
+                  fontWeight: '600'
+                }}>{title}</Text>
+                <Text>{body}</Text>
+                <Text style={{marginTop: 20}}>
+                  {remainingTime}초 남았어요!
+                </Text>
+              </TouchableOpacity>
             )
           }
         </AnimatedCircularProgress>
