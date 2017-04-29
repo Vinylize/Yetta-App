@@ -2,9 +2,12 @@ package com.pingstersapp;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
-import com.airbnb.android.react.lottie.LottiePackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.cmcewen.blurview.BlurViewPackage;
+import com.slowpath.hockeyapp.RNHockeyAppPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.cmcewen.blurview.BlurViewPackage;
+import com.airbnb.android.react.lottie.LottiePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -30,14 +33,14 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new LottiePackage(),
+            new RNHockeyAppPackage(MainApplication.this),
+            new MainReactPackage(),
             new LinearGradientPackage(),
             new BlurViewPackage(),
-          new YettaFcmPackage(),
-          new YettaLocationPackage(),
-          new VinylMapPackage(),
-          new LinearGradientPackage()
+            new LottiePackage(),
+            new YettaFcmPackage(),
+            new YettaLocationPackage(),
+            new VinylMapPackage()
       );
     }
   };
