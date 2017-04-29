@@ -1,3 +1,4 @@
+platform :ios, '8.0'
 source 'https://github.com/CocoaPods/Specs.git'
 project './pingstersApp.xcodeproj'
 target 'pingstersApp' do
@@ -5,4 +6,5 @@ pod 'GoogleMaps'
 pod 'GooglePlaces'
 pod 'Firebase/Core'
 pod 'Firebase/Messaging'
+pod "HockeySDK", :subspecs => ['AllFeaturesLib']
 end
