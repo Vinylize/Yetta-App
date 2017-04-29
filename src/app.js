@@ -16,8 +16,14 @@ export default class Yetta extends Component {
   }
 
   componentWillMount() {
-    const HOCKEY_APP_ID = 'ec0ff0ab93cd4efb8c92add8c17bb819';
-    HockeyApp.configure(HOCKEY_APP_ID, true);
+    const HOCKEY_APP_ID = Platform.OS === 'android' ?
+      'a2b9cda775f044ebb66dd827eb98c03f' :
+      '411aaad8c63f4b3f9fec01711be479c7';
+    /* eslint-disable no-undef */
+    if (!__DEV__) {
+      HockeyApp.configure(HOCKEY_APP_ID, true);
+    }
+    /* eslint-enable no-undef */
     if (Platform.OS === 'android') {
       // todo: research how to remove these listeners from DeviceEventEmitter for possible memory leaks
       DeviceEventEmitter.addListener('FCMNotificationReceived', async(data) => {
@@ -31,8 +37,12 @@ export default class Yetta extends Component {
   }
 
   componentDidMount() {
-    HockeyApp.start();
-    HockeyApp.checkForUpdate();
+    /* eslint-disable no-undef */
+    if (!__DEV__) {
+      HockeyApp.start();
+      HockeyApp.checkForUpdate();
+    }
+    /* eslint-enable no-undef */
     const { initialNotification } = this.props;
     if (initialNotification) {
       AlertIOS.alert(JSON.stringify(initialNotification));

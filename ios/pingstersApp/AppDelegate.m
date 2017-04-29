@@ -42,7 +42,7 @@
   NSURL *jsCodeLocation;
   
   [GMSServices provideAPIKey:@""];
-  
+
   // Create a Mutable Dictionary to hold the appProperties to pass to React Native.
   NSMutableDictionary *appProperties = [NSMutableDictionary dictionary];
   
@@ -58,7 +58,7 @@
 #ifdef DEBUG
   jsCodeLocation = [NSURL URLWithString:@"http://127.0.0.1:8081/index.ios.bundle?platform=ios&dev=true"];
 #else
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+  jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
