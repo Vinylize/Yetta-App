@@ -3,16 +3,9 @@ import {
   View,
   Dimensions,
   Text,
-  TouchableOpacity,
-  LayoutAnimation,
-  Platform,
-  UIManager
+  TouchableOpacity
 } from 'react-native';
-import BackgroundTimer from 'react-native-background-timer';
 
-import loadingJSON from '../../../assets/lottie/loading-2.json';
-
-const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 const viewHeight = 150;
 

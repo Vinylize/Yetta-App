@@ -215,12 +215,17 @@ export default class RunnerView extends Component {
                 }}
               >
                 <Text style={{
-                  fontSize: 30,
+                  fontSize: 27,
                   marginBottom: 10,
                   color: 'black',
                   fontWeight: '600'
                 }}>{title}</Text>
-                <Text>{body}</Text>
+                <Text style={{
+                  fontSize: 10,
+                  marginLeft: 20,
+                  marginRight: 20,
+                  textAlign: 'center'
+                }}>{body}</Text>
                 <Text style={{marginTop: 20}}>
                   {remainingTime}초 남았어요!
                 </Text>

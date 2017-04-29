@@ -23,11 +23,11 @@ export default class FindBrandV2 extends Component {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       verticalListViewDataSource: ds.cloneWithRows([
-        ['음식 배달', picFood],
-        ['편의점에서 배달', picConvenienceStore],
-        ['수퍼에서 배달', picGroceries],
-        ['약 배달', picDrugStore],
-        ['화장품 배달', picCosmetics],
+        ['음식', picFood],
+        ['편의점', picConvenienceStore],
+        ['수퍼', picGroceries],
+        ['약', picDrugStore],
+        ['화장품', picCosmetics],
         ['기타', '']
       ])
     };
