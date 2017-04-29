@@ -110,7 +110,7 @@ export default class FindStore extends PureComponent {
 
   setStoreListFromServer(res) {
     const { node } = res.viewer;
-    Alert.alert('query success', String(node.length));
+    // Alert.alert('query success', String(node.length));
     this.props.setNode(node);
   }
 

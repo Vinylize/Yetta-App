@@ -19,7 +19,7 @@ import BackgroundTimer from 'react-native-background-timer';
 //   transport: new Transport(URL)
 // });
 
-import loadingJSON from './../../assets/lottie/loading-2.json';
+import loadingJSON from '../../../assets/lottie/loading-2.json';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -173,10 +173,14 @@ export default class RunnerView extends Component {
     let body = '';
     if (this.props.runnerNotification) {
       lastNotif = this.props.runnerNotification[this.props.runnerNotification.length - 1];
-      const { message } = lastNotif;
-      if (message) {
-        title = message.title;
-        body = message.body;
+      if (lastNotif) {
+        const { message } = lastNotif;
+        if (message) {
+          title = message.title;
+          body = message.body;
+        }
+      } else {
+        return this.renderBodyWaitingNewOrder();
       }
     }
 
@@ -206,6 +210,7 @@ export default class RunnerView extends Component {
                   alignItems: 'center'
                 }}
                 onPress={() => {
+                  this.props.setWaitingNewOrder(false);
                   this.props.setOnDelivery(true);
                 }}
               >

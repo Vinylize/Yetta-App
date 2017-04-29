@@ -30,7 +30,8 @@ import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
 import SearchBar from './searchAddress/searchBar';
 import ApproveCard from './searchAddress/approveCard';
-import RunnerView from './runnerView';
+import RunnerView from './runnerView/runnerView';
+import RunnerOnDeliveryView from './runnerView/runnerOnDeliveryView';
 import { URL } from './../utils';
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
 
@@ -1347,6 +1348,15 @@ class Home extends Component {
           runnerNotification={this.props.runnerNotification}
           onDelivery={this.props.onDelivery}
           setOnDelivery={this.props.setOnDelivery}
+        />
+        <RunnerOnDeliveryView
+          isRunner={this.props.isRunner}
+          waitingNewOrder={this.props.waitingNewOrder}
+          setWaitingNewOrder={this.props.setWaitingNewOrder}
+          runnerNotification={this.props.runnerNotification}
+          onDelivery={this.props.onDelivery}
+          setOnDelivery={this.props.setOnDelivery}
+          setRunnerNotification={this.props.setRunnerNotification}
         />
       </View>
     );
