@@ -46,6 +46,14 @@ import {
   setOnDelivery
 } from './../actions/runnerStatusActions';
 import { setRunnerNotification } from './../actions/pushNotificationActions';
+import {
+  setCameraWillMoveByPlaceDetailAPI,
+  setSearchBarExpanded,
+  setMapCameraPos,
+  setShowApproveAddressCard,
+  setSearchedAddressTextView,
+  setCurrentLocation
+} from './../actions/componentsActions/homeActions';
 // [end redux functions]
 
 import UserModeTransition from './globalViews/userModeTransition';
@@ -84,8 +92,6 @@ class Home extends Component {
       // todo: remove unnecessary states
       text: '',
       toggle: false,
-      longitude: undefined,
-      latitude: undefined,
       menuClicked: false,
       shrinkValue: new Animated.Value(1),
       markerTest: false,
@@ -100,15 +106,10 @@ class Home extends Component {
       busyOnCardMoveY: false,
       busyOnWaitingNewRunner: false,
       processState: 2,
-      showApproveAddressCard: false,
-      searchedAddressTextView: [],
       trackingCurrentPos: false,
       refViewForBlurView: null,
       userModeSwitchBtnClicked: false,
-      cameraWillMoveByPlaceDetailAPI: false,
-      mapCameraPos: {lat: undefined, lon: undefined},
-      showRunnerView: false,
-      searchBarExpanded: false
+      showRunnerView: false
     };
     this.initialLocationUpdate = false;
   }
@@ -167,16 +168,12 @@ class Home extends Component {
       DeviceEventEmitter.addListener('onCameraIdle', (e) => {
         console.log('camera position idle: ', e);
         const { lat, lon } = e;
+        this.props.setMapCameraPos({lat, lon});
 
-        this.setState(() => {
-          return {mapCameraPos: {lat, lon}};
-        });
-        if (this.state.cameraWillMoveByPlaceDetailAPI) {
+        if (this.props.cameraWillMoveByPlaceDetailAPI) {
           // intention: avoid unnecessary geocoding from placeAutocomplete API prediction
-          this.setState(() => {
-            return {cameraWillMoveByPlaceDetailAPI: false};
-          });
-        } else if (this.state.showApproveAddressCard === true) {
+          this.props.setCameraWillMoveByPlaceDetailAPI(false);
+        } else if (this.props.showApproveAddressCard === true) {
           this.props.setBusyWaitingGeocodingAPI(true);
 
           GOOGLE_MAPS_API.geocoding(lat, lon)
@@ -184,10 +181,10 @@ class Home extends Component {
               this.props.setBusyWaitingGeocodingAPI(false);
               // TODO: improve this
               if (arr) {
-                this.setState({searchedAddressTextView: {
+                this.props.setSearchedAddressTextView({
                   firstAddressToken: arr[0].long_name + ' ' + arr[1].long_name,
                   addressTextView: arr.slice(2).map(token => token.long_name + ' ')
-                }});
+                });
               }
             })
             .catch(err => {
@@ -216,10 +213,11 @@ class Home extends Component {
       DeviceEventEmitter.addListener('didUpdateToLocationAndroidForeground', async(data) => {
         console.log('foreground location update: ', data);
         // Alert.alert('foreground location update', JSON.stringify(data));
-        this.setState({
-          latitude: data.latitude,
-          longitude: data.longitude
+        this.props.setCurrentLocation({
+          lat: data.latitude,
+          lon: data.longitude
         });
+
         if (vmm && this.state.trackingCurrentPos) {
           // vmm.animateToLocation(data.latitude, data.longitude);
           vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
@@ -231,10 +229,11 @@ class Home extends Component {
       DeviceEventEmitter.addListener('didUpdateToLocationAndroidBackground', async(data) => {
         console.log('background location update: ', data);
         // Alert.alert('background location update', JSON.stringify(data));
-        this.setState({
-          latitude: data.latitude,
-          longitude: data.longitude
+        this.props.setCurrentLocation({
+          lat: data.latitude,
+          lon: data.longitude
         });
+
         if (vmm && this.state.trackingCurrentPos) {
           vmm.animateToLocation(data.latitude, data.longitude);
         }
@@ -242,7 +241,7 @@ class Home extends Component {
           firebase.auth().currentUser.getToken().then(token => this.userUpdateCoordinateHelper(token, data));
         }
       });
-    } else {
+    } else if (Platform.OS === 'ios') {
       YettaLocationServiceManger.startLocationService();
       this.subscriptionLocationServiceIOS = locationServiceManagerEmitter.addListener(
         'didUpdateToLocation',
@@ -251,12 +250,12 @@ class Home extends Component {
             vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
             this.initialLocationUpdate = true;
           }
-          // AlertIOS.alert('location update in JS', JSON.stringify(data));
-          // console.log(data);
-          this.setState({
-            latitude: data.latitude,
-            longitude: data.longitude
+          console.log(data);
+          this.props.setCurrentLocation({
+            lat: data.latitude,
+            lon: data.longitude
           });
+
           if (vmm && this.state.trackingCurrentPos) {
             vmm.animateToLocation(data.latitude, data.longitude);
           }
@@ -303,11 +302,10 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    const { longitude, latitude } = this.state;
-    console.log(longitude, latitude);
+    const { lat, lon } = this.props.currentLocation;
     if (vmm) {
       if (Platform.OS === 'ios') {
-        vmm.animateToLocationWithZoom(String(longitude), String(latitude), 16.0);
+        vmm.animateToLocationWithZoom(String(lat), String(lon), 16.0);
       }
     }
   }
@@ -514,38 +512,6 @@ class Home extends Component {
     this.props.navigator.push(orderHistoryNavigatorRoute());
   }
 
-  handleSearchBarAddressBtn(firstAddressToken, addressTextView, coordinate) {
-    // todo: change location to searched address
-    if (coordinate) {
-      // user tapped new predicted place.
-
-      // avoiding unnecessary geocoding API use
-      this.setState(() => {
-        return {cameraWillMoveByPlaceDetailAPI: true};
-      });
-
-      const { lat, lng } = coordinate;
-      vmm.animateToLocation(String(lat), String(lng));
-    } else {
-      // user tapped my-location/search-with-pin
-      const { latitude, longitude } = this.state;
-      vmm.animateToLocation(String(latitude), String(longitude));
-    }
-
-    /**
-     * this enables native API that returns coordinate of the map center
-     * todo: implement this in Android
-     */
-    if (Platform.OS === 'ios') {
-      vmm.enableDidChangeCameraPosition();
-    }
-
-    this.setState({
-      showApproveAddressCard: true,
-      searchedAddressTextView: {firstAddressToken, addressTextView}
-    });
-  }
-
   handleCreateOrderDone() {
     this.props.navigator.pop();
     this.animateCardAppear();
@@ -562,15 +528,13 @@ class Home extends Component {
   }
 
   handleSearchedAddressApproveBtn() {
-    const { lat, lon } = this.state.mapCameraPos;
+    const { lat, lon } = this.props.mapCameraPos;
     this.props.navigator.push(createOrderNavigatorRoute(
       this.handleCreateOrderDone.bind(this),
       lat,
       lon
     ));
-    this.setState(() => {
-      return {showApproveAddressCard: false};
-    });
+    this.props.setShowApproveAddressCard(false);
   }
 
   renderMap() {
@@ -604,15 +568,11 @@ class Home extends Component {
             console.log('camera position changed: ', e.nativeEvent);
             const { latitude, longitude } = e.nativeEvent;
 
-            this.setState(() => {
-              return {mapCameraPos: {lat: latitude, lon: longitude}};
-            });
+            this.props.setMapCameraPos({lat: latitude, lon: longitude});
 
-            if (this.state.cameraWillMoveByPlaceDetailAPI) {
-              this.setState(() => {
-                return {cameraWillMoveByPlaceDetailAPI: false};
-              });
-            } else if (this.state.showApproveAddressCard === true) {
+            if (this.props.cameraWillMoveByPlaceDetailAPI) {
+              this.props.setCameraWillMoveByPlaceDetailAPI(false);
+            } else if (this.props.showApproveAddressCard === true) {
               this.props.setBusyWaitingGeocodingAPI(true);
 
               GOOGLE_MAPS_API.geocoding(latitude, longitude)
@@ -620,10 +580,10 @@ class Home extends Component {
                   this.props.setBusyWaitingGeocodingAPI(false);
                   // TODO: improve this
                   if (arr) {
-                    this.setState({searchedAddressTextView: {
+                    this.props.setSearchedAddressTextView({
                       firstAddressToken: arr[0].long_name + ' ' + arr[1].long_name,
                       addressTextView: arr.slice(2).map(token => token.long_name + ' ')
-                    }});
+                    });
                   }
                 })
                 .catch(err => {
@@ -661,7 +621,7 @@ class Home extends Component {
         style={{
           position: 'absolute',
           right: 26,
-          bottom: (this.state.showApproveAddressCard) ? 130 : 80,
+          bottom: (this.props.showApproveAddressCard) ? 130 : 80,
           height: (Platform.OS === 'android' && this.state.trackingCurrentPos) ? 0 : 25,
           width: 25,
           borderRadius: 20,
@@ -673,11 +633,12 @@ class Home extends Component {
         }}
         activeOpacity={1}
         onPress={() => {
-          const { latitude, longitude } = this.state;
+          const { lat, lon } = this.props.currentLocation;
+          console.log(lat, lon);
           if (Platform.OS === 'android') {
-            vmm.animateToLocationWithZoom(latitude, longitude, 16.0);
+            vmm.animateToLocationWithZoom(lat, lon, 16.0);
           } else {
-            vmm.animateToLocation(String(latitude), String(longitude));
+            vmm.animateToLocation(String(lat), String(lon));
           }
           LayoutAnimation.easeInEaseOut();
           this.setState({trackingCurrentPos: true});
@@ -898,7 +859,7 @@ class Home extends Component {
           backgroundColor: 'transparent',
           position: 'absolute',
           left: 20,
-          top: (this.state.searchBarExpanded) ? -50 : 46,
+          top: (this.props.searchBarExpanded) ? -50 : 46,
           width: 30,
           height: 24,
           justifyContent: 'center',
@@ -908,7 +869,7 @@ class Home extends Component {
         }}
         onPress={() => {
           // this.setState({menuClicked: !menuClicked});
-          if (this.state.searchBarExpanded === false) {
+          if (this.props.searchBarExpanded === false) {
             this.animateMenuAppear(-WIDTH * 0.8);
           }
         }}
@@ -1268,14 +1229,6 @@ class Home extends Component {
         onPress={() => {
           this.animateCardAppear();
           this.setState({cardAppeared: true});
-          // const { markerTest, latitude, longitude } = this.state;
-          // if (markerTest) {
-          //  vmm.updateMarker(String(latitude), String(longitude));
-          // } else {
-          //  vmm.updateMarker(String(latitude + 1), String(longitude + 1));
-          //  vmm.addMarker(String(latitude - 0.5), String(longitude), 'testing marker 01');
-          // }
-          // this.setState({markerTest: !markerTest});
         }}
       />
     );
@@ -1313,24 +1266,16 @@ class Home extends Component {
         >
           {this.renderMap()}
           {this.renderAddBtn()}
-          <SearchBar
-            latitude={this.state.latitude}
-            longitude={this.state.longitude}
-            handleAddressBtn={this.handleSearchBarAddressBtn.bind(this)}
-            setBusyWaitingPlaceDetailAPI={this.props.setBusyWaitingPlaceDetailAPI}
-            setSearchBarExpanded={(bool) => this.setState({searchBarExpanded: bool})}
-            onDelivery={this.props.onDelivery}
-            isRunner={this.props.isRunner}
-          />
+          <SearchBar/>
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
           <ApproveCard
-            showApproveAddressCard = {this.state.showApproveAddressCard}
-            address={this.state.searchedAddressTextView}
+            showApproveAddressCard = {this.props.showApproveAddressCard}
+            address={this.props.searchedAddressTextView}
             handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
             busyWaitingGeocodingAPI={this.props.busyWaitingGeocodingAPI}
           />
-          {this.state.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
+          {this.props.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>
         <UserModeTransition
           show={this.state.userModeSwitchBtnClicked}
@@ -1371,21 +1316,31 @@ const mapStateToProps = (state) => {
     busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI,
     waitingNewOrder: state.runnerStatus.waitingNewOrder,
     onDelivery: state.runnerStatus.onDelivery,
-    runnerNotification: state.pushNotification.runnerNotification
+    runnerNotification: state.pushNotification.runnerNotification,
+    cameraWillMoveByPlaceDetailAPI: state.home.cameraWillMoveByPlaceDetailAPI,
+    searchBarExpanded: state.home.searchBarExpanded,
+    mapCameraPos: state.home.mapCameraPos,
+    showApproveAddressCard: state.home.showApproveAddressCard,
+    searchedAddressTextView: state.home.searchedAddressTextView,
+    currentLocation: state.home.currentLocation
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner)),
-    setBusyWaitingPlaceDetailAPI: (busyWaitingPlaceDetailAPI) =>
-      dispatch(setBusyWaitingPlaceDetailAPI(busyWaitingPlaceDetailAPI)),
-    setBusyWaitingGeocodingAPI: (busyWaitingGeocodingAPI) =>
-      dispatch(setBusyWaitingGeocodingAPI(busyWaitingGeocodingAPI)),
-    setWaitingNewOrder: (waitingNewOrder) =>
-      dispatch(setWaitingNewOrder(waitingNewOrder)),
+    setBusyWaitingPlaceDetailAPI: (busyWaitingPlaceDetailAPI) => dispatch(setBusyWaitingPlaceDetailAPI(busyWaitingPlaceDetailAPI)),
+    setBusyWaitingGeocodingAPI: (busyWaitingGeocodingAPI) => dispatch(setBusyWaitingGeocodingAPI(busyWaitingGeocodingAPI)),
+    setWaitingNewOrder: (waitingNewOrder) => dispatch(setWaitingNewOrder(waitingNewOrder)),
     setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner)),
-    setOnDelivery: (onDelivery) => dispatch(setOnDelivery(onDelivery))
+    setOnDelivery: (onDelivery) => dispatch(setOnDelivery(onDelivery)),
+    setCameraWillMoveByPlaceDetailAPI: (cameraWillMoveByPlaceDetailAPI) =>
+      dispatch(setCameraWillMoveByPlaceDetailAPI(cameraWillMoveByPlaceDetailAPI)),
+    setSearchBarExpanded: (searchBarExpanded) => dispatch(setSearchBarExpanded(searchBarExpanded)),
+    setMapCameraPos: (mapCameraPos) => dispatch(setMapCameraPos(mapCameraPos)),
+    setShowApproveAddressCard: (showApproveAddressCard) => dispatch(setShowApproveAddressCard(showApproveAddressCard)),
+    setSearchedAddressTextView: (searchedAddressTextView) => dispatch(setSearchedAddressTextView(searchedAddressTextView)),
+    setCurrentLocation: (currentLocation) => dispatch(setCurrentLocation(currentLocation))
   };
 };
 
@@ -1411,7 +1366,21 @@ Home.propTypes = {
 
   // pushNotification
   runnerNotification: PropTypes.any,
-  setRunnerNotification: PropTypes.func
+  setRunnerNotification: PropTypes.func,
+
+  // components/home
+  cameraWillMoveByPlaceDetailAPI: PropTypes.bool,
+  setCameraWillMoveByPlaceDetailAPI: PropTypes.func,
+  searchBarExpanded: PropTypes.bool,
+  setSearchBarExpanded: PropTypes.func,
+  mapCameraPos: PropTypes.object,
+  setMapCameraPos: PropTypes.func,
+  showApproveAddressCard: PropTypes.bool,
+  setShowApproveAddressCard: PropTypes.func,
+  searchedAddressTextView: PropTypes.object,
+  setSearchedAddressTextView: PropTypes.func,
+  currentLocation: PropTypes.object,
+  setCurrentLocation: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

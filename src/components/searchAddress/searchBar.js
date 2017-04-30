@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
   TextInput,
   View,
@@ -6,15 +7,27 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
-  ListView
+  ListView,
+  NativeModules,
+  Platform
 } from 'react-native';
 import { APIKEY } from './../../utils';
 import * as GOOGLE_MAPS_API from './../../service/GoogleMapsAPI';
 
+// [start redux functions]
+import { setBusyWaitingPlaceDetailAPI } from './../../actions/busyWaitingActions';
+import {
+  setSearchBarExpanded,
+  setCameraWillMoveByPlaceDetailAPI,
+  setShowApproveAddressCard,
+  setSearchedAddressTextView
+} from './../../actions/componentsActions/homeActions';
+// [end redux functions]
+
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
-export default class SearchBar extends Component {
+class SearchBar extends Component {
   constructor() {
     super();
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -23,6 +36,39 @@ export default class SearchBar extends Component {
       listViewDataSource: ds.cloneWithRows([])
     };
     this.renderListView = this.renderListView.bind(this);
+    this.handleAddressBtn = this.handleAddressBtn.bind(this);
+  }
+
+  componentDidMount() {
+    console.log(this.props.searchBarExpanded);
+  }
+
+  handleAddressBtn(firstAddressToken, addressTextView, coordinate) {
+    const vmm = NativeModules.VinylMapManager;
+    if (coordinate) {
+      // user tapped new predicted place.
+
+      // avoiding unnecessary geocoding API use
+      this.props.setCameraWillMoveByPlaceDetailAPI(true);
+
+      const { lat, lng } = coordinate;
+      vmm.animateToLocation(String(lat), String(lng));
+    } else {
+      // user tapped my-location/search-with-pin
+      const { lat, lon } = this.props.currentLocation;
+      vmm.animateToLocation(String(lat), String(lon));
+    }
+
+    /**
+     * this enables native API that returns coordinate of the map center
+     * todo: implement this in Android
+     */
+    if (Platform.OS === 'ios') {
+      vmm.enableDidChangeCameraPosition();
+    }
+
+    this.props.setShowApproveAddressCard(true);
+    this.props.setSearchedAddressTextView({firstAddressToken, addressTextView});
   }
 
   renderRow(rowData) {
@@ -77,12 +123,12 @@ export default class SearchBar extends Component {
                 this.props.setBusyWaitingPlaceDetailAPI(false);
 
                 // res: coordinate of predicted place
-                // keys: lat, lon
-                this.props.handleAddressBtn(terms[0].value, terms.slice(1).map(e => e.value + ' '), res);
+                // keys: lat, lng
+                this.handleAddressBtn(terms[0].value, terms.slice(1).map(e => e.value + ' '), res);
               });
           } else {
             // when 현재 내 위치/핀으로 찾기 clicked
-            this.props.handleAddressBtn('현재 내 위치', []);
+            this.handleAddressBtn('현재 내 위치', []);
           }
         }}
       >
@@ -121,7 +167,7 @@ export default class SearchBar extends Component {
 
   handleTextChange(text) {
     const AUTOCOMPLETEURL = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${text}` +
-      `&location=${this.props.latitude},${this.props.longitude}&radius=500&key=${APIKEY}`;
+      `&location=${this.props.mapCameraPos.lat},${this.props.mapCameraPos.lon}&radius=500&key=${APIKEY}`;
     this.setState({
       text: text
     });
@@ -252,11 +298,45 @@ export default class SearchBar extends Component {
 }
 
 SearchBar.propTypes = {
-  latitude: PropTypes.any,
-  longitude: PropTypes.any,
-  handleAddressBtn: PropTypes.func.isRequired,
-  setBusyWaitingPlaceDetailAPI: PropTypes.func.isRequired,
-  setSearchBarExpanded: PropTypes.func.isRequired,
-  onDelivery: PropTypes.bool.isRequired,
-  isRunner: PropTypes.bool.isRequired
+  // busyWaiting
+  setBusyWaitingPlaceDetailAPI: PropTypes.func,
+
+  // components/home
+  setCameraWillMoveByPlaceDetailAPI: PropTypes.func,
+  setShowApproveAddressCard: PropTypes.func,
+  setSearchedAddressTextView: PropTypes.func,
+  searchBarExpanded: PropTypes.bool,
+  setSearchBarExpanded: PropTypes.func,
+  mapCameraPos: PropTypes.object,
+  currentLocation: PropTypes.object,
+
+  // runnerStatus
+  onDelivery: PropTypes.bool,
+
+  // userStatus
+  isRunner: PropTypes.bool
 };
+
+function mapStateToProps(state) {
+  return {
+    runnerNotification: state.pushNotification.runnerNotification,
+    isRunner: state.userStatus.isRunner,
+    onDelivery: state.runnerStatus.onDelivery,
+    searchBarExpanded: state.home.searchBarExpanded,
+    mapCameraPos: state.home.mapCameraPos,
+    currentLocation: state.home.currentLocation
+  };
+}
+
+let mapDispatchToProps = (dispatch) => {
+  return {
+    setBusyWaitingPlaceDetailAPI: (user) => dispatch(setBusyWaitingPlaceDetailAPI(user)),
+    setSearchBarExpanded: (searchBarExpanded) => dispatch(setSearchBarExpanded(searchBarExpanded)),
+    setCameraWillMoveByPlaceDetailAPI: (cameraWillMoveByPlaceDetailAPI) =>
+      dispatch(setCameraWillMoveByPlaceDetailAPI(cameraWillMoveByPlaceDetailAPI)),
+    setShowApproveAddressCard: (showApproveAddressCard) => dispatch(setShowApproveAddressCard(showApproveAddressCard)),
+    setSearchedAddressTextView: (searchedAddressTextView) => dispatch(setSearchedAddressTextView(searchedAddressTextView))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

@@ -12,3 +12,11 @@ export const setOnDelivery = 'SET_ON_DELIEVERY';
 
 // pushNotification
 export const setRunnerNotification = 'SET_RUNNER_NOTIFICATION';
+
+// components/home
+export const setCameraWillMoveByPlaceDetailAPI = 'SET_CAMERA_WILL_MOVE_BY_PLACE_DETAIL_API';
+export const setSearchBarExpanded = 'SET_SEARCH_BAR_EXPANDED';
+export const setMapCameraPos = 'SET_MAP_CAMERA_POSITION';
+export const setShowApproveAddressCard = 'SET_SHOW_APPROVE_ADDRESS_CARD';
+export const setSearchedAddressTextView = 'SET_SEARCHED_ADDRESS_TEXT_VIEW';
+export const setCurrentLocation = 'SET_CURRENT_LOCATION';
