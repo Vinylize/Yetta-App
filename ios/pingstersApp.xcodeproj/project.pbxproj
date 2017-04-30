@@ -34,9 +34,9 @@
 		1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1779137E1E464064000454F2 /* VinylMapViewManager.m */; };
 		179BEF581E7156650087C0DB /* VinylMapMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */; };
 		179D3A1D1E4F3F6B00038FE8 /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */; };
-		17C055F61EB6330A001F513A /* libLottie.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D71EB632F8001F513A /* libLottie.a */; };
 		17C055F91EB635BA001F513A /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; };
-		17C055FA1EB63649001F513A /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		17C0568B1EB6427F001F513A /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; };
+		17C0568C1EB6427F001F513A /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		17F5CB531EB5D7CF00201D7B /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F5CB521EB5D7C300201D7B /* libART.a */; };
 		260CDADB65DD47CB9827DD6F /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 096E3902413A4408A5817DB1 /* libLottieReactNative.a */; };
 		41E423D59A32F0EA37376C9C /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */; };
@@ -188,12 +188,19 @@
 			remoteGlobalIDString = FAE1F7E61E428CBE002E0974;
 			remoteInfo = Lottie_macOS;
 		};
-		17C055D61EB632F8001F513A /* PBXContainerItemProxy */ = {
+		17C0566B1EB64266001F513A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 17C055CA1EB632F8001F513A /* Lottie.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 84FE12EF1E4C1485009B157C;
 			remoteInfo = LottieLibraryIOS;
+		};
+		17C0568D1EB6427F001F513A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 17C055CA1EB632F8001F513A /* Lottie.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 62CA59B71E3C173B002D7188;
+			remoteInfo = Lottie_iOS;
 		};
 		17F5CAD91EB5D6F600201D7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -309,7 +316,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				17C055FA1EB63649001F513A /* Lottie.framework in Embed Frameworks */,
+				17C0568C1EB6427F001F513A /* Lottie.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -389,11 +396,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				17C055F91EB635BA001F513A /* Lottie.framework in Frameworks */,
-				17C055F61EB6330A001F513A /* libLottie.a in Frameworks */,
 				17F5CB531EB5D7CF00201D7B /* libART.a in Frameworks */,
 				1768ADB01E7FF94F00C8565E /* libRCTPushNotification.a in Frameworks */,
 				179D3A1D1E4F3F6B00038FE8 /* libPods-pingstersApp.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
+				17C0568B1EB6427F001F513A /* Lottie.framework in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
@@ -561,7 +568,7 @@
 			children = (
 				17C055D31EB632F8001F513A /* Lottie.framework */,
 				17C055D51EB632F8001F513A /* Lottie.framework */,
-				17C055D71EB632F8001F513A /* libLottie.a */,
+				17C0566C1EB64266001F513A /* libLottie.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -729,6 +736,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				17C0568E1EB6427F001F513A /* PBXTargetDependency */,
 			);
 			name = pingstersApp;
 			productName = "Hello World";
@@ -993,11 +1001,11 @@
 			remoteRef = 17C055D41EB632F8001F513A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		17C055D71EB632F8001F513A /* libLottie.a */ = {
+		17C0566C1EB64266001F513A /* libLottie.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libLottie.a;
-			remoteRef = 17C055D61EB632F8001F513A /* PBXContainerItemProxy */;
+			remoteRef = 17C0566B1EB64266001F513A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		17F5CADA1EB5D6F600201D7B /* libRNBackgroundTimer.a */ = {
@@ -1223,6 +1231,11 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* pingstersApp */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+		17C0568E1EB6427F001F513A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Lottie_iOS;
+			targetProxy = 17C0568D1EB6427F001F513A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
