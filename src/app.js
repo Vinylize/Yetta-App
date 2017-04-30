@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Platform } from 'react-native';
 import { Provider } from 'react-redux';
 import HockeyApp from 'react-native-hockeyapp';
 import store from './store';
