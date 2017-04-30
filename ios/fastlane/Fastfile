@@ -5,14 +5,17 @@ default_platform :ios
 platform :ios do
   before_all do
     sh "npm i"
+    sh "rm -rf ../Pods && pod install"
     sh "cd ../.. && react-native link && react-native bundle --dev false --platform ios --entry-file ./index.ios.js --bundle-output ./ios/main.jsbundle"
-    cocoapods
   end
 
   lane :beta do
     desc "delpoy Yetta iOS Application."
 
-    increment_build_number
+    increment_build_number_in_plist(
+      build_number: Time.now.gmtime.strftime("%Y%m%d%H%M%S"),
+      target: 'pingstersApp'
+    )
 
     gym(
       scheme: "pingstersApp",

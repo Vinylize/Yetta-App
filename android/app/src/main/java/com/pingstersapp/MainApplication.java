@@ -2,12 +2,11 @@ package com.pingstersapp;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.cmcewen.blurview.BlurViewPackage;
-import com.slowpath.hockeyapp.RNHockeyAppPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.cmcewen.blurview.BlurViewPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import com.slowpath.hockeyapp.RNHockeyAppPackage;
+import com.cmcewen.blurview.BlurViewPackage;
+import com.ocetnik.timer.BackgroundTimerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -19,8 +18,6 @@ import java.util.List;
 import com.pingstersapp.LocationService.YettaLocationPackage;
 import com.pingstersapp.VinylMap.VinylMapPackage;
 import com.pingstersapp.fcm.YettaFcmPackage;
-
-import com.BV.LinearGradient.LinearGradientPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -35,9 +32,10 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
             new RNHockeyAppPackage(MainApplication.this),
             new MainReactPackage(),
+            new LottiePackage(),
             new LinearGradientPackage(),
             new BlurViewPackage(),
-            new LottiePackage(),
+            new BackgroundTimerPackage(),
             new YettaFcmPackage(),
             new YettaLocationPackage(),
             new VinylMapPackage()
