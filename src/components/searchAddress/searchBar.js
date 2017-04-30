@@ -149,17 +149,24 @@ export default class SearchBar extends Component {
   render() {
     const { onFocused } = this.state;
     const SEARCHBAR_HEIGHT = 50;
+
+    let topVal = 100;
+    if (this.props.onDelivery && this.props.isRunner) {
+      topVal = -60;
+    } else if (onFocused === true) {
+      topVal = 0;
+    }
     return (
       <View
         style={{
           position: 'absolute',
           left: onFocused ? 0 : (WIDTH - WIDTH * 0.8) / 2,
-          top: onFocused ? 0 : 100,
+          top: topVal,
           width: onFocused ? WIDTH : WIDTH * 0.8,
           height: onFocused ? HEIGHT : SEARCHBAR_HEIGHT,
           backgroundColor: 'white',
-          elevation: 4,
-          zIndex: 2
+          elevation: 60,
+          zIndex: 3
         }}
       >
         <View style={{
@@ -189,6 +196,7 @@ export default class SearchBar extends Component {
               // only work when not focused
               if (!onFocused) {
                 this.setState({onFocused: true});
+                this.props.setSearchBarExpanded(true);
               }
             }}
             activeOpacity={(onFocused) ? 1 : 0.5}
@@ -209,6 +217,7 @@ export default class SearchBar extends Component {
               {(onFocused) ?
                 <TouchableOpacity onPress={() => {
                   this.setState({onFocused: false});
+                  this.props.setSearchBarExpanded(false);
                   Keyboard.dismiss();
                 }}>
                   <Text style={{fontSize: 10}}>back</Text>
@@ -246,5 +255,8 @@ SearchBar.propTypes = {
   latitude: PropTypes.any,
   longitude: PropTypes.any,
   handleAddressBtn: PropTypes.func.isRequired,
-  setBusyWaitingPlaceDetailAPI: PropTypes.func.isRequired
+  setBusyWaitingPlaceDetailAPI: PropTypes.func.isRequired,
+  setSearchBarExpanded: PropTypes.func.isRequired,
+  onDelivery: PropTypes.bool.isRequired,
+  isRunner: PropTypes.bool.isRequired
 };

@@ -30,6 +30,8 @@ import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
 import SearchBar from './searchAddress/searchBar';
 import ApproveCard from './searchAddress/approveCard';
+import RunnerView from './runnerView/runnerView';
+import RunnerOnDeliveryView from './runnerView/runnerOnDeliveryView';
 import { URL } from './../utils';
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
 
@@ -39,6 +41,11 @@ import {
   setBusyWaitingPlaceDetailAPI,
   setBusyWaitingGeocodingAPI
 } from './../actions/busyWaitingActions';
+import {
+  setWaitingNewOrder,
+  setOnDelivery
+} from './../actions/runnerStatusActions';
+import { setRunnerNotification } from './../actions/pushNotificationActions';
 // [end redux functions]
 
 import UserModeTransition from './globalViews/userModeTransition';
@@ -56,6 +63,7 @@ const client = new Lokka({
 const { YettaLocationServiceManger } = NativeModules;
 const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServiceManger);
 
+// constants
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 const cardWidth = WIDTH * 0.92;
@@ -98,7 +106,9 @@ class Home extends Component {
       refViewForBlurView: null,
       userModeSwitchBtnClicked: false,
       cameraWillMoveByPlaceDetailAPI: false,
-      mapCameraPos: {lat: undefined, lon: undefined}
+      mapCameraPos: {lat: undefined, lon: undefined},
+      showRunnerView: false,
+      searchBarExpanded: false
     };
     this.initialLocationUpdate = false;
   }
@@ -484,7 +494,10 @@ class Home extends Component {
     // todo: this should be done dynamically. Remove.
     setTimeout(() => {
       this.setState(() => {
-        return {userModeSwitchBtnClicked: false};
+        return {
+          userModeSwitchBtnClicked: false,
+          showRunnerView: !this.state.showRunnerView
+        };
       });
     }, 2000);
   }
@@ -745,7 +758,7 @@ class Home extends Component {
           position: 'absolute',
           left: this.state.animMenu,
           top: 0,
-          zIndex: 2,
+          zIndex: 3,
           backgroundColor: 'transparent',
           width: WIDTH,
           height: HEIGHT - ((Platform.OS === 'android') ? 20 : 0),
@@ -882,18 +895,22 @@ class Home extends Component {
     return (
       <TouchableOpacity
         style={{
+          backgroundColor: 'transparent',
           position: 'absolute',
           left: 20,
-          top: 46,
-          backgroundColor: 'transparent',
+          top: (this.state.searchBarExpanded) ? -50 : 46,
           width: 30,
           height: 24,
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
+          zIndex: 2,
+          elevation: 70
         }}
         onPress={() => {
           // this.setState({menuClicked: !menuClicked});
-          this.animateMenuAppear(-WIDTH * 0.8);
+          if (this.state.searchBarExpanded === false) {
+            this.animateMenuAppear(-WIDTH * 0.8);
+          }
         }}
       >
        <Text style={{fontSize: 11}}>Menu</Text>
@@ -1287,6 +1304,7 @@ class Home extends Component {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
         {this.renderMenu()}
+        {this.renderMenuButton()}
         <Animated.View
           ref={component => {
             this.refViewContainerWithoutMenu = component;
@@ -1295,12 +1313,14 @@ class Home extends Component {
         >
           {this.renderMap()}
           {this.renderAddBtn()}
-          {this.renderMenuButton()}
           <SearchBar
             latitude={this.state.latitude}
             longitude={this.state.longitude}
             handleAddressBtn={this.handleSearchBarAddressBtn.bind(this)}
             setBusyWaitingPlaceDetailAPI={this.props.setBusyWaitingPlaceDetailAPI}
+            setSearchBarExpanded={(bool) => this.setState({searchBarExpanded: bool})}
+            onDelivery={this.props.onDelivery}
+            isRunner={this.props.isRunner}
           />
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
@@ -1321,6 +1341,23 @@ class Home extends Component {
           refViewForBlurView={this.state.refViewForBlurView}
           msg={'위치 찾는중'}
         />
+        <RunnerView
+          isRunner={this.state.showRunnerView}
+          waitingNewOrder={this.props.waitingNewOrder}
+          setWaitingNewOrder={this.props.setWaitingNewOrder}
+          runnerNotification={this.props.runnerNotification}
+          onDelivery={this.props.onDelivery}
+          setOnDelivery={this.props.setOnDelivery}
+        />
+        <RunnerOnDeliveryView
+          isRunner={this.props.isRunner}
+          waitingNewOrder={this.props.waitingNewOrder}
+          setWaitingNewOrder={this.props.setWaitingNewOrder}
+          runnerNotification={this.props.runnerNotification}
+          onDelivery={this.props.onDelivery}
+          setOnDelivery={this.props.setOnDelivery}
+          setRunnerNotification={this.props.setRunnerNotification}
+        />
       </View>
     );
   }
@@ -1331,7 +1368,10 @@ const mapStateToProps = (state) => {
     user: state.auth.user,
     isRunner: state.userStatus.isRunner,
     busyWaitingPlaceDetailAPI: state.busyWaiting.busyWaitingPlaceDetailAPI,
-    busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI
+    busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI,
+    waitingNewOrder: state.runnerStatus.waitingNewOrder,
+    onDelivery: state.runnerStatus.onDelivery,
+    runnerNotification: state.pushNotification.runnerNotification
   };
 };
 
@@ -1341,19 +1381,37 @@ const mapDispatchToProps = (dispatch) => {
     setBusyWaitingPlaceDetailAPI: (busyWaitingPlaceDetailAPI) =>
       dispatch(setBusyWaitingPlaceDetailAPI(busyWaitingPlaceDetailAPI)),
     setBusyWaitingGeocodingAPI: (busyWaitingGeocodingAPI) =>
-      dispatch(setBusyWaitingGeocodingAPI(busyWaitingGeocodingAPI))
+      dispatch(setBusyWaitingGeocodingAPI(busyWaitingGeocodingAPI)),
+    setWaitingNewOrder: (waitingNewOrder) =>
+      dispatch(setWaitingNewOrder(waitingNewOrder)),
+    setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner)),
+    setOnDelivery: (onDelivery) => dispatch(setOnDelivery(onDelivery))
   };
 };
 
 Home.propTypes = {
   navigator: PropTypes.any,
   user: PropTypes.object,
+
+  // userStatus
   isRunner: PropTypes.bool,
+  setIsRunner: PropTypes.func,
+
+  // busyWaiting
   busyWaitingPlaceDetailAPI: PropTypes.bool,
   busyWaitingGeocodingAPI: PropTypes.bool,
-  setIsRunner: PropTypes.func,
   setBusyWaitingPlaceDetailAPI: PropTypes.func,
-  setBusyWaitingGeocodingAPI: PropTypes.func
+  setBusyWaitingGeocodingAPI: PropTypes.func,
+
+  // runnerStatus
+  waitingNewOrder: PropTypes.bool,
+  setWaitingNewOrder: PropTypes.func,
+  onDelivery: PropTypes.bool,
+  setOnDelivery: PropTypes.func,
+
+  // pushNotification
+  runnerNotification: PropTypes.any,
+  setRunnerNotification: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
