@@ -188,6 +188,7 @@ class Login extends Component {
   }
 
   userUpdateDeviceToken(token) {
+    console.log(token);
     client.mutate(`{
       userUpdateDeviceToken(
         input:{

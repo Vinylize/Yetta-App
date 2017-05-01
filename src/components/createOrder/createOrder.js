@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
   View
 } from 'react-native';
+import { setNode } from './../../actions/createOrderActions';
 
 import Header from './header/header';
 import Overview from './bodies/overview';
@@ -18,7 +20,7 @@ const styles = {
   }
 };
 
-export default class CreateOrder extends Component {
+class CreateOrder extends Component {
   constructor() {
     super();
     this.state = {
@@ -68,8 +70,6 @@ export default class CreateOrder extends Component {
           selectedBrand={selectedBrand}
           handleNextBtn={this.handleNextBtn}
           coordinate={this.props.coordinate}
-          setNode={this.props.setNode}
-          node={this.props.node}
         />
       );
     } else if (step === 2) {
@@ -108,3 +108,17 @@ CreateOrder.propTypes = {
   setNode: PropTypes.func,
   node: PropTypes.array
 };
+
+function mapStateToProps(state) {
+  return {
+    node: state.createOrder.node
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setNode: (node) => dispatch(setNode(node))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateOrder);
