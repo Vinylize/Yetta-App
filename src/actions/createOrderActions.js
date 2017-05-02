@@ -1,5 +1,12 @@
 import * as types from './actionTypes';
 
+export const setNodeList = (nodeList) => {
+  return {
+    type: types.setNodeList,
+    nodeList
+  };
+};
+
 export const setStagedNode = (id, name, addr) => {
   return {
     type: types.setStagedNode,

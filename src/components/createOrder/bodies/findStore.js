@@ -11,7 +11,7 @@ import { URL } from './../../../utils';
 import * as firebase from 'firebase';
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
-import { setNode } from './../../../actions/createOrderActions';
+import { setNodeList } from './../../../actions/createOrderActions';
 
 const client = new Lokka({
   transport: new Transport(URL)
@@ -113,7 +113,7 @@ class FindStore extends PureComponent {
   setStoreListFromServer(res) {
     const { nodeList } = res.viewer;
     // Alert.alert('query success', String(node.length));
-    this.props.setNode(nodeList);
+    this.props.setNodeList(nodeList);
   }
 
   renderBrandListRow(name) {
@@ -181,7 +181,7 @@ class FindStore extends PureComponent {
           backgroundColor: 'white'
         }}>
           <ListView
-            dataSource={ds.cloneWithRows(this.props.node)}
+            dataSource={ds.cloneWithRows(this.props.nodeList)}
             renderRow={(rowData) => this.renderVerticalRow(rowData)}
             style={{backgroundColor: 'white'}}
             enableEmptySections
@@ -199,19 +199,19 @@ FindStore.propTypes = {
   selectedBrand: PropTypes.string.isRequired,
   handleNextBtn: PropTypes.func.isRequired,
   coordinate: PropTypes.object.isRequired,
-  setNode: PropTypes.func.isRequired,
-  node: PropTypes.array.isRequired
+  setNodeList: PropTypes.func.isRequired,
+  nodeList: PropTypes.array.isRequired
 };
 
 function mapStateToProps(state) {
   return {
-    node: state.createOrder.node
+    nodeList: state.createOrder.nodeList
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setNode: (node) => dispatch(setNode(node))
+    setNodeList: (nodeList) => dispatch(setNodeList(nodeList))
   };
 };
 

@@ -1,5 +1,4 @@
 export const setUser = 'SET_USER';
-export const setNode = 'SET_NODE';
 export const setIsRunner = 'SET_IS_RUNNER';
 
 // busyWaiting
@@ -23,6 +22,7 @@ export const setCurrentLocation = 'SET_CURRENT_LOCATION';
 export const setBusyOnWaitingNewRunner = 'SET_BUSY_ON_WAITING_NEW_RUNNER';
 
 // createOrder
+export const setNodeList = 'SET_NODE_LIST';
 export const setStagedNode = 'SET_STAGED_NODE';
 export const addStagedItem = 'ADD_STAGED_ITEM';
 export const deleteStagedItem = 'DELETE_STAGED_ITEM';

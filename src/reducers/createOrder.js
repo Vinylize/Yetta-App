@@ -1,7 +1,7 @@
 import * as types from './../actions/actionTypes';
 
 const initialState = {
-  node: [],
+  nodeList: [],
   stagedNode: {},
   stagedDestination: {},
   stagedItems: []
@@ -9,8 +9,8 @@ const initialState = {
 
 const createOrder = (state = initialState, action = {}) => {
   switch (action.type) {
-  case types.setNode:
-    return {...state, node: action.node };
+  case types.setNodeList:
+    return {...state, nodeList: action.nodeList };
   case types.setStagedDestination:
     return {
       ...state,
