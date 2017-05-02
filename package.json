@@ -18,7 +18,6 @@
     "lottie-react-native": "^1.1.1",
     "react": "15.4.2",
     "react-addons-shallow-compare": "^15.4.1",
-    "react-addons-update": "^15.4.1",
     "react-native": "0.42",
     "react-native-background-timer": "^1.0.0",
     "react-native-blur": "^3.0.0-alpha",

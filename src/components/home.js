@@ -287,7 +287,7 @@ class Home extends Component {
       authorization: token
     };
     client.mutate(`{
-            userUpdateCoordinate(
+            runnerUpdateCoordinate(
               input:{
                 lat: ${data.latitude},
                 lon: ${data.longitude}

@@ -1,5 +1,4 @@
 import * as types from '../actions/actionTypes';
-import update from 'react-addons-update';
 
 const initialState = {
   user: {}
@@ -8,9 +7,7 @@ const initialState = {
 const auth = (state = initialState, action = {}) => {
   switch (action.type) {
   case types.setUser: {
-    return update(state, {
-      user: { $set: action.user }
-    });
+    return {...state, user: action.user };
   }
   default:
     return state;
