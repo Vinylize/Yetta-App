@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
   Text,
   View,
@@ -27,7 +28,7 @@ const styles = {
   }
 };
 
-export default class RegisterOrder extends Component {
+class RegisterOrder extends Component {
   constructor() {
     super();
     this.state = {
@@ -36,6 +37,8 @@ export default class RegisterOrder extends Component {
   }
 
   createOrderHelper() {
+    const {id, name, addr} = this.props.stagedNode;
+    console.log(name, addr);
     firebase.auth().currentUser.getToken()
       .then(token => {
         client._transport._httpOptions.headers = {
@@ -54,7 +57,7 @@ export default class RegisterOrder extends Component {
                 manu:"농심",
                 n:"바나나 우유3",
                 cnt:2}],
-            nId: "-KiTzNSVH6ETa-RU_z5U",
+            nId: "${id}",
             dest:{
               n1:"서울시 강동구 길동 한신휴플러스",
               n2:"910호",
@@ -315,5 +318,17 @@ export default class RegisterOrder extends Component {
 }
 
 RegisterOrder.propTypes = {
-  handleCreateOrderDone: PropTypes.func
+  handleCreateOrderDone: PropTypes.func,
+
+  // reducers/createOrder
+  stagedNode: PropTypes.object
 };
+
+
+function mapStateToProps(state) {
+  return {
+    stagedNode: state.createOrder.stagedNode
+  };
+}
+
+export default connect(mapStateToProps, undefined)(RegisterOrder);

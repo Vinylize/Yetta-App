@@ -11,7 +11,10 @@ import { URL } from './../../../utils';
 import * as firebase from 'firebase';
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
-import { setNodeList } from './../../../actions/createOrderActions';
+import {
+  setNodeList,
+  setStagedNode
+} from './../../../actions/createOrderActions';
 
 const client = new Lokka({
   transport: new Transport(URL)
@@ -38,7 +41,7 @@ class FindStore extends PureComponent {
     this.getStoreListFromServer();
   }
   renderVerticalRow(rowData) {
-    const { addr, n, formattedDistance } = rowData;
+    const { addr, n, formattedDistance, id } = rowData;
     return (
       <TouchableOpacity
         style={{
@@ -53,7 +56,10 @@ class FindStore extends PureComponent {
           paddingLeft: 30,
           paddingRight: 30
         }}
-        onPress={this.props.handleNextBtn}
+        onPress={() => {
+          this.props.setStagedNode(id, n, addr);
+          this.props.handleNextBtn();
+        }}
       >
         <View style={{
           flexDirection: 'row',
@@ -94,7 +100,8 @@ class FindStore extends PureComponent {
         nodeList (lat: ${lat}, lon: ${lon}, radius: 432532434234, c1: 0, c2: 0) {
           n,
           addr,
-          formattedDistance
+          formattedDistance,
+          id
         }
       }
     }`);
@@ -104,15 +111,11 @@ class FindStore extends PureComponent {
     return firebase.auth().currentUser.getToken()
       .then(this.queryNodeHelper)
       .then(this.setStoreListFromServer)
-      .catch((err) => {
-        console.log(err);
-        // Alert.alert('query getStoreList failed', err);
-      });
+      .catch(console.log);
   }
 
   setStoreListFromServer(res) {
     const { nodeList } = res.viewer;
-    // Alert.alert('query success', String(node.length));
     this.props.setNodeList(nodeList);
   }
 
@@ -199,8 +202,11 @@ FindStore.propTypes = {
   selectedBrand: PropTypes.string.isRequired,
   handleNextBtn: PropTypes.func.isRequired,
   coordinate: PropTypes.object.isRequired,
+
+  // reducers/createOrder
   setNodeList: PropTypes.func.isRequired,
-  nodeList: PropTypes.array.isRequired
+  nodeList: PropTypes.array.isRequired,
+  setStagedNode: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -211,7 +217,8 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setNodeList: (nodeList) => dispatch(setNodeList(nodeList))
+    setNodeList: (nodeList) => dispatch(setNodeList(nodeList)),
+    setStagedNode: (id, name, addr) => dispatch(setStagedNode(id, name, addr))
   };
 };
 
