@@ -38,6 +38,8 @@ class RegisterOrder extends Component {
 
   createOrderHelper() {
     const {id, name, addr} = this.props.stagedNode;
+    console.log(name);
+    console.log(addr);
     firebase.auth().currentUser.getToken()
       .then(token => {
         client._transport._httpOptions.headers = {
