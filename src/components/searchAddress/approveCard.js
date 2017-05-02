@@ -123,16 +123,19 @@ class ApproveCard extends Component {
 ApproveCard.propTypes = {
   navigator: PropTypes.any.isRequired,
   address: PropTypes.any,
-  busyWaitingGeocodingAPI: PropTypes.bool.isRequired,
+  busyWaitingGeocodingAPI: PropTypes.bool,
 
   // reducers/components/home
-  showApproveAddressCard: PropTypes.bool.isRequired,
-  setShowApproveAddressCard: PropTypes.func.isRequired
+  showApproveAddressCard: PropTypes.bool,
+
+  // reducers/busyWaiting
+  setShowApproveAddressCard: PropTypes.func
 };
 
 function mapStateToProps(state) {
   return {
-    showApproveAddressCard: state.home.showApproveAddressCard
+    showApproveAddressCard: state.home.showApproveAddressCard,
+    busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI
   };
 }
 

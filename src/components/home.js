@@ -511,28 +511,6 @@ class Home extends Component {
     this.props.navigator.push(orderHistoryNavigatorRoute());
   }
 
-  handleCreateOrderDone() {
-    this.props.navigator.pop();
-    this.animateCardAppear();
-
-    /**
-     * this disables native API that returns coordinate of the map center
-     * todo: implement this in Android
-     */
-    if (Platform.OS === 'ios') {
-      vmm.disableDidChangeCameraPosition();
-    }
-
-    this.props.setBusyOnWaitingNewRunner(true);
-  }
-
-  handleSearchedAddressApproveBtn() {
-    this.props.navigator.push(createOrderNavigatorRoute(
-      this.handleCreateOrderDone.bind(this)
-    ));
-    this.props.setShowApproveAddressCard(false);
-  }
-
   renderMap() {
     if (Platform.OS === 'ios') {
       return (
@@ -1267,8 +1245,6 @@ class Home extends Component {
           <ApproveCard
             navigator={this.props.navigator}
             address={this.props.searchedAddressTextView}
-            handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
-            busyWaitingGeocodingAPI={this.props.busyWaitingGeocodingAPI}
           />
           {this.props.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>

@@ -6,7 +6,10 @@ import {
 
 // [start redux actions]
 import { setNode } from './../../actions/createOrderActions';
-import { setBusyOnWaitingNewRunner } from './../../actions/componentsActions/homeActions';
+import {
+  setBusyOnWaitingNewRunner,
+  animateCardAppear
+} from './../../actions/componentsActions/homeActions';
 // [end redux actions]
 
 import Header from './header/header';
@@ -40,6 +43,7 @@ class CreateOrder extends Component {
     };
     this.handleBrandBtn = this.handleBrandBtn.bind(this);
     this.handleNextBtn = this.handleNextBtn.bind(this);
+    this.handleCreateOrderDone = this.handleCreateOrderDone.bind(this);
   }
 
   handleHeaderBackBtn() {
@@ -65,9 +69,15 @@ class CreateOrder extends Component {
 
   handleCreateOrderDone() {
     this.props.navigator.pop();
-    // todo:
-    // this.animateCardAppear();
-    this.props.setBusyOnWaitingNewRunner(false);
+    animateCardAppear();
+    /**
+     * this disables native API that returns coordinate of the map center
+     * todo: implement this in Android
+     */
+    // if (Platform.OS === 'ios') {
+    //   vmm.disableDidChangeCameraPosition();
+    // }
+    this.props.setBusyOnWaitingNewRunner(true);
   }
 
   renderBody() {
@@ -89,7 +99,7 @@ class CreateOrder extends Component {
       );
     } else if (step === 3) {
       return (
-        <Overview handleCreateOrderDone={this.props.func.handleCreateOrderDone}/>
+        <Overview handleCreateOrderDone={this.handleCreateOrderDone}/>
       );
     }
     return null;
@@ -114,7 +124,6 @@ class CreateOrder extends Component {
 
 CreateOrder.propTypes = {
   navigator: PropTypes.any,
-  func: PropTypes.any,
   mapCameraPos: PropTypes.object,
   setNode: PropTypes.func,
   node: PropTypes.array,
