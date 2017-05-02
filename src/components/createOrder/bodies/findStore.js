@@ -7,6 +7,8 @@ import {
   View,
   ListView
 } from 'react-native';
+import Header from './../header/header';
+
 import { URL } from './../../../utils';
 import * as firebase from 'firebase';
 const Lokka = require('lokka').Lokka;
@@ -54,7 +56,8 @@ class FindStore extends PureComponent {
           flexDirection: 'column',
           justifyContent: 'center',
           paddingLeft: 30,
-          paddingRight: 30
+          paddingRight: 30,
+          elevation: 3
         }}
         onPress={() => {
           this.props.setStagedNode(id, n, addr);
@@ -152,10 +155,10 @@ class FindStore extends PureComponent {
     return (
       <View style={{
         flex: 1,
-        marginTop: 90,
         backgroundColor: 'white',
         flexDirection: 'column'
       }}>
+        <Header back={this.props.back}/>
         <View style={{
           height: 58,
           width: WIDTH,
@@ -164,7 +167,8 @@ class FindStore extends PureComponent {
           justifyContent: 'space-between',
           alignItems: 'center',
           paddingLeft: 40,
-          paddingRight: 40
+          paddingRight: 40,
+          marginTop: 90
         }}>
           <ListView
             dataSource={brandList}
@@ -202,11 +206,12 @@ FindStore.propTypes = {
   selectedBrand: PropTypes.string.isRequired,
   handleNextBtn: PropTypes.func.isRequired,
   coordinate: PropTypes.object.isRequired,
+  back: PropTypes.func.isRequired,
 
   // reducers/createOrder
-  setNodeList: PropTypes.func.isRequired,
-  nodeList: PropTypes.array.isRequired,
-  setStagedNode: PropTypes.func.isRequired
+  setNodeList: PropTypes.func,
+  nodeList: PropTypes.array,
+  setStagedNode: PropTypes.func
 };
 
 function mapStateToProps(state) {

@@ -228,7 +228,7 @@ class SearchBar extends Component {
           width: onFocused ? WIDTH : WIDTH * 0.8,
           height: onFocused ? HEIGHT : SEARCHBAR_HEIGHT,
           backgroundColor: 'white',
-          elevation: 60,
+          elevation: 40,
           zIndex: 3
         }}
       >
@@ -253,7 +253,8 @@ class SearchBar extends Component {
               paddingLeft: 17,
               paddingRight: 20,
               paddingTop: 20,
-              flexDirection: 'row'
+              flexDirection: 'row',
+              elevation: 1
             }}
             onPress={() => {
               // only work when not focused

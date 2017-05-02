@@ -12,7 +12,6 @@ import {
 } from './../../actions/componentsActions/homeActions';
 // [end redux actions]
 
-import Header from './header/header';
 import Overview from './bodies/overview';
 import FindStore from './bodies/findStore';
 import FindBrandV2 from './bodies/findBrandV2';
@@ -44,6 +43,7 @@ class CreateOrder extends Component {
     this.handleBrandBtn = this.handleBrandBtn.bind(this);
     this.handleNextBtn = this.handleNextBtn.bind(this);
     this.handleCreateOrderDone = this.handleCreateOrderDone.bind(this);
+    this.handleHeaderBackBtn = this.handleHeaderBackBtn.bind(this);
   }
 
   handleHeaderBackBtn() {
@@ -83,23 +83,35 @@ class CreateOrder extends Component {
   renderBody() {
     const { step, brandList, brandListDataSource, selectedBrand } = this.state;
     if (step === 0) {
-      return (<FindBrandV2 handleBrandBtn={this.handleBrandBtn}/>);
+      return (
+          <FindBrandV2
+            handleBrandBtn={this.handleBrandBtn}
+            back={this.handleHeaderBackBtn}
+          />
+      );
     } else if (step === 1) {
       return (
-        <FindStore
-          brandList={brandListDataSource[brandList]}
-          selectedBrand={selectedBrand}
-          handleNextBtn={this.handleNextBtn}
-          coordinate={this.props.destinationLocation}
-        />
+          <FindStore
+            brandList={brandListDataSource[brandList]}
+            selectedBrand={selectedBrand}
+            handleNextBtn={this.handleNextBtn}
+            coordinate={this.props.destinationLocation}
+            back={this.handleHeaderBackBtn}
+          />
       );
     } else if (step === 2) {
       return (
-        <AddProduct/>
+        <AddProduct
+          back={this.handleHeaderBackBtn}
+          next={this.handleNextBtn}
+        />
       );
     } else if (step === 3) {
       return (
-        <Overview handleCreateOrderDone={this.handleCreateOrderDone}/>
+        <Overview
+          handleCreateOrderDone={this.handleCreateOrderDone}
+          back={this.handleHeaderBackBtn}
+        />
       );
     }
     return null;
@@ -108,14 +120,6 @@ class CreateOrder extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {(this.state.step === 2) ?
-          <Header
-            back={this.handleHeaderBackBtn.bind(this)}
-            next={this.handleNextBtn.bind(this)}
-          />
-          :
-          <Header back={this.handleHeaderBackBtn.bind(this)}/>
-        }
         {this.renderBody()}
       </View>
     );

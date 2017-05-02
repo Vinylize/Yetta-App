@@ -15,12 +15,13 @@ const styles = {
     left: 0,
     height: 90,
     width: WIDTH,
-    backgroundColor: 'transparent',
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 20,
-    zIndex: 1
+    zIndex: 1,
+    elevation: 1
   },
   headerLeftItem: {
     position: 'absolute',
@@ -37,14 +38,14 @@ export default class Header extends Component {
           style={styles.headerLeftItem}
           onPress={this.props.back}
         >
-          <Text>back</Text>
+          <Text style={{color: 'black'}}>back</Text>
         </TouchableOpacity>
         <Text style={{
-          fontSize: 16
+          fontSize: 16,
+          color: 'black'
         }}>
           Find store
         </Text>
-        {(this.props.next) ?
         <TouchableOpacity
           style={{
             position: 'absolute',
@@ -53,12 +54,12 @@ export default class Header extends Component {
             paddingTop: 47,
             zIndex: 1
           }}
-          onPress={this.props.next}
+          onPress={() => {
+            (this.props.next) && this.props.next();
+          }}
         >
-          <Text>next</Text>
+          <Text>{(this.props.next) ? 'next' : ''}</Text>
         </TouchableOpacity>
-          : null
-        }
       </View>
     );
   }

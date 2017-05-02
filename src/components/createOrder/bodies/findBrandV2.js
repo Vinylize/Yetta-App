@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
+import Header from './../header/header';
 
 import picFood from './../../../../assets/category/food.jpg';
 import picConvenienceStore from './../../../../assets/category/convenienceStore.jpg';
@@ -94,11 +95,8 @@ export default class FindBrandV2 extends Component {
 
   render() {
     return (
-      <View style={{
-        flex: 1,
-        width: WIDTH,
-        backgroundColor: 'transparent'
-      }}>
+      <View style={{flex: 1}}>
+        <Header back={this.props.back}/>
         {this.renderVerticalListView()}
       </View>
     );
@@ -106,5 +104,6 @@ export default class FindBrandV2 extends Component {
 }
 
 FindBrandV2.propTypes = {
-  handleBrandBtn: PropTypes.func.isRequired
+  handleBrandBtn: PropTypes.func.isRequired,
+  back: PropTypes.func.isRequired
 };

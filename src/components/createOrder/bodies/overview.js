@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Dimensions
 } from 'react-native';
+import Header from './../header/header';
+
 import { URL, handleError } from '../../../utils';
 import * as firebase from 'firebase';
 
@@ -288,7 +290,7 @@ class RegisterOrder extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.renderHeader()}
+        <Header back={this.props.back}/>
         <View style={{
           flex: 1,
           width: WIDTH,
@@ -319,7 +321,8 @@ class RegisterOrder extends Component {
 }
 
 RegisterOrder.propTypes = {
-  handleCreateOrderDone: PropTypes.func,
+  back: PropTypes.func.isRequired,
+  handleCreateOrderDone: PropTypes.func.isRequired,
 
   // reducers/createOrder
   stagedNode: PropTypes.object,
