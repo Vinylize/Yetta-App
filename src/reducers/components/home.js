@@ -1,4 +1,8 @@
 import * as types from '../../actions/actionTypes';
+import {
+  Animated
+} from 'react-native';
+import { cardHidedBottom } from './../../components/home';
 
 const initialState = {
   // intention: avoid unnecessary geocoding from placeAutocomplete API prediction
@@ -25,7 +29,9 @@ const initialState = {
   currentLocation: {lat: undefined, lon: undefined},
 
   // indicates waiting new runner on the card at bottom
-  busyOnWaitingNewRunner: false
+  busyOnWaitingNewRunner: false,
+
+  animatedCardBottomVal: new Animated.Value(cardHidedBottom)
 };
 
 const home = (state = initialState, action = {}) => {

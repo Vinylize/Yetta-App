@@ -76,10 +76,10 @@ const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServic
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 const cardWidth = WIDTH * 0.92;
-const expandedCardHeight = HEIGHT * 0.43;
+export const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
-const cardInitBottom = -expandedCardHeight + cardHeight;
-const cardHidedBottom = -expandedCardHeight;
+export const cardInitBottom = -expandedCardHeight + cardHeight;
+export const cardHidedBottom = -expandedCardHeight;
 const menuWidth = WIDTH;
 
 const PLATFORM_SPECIFIC = {
@@ -98,7 +98,6 @@ class Home extends Component {
       markerTest: false,
       clickedMarkerID: undefined,
       animatedCardLeftVal: new Animated.Value(PLATFORM_SPECIFIC.animatedCardLeftVal),
-      animatedCardBottomVal: new Animated.Value(cardHidedBottom),
       animMenu: new Animated.Value(-menuWidth),
       cardIndex: 0,
       cardExpanded: false,
@@ -379,9 +378,9 @@ class Home extends Component {
   }
 
   animateCardPosResetY(dy) {
-    this.state.animatedCardBottomVal.setValue(-dy);
+    this.props.animatedCardBottomVal.setValue(-dy);
     Animated.timing(
-      this.state.animatedCardBottomVal,
+      this.props.animatedCardBottomVal,
       {
         toValue: cardInitBottom,
         duration: 100,
@@ -428,9 +427,9 @@ class Home extends Component {
 
   animateCardExpand(dy) {
     if (cardInitBottom - dy <= 0) {
-      this.state.animatedCardBottomVal.setValue(cardInitBottom - dy);
+      this.props.animatedCardBottomVal.setValue(cardInitBottom - dy);
       Animated.timing(
-        this.state.animatedCardBottomVal,
+        this.props.animatedCardBottomVal,
         {
           toValue: 0,
           duration: 100,
@@ -443,7 +442,7 @@ class Home extends Component {
         });
       });
     } else {
-      this.state.animatedCardBottomVal.setValue(0);
+      this.props.animatedCardBottomVal.setValue(0);
       this.setState({
         busyOnCardMoveY: false,
         cardExpanded: true
@@ -452,9 +451,9 @@ class Home extends Component {
   }
 
   animateCardAppear() {
-    this.state.animatedCardBottomVal.setValue(-expandedCardHeight);
+    this.props.animatedCardBottomVal.setValue(-expandedCardHeight);
     Animated.timing(
-      this.state.animatedCardBottomVal,
+      this.props.animatedCardBottomVal,
       {
         toValue: cardInitBottom,
         duration: 100,
@@ -464,9 +463,9 @@ class Home extends Component {
   }
 
   animateCardHide(dy) {
-    this.state.animatedCardBottomVal.setValue(cardInitBottom - dy);
+    this.props.animatedCardBottomVal.setValue(cardInitBottom - dy);
     Animated.timing(
-      this.state.animatedCardBottomVal,
+      this.props.animatedCardBottomVal,
       {
         toValue: -expandedCardHeight,
         duration: 100,
@@ -1175,7 +1174,6 @@ class Home extends Component {
   renderCardContainer() {
     const {
       animatedCardLeftVal,
-      animatedCardBottomVal,
       cardIndex
     } = this.state;
 
@@ -1187,7 +1185,7 @@ class Home extends Component {
         style={{
           position: 'absolute',
           left: animatedCardLeftVal,
-          bottom: animatedCardBottomVal,
+          bottom: this.props.animatedCardBottomVal,
           width: WIDTH * 3,
           height: expandedCardHeight,
           zIndex: 1
@@ -1267,7 +1265,7 @@ class Home extends Component {
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
           <ApproveCard
-            showApproveAddressCard = {this.props.showApproveAddressCard}
+            navigator={this.props.navigator}
             address={this.props.searchedAddressTextView}
             handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
             busyWaitingGeocodingAPI={this.props.busyWaitingGeocodingAPI}
@@ -1320,7 +1318,8 @@ const mapStateToProps = (state) => {
     showApproveAddressCard: state.home.showApproveAddressCard,
     searchedAddressTextView: state.home.searchedAddressTextView,
     currentLocation: state.home.currentLocation,
-    busyOnWaitingNewRunner: state.home.busyOnWaitingNewRunner
+    busyOnWaitingNewRunner: state.home.busyOnWaitingNewRunner,
+    animatedCardBottomVal: state.home.animatedCardBottomVal
   };
 };
 
@@ -1381,7 +1380,8 @@ Home.propTypes = {
   currentLocation: PropTypes.object,
   setCurrentLocation: PropTypes.func,
   busyOnWaitingNewRunner: PropTypes.bool,
-  setBusyOnWaitingNewRunner: PropTypes.func
+  setBusyOnWaitingNewRunner: PropTypes.func,
+  animatedCardBottomVal: PropTypes.any
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
