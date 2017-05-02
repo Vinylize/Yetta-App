@@ -22,7 +22,10 @@ const initialState = {
   },
 
   // user's current location
-  currentLocation: {lat: undefined, lon: undefined}
+  currentLocation: {lat: undefined, lon: undefined},
+
+  // indicates waiting new runner on the card at bottom
+  busyOnWaitingNewRunner: false
 };
 
 const home = (state = initialState, action = {}) => {
@@ -39,6 +42,8 @@ const home = (state = initialState, action = {}) => {
     return {...state, searchedAddressTextView: action.searchedAddressTextView };}
   case types.setCurrentLocation: {
     return {...state, currentLocation: action.currentLocation };}
+  case types.setBusyOnWaitingNewRunner: {
+    return {...state, busyOnWaitingNewRunner: action.busyOnWaitingNewRunner };}
   default:
     return state;
   }

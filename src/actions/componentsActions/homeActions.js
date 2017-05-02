@@ -41,3 +41,10 @@ export const setCurrentLocation = (currentLocation) => {
     currentLocation
   };
 };
+
+export const setBusyOnWaitingNewRunner = (busyOnWaitingNewRunner) => {
+  return {
+    type: types.setBusyOnWaitingNewRunner,
+    busyOnWaitingNewRunner
+  };
+};

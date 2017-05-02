@@ -16,7 +16,6 @@ const renderScene = (route, navigator) => {
     <Component
       navigator={navigator}
       func={route.func}
-      coordinate={route.coordinate}
     />
   );
 };

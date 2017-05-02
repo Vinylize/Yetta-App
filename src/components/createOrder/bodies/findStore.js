@@ -88,10 +88,10 @@ class FindStore extends PureComponent {
     client._transport._httpOptions.headers = {
       authorization: token
     };
-    const { latitude, longitude } = this.props.coordinate;
+    const { lat, lon } = this.props.coordinate;
     return client.query(`{
       viewer{
-        nodeList (lat: ${latitude}, lon: ${longitude}, radius: 432532434234, c1: 0, c2: 0) {
+        nodeList (lat: ${lat}, lon: ${lon}, radius: 432532434234, c1: 0, c2: 0) {
           n,
           addr,
           formattedDistance

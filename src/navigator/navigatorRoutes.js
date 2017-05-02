@@ -38,11 +38,10 @@ export function phoneVerificationNavigatorRoute() {
   };
 }
 
-export function createOrderNavigatorRoute(handleCreateOrderDone, latitude, longitude) {
+export function createOrderNavigatorRoute(handleCreateOrderDone) {
   return {
     Component: CreateOrderLayout,
     func: {handleCreateOrderDone},
-    coordinate: {latitude, longitude},
     sceneConfig
   };
 }

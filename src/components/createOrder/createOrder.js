@@ -59,6 +59,11 @@ class CreateOrder extends Component {
     this.setState({step: step + 1});
   }
 
+  handleCreateOrderDone() {
+    this.props.navigator.pop();
+    // this.animateCardAppear();
+  }
+
   renderBody() {
     const { step, brandList, brandListDataSource, selectedBrand } = this.state;
     if (step === 0) {
@@ -69,7 +74,7 @@ class CreateOrder extends Component {
           brandList={brandListDataSource[brandList]}
           selectedBrand={selectedBrand}
           handleNextBtn={this.handleNextBtn}
-          coordinate={this.props.coordinate}
+          coordinate={this.props.mapCameraPos}
         />
       );
     } else if (step === 2) {
@@ -104,14 +109,15 @@ class CreateOrder extends Component {
 CreateOrder.propTypes = {
   navigator: PropTypes.any,
   func: PropTypes.any,
-  coordinate: PropTypes.object,
+  mapCameraPos: PropTypes.object,
   setNode: PropTypes.func,
   node: PropTypes.array
 };
 
 function mapStateToProps(state) {
   return {
-    node: state.createOrder.node
+    node: state.createOrder.node,
+    mapCameraPos: state.home.mapCameraPos
   };
 }
 

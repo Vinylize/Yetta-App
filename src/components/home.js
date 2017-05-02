@@ -52,7 +52,8 @@ import {
   setMapCameraPos,
   setShowApproveAddressCard,
   setSearchedAddressTextView,
-  setCurrentLocation
+  setCurrentLocation,
+  setBusyOnWaitingNewRunner
 } from './../actions/componentsActions/homeActions';
 // [end redux functions]
 
@@ -104,7 +105,6 @@ class Home extends Component {
       cardAppeared: false,
       busyOnCardMoveX: false,
       busyOnCardMoveY: false,
-      busyOnWaitingNewRunner: false,
       processState: 2,
       trackingCurrentPos: false,
       refViewForBlurView: null,
@@ -524,15 +524,12 @@ class Home extends Component {
       vmm.disableDidChangeCameraPosition();
     }
 
-    this.setState({busyOnWaitingNewRunner: true});
+    this.props.setBusyOnWaitingNewRunner(true);
   }
 
   handleSearchedAddressApproveBtn() {
-    const { lat, lon } = this.props.mapCameraPos;
     this.props.navigator.push(createOrderNavigatorRoute(
-      this.handleCreateOrderDone.bind(this),
-      lat,
-      lon
+      this.handleCreateOrderDone.bind(this)
     ));
     this.props.setShowApproveAddressCard(false);
   }
@@ -904,7 +901,7 @@ class Home extends Component {
             justifyContent: 'center',
             alignItems: 'flex-end'
           }}>
-            {this.state.busyOnWaitingNewRunner ?
+            {this.props.busyOnWaitingNewRunner ?
               <ActivityIndicator
                 animating={true}
                 style={{
@@ -938,7 +935,7 @@ class Home extends Component {
                 <Text style={{
                   marginBottom: 3,
                   marginLeft: 12
-                }}>{this.state.busyOnWaitingNewRunner ?
+                }}>{this.props.busyOnWaitingNewRunner ?
                   '근처의 러너를 찾는중'
                   : header}</Text>
               </View>
@@ -1322,7 +1319,8 @@ const mapStateToProps = (state) => {
     mapCameraPos: state.home.mapCameraPos,
     showApproveAddressCard: state.home.showApproveAddressCard,
     searchedAddressTextView: state.home.searchedAddressTextView,
-    currentLocation: state.home.currentLocation
+    currentLocation: state.home.currentLocation,
+    busyOnWaitingNewRunner: state.home.busyOnWaitingNewRunner
   };
 };
 
@@ -1340,7 +1338,8 @@ const mapDispatchToProps = (dispatch) => {
     setMapCameraPos: (mapCameraPos) => dispatch(setMapCameraPos(mapCameraPos)),
     setShowApproveAddressCard: (showApproveAddressCard) => dispatch(setShowApproveAddressCard(showApproveAddressCard)),
     setSearchedAddressTextView: (searchedAddressTextView) => dispatch(setSearchedAddressTextView(searchedAddressTextView)),
-    setCurrentLocation: (currentLocation) => dispatch(setCurrentLocation(currentLocation))
+    setCurrentLocation: (currentLocation) => dispatch(setCurrentLocation(currentLocation)),
+    setBusyOnWaitingNewRunner: (busyOnWaitingNewRunner) => dispatch(setBusyOnWaitingNewRunner(busyOnWaitingNewRunner))
   };
 };
 
@@ -1380,7 +1379,9 @@ Home.propTypes = {
   searchedAddressTextView: PropTypes.object,
   setSearchedAddressTextView: PropTypes.func,
   currentLocation: PropTypes.object,
-  setCurrentLocation: PropTypes.func
+  setCurrentLocation: PropTypes.func,
+  busyOnWaitingNewRunner: PropTypes.bool,
+  setBusyOnWaitingNewRunner: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

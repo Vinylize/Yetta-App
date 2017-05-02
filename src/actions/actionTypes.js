@@ -20,3 +20,4 @@ export const setMapCameraPos = 'SET_MAP_CAMERA_POSITION';
 export const setShowApproveAddressCard = 'SET_SHOW_APPROVE_ADDRESS_CARD';
 export const setSearchedAddressTextView = 'SET_SEARCHED_ADDRESS_TEXT_VIEW';
 export const setCurrentLocation = 'SET_CURRENT_LOCATION';
+export const setBusyOnWaitingNewRunner = 'SET_BUSY_ON_WAITING_NEW_RUNNER';
