@@ -19,7 +19,6 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase';
 import {
-  createOrderNavigatorRoute,
   profileNavigatorRoute,
   settingsNavigatorRoute,
   paymentInfoNavigatorRoute,
