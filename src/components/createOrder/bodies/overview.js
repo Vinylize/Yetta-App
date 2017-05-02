@@ -68,18 +68,22 @@ export default class RegisterOrder extends Component {
             result
           }
         }`)
-          .then(res => res.userCreateOrder.result)
+          .then(res => {
+            console.log(res);
+            return res.userCreateOrder.result;
+          })
           .then(this.addNewRunnerListener.bind(this))
           .catch(handleError);
       });
   }
 
   addNewRunnerListener(orderId) {
-    const ref = firebase.database().ref().child('order').child(orderId).child('runnerId');
-    ref.on('value', (childSnapshot, prevChildKey) => {
-      console.log(childSnapshot.val(), prevChildKey);
-      // todo: implement this
-    });
+    console.log(orderId);
+    // const ref = firebase.database().ref().child('order').child(orderId).child('runnerId');
+    // ref.on('value', (childSnapshot, prevChildKey) => {
+    //   console.log(childSnapshot.val(), prevChildKey);
+    //   // todo: implement this
+    // });
     this.props.handleCreateOrderDone();
   }
 

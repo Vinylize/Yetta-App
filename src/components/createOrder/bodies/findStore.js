@@ -1,16 +1,17 @@
 import React, { PureComponent, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
   Dimensions,
   TouchableOpacity,
   Text,
   View,
-  ListView,
-  Alert
+  ListView
 } from 'react-native';
 import { URL } from './../../../utils';
 import * as firebase from 'firebase';
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
+import { setNode } from './../../../actions/createOrderActions';
 
 const client = new Lokka({
   transport: new Transport(URL)
@@ -23,7 +24,7 @@ const WIDTH = Dimensions.get('window').width;
 //   // TBD
 // };
 
-export default class FindStore extends PureComponent {
+class FindStore extends PureComponent {
   constructor() {
     super();
     this.renderBrandListRow = this.renderBrandListRow.bind(this);
@@ -90,7 +91,7 @@ export default class FindStore extends PureComponent {
     const { latitude, longitude } = this.props.coordinate;
     return client.query(`{
       viewer{
-        node (lat: ${latitude}, lon: ${longitude}, radius: 432532434234, c1: 0, c2: 0) {
+        nodeList (lat: ${latitude}, lon: ${longitude}, radius: 432532434234, c1: 0, c2: 0) {
           n,
           addr,
           formattedDistance
@@ -104,14 +105,15 @@ export default class FindStore extends PureComponent {
       .then(this.queryNodeHelper)
       .then(this.setStoreListFromServer)
       .catch((err) => {
-        Alert.alert('query getStoreList failed', err);
+        console.log(err);
+        // Alert.alert('query getStoreList failed', err);
       });
   }
 
   setStoreListFromServer(res) {
-    const { node } = res.viewer;
+    const { nodeList } = res.viewer;
     // Alert.alert('query success', String(node.length));
-    this.props.setNode(node);
+    this.props.setNode(nodeList);
   }
 
   renderBrandListRow(name) {
@@ -200,3 +202,17 @@ FindStore.propTypes = {
   setNode: PropTypes.func.isRequired,
   node: PropTypes.array.isRequired
 };
+
+function mapStateToProps(state) {
+  return {
+    node: state.createOrder.node
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setNode: (node) => dispatch(setNode(node))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FindStore);
