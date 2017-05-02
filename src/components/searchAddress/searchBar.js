@@ -22,6 +22,7 @@ import {
   setShowApproveAddressCard,
   setSearchedAddressTextView
 } from './../../actions/componentsActions/homeActions';
+import { setDestinationLocation } from './../../actions/createOrderActions';
 // [end redux functions]
 
 const HEIGHT = Dimensions.get('window').height;
@@ -44,6 +45,7 @@ class SearchBar extends Component {
   }
 
   handleAddressBtn(firstAddressToken, addressTextView, coordinate) {
+    // todo: clarify whether this is called by pressing 내 위치 or others
     const vmm = NativeModules.VinylMapManager;
     if (coordinate) {
       // user tapped new predicted place.
@@ -52,10 +54,12 @@ class SearchBar extends Component {
       this.props.setCameraWillMoveByPlaceDetailAPI(true);
 
       const { lat, lng } = coordinate;
+      this.props.setDestinationLocation({lat, lon: lng});
       vmm.animateToLocation(String(lat), String(lng));
     } else {
-      // user tapped my-location/search-with-pin
+      // user tapped my-location/ didn't move map at all
       const { lat, lon } = this.props.currentLocation;
+      this.props.setDestinationLocation({lat, lon});
       vmm.animateToLocation(String(lat), String(lon));
     }
 
@@ -119,7 +123,7 @@ class SearchBar extends Component {
 
             // search the predicted address in detail
             GOOGLE_MAPS_API.placeDetails(rowData.place_id)
-              .then((res) => {
+              .then(res => {
                 this.props.setBusyWaitingPlaceDetailAPI(false);
 
                 // res: coordinate of predicted place
@@ -128,7 +132,20 @@ class SearchBar extends Component {
               });
           } else {
             // when 현재 내 위치/핀으로 찾기 clicked
-            this.handleAddressBtn('현재 내 위치', []);
+
+            this.props.setBusyWaitingPlaceDetailAPI(true);
+
+            const { lat, lon } = this.props.currentLocation;
+            // todo: refactor geocoding functions in one place if possible
+            GOOGLE_MAPS_API.geocoding(lat, lon)
+              .then(resArr => {
+                this.props.setBusyWaitingPlaceDetailAPI(false);
+                if (resArr) {
+                  this.handleAddressBtn(
+                    resArr[0].long_name + ' ' + resArr[1].long_name,
+                    resArr.slice(2).map(token => token.long_name + ' '));
+                }
+              });
           }
         }}
       >
@@ -298,10 +315,10 @@ class SearchBar extends Component {
 }
 
 SearchBar.propTypes = {
-  // busyWaiting
+  // reducers/busyWaiting
   setBusyWaitingPlaceDetailAPI: PropTypes.func,
 
-  // components/home
+  // reducers/components/home
   setCameraWillMoveByPlaceDetailAPI: PropTypes.func,
   setShowApproveAddressCard: PropTypes.func,
   setSearchedAddressTextView: PropTypes.func,
@@ -310,11 +327,14 @@ SearchBar.propTypes = {
   mapCameraPos: PropTypes.object,
   currentLocation: PropTypes.object,
 
-  // runnerStatus
+  // reducers/runnerStatus
   onDelivery: PropTypes.bool,
 
-  // userStatus
-  isRunner: PropTypes.bool
+  // reducers/userStatus
+  isRunner: PropTypes.bool,
+
+  // reducers/createOrder
+  setDestinationLocation: PropTypes.func
 };
 
 function mapStateToProps(state) {
@@ -335,7 +355,8 @@ let mapDispatchToProps = (dispatch) => {
     setCameraWillMoveByPlaceDetailAPI: (cameraWillMoveByPlaceDetailAPI) =>
       dispatch(setCameraWillMoveByPlaceDetailAPI(cameraWillMoveByPlaceDetailAPI)),
     setShowApproveAddressCard: (showApproveAddressCard) => dispatch(setShowApproveAddressCard(showApproveAddressCard)),
-    setSearchedAddressTextView: (searchedAddressTextView) => dispatch(setSearchedAddressTextView(searchedAddressTextView))
+    setSearchedAddressTextView: (searchedAddressTextView) => dispatch(setSearchedAddressTextView(searchedAddressTextView)),
+    setDestinationLocation: (destinationLocation) => dispatch(setDestinationLocation(destinationLocation))
   };
 };
 

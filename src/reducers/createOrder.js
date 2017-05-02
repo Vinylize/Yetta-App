@@ -4,7 +4,8 @@ const initialState = {
   nodeList: [],
   stagedNode: {},
   stagedDestination: {},
-  stagedItems: []
+  stagedItems: [],
+  destinationLocation: {lat: undefined, lon: undefined}
 };
 
 const createOrder = (state = initialState, action = {}) => {
@@ -57,6 +58,11 @@ const createOrder = (state = initialState, action = {}) => {
       stagedNode: {},
       stagedDestination: {},
       stagedItems: []
+    };
+  case types.setDestinationLocation:
+    return {
+      ...state,
+      destinationLocation: action.destinationLocation
     };
   default:
     return state;

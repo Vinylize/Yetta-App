@@ -55,3 +55,9 @@ export const discardOrder = () => {
   };
 };
 
+export const setDestinationLocation = (destinationLocation) => {
+  return {
+    type: types.setDestinationLocation,
+    destinationLocation
+  };
+};

@@ -90,7 +90,7 @@ class CreateOrder extends Component {
           brandList={brandListDataSource[brandList]}
           selectedBrand={selectedBrand}
           handleNextBtn={this.handleNextBtn}
-          coordinate={this.props.mapCameraPos}
+          coordinate={this.props.destinationLocation}
         />
       );
     } else if (step === 2) {
@@ -129,13 +129,16 @@ CreateOrder.propTypes = {
   node: PropTypes.array,
 
   // reducers/components/home
-  setBusyOnWaitingNewRunner: PropTypes.func
+  setBusyOnWaitingNewRunner: PropTypes.func,
+
+  // reducers/createOrder
+  destinationLocation: PropTypes.object
 };
 
 function mapStateToProps(state) {
   return {
     node: state.createOrder.node,
-    mapCameraPos: state.home.mapCameraPos
+    destinationLocation: state.createOrder.destinationLocation
   };
 }
 

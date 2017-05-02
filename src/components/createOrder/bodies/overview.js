@@ -38,7 +38,6 @@ class RegisterOrder extends Component {
 
   createOrderHelper() {
     const {id, name, addr} = this.props.stagedNode;
-    console.log(name, addr);
     firebase.auth().currentUser.getToken()
       .then(token => {
         client._transport._httpOptions.headers = {
@@ -61,8 +60,8 @@ class RegisterOrder extends Component {
             dest:{
               n1:"${this.props.searchedAddressTextView.firstAddressToken}",
               n2:"910호",
-              lat:${this.props.mapCameraPos.lat},
-              lon:${this.props.mapCameraPos.lon}
+              lat:${this.props.destinationLocation.lat},
+              lon:${this.props.destinationLocation.lon}
             },
             dC:0,
             rC:0,
@@ -322,17 +321,16 @@ RegisterOrder.propTypes = {
 
   // reducers/createOrder
   stagedNode: PropTypes.object,
+  destinationLocation: PropTypes.object,
 
   // reducers/components/home
-  mapCameraPos: PropTypes.object,
   searchedAddressTextView: PropTypes.object
 };
-
 
 function mapStateToProps(state) {
   return {
     stagedNode: state.createOrder.stagedNode,
-    mapCameraPos: state.home.mapCameraPos,
+    destinationLocation: state.createOrder.destinationLocation,
     searchedAddressTextView: state.home.searchedAddressTextView
   };
 }

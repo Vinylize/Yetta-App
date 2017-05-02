@@ -27,6 +27,8 @@ import {
   phoneVerificationNavigatorRoute
 } from './../navigator/navigatorRoutes';
 
+import IMG_LOGO from './../../assets/logo.png';
+
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
 
@@ -255,7 +257,7 @@ class Login extends Component {
         style={styles.linearGradient}
       >
         <View style={styles.container}>
-          <Image style={styles.logo} source={require('../../assets/logo.png')} />
+          <Image style={styles.logo} source={IMG_LOGO} />
           <View style={styles.textInputContainer}>
             <TextInput
               ref='inputEmail'
