@@ -61,8 +61,8 @@ class RegisterOrder extends Component {
             dest:{
               n1:"서울시 강동구 길동 한신휴플러스",
               n2:"910호",
-              lat:12.3232,
-              lon:23.3232
+              lat:${this.props.mapCameraPos.lat},
+              lon:${this.props.mapCameraPos.lon}
             },
             dC:0,
             rC:0,
@@ -321,13 +321,17 @@ RegisterOrder.propTypes = {
   handleCreateOrderDone: PropTypes.func,
 
   // reducers/createOrder
-  stagedNode: PropTypes.object
+  stagedNode: PropTypes.object,
+
+  // reducers/components/home
+  mapCameraPos: PropTypes.object
 };
 
 
 function mapStateToProps(state) {
   return {
-    stagedNode: state.createOrder.stagedNode
+    stagedNode: state.createOrder.stagedNode,
+    mapCameraPos: state.home.mapCameraPos
   };
 }
 

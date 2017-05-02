@@ -70,7 +70,7 @@ class ApproveCard extends Component {
               marginTop: 5,
               color: 'black'
             }}>
-              {this.props.address.firstAddressToken}
+              {this.props.searchedAddressTextView.firstAddressToken}
             </Text>
           }
           <View style={{
@@ -86,7 +86,7 @@ class ApproveCard extends Component {
             >
               {(this.props.busyWaitingGeocodingAPI) ?
                 '주소를 불러오는중'
-                : this.props.address.addressTextView}
+                : this.props.searchedAddressTextView.addressTextView}
             </Text>
           </View>
         </View>
@@ -122,11 +122,11 @@ class ApproveCard extends Component {
 
 ApproveCard.propTypes = {
   navigator: PropTypes.any.isRequired,
-  address: PropTypes.any,
   busyWaitingGeocodingAPI: PropTypes.bool,
 
   // reducers/components/home
   showApproveAddressCard: PropTypes.bool,
+  searchedAddressTextView: PropTypes.object,
 
   // reducers/busyWaiting
   setShowApproveAddressCard: PropTypes.func
@@ -135,6 +135,7 @@ ApproveCard.propTypes = {
 function mapStateToProps(state) {
   return {
     showApproveAddressCard: state.home.showApproveAddressCard,
+    searchedAddressTextView: state.home.searchedAddressTextView,
     busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI
   };
 }

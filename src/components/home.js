@@ -1241,10 +1241,7 @@ class Home extends Component {
           <SearchBar/>
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
-          <ApproveCard
-            navigator={this.props.navigator}
-            address={this.props.searchedAddressTextView}
-          />
+          <ApproveCard navigator={this.props.navigator}/>
           {this.props.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>
         <UserModeTransition
