@@ -21,3 +21,12 @@ export const setShowApproveAddressCard = 'SET_SHOW_APPROVE_ADDRESS_CARD';
 export const setSearchedAddressTextView = 'SET_SEARCHED_ADDRESS_TEXT_VIEW';
 export const setCurrentLocation = 'SET_CURRENT_LOCATION';
 export const setBusyOnWaitingNewRunner = 'SET_BUSY_ON_WAITING_NEW_RUNNER';
+
+// createOrder
+export const setStagedNode = 'SET_STAGED_NODE';
+export const addStagedItem = 'ADD_STAGED_ITEM';
+export const deleteStagedItem = 'DELETE_STAGED_ITEM';
+export const increaseStagedItemCount = 'INCREASE_STAGED_ITEM_COUNT';
+export const decreaseStagedItemCount = 'deCREASE_STAGED_ITEM_COUNT';
+export const setStagedDestination = 'SET_STAGED_DESTINATION';
+export const discardOrder = 'DISCARD_ORDER';
