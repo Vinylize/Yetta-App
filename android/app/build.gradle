@@ -83,6 +83,14 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
+    signingConfigs {
+        YettaKeyStore {
+            keyAlias 'key0'
+            keyPassword 'yettakey0'
+            storeFile file('/Users/yangwoolee/Desktop/Yetta-App/Yetta.keystore')
+            storePassword 'yettayetta'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "23.0.3"
 
@@ -91,7 +99,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0." + getDate()
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -110,6 +118,10 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.YettaKeyStore
+        }
+        debug {
+            signingConfig signingConfigs.YettaKeyStore
         }
     }
     // applicationVariants are e.g. debug, release
@@ -127,6 +139,12 @@ android {
     }
 }
 
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHHmmss')
+    return formattedDate
+}
+
 dependencies {
     compile project(':lottie-react-native')
     compile project(':react-native-linear-gradient')
@@ -135,7 +153,6 @@ dependencies {
     compile project(':react-native-background-timer')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     // From node_modules
-
     compile 'com.facebook.react:react-native:+'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.google.android.gms:play-services-maps:10.0.1'
