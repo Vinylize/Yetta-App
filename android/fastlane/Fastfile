@@ -1,0 +1,33 @@
+fastlane_version "2.28.5"
+
+default_platform :android
+
+platform :android do
+
+desc "Deploy to development hockey for weekly development"
+
+    lane :beta do
+        desc "delpoy Yetta Android Application."
+
+        gradle(task: "assemble", build_type: "Release")
+
+        hockey(
+            api_token: "ddb1d989ca3d48abb5d88d476147ef5c"
+        )
+    end
+
+    after_all do |lane|
+        slack(
+           slack_url: "https://hooks.slack.com/services/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"
+        )
+    end
+
+    error do |lane, exception|
+        slack(
+          slack_url: "https://hooks.slack.com/services/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",
+          message: exception.message,
+          success: false
+        )
+    end
+
+end
