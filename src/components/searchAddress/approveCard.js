@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
   ActivityIndicator,
   Dimensions,
@@ -8,6 +9,8 @@ import {
   StyleSheet,
   Platform
 } from 'react-native';
+import { setShowApproveAddressCard } from './../../actions/componentsActions/homeActions';
+import { createOrderNavigatorRoute } from './../../navigator/navigatorRoutes';
 
 // const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -16,7 +19,17 @@ const WIDTH = Dimensions.get('window').width;
 //   // TBD
 // };
 
-export default class ApproveCard extends Component {
+class ApproveCard extends Component {
+  constructor() {
+    super();
+    this.handleApproveBtn = this.handleApproveBtn.bind(this);
+  }
+
+  handleApproveBtn() {
+    this.props.navigator.push(createOrderNavigatorRoute());
+    this.props.setShowApproveAddressCard(false);
+  }
+
   render() {
     if (Platform.OS === 'ios' && !this.props.showApproveAddressCard) {
       /**
@@ -57,7 +70,7 @@ export default class ApproveCard extends Component {
               marginTop: 5,
               color: 'black'
             }}>
-              {this.props.address.firstAddressToken}
+              {this.props.searchedAddressTextView.firstAddressToken}
             </Text>
           }
           <View style={{
@@ -73,7 +86,7 @@ export default class ApproveCard extends Component {
             >
               {(this.props.busyWaitingGeocodingAPI) ?
                 '주소를 불러오는중'
-                : this.props.address.addressTextView}
+                : this.props.searchedAddressTextView.addressTextView}
             </Text>
           </View>
         </View>
@@ -95,7 +108,7 @@ export default class ApproveCard extends Component {
               borderTopColor: 'grey',
               borderBottomColor: 'white'
             }}
-            onPress={this.props.handleApproveBtn}
+            onPress={this.handleApproveBtn}
           >
             <Text style={{color: 'black'}}>
               이 주소로 주문하기
@@ -108,8 +121,29 @@ export default class ApproveCard extends Component {
 }
 
 ApproveCard.propTypes = {
-  address: PropTypes.any,
-  handleApproveBtn: PropTypes.func,
+  navigator: PropTypes.any.isRequired,
+  busyWaitingGeocodingAPI: PropTypes.bool,
+
+  // reducers/components/home
   showApproveAddressCard: PropTypes.bool,
-  busyWaitingGeocodingAPI: PropTypes.bool.isRequired
+  searchedAddressTextView: PropTypes.object,
+
+  // reducers/busyWaiting
+  setShowApproveAddressCard: PropTypes.func
 };
+
+function mapStateToProps(state) {
+  return {
+    showApproveAddressCard: state.home.showApproveAddressCard,
+    searchedAddressTextView: state.home.searchedAddressTextView,
+    busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setShowApproveAddressCard: (showApproveAddressCard) => dispatch(setShowApproveAddressCard(showApproveAddressCard))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ApproveCard);

@@ -19,7 +19,6 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase';
 import {
-  createOrderNavigatorRoute,
   profileNavigatorRoute,
   settingsNavigatorRoute,
   paymentInfoNavigatorRoute,
@@ -52,7 +51,8 @@ import {
   setMapCameraPos,
   setShowApproveAddressCard,
   setSearchedAddressTextView,
-  setCurrentLocation
+  setCurrentLocation,
+  setBusyOnWaitingNewRunner
 } from './../actions/componentsActions/homeActions';
 // [end redux functions]
 
@@ -75,10 +75,10 @@ const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServic
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 const cardWidth = WIDTH * 0.92;
-const expandedCardHeight = HEIGHT * 0.43;
+export const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
-const cardInitBottom = -expandedCardHeight + cardHeight;
-const cardHidedBottom = -expandedCardHeight;
+export const cardInitBottom = -expandedCardHeight + cardHeight;
+export const cardHidedBottom = -expandedCardHeight;
 const menuWidth = WIDTH;
 
 const PLATFORM_SPECIFIC = {
@@ -97,14 +97,12 @@ class Home extends Component {
       markerTest: false,
       clickedMarkerID: undefined,
       animatedCardLeftVal: new Animated.Value(PLATFORM_SPECIFIC.animatedCardLeftVal),
-      animatedCardBottomVal: new Animated.Value(cardHidedBottom),
       animMenu: new Animated.Value(-menuWidth),
       cardIndex: 0,
       cardExpanded: false,
       cardAppeared: false,
       busyOnCardMoveX: false,
       busyOnCardMoveY: false,
-      busyOnWaitingNewRunner: false,
       processState: 2,
       trackingCurrentPos: false,
       refViewForBlurView: null,
@@ -287,7 +285,7 @@ class Home extends Component {
       authorization: token
     };
     client.mutate(`{
-            userUpdateCoordinate(
+            runnerUpdateCoordinate(
               input:{
                 lat: ${data.latitude},
                 lon: ${data.longitude}
@@ -379,9 +377,9 @@ class Home extends Component {
   }
 
   animateCardPosResetY(dy) {
-    this.state.animatedCardBottomVal.setValue(-dy);
+    this.props.animatedCardBottomVal.setValue(-dy);
     Animated.timing(
-      this.state.animatedCardBottomVal,
+      this.props.animatedCardBottomVal,
       {
         toValue: cardInitBottom,
         duration: 100,
@@ -428,9 +426,9 @@ class Home extends Component {
 
   animateCardExpand(dy) {
     if (cardInitBottom - dy <= 0) {
-      this.state.animatedCardBottomVal.setValue(cardInitBottom - dy);
+      this.props.animatedCardBottomVal.setValue(cardInitBottom - dy);
       Animated.timing(
-        this.state.animatedCardBottomVal,
+        this.props.animatedCardBottomVal,
         {
           toValue: 0,
           duration: 100,
@@ -443,7 +441,7 @@ class Home extends Component {
         });
       });
     } else {
-      this.state.animatedCardBottomVal.setValue(0);
+      this.props.animatedCardBottomVal.setValue(0);
       this.setState({
         busyOnCardMoveY: false,
         cardExpanded: true
@@ -452,9 +450,9 @@ class Home extends Component {
   }
 
   animateCardAppear() {
-    this.state.animatedCardBottomVal.setValue(-expandedCardHeight);
+    this.props.animatedCardBottomVal.setValue(-expandedCardHeight);
     Animated.timing(
-      this.state.animatedCardBottomVal,
+      this.props.animatedCardBottomVal,
       {
         toValue: cardInitBottom,
         duration: 100,
@@ -464,9 +462,9 @@ class Home extends Component {
   }
 
   animateCardHide(dy) {
-    this.state.animatedCardBottomVal.setValue(cardInitBottom - dy);
+    this.props.animatedCardBottomVal.setValue(cardInitBottom - dy);
     Animated.timing(
-      this.state.animatedCardBottomVal,
+      this.props.animatedCardBottomVal,
       {
         toValue: -expandedCardHeight,
         duration: 100,
@@ -510,31 +508,6 @@ class Home extends Component {
 
   handleOrderHistory() {
     this.props.navigator.push(orderHistoryNavigatorRoute());
-  }
-
-  handleCreateOrderDone() {
-    this.props.navigator.pop();
-    this.animateCardAppear();
-
-    /**
-     * this disables native API that returns coordinate of the map center
-     * todo: implement this in Android
-     */
-    if (Platform.OS === 'ios') {
-      vmm.disableDidChangeCameraPosition();
-    }
-
-    this.setState({busyOnWaitingNewRunner: true});
-  }
-
-  handleSearchedAddressApproveBtn() {
-    const { lat, lon } = this.props.mapCameraPos;
-    this.props.navigator.push(createOrderNavigatorRoute(
-      this.handleCreateOrderDone.bind(this),
-      lat,
-      lon
-    ));
-    this.props.setShowApproveAddressCard(false);
   }
 
   renderMap() {
@@ -904,7 +877,7 @@ class Home extends Component {
             justifyContent: 'center',
             alignItems: 'flex-end'
           }}>
-            {this.state.busyOnWaitingNewRunner ?
+            {this.props.busyOnWaitingNewRunner ?
               <ActivityIndicator
                 animating={true}
                 style={{
@@ -938,7 +911,7 @@ class Home extends Component {
                 <Text style={{
                   marginBottom: 3,
                   marginLeft: 12
-                }}>{this.state.busyOnWaitingNewRunner ?
+                }}>{this.props.busyOnWaitingNewRunner ?
                   '근처의 러너를 찾는중'
                   : header}</Text>
               </View>
@@ -1178,7 +1151,6 @@ class Home extends Component {
   renderCardContainer() {
     const {
       animatedCardLeftVal,
-      animatedCardBottomVal,
       cardIndex
     } = this.state;
 
@@ -1190,7 +1162,7 @@ class Home extends Component {
         style={{
           position: 'absolute',
           left: animatedCardLeftVal,
-          bottom: animatedCardBottomVal,
+          bottom: this.props.animatedCardBottomVal,
           width: WIDTH * 3,
           height: expandedCardHeight,
           zIndex: 1
@@ -1269,12 +1241,7 @@ class Home extends Component {
           <SearchBar/>
           {this.renderLocationBtn()}
           {this.renderCardContainer()}
-          <ApproveCard
-            showApproveAddressCard = {this.props.showApproveAddressCard}
-            address={this.props.searchedAddressTextView}
-            handleApproveBtn={this.handleSearchedAddressApproveBtn.bind(this)}
-            busyWaitingGeocodingAPI={this.props.busyWaitingGeocodingAPI}
-          />
+          <ApproveCard navigator={this.props.navigator}/>
           {this.props.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>
         <UserModeTransition
@@ -1322,7 +1289,9 @@ const mapStateToProps = (state) => {
     mapCameraPos: state.home.mapCameraPos,
     showApproveAddressCard: state.home.showApproveAddressCard,
     searchedAddressTextView: state.home.searchedAddressTextView,
-    currentLocation: state.home.currentLocation
+    currentLocation: state.home.currentLocation,
+    busyOnWaitingNewRunner: state.home.busyOnWaitingNewRunner,
+    animatedCardBottomVal: state.home.animatedCardBottomVal
   };
 };
 
@@ -1340,7 +1309,8 @@ const mapDispatchToProps = (dispatch) => {
     setMapCameraPos: (mapCameraPos) => dispatch(setMapCameraPos(mapCameraPos)),
     setShowApproveAddressCard: (showApproveAddressCard) => dispatch(setShowApproveAddressCard(showApproveAddressCard)),
     setSearchedAddressTextView: (searchedAddressTextView) => dispatch(setSearchedAddressTextView(searchedAddressTextView)),
-    setCurrentLocation: (currentLocation) => dispatch(setCurrentLocation(currentLocation))
+    setCurrentLocation: (currentLocation) => dispatch(setCurrentLocation(currentLocation)),
+    setBusyOnWaitingNewRunner: (busyOnWaitingNewRunner) => dispatch(setBusyOnWaitingNewRunner(busyOnWaitingNewRunner))
   };
 };
 
@@ -1380,7 +1350,10 @@ Home.propTypes = {
   searchedAddressTextView: PropTypes.object,
   setSearchedAddressTextView: PropTypes.func,
   currentLocation: PropTypes.object,
-  setCurrentLocation: PropTypes.func
+  setCurrentLocation: PropTypes.func,
+  busyOnWaitingNewRunner: PropTypes.bool,
+  setBusyOnWaitingNewRunner: PropTypes.func,
+  animatedCardBottomVal: PropTypes.any
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

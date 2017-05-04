@@ -1,5 +1,4 @@
 import * as types from './../actions/actionTypes';
-import update from 'react-addons-update';
 
 const initialState = {
   /**
@@ -11,9 +10,7 @@ const initialState = {
 const userStatus = (state = initialState, action = {}) => {
   switch (action.type) {
   case types.setIsRunner:
-    return update(state, {
-      isRunner: { $set: action.isRunner }
-    });
+    return {...state, isRunner: action.isRunner };
   default:
     return state;
   }

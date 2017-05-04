@@ -1,10 +1,13 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
   Text,
   View,
   TouchableOpacity,
   Dimensions
 } from 'react-native';
+import Header from './../header/header';
+
 import { URL, handleError } from '../../../utils';
 import * as firebase from 'firebase';
 
@@ -27,7 +30,7 @@ const styles = {
   }
 };
 
-export default class RegisterOrder extends Component {
+class RegisterOrder extends Component {
   constructor() {
     super();
     this.state = {
@@ -36,6 +39,9 @@ export default class RegisterOrder extends Component {
   }
 
   createOrderHelper() {
+    const {id, name, addr} = this.props.stagedNode;
+    console.log(name);
+    console.log(addr);
     firebase.auth().currentUser.getToken()
       .then(token => {
         client._transport._httpOptions.headers = {
@@ -54,12 +60,12 @@ export default class RegisterOrder extends Component {
                 manu:"농심",
                 n:"바나나 우유3",
                 cnt:2}],
-            nId: "-KiTzNSVH6ETa-RU_z5U",
+            nId: "${id}",
             dest:{
-              n1:"서울시 강동구 길동 한신휴플러스",
+              n1:"${this.props.searchedAddressTextView.firstAddressToken}",
               n2:"910호",
-              lat:12.3232,
-              lon:23.3232
+              lat:${this.props.destinationLocation.lat},
+              lon:${this.props.destinationLocation.lon}
             },
             dC:0,
             rC:0,
@@ -284,7 +290,7 @@ export default class RegisterOrder extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.renderHeader()}
+        <Header back={this.props.back}/>
         <View style={{
           flex: 1,
           width: WIDTH,
@@ -315,5 +321,23 @@ export default class RegisterOrder extends Component {
 }
 
 RegisterOrder.propTypes = {
-  handleCreateOrderDone: PropTypes.func
+  back: PropTypes.func.isRequired,
+  handleCreateOrderDone: PropTypes.func.isRequired,
+
+  // reducers/createOrder
+  stagedNode: PropTypes.object,
+  destinationLocation: PropTypes.object,
+
+  // reducers/components/home
+  searchedAddressTextView: PropTypes.object
 };
+
+function mapStateToProps(state) {
+  return {
+    stagedNode: state.createOrder.stagedNode,
+    destinationLocation: state.createOrder.destinationLocation,
+    searchedAddressTextView: state.home.searchedAddressTextView
+  };
+}
+
+export default connect(mapStateToProps, undefined)(RegisterOrder);

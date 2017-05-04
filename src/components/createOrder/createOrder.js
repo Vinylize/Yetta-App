@@ -3,9 +3,15 @@ import { connect } from 'react-redux';
 import {
   View
 } from 'react-native';
-import { setNode } from './../../actions/createOrderActions';
 
-import Header from './header/header';
+// [start redux actions]
+import { setNode } from './../../actions/createOrderActions';
+import {
+  setBusyOnWaitingNewRunner,
+  animateCardAppear
+} from './../../actions/componentsActions/homeActions';
+// [end redux actions]
+
 import Overview from './bodies/overview';
 import FindStore from './bodies/findStore';
 import FindBrandV2 from './bodies/findBrandV2';
@@ -36,6 +42,8 @@ class CreateOrder extends Component {
     };
     this.handleBrandBtn = this.handleBrandBtn.bind(this);
     this.handleNextBtn = this.handleNextBtn.bind(this);
+    this.handleCreateOrderDone = this.handleCreateOrderDone.bind(this);
+    this.handleHeaderBackBtn = this.handleHeaderBackBtn.bind(this);
   }
 
   handleHeaderBackBtn() {
@@ -59,26 +67,51 @@ class CreateOrder extends Component {
     this.setState({step: step + 1});
   }
 
+  handleCreateOrderDone() {
+    this.props.navigator.pop();
+    animateCardAppear();
+    /**
+     * this disables native API that returns coordinate of the map center
+     * todo: implement this in Android
+     */
+    // if (Platform.OS === 'ios') {
+    //   vmm.disableDidChangeCameraPosition();
+    // }
+    this.props.setBusyOnWaitingNewRunner(true);
+  }
+
   renderBody() {
     const { step, brandList, brandListDataSource, selectedBrand } = this.state;
     if (step === 0) {
-      return (<FindBrandV2 handleBrandBtn={this.handleBrandBtn}/>);
+      return (
+          <FindBrandV2
+            handleBrandBtn={this.handleBrandBtn}
+            back={this.handleHeaderBackBtn}
+          />
+      );
     } else if (step === 1) {
       return (
-        <FindStore
-          brandList={brandListDataSource[brandList]}
-          selectedBrand={selectedBrand}
-          handleNextBtn={this.handleNextBtn}
-          coordinate={this.props.coordinate}
-        />
+          <FindStore
+            brandList={brandListDataSource[brandList]}
+            selectedBrand={selectedBrand}
+            handleNextBtn={this.handleNextBtn}
+            coordinate={this.props.destinationLocation}
+            back={this.handleHeaderBackBtn}
+          />
       );
     } else if (step === 2) {
       return (
-        <AddProduct/>
+        <AddProduct
+          back={this.handleHeaderBackBtn}
+          next={this.handleNextBtn}
+        />
       );
     } else if (step === 3) {
       return (
-        <Overview handleCreateOrderDone={this.props.func.handleCreateOrderDone}/>
+        <Overview
+          handleCreateOrderDone={this.handleCreateOrderDone}
+          back={this.handleHeaderBackBtn}
+        />
       );
     }
     return null;
@@ -87,14 +120,6 @@ class CreateOrder extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {(this.state.step === 2) ?
-          <Header
-            back={this.handleHeaderBackBtn.bind(this)}
-            next={this.handleNextBtn.bind(this)}
-          />
-          :
-          <Header back={this.handleHeaderBackBtn.bind(this)}/>
-        }
         {this.renderBody()}
       </View>
     );
@@ -103,21 +128,28 @@ class CreateOrder extends Component {
 
 CreateOrder.propTypes = {
   navigator: PropTypes.any,
-  func: PropTypes.any,
-  coordinate: PropTypes.object,
+  mapCameraPos: PropTypes.object,
   setNode: PropTypes.func,
-  node: PropTypes.array
+  node: PropTypes.array,
+
+  // reducers/components/home
+  setBusyOnWaitingNewRunner: PropTypes.func,
+
+  // reducers/createOrder
+  destinationLocation: PropTypes.object
 };
 
 function mapStateToProps(state) {
   return {
-    node: state.createOrder.node
+    node: state.createOrder.node,
+    destinationLocation: state.createOrder.destinationLocation
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setNode: (node) => dispatch(setNode(node))
+    setNode: (node) => dispatch(setNode(node)),
+    setBusyOnWaitingNewRunner: (busyOnWaitingNewRunner) => dispatch(setBusyOnWaitingNewRunner(busyOnWaitingNewRunner))
   };
 };
 

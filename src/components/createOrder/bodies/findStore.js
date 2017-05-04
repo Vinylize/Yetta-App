@@ -7,11 +7,16 @@ import {
   View,
   ListView
 } from 'react-native';
+import Header from './../header/header';
+
 import { URL } from './../../../utils';
 import * as firebase from 'firebase';
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
-import { setNode } from './../../../actions/createOrderActions';
+import {
+  setNodeList,
+  setStagedNode
+} from './../../../actions/createOrderActions';
 
 const client = new Lokka({
   transport: new Transport(URL)
@@ -38,7 +43,7 @@ class FindStore extends PureComponent {
     this.getStoreListFromServer();
   }
   renderVerticalRow(rowData) {
-    const { addr, n, formattedDistance } = rowData;
+    const { addr, n, formattedDistance, id } = rowData;
     return (
       <TouchableOpacity
         style={{
@@ -51,9 +56,13 @@ class FindStore extends PureComponent {
           flexDirection: 'column',
           justifyContent: 'center',
           paddingLeft: 30,
-          paddingRight: 30
+          paddingRight: 30,
+          elevation: 3
         }}
-        onPress={this.props.handleNextBtn}
+        onPress={() => {
+          this.props.setStagedNode(id, n, addr);
+          this.props.handleNextBtn();
+        }}
       >
         <View style={{
           flexDirection: 'row',
@@ -88,13 +97,14 @@ class FindStore extends PureComponent {
     client._transport._httpOptions.headers = {
       authorization: token
     };
-    const { latitude, longitude } = this.props.coordinate;
+    const { lat, lon } = this.props.coordinate;
     return client.query(`{
       viewer{
-        nodeList (lat: ${latitude}, lon: ${longitude}, radius: 432532434234, c1: 0, c2: 0) {
+        nodeList (lat: ${lat}, lon: ${lon}, radius: 432532434234, c1: 0, c2: 0) {
           n,
           addr,
-          formattedDistance
+          formattedDistance,
+          id
         }
       }
     }`);
@@ -104,16 +114,12 @@ class FindStore extends PureComponent {
     return firebase.auth().currentUser.getToken()
       .then(this.queryNodeHelper)
       .then(this.setStoreListFromServer)
-      .catch((err) => {
-        console.log(err);
-        // Alert.alert('query getStoreList failed', err);
-      });
+      .catch(console.log);
   }
 
   setStoreListFromServer(res) {
     const { nodeList } = res.viewer;
-    // Alert.alert('query success', String(node.length));
-    this.props.setNode(nodeList);
+    this.props.setNodeList(nodeList);
   }
 
   renderBrandListRow(name) {
@@ -149,10 +155,10 @@ class FindStore extends PureComponent {
     return (
       <View style={{
         flex: 1,
-        marginTop: 90,
         backgroundColor: 'white',
         flexDirection: 'column'
       }}>
+        <Header back={this.props.back}/>
         <View style={{
           height: 58,
           width: WIDTH,
@@ -161,7 +167,8 @@ class FindStore extends PureComponent {
           justifyContent: 'space-between',
           alignItems: 'center',
           paddingLeft: 40,
-          paddingRight: 40
+          paddingRight: 40,
+          marginTop: 90
         }}>
           <ListView
             dataSource={brandList}
@@ -181,7 +188,7 @@ class FindStore extends PureComponent {
           backgroundColor: 'white'
         }}>
           <ListView
-            dataSource={ds.cloneWithRows(this.props.node)}
+            dataSource={ds.cloneWithRows(this.props.nodeList)}
             renderRow={(rowData) => this.renderVerticalRow(rowData)}
             style={{backgroundColor: 'white'}}
             enableEmptySections
@@ -199,19 +206,24 @@ FindStore.propTypes = {
   selectedBrand: PropTypes.string.isRequired,
   handleNextBtn: PropTypes.func.isRequired,
   coordinate: PropTypes.object.isRequired,
-  setNode: PropTypes.func.isRequired,
-  node: PropTypes.array.isRequired
+  back: PropTypes.func.isRequired,
+
+  // reducers/createOrder
+  setNodeList: PropTypes.func,
+  nodeList: PropTypes.array,
+  setStagedNode: PropTypes.func
 };
 
 function mapStateToProps(state) {
   return {
-    node: state.createOrder.node
+    nodeList: state.createOrder.nodeList
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setNode: (node) => dispatch(setNode(node))
+    setNodeList: (nodeList) => dispatch(setNodeList(nodeList)),
+    setStagedNode: (id, name, addr) => dispatch(setStagedNode(id, name, addr))
   };
 };
 

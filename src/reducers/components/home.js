@@ -1,5 +1,8 @@
 import * as types from '../../actions/actionTypes';
-import update from 'react-addons-update';
+import {
+  Animated
+} from 'react-native';
+import { cardHidedBottom } from './../../components/home';
 
 const initialState = {
   // intention: avoid unnecessary geocoding from placeAutocomplete API prediction
@@ -23,23 +26,30 @@ const initialState = {
   },
 
   // user's current location
-  currentLocation: {lat: undefined, lon: undefined}
+  currentLocation: {lat: undefined, lon: undefined},
+
+  // indicates waiting new runner on the card at bottom
+  busyOnWaitingNewRunner: false,
+
+  animatedCardBottomVal: new Animated.Value(cardHidedBottom)
 };
 
 const home = (state = initialState, action = {}) => {
   switch (action.type) {
   case types.setCameraWillMoveByPlaceDetailAPI: {
-    return update(state, {cameraWillMoveByPlaceDetailAPI: {$set: action.cameraWillMoveByPlaceDetailAPI}});}
+    return {...state, cameraWillMoveByPlaceDetailAPI: action.cameraWillMoveByPlaceDetailAPI};}
   case types.setSearchBarExpanded: {
-    return update(state, {searchBarExpanded: { $set: action.searchBarExpanded }});}
+    return {...state, searchBarExpanded: action.searchBarExpanded };}
   case types.setMapCameraPos: {
-    return update(state, {mapCameraPos: { $set: action.mapCameraPos }});}
+    return {...state, mapCameraPos: action.mapCameraPos };}
   case types.setShowApproveAddressCard: {
-    return update(state, {showApproveAddressCard: { $set: action.showApproveAddressCard }});}
+    return {...state, showApproveAddressCard: action.showApproveAddressCard };}
   case types.setSearchedAddressTextView: {
-    return update(state, {searchedAddressTextView: { $set: action.searchedAddressTextView }});}
+    return {...state, searchedAddressTextView: action.searchedAddressTextView };}
   case types.setCurrentLocation: {
-    return update(state, {currentLocation: { $set: action.currentLocation }});}
+    return {...state, currentLocation: action.currentLocation };}
+  case types.setBusyOnWaitingNewRunner: {
+    return {...state, busyOnWaitingNewRunner: action.busyOnWaitingNewRunner };}
   default:
     return state;
   }
