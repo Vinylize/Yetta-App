@@ -58,14 +58,12 @@ export default class RunnerView extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { runnerNotification } = nextProps;
-    console.log('asdfsdf');
     console.log(runnerNotification);
     if (this.state.receivedNewOrder === false) {
       if (runnerNotification && runnerNotification.length > 0) {
         const { data } = runnerNotification[runnerNotification.length - 1].data;
         // if newly received notification's data id is different from the previous one
         if (data && data !== this.state.lastOrderId) {
-          console.log('dat', data);
           this.setState({
             receivedNewOrder: true,
             lastOrderId: data
