@@ -27,18 +27,18 @@ const configureScene = (route) => {
 class All extends React.Component {
   constructor(props) {
     super(props);
+    this.receivedRemoteNotificationAndroid = this.receivedRemoteNotificationAndroid.bind(this);
+    this.receivedRemoteNotificationIOS = this.receivedRemoteNotificationIOS.bind(this);
   }
 
   componentWillMount() {
     if (Platform.OS === 'android') {
       // todo: research how to remove these listeners from DeviceEventEmitter for possible memory leaks
-      DeviceEventEmitter.addListener('FCMNotificationReceived', async(data) => {
-        console.log(data);
-      });
+      DeviceEventEmitter.addListener('FCMNotificationReceived', async(data) => this.receivedRemoteNotificationAndroid(data));
     } else {
       PushNotificationIOS.addEventListener('register', console.log);
       PushNotificationIOS.addEventListener('registrationError', console.log);
-      PushNotificationIOS.addEventListener('notification', this.receivedRemoteNotification.bind(this));
+      PushNotificationIOS.addEventListener('notification', this.receivedRemoteNotificationIOS);
     }
   }
 
@@ -52,11 +52,21 @@ class All extends React.Component {
     PushNotificationIOS.removeEventListener('notification', console.log);
   }
 
-  receivedRemoteNotification(notification) {
-    notification.finish(PushNotificationIOS.FetchResult.NewData);
+  receivedRemoteNotificationAndroid(data) {
+    // runnerNotification must be structured same as what iOS does
+    if (data && data.fcm && data.type === 'NEW_ORDER') {
+      const message = {
+        title: data.fcm.title,
+        body: data.fcm.body
+      };
+      const chunk = { message, data };
+      const newArr = this.props.runnerNotification.concat(chunk);
+      this.props.setRunnerNotification(newArr);
+    }
+  }
 
-    console.log(notification.getMessage());
-    console.log(notification.getData());
+  receivedRemoteNotificationIOS(notification) {
+    notification.finish(PushNotificationIOS.FetchResult.NewData);
 
     const message = notification.getMessage();
     const data = notification.getData();
