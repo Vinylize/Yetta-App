@@ -11,13 +11,15 @@ import {
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Animation from 'lottie-react-native';
 import BackgroundTimer from 'react-native-background-timer';
+import * as firebase from 'firebase';
+import { URL, handleError } from './../../utils';
 
-// const Lokka = require('lokka').Lokka;
-// const Transport = require('lokka-transport-http').Transport;
-//
-// const client = new Lokka({
-//   transport: new Transport(URL)
-// });
+const Lokka = require('lokka').Lokka;
+const Transport = require('lokka-transport-http').Transport;
+
+const client = new Lokka({
+  transport: new Transport(URL)
+});
 
 import loadingJSON from '../../../assets/lottie/loading-2.json';
 
@@ -50,6 +52,7 @@ export default class RunnerView extends Component {
       lastOrderId: undefined
     };
     this.startCount = this.startCount.bind(this);
+    this.mutationRunnerCatchOrder = this.mutationRunnerCatchOrder.bind(this);
   }
 
   componentWillUpdate() {
@@ -62,8 +65,10 @@ export default class RunnerView extends Component {
     if (this.state.receivedNewOrder === false) {
       if (runnerNotification && runnerNotification.length > 0) {
         const { data } = runnerNotification[runnerNotification.length - 1].data;
+        console.log(data);
         // if newly received notification's data id is different from the previous one
         if (data && data !== this.state.lastOrderId) {
+          console.log(this.state.lastOrderId);
           this.setState({
             receivedNewOrder: true,
             lastOrderId: data
@@ -165,6 +170,28 @@ export default class RunnerView extends Component {
     );
   }
 
+  mutationRunnerCatchOrder(orderId) {
+    console.log(orderId);
+    firebase.auth().currentUser.getToken()
+      .then(token => {
+        client._transport._httpOptions.headers = {
+          authorization: token
+        };
+        client.mutate(`{
+          runnerCatchOrder(
+            input:{
+              orderId: "${orderId}"
+            }
+          ) {
+            result
+          }
+        }`)
+          .then(res => {
+            console.log(res);
+          }).catch(handleError);
+      });
+  }
+
   renderBodyFoundNewOrder() {
     let lastNotif = '';
     let title = '';
@@ -208,6 +235,7 @@ export default class RunnerView extends Component {
                   alignItems: 'center'
                 }}
                 onPress={() => {
+                  this.mutationRunnerCatchOrder(this.state.lastOrderId);
                   this.props.setWaitingNewOrder(false);
                   this.props.setOnDelivery(true);
                 }}

@@ -676,11 +676,12 @@ class Home extends Component {
        */
       return null;
     }
+    console.log(this.props.orderStatusList.length);
     return (
       <TouchableOpacity
         style={{
           position: 'absolute',
-          right: 20,
+          right: (this.props.orderStatusList.length > 0) ? 20 : -40,
           bottom: 20,
           height: (Platform.OS === 'android' && this.props.cardAppeared) ? 0 : 40,
           width: 40,
@@ -692,8 +693,10 @@ class Home extends Component {
           zIndex: 0
         }}
         onPress={() => {
-          animateCardAppear();
-          this.props.setCardAppeared(true);
+          if (this.props.orderStatusList.length > 0) {
+            animateCardAppear();
+            this.props.setCardAppeared(true);
+          }
         }}
       />
     );
@@ -785,7 +788,8 @@ const mapStateToProps = (state) => {
     currentLocation: state.home.currentLocation,
     busyOnWaitingNewRunner: state.home.busyOnWaitingNewRunner,
     animatedCardBottomVal: state.home.animatedCardBottomVal,
-    cardAppeared: state.bottomCardView.cardAppeared
+    cardAppeared: state.bottomCardView.cardAppeared,
+    orderStatusList: state.orderStatus.orderStatusList
   };
 };
 
@@ -813,27 +817,27 @@ Home.propTypes = {
   navigator: PropTypes.any,
   user: PropTypes.object,
 
-  // userStatus
+  // reducers/userStatus
   isRunner: PropTypes.bool,
   setIsRunner: PropTypes.func,
 
-  // busyWaiting
+  // reducers/busyWaiting
   busyWaitingPlaceDetailAPI: PropTypes.bool,
   busyWaitingGeocodingAPI: PropTypes.bool,
   setBusyWaitingPlaceDetailAPI: PropTypes.func,
   setBusyWaitingGeocodingAPI: PropTypes.func,
 
-  // runnerStatus
+  // reducers/runnerStatus
   waitingNewOrder: PropTypes.bool,
   setWaitingNewOrder: PropTypes.func,
   onDelivery: PropTypes.bool,
   setOnDelivery: PropTypes.func,
 
-  // pushNotification
+  // reducers/pushNotification
   runnerNotification: PropTypes.any,
   setRunnerNotification: PropTypes.func,
 
-  // components/home
+  // reducers/components/home
   cameraWillMoveByPlaceDetailAPI: PropTypes.bool,
   setCameraWillMoveByPlaceDetailAPI: PropTypes.func,
   searchBarExpanded: PropTypes.bool,
@@ -850,9 +854,12 @@ Home.propTypes = {
   setBusyOnWaitingNewRunner: PropTypes.func,
   animatedCardBottomVal: PropTypes.any,
 
-  // components/bottomCardView
+  // reducers/components/bottomCardView
   cardAppeared: PropTypes.bool,
-  setCardAppeared: PropTypes.func
+  setCardAppeared: PropTypes.func,
+
+  // reducers/orderStatus
+  orderStatusList: PropTypes.array
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

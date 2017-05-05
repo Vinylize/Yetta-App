@@ -520,7 +520,7 @@ class BottomCardView extends Component {
           {...this.cardPanResponder.panHandlers}
         >
           <View style={{
-            width: WIDTH * 5 + cardWidth,
+            width: WIDTH * this.props.orderStatusList.length + cardWidth,
             height: 100,
             flexDirection: 'row'
           }}>
