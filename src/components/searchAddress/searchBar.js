@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
+  Alert,
   TextInput,
   View,
   Keyboard,
@@ -145,6 +146,12 @@ class SearchBar extends Component {
                     resArr[0].long_name + ' ' + resArr[1].long_name,
                     resArr.slice(2).map(token => token.long_name + ' '));
                 }
+              })
+              .catch(err => {
+                // location service is not enabled possibly and get undefined for lat and lon
+                console.log(err);
+                this.props.setBusyWaitingPlaceDetailAPI(false);
+                Alert.alert('현재 위치를 받아올수 없습니다. 로케이션이 켜져있는지 확인해주세요');
               });
           }
         }}

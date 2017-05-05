@@ -50,7 +50,8 @@ class ApproveCard extends Component {
         shadowOffset: {height: 3, width: 3},
         shadowOpacity: 0.3,
         flexDirection: 'column',
-        elevation: 10
+        elevation: 39,
+        opacity: 1
       }}>
         <View style={{
           flex: 1,
@@ -58,7 +59,9 @@ class ApproveCard extends Component {
           alignItems: 'center',
           marginLeft: 5,
           marginRight: 5,
-          flexDirection: 'column'
+          flexDirection: 'column',
+          backgroundColor: 'white',
+          opacity: 1
         }}>
           {(this.props.busyWaitingGeocodingAPI) ?
             <ActivityIndicator

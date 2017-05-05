@@ -510,7 +510,7 @@ class BottomCardView extends Component {
           height: expandedCardHeight,
           zIndex: 1,
           backgroundColor: 'transparent',
-          elevation: 40
+          elevation: 35
         }}
       >
         <ScrollView
