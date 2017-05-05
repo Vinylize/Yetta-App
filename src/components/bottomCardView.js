@@ -9,7 +9,8 @@ import {
   LayoutAnimation,
   PanResponder,
   Platform,
-  Easing
+  Easing,
+  ScrollView
 } from 'react-native';
 
 // [start redux functions]
@@ -38,7 +39,7 @@ class BottomCardView extends Component {
       busyOnCardMoveX: false,
       busyOnCardMoveY: false,
       processState: 2
-    }
+    };
   }
 
   componentWillMount() {
@@ -56,7 +57,7 @@ class BottomCardView extends Component {
     if (!busyOnCardMoveY) {
       if (busyOnCardMoveX || (Math.abs(dx) > 5 && Math.abs(dy) < 10)) {
         this.setState({busyOnCardMoveX: true});
-        this.refViewCardContainer.setNativeProps({style: {left: dx}});
+        // this.refViewCardContainer.setNativeProps({style: {left: dx}});
       } else if (cardInitBottom - dy <= 0 && !busyOnCardMoveX) {
         if (busyOnCardMoveX === false) {
           let cardBottomValOnTouch;
@@ -139,8 +140,8 @@ class BottomCardView extends Component {
       }
     ).start(() => {
       this.setState({cardIndex: this.state.cardIndex - 1});
-      this.refViewCardContainer.setNativeProps({style: {left: 0}});
-      this.state.animatedCardLeftVal.setValue(0);
+      // this.refViewCardContainer.setNativeProps({style: {left: 0}});
+      // this.state.animatedCardLeftVal.setValue(0);
     });
   }
 
@@ -155,8 +156,8 @@ class BottomCardView extends Component {
       }
     ).start(() => {
       this.setState({cardIndex: this.state.cardIndex + 1});
-      this.refViewCardContainer.setNativeProps({style: {left: 0}});
-      this.state.animatedCardLeftVal.setValue(0);
+      // this.refViewCardContainer.setNativeProps({style: {left: 0}});
+      // this.state.animatedCardLeftVal.setValue(0);
     });
   }
 
@@ -402,21 +403,19 @@ class BottomCardView extends Component {
     );
   }
 
-  renderCard(left, header) {
+  renderCard(header) {
     return (
       <View
         style={{
-          position: 'absolute',
           width: cardWidth,
           height: expandedCardHeight - 20,
           backgroundColor: 'white',
-          left: left,
+          left: 20,
           flexDirection: 'column',
           shadowOffset: {height: 1, width: 2},
           shadowOpacity: 0.23,
           elevation: 2
         }}
-        {...this.cardPanResponder.panHandlers}
       >
         <View style={{
           flex: 1,
@@ -498,11 +497,6 @@ class BottomCardView extends Component {
   }
 
   renderCardContainer() {
-    const {
-      animatedCardLeftVal,
-      cardIndex
-    } = this.state;
-
     return (
       <Animated.View
         ref={component => {
@@ -510,16 +504,32 @@ class BottomCardView extends Component {
         }}
         style={{
           position: 'absolute',
-          left: animatedCardLeftVal,
+          left: 0,
           bottom: this.props.animatedCardBottomVal,
           width: WIDTH * 3,
           height: expandedCardHeight,
-          zIndex: 1
+          zIndex: 1,
+          backgroundColor: 'transparent',
+          elevation: 40
         }}
       >
-        {this.renderCard(-cardWidth, cardIndex - 1)}
-        {this.renderCard(10, cardIndex)}
-        {this.renderCard(cardWidth + 20, cardIndex + 1)}
+        <ScrollView
+          style={{flex: 1}}
+          horizontal
+          /* having cardPanResponder in upper/lower component will stop ScrollView working properly */
+          {...this.cardPanResponder.panHandlers}
+        >
+          <View style={{
+            width: WIDTH * 5 + cardWidth,
+            height: 100,
+            flexDirection: 'row'
+          }}>
+            {this.renderCard('1')}
+            {this.renderCard('2')}
+            {this.renderCard('3')}
+            {this.renderCard('4')}
+          </View>
+        </ScrollView>
       </Animated.View>
     );
   }
