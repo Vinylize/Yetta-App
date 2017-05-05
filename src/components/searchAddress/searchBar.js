@@ -41,10 +41,6 @@ class SearchBar extends Component {
     this.handleAddressBtn = this.handleAddressBtn.bind(this);
   }
 
-  componentDidMount() {
-    console.log(this.props.searchBarExpanded);
-  }
-
   handleAddressBtn(firstAddressToken, addressTextView, coordinate) {
     // todo: clarify whether this is called by pressing 내 위치 or others
     const vmm = NativeModules.VinylMapManager;
@@ -117,6 +113,7 @@ class SearchBar extends Component {
         }}
         onPress={() => {
           this.setState({onFocused: false});
+          this.props.setSearchBarExpanded(false);
           if (terms) {
             // when predicted address clicked
 
