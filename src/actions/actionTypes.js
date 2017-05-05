@@ -34,3 +34,8 @@ export const decreaseStagedItemCount = 'deCREASE_STAGED_ITEM_COUNT';
 export const setStagedDestination = 'SET_STAGED_DESTINATION';
 export const discardOrder = 'DISCARD_ORDER';
 export const setDestinationLocation = 'SET_DESTINATION_LOCATION';
+
+// orderStatusList
+export const setOrderStatusList = 'SET_ORDER_STATUS_LIST';
+export const addNewOrder = 'ADD_NEW_ORDER';
+export const deleteOrder = 'DELETE_ORDER';

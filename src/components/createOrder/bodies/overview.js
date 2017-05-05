@@ -7,6 +7,7 @@ import {
   Dimensions
 } from 'react-native';
 import Header from './../header/header';
+import { addNewOrder } from './../../../actions/orderStatusActions';
 
 import { URL, handleError } from '../../../utils';
 import * as firebase from 'firebase';
@@ -84,30 +85,18 @@ class RegisterOrder extends Component {
   }
 
   addNewRunnerListener(orderId) {
-    console.log(orderId);
+    const addNewOrderScheme = {
+      foundRunner: false,
+      id: orderId,
+      data: null
+    };
+    this.props.addNewOrder(addNewOrderScheme);
     // const ref = firebase.database().ref().child('order').child(orderId).child('runnerId');
     // ref.on('value', (childSnapshot, prevChildKey) => {
     //   console.log(childSnapshot.val(), prevChildKey);
     //   // todo: implement this
     // });
     this.props.handleCreateOrderDone();
-  }
-
-  renderHeader() {
-    return (
-      <View style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        height: 90,
-        width: WIDTH,
-        backgroundColor: '#feffff',
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingTop: 20,
-        zIndex: 1
-      }}/>
-    );
   }
 
   // todo: use this
@@ -329,7 +318,10 @@ RegisterOrder.propTypes = {
   destinationLocation: PropTypes.object,
 
   // reducers/components/home
-  searchedAddressTextView: PropTypes.object
+  searchedAddressTextView: PropTypes.object,
+
+  // reducers/orderStatus
+  addNewOrder: PropTypes.func
 };
 
 function mapStateToProps(state) {
@@ -340,4 +332,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, undefined)(RegisterOrder);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addNewOrder: (newOrder) => dispatch(addNewOrder(newOrder))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterOrder);

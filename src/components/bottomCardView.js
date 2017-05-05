@@ -403,7 +403,7 @@ class BottomCardView extends Component {
     );
   }
 
-  renderCard(header) {
+  renderCard(foundRunner, id) {
     return (
       <View
         style={{
@@ -426,7 +426,7 @@ class BottomCardView extends Component {
             justifyContent: 'center',
             alignItems: 'flex-end'
           }}>
-            {this.props.busyOnWaitingNewRunner ?
+            {(foundRunner === false) ?
               <ActivityIndicator
                 animating={true}
                 style={{
@@ -462,7 +462,7 @@ class BottomCardView extends Component {
                   marginLeft: 12
                 }}>{this.props.busyOnWaitingNewRunner ?
                   '근처의 러너를 찾는중'
-                  : header}</Text>
+                  : id}</Text>
               </View>
               <View style={{flex: 1}}>
                 <Text style={{
@@ -524,10 +524,10 @@ class BottomCardView extends Component {
             height: 100,
             flexDirection: 'row'
           }}>
-            {this.renderCard('1')}
-            {this.renderCard('2')}
-            {this.renderCard('3')}
-            {this.renderCard('4')}
+            {this.props.orderStatusList.map(order => {
+              const { foundRunner, id } = order;
+              return this.renderCard(foundRunner, id);
+            })}
           </View>
         </ScrollView>
       </Animated.View>
@@ -548,14 +548,18 @@ BottomCardView.propTypes = {
 
   // reducers/components/bottomCardView
   setCardAppeared: PropTypes.func,
-  cardAppeared: PropTypes.bool
+  cardAppeared: PropTypes.bool,
+
+  // reducers/orderStatus
+  orderStatusList: PropTypes.array
 };
 
 function mapStateToProps(state) {
   return {
     animatedCardBottomVal: state.home.animatedCardBottomVal,
     busyOnWaitingNewRunner: state.home.busyOnWaitingNewRunner,
-    cardAppeared: state.bottomCardView.cardAppeared
+    cardAppeared: state.bottomCardView.cardAppeared,
+    orderStatusList: state.orderStatus.orderStatusList
   };
 }
 

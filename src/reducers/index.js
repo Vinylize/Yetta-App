@@ -7,6 +7,7 @@ import busyWaitingReducer from './busyWaiting';
 import pushNotificationReducer from './pushNotification';
 import homeReducer from './components/home';
 import bottomCardViewReducer from './components/bottomCardView';
+import orderStatusReducer from './orderStatus';
 
 export default combineReducers({
   auth: authReducer,
@@ -16,5 +17,6 @@ export default combineReducers({
   busyWaiting: busyWaitingReducer,
   pushNotification: pushNotificationReducer,
   home: homeReducer,
-  bottomCardView: bottomCardViewReducer
+  bottomCardView: bottomCardViewReducer,
+  orderStatus: orderStatusReducer
 });
