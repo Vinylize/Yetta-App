@@ -410,7 +410,7 @@ class BottomCardView extends Component {
           width: cardWidth,
           height: expandedCardHeight - 20,
           backgroundColor: 'white',
-          left: 20,
+          marginLeft: 10,
           flexDirection: 'column',
           shadowOffset: {height: 1, width: 2},
           shadowOpacity: 0.23,
@@ -520,7 +520,7 @@ class BottomCardView extends Component {
           {...this.cardPanResponder.panHandlers}
         >
           <View style={{
-            width: WIDTH * this.props.orderStatusList.length + cardWidth,
+            width: WIDTH * this.props.orderStatusList.length * 2,
             height: 100,
             flexDirection: 'row'
           }}>
