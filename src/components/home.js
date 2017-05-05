@@ -13,9 +13,7 @@ import {
   NativeEventEmitter,
   TouchableOpacity,
   Animated,
-  Easing,
-  DeviceEventEmitter,
-  ActivityIndicator
+  DeviceEventEmitter
 } from 'react-native';
 import * as firebase from 'firebase';
 import {
@@ -31,6 +29,7 @@ import SearchBar from './searchAddress/searchBar';
 import ApproveCard from './searchAddress/approveCard';
 import RunnerView from './runnerView/runnerView';
 import RunnerOnDeliveryView from './runnerView/runnerOnDeliveryView';
+import BottomCardView from './bottomCardView';
 import { URL } from './../utils';
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
 
@@ -54,6 +53,10 @@ import {
   setCurrentLocation,
   setBusyOnWaitingNewRunner
 } from './../actions/componentsActions/homeActions';
+import {
+  animateCardAppear,
+  setCardAppeared
+} from './../actions/componentsActions/bottomCardActions';
 // [end redux functions]
 
 import UserModeTransition from './globalViews/userModeTransition';
@@ -74,16 +77,11 @@ const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServic
 // constants
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
-const cardWidth = WIDTH * 0.92;
 export const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
 export const cardInitBottom = -expandedCardHeight + cardHeight;
 export const cardHidedBottom = -expandedCardHeight;
 const menuWidth = WIDTH;
-
-const PLATFORM_SPECIFIC = {
-  animatedCardLeftVal: (Platform.OS === 'ios') ? 0 : -WIDTH
-};
 
 class Home extends Component {
   constructor() {
@@ -96,14 +94,7 @@ class Home extends Component {
       shrinkValue: new Animated.Value(1),
       markerTest: false,
       clickedMarkerID: undefined,
-      animatedCardLeftVal: new Animated.Value(PLATFORM_SPECIFIC.animatedCardLeftVal),
       animMenu: new Animated.Value(-menuWidth),
-      cardIndex: 0,
-      cardExpanded: false,
-      cardAppeared: false,
-      busyOnCardMoveX: false,
-      busyOnCardMoveY: false,
-      processState: 2,
       trackingCurrentPos: false,
       refViewForBlurView: null,
       userModeSwitchBtnClicked: false,
@@ -113,13 +104,6 @@ class Home extends Component {
   }
 
   componentWillMount() {
-    this.cardPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.cardHandlePanResponderGrant.bind(this),
-      onPanResponderMove: this.cardHandlePanResponderMove.bind(this),
-      onPanResponderRelease: this.cardHandlePanResponderRelease.bind(this)
-    });
     this.menuPanResponder = PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: this.menuHandlePanResponderMove.bind(this),
@@ -308,174 +292,6 @@ class Home extends Component {
     }
   }
 
-  cardHandlePanResponderGrant() {
-    // TBD
-  }
-
-  cardHandlePanResponderMove(e, gestureState) {
-    const { dx, dy } = gestureState;
-    const { busyOnCardMoveX, busyOnCardMoveY, cardExpanded } = this.state;
-    if (!busyOnCardMoveY) {
-      if (busyOnCardMoveX || (Math.abs(dx) > 5 && Math.abs(dy) < 10)) {
-        this.setState({busyOnCardMoveX: true});
-        this.refViewCardContainer.setNativeProps({style: {left: dx}});
-      } else if (cardInitBottom - dy <= 0 && !busyOnCardMoveX) {
-        if (busyOnCardMoveX === false) {
-          let cardBottomValOnTouch;
-          /* eslint-disable max-depth */
-          if (cardExpanded) {
-            /* eslint-enable max-depth */
-            cardBottomValOnTouch = (dy >= 0) ? -dy : 0;
-          } else {
-            cardBottomValOnTouch = cardInitBottom - dy;
-          }
-          this.refViewCardContainer.setNativeProps({style: {bottom: cardBottomValOnTouch}});
-        }
-      }
-    }
-  }
-
-  cardHandlePanResponderRelease(e, gestureState) {
-    const { dx, dy } = gestureState;
-    const { busyOnCardMoveX, busyOnCardMoveY, cardExpanded } = this.state;
-    if (!busyOnCardMoveY) {
-      if (Math.abs(dx) < WIDTH / 4 && dy === 0) {
-        this.animateCardPosResetX(dx);
-      } else if (busyOnCardMoveX && dx > 0) {
-        // move card to the left
-        this.animateCardPosLeft(dx);
-      } else if (busyOnCardMoveX && dx < 0) {
-        // move card to the right
-        this.animateCardPosRight(dx);
-      } else if (dy < 0 && !cardExpanded) {
-        // expand card
-        this.setState({busyOnCardMoveY: true});
-        this.animateCardExpand(dy);
-      } else if (dy > 0 && cardExpanded) {
-        // shrink card after expanded
-        this.animateCardPosResetY(dy);
-      } else if (dy > 0 && !cardExpanded) {
-        // hide card
-        this.animateCardHide(dy);
-      }
-      this.setState({
-        busyOnCardMoveX: false
-      });
-    }
-  }
-
-  animateCardPosResetX(left) {
-    this.state.animatedCardLeftVal.setValue(left);
-    Animated.timing(
-      this.state.animatedCardLeftVal,
-      {
-        toValue: 0,
-        duration: 100,
-        easing: Easing.linear
-      }
-    ).start();
-  }
-
-  animateCardPosResetY(dy) {
-    this.props.animatedCardBottomVal.setValue(-dy);
-    Animated.timing(
-      this.props.animatedCardBottomVal,
-      {
-        toValue: cardInitBottom,
-        duration: 100,
-        easing: Easing.linear
-      }
-    ).start(() => {
-      this.setState({
-        cardExpanded: false
-      });
-    });
-  }
-
-  animateCardPosLeft(left) {
-    this.state.animatedCardLeftVal.setValue(left);
-    Animated.timing(
-      this.state.animatedCardLeftVal,
-      {
-        toValue: cardWidth + 10,
-        duration: 200,
-        easing: Easing.linear
-      }
-    ).start(() => {
-      this.setState({cardIndex: this.state.cardIndex - 1});
-      this.refViewCardContainer.setNativeProps({style: {left: 0}});
-      this.state.animatedCardLeftVal.setValue(0);
-    });
-  }
-
-  animateCardPosRight(left) {
-    this.state.animatedCardLeftVal.setValue(left);
-    Animated.timing(
-      this.state.animatedCardLeftVal,
-      {
-        toValue: -cardWidth - 10,
-        duration: 200,
-        easing: Easing.linear
-      }
-    ).start(() => {
-      this.setState({cardIndex: this.state.cardIndex + 1});
-      this.refViewCardContainer.setNativeProps({style: {left: 0}});
-      this.state.animatedCardLeftVal.setValue(0);
-    });
-  }
-
-  animateCardExpand(dy) {
-    if (cardInitBottom - dy <= 0) {
-      this.props.animatedCardBottomVal.setValue(cardInitBottom - dy);
-      Animated.timing(
-        this.props.animatedCardBottomVal,
-        {
-          toValue: 0,
-          duration: 100,
-          easing: Easing.linear
-        }
-      ).start(() => {
-        this.setState({
-          busyOnCardMoveY: false,
-          cardExpanded: true
-        });
-      });
-    } else {
-      this.props.animatedCardBottomVal.setValue(0);
-      this.setState({
-        busyOnCardMoveY: false,
-        cardExpanded: true
-      });
-    }
-  }
-
-  animateCardAppear() {
-    this.props.animatedCardBottomVal.setValue(-expandedCardHeight);
-    Animated.timing(
-      this.props.animatedCardBottomVal,
-      {
-        toValue: cardInitBottom,
-        duration: 100,
-        easing: Easing.linear
-      }
-    ).start();
-  }
-
-  animateCardHide(dy) {
-    this.props.animatedCardBottomVal.setValue(cardInitBottom - dy);
-    Animated.timing(
-      this.props.animatedCardBottomVal,
-      {
-        toValue: -expandedCardHeight,
-        duration: 100,
-        easing: Easing.linear
-      }
-    ).start(() => {
-      LayoutAnimation.easeInEaseOut();
-      this.setState({cardAppeared: false});
-    });
-  }
-
   /*
    * switch to either runner/order
    */
@@ -522,7 +338,7 @@ class Home extends Component {
             // console.log(e.nativeEvent);
             if (this.state.markerClicked === false) {
               // marker is clicked
-              this.animateCardAppear();
+              animateCardAppear();
             }
             this.setState({markerClicked: !this.state.markerClicked});
           }}
@@ -616,7 +432,7 @@ class Home extends Component {
           LayoutAnimation.easeInEaseOut();
           this.setState({trackingCurrentPos: true});
         }}
-       />
+      />
     );
   }
 
@@ -791,7 +607,7 @@ class Home extends Component {
         <View
           style={{flex: 30, backgroundColor: 'transparent'}}
           {...this.menuBackgroundPanResponder.panHandlers}
-         />
+        />
       </Animated.View>
     );
   }
@@ -803,24 +619,24 @@ class Home extends Component {
   renderSwitchBtn() {
     return (
       // todo: improve the platform specific bottom value
-        <View
-          style={{
-            position: 'absolute',
-            bottom: (Platform.OS === 'ios') ? -1 : 23,
-            left: 0,
-            paddingRight: 16,
-            backgroundColor: '#ff9700',
-            height: 40,
-            width: WIDTH * 0.75,
-            justifyContent: 'center',
-            alignItems: 'flex-end'
-          }}
-          {...this.switchPanResponder.panHandlers}
-        >
-          <Text style={{fontSize: 15, color: 'white'}}>
-            {(this.props.isRunner) ? '주문받기' : '배달하기'}
-          </Text>
-        </View>
+      <View
+        style={{
+          position: 'absolute',
+          bottom: (Platform.OS === 'ios') ? -1 : 23,
+          left: 0,
+          paddingRight: 16,
+          backgroundColor: '#ff9700',
+          height: 40,
+          width: WIDTH * 0.75,
+          justifyContent: 'center',
+          alignItems: 'flex-end'
+        }}
+        {...this.switchPanResponder.panHandlers}
+      >
+        <Text style={{fontSize: 15, color: 'white'}}>
+          {(this.props.isRunner) ? '주문받기' : '배달하기'}
+        </Text>
+      </View>
     );
   }
 
@@ -847,336 +663,13 @@ class Home extends Component {
           }
         }}
       >
-       <Text style={{fontSize: 11}}>Menu</Text>
+        <Text style={{fontSize: 11}}>Menu</Text>
       </TouchableOpacity>
     );
   }
 
-  renderCard(left, header) {
-    return (
-      <View
-        style={{
-          position: 'absolute',
-          width: cardWidth,
-          height: expandedCardHeight - 20,
-          backgroundColor: 'white',
-          left: left,
-          flexDirection: 'column',
-          shadowOffset: {height: 1, width: 2},
-          shadowOpacity: 0.23,
-          elevation: 2
-        }}
-        {...this.cardPanResponder.panHandlers}
-      >
-        <View style={{
-          flex: 1,
-          flexDirection: 'row'
-        }}>
-          <View style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'flex-end'
-          }}>
-            {this.props.busyOnWaitingNewRunner ?
-              <ActivityIndicator
-                animating={true}
-                style={{
-                  width: 56,
-                  height: 56
-                }}
-                size="large"
-              />
-              :
-              <View style={{
-                width: 56,
-                height: 56,
-                borderRadius: 50,
-                backgroundColor: '#d8d8d8'
-              }}/>
-            }
-          </View>
-          <View style={{
-            flex: 3.5,
-            flexDirection: 'row'
-          }}>
-            <View style={{
-              flex: 4,
-              flexDirection: 'column'
-            }}>
-              <View style={{
-                flex: 1,
-                justifyContent: 'flex-end',
-                alignItems: 'flex-start'
-              }}>
-                <Text style={{
-                  marginBottom: 3,
-                  marginLeft: 12
-                }}>{this.props.busyOnWaitingNewRunner ?
-                  '근처의 러너를 찾는중'
-                  : header}</Text>
-              </View>
-              <View style={{flex: 1}}>
-                <Text style={{
-                  marginTop: 6,
-                  marginLeft: 12,
-                  fontSize: 11,
-                  color: '#adb3b4'
-                }}>$3,500 - 4,500 (Delivery fee only)</Text>
-              </View>
-            </View>
-            <View style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-              <View style={{
-                width: 40,
-                height: 40,
-                backgroundColor: '#656266',
-                borderRadius: 40,
-                shadowOffset: {height: 3, width: 1},
-                shadowOpacity: 0.4,
-                shadowRadius: 5,
-                marginRight: 25
-              }} />
-            </View>
-          </View>
-        </View>
-        {this.renderCardDetail()}
-      </View>
-    );
-  }
-
-  renderCardDetail() {
-    return (
-      <View
-        style={{
-          flex: 2,
-          marginLeft: 20,
-          marginRight: 20,
-          borderTopWidth: 1,
-          borderColor: '#f4f7f7',
-          flexDirection: 'row'
-        }}
-      >
-        <View style={{flex: 3}}>
-          {this.renderProcess()}
-        </View>
-        <View style={{
-          flex: 2,
-          flexDirection: 'column'
-        }}>
-          <View style={{
-            flex: 1,
-            flexDirection: 'row'
-          }}>
-            <View style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-              <View style={{
-                height: 40,
-                width: 40,
-                borderRadius: 40,
-                backgroundColor: 'white',
-                borderWidth: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column'
-              }}>
-                <Text style={{
-                  fontSize: 10
-                }}>
-                  32
-                </Text>
-                <Text style={{
-                  fontSize: 11
-                }}>
-                  MIN
-                </Text>
-              </View>
-            </View>
-            <View style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-              <View style={{
-                height: 40,
-                width: 40,
-                borderRadius: 40,
-                backgroundColor: 'white',
-                borderWidth: 1,
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
-                <Text style={{
-                  fontSize: 10
-                }}>
-                  0.5
-                </Text>
-                <Text style={{
-                  fontSize: 11
-                }}>
-                  km
-                </Text>
-              </View>
-            </View>
-          </View>
-          <View style={{
-            flex: 1,
-            flexDirection: 'column'
-          }}>
-            <View style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'flex-end',
-              marginRight: 10
-            }}>
-              <Text style={{
-                fontSize: 12,
-                color: '#3aacff',
-                fontWeight: 'bold'
-              }}>
-                See the receipt
-              </Text>
-            </View>
-            <View style={{
-              flex: 1,
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
-              marginRight: 10
-            }}>
-              <Text style={{
-                fontSize: 13,
-                color: 'black',
-                fontWeight: 'bold',
-                marginBottom: 20
-              }}>
-                Cancel
-              </Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    );
-  }
-
-  renderProcess() {
-    const renderDot = (index) => {
-      return (
-        <View style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          <View style={{
-            height: 11,
-            width: 11,
-            borderRadius: 10,
-            backgroundColor: (index <= this.state.processState) ? '#2e3031' : '#eaefef'
-          }}/>
-        </View>
-      );
-    };
-    const renderProcessLine = (index, top) => {
-      // todo: fix style
-      return (
-        <View style={{
-          position: 'absolute',
-          left: 0,
-          top: top,
-          zIndex: -1
-        }}>
-          <View style={{
-            position: 'absolute',
-            left: (index < this.state.processState) ? 20 : 19,
-            top: top,
-            borderWidth: (index < this.state.processState) ? 1 : 2,
-            borderStyle: (index < this.state.processState) ? 'solid' : 'dotted',
-            borderColor: (index < this.state.processState) ? '#2e3031' : '#eaefef',
-            width: 0.1,
-            height: 40
-          }}/>
-        </View>
-      );
-    };
-    const renderTextProcess = (index, text) => {
-      return (
-        <View style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'flex-start'
-        }}>
-          <Text style={{
-            fontSize: 11.4,
-            color: (index <= this.state.processState) ? '#2e3031' : '#eaefef'
-          }}>{text}</Text>
-        </View>
-      );
-    };
-    return (
-      <View style={{
-        flex: 1,
-        flexDirection: 'row',
-        marginTop: 20,
-        marginBottom: 20
-      }}>
-        <View style={{
-          flex: 1,
-          flexDirection: 'column'
-        }}>
-          {renderDot(0)}
-          {renderDot(1)}
-          {renderDot(2)}
-          {renderDot(3)}
-          {renderProcessLine(0, 8)}
-          {renderProcessLine(1, 25)}
-          {renderProcessLine(2, 8 + 17 * 2)}
-        </View>
-        <View style={{
-          flex: 3.4,
-          flexDirection: 'column'
-        }}>
-          {renderTextProcess(0, 'Order accepted')}
-          {renderTextProcess(1, 'Delivery started')}
-          {renderTextProcess(2, 'Item bought')}
-          {renderTextProcess(3, 'Delivery completed')}
-        </View>
-      </View>
-    );
-  }
-
-  renderCardContainer() {
-    const {
-      animatedCardLeftVal,
-      cardIndex
-    } = this.state;
-
-    return (
-      <Animated.View
-        ref={component => {
-          this.refViewCardContainer = component;
-        }}
-        style={{
-          position: 'absolute',
-          left: animatedCardLeftVal,
-          bottom: this.props.animatedCardBottomVal,
-          width: WIDTH * 3,
-          height: expandedCardHeight,
-          zIndex: 1
-        }}
-      >
-        {this.renderCard(-cardWidth, cardIndex - 1)}
-        {this.renderCard(10, cardIndex)}
-        {this.renderCard(cardWidth + 20, cardIndex + 1)}
-      </Animated.View>
-    );
-  }
-
   renderAddBtn() {
-    if (Platform.OS === 'ios' && this.state.cardAppeared) {
+    if (Platform.OS === 'ios' && this.props.cardAppeared) {
       /**
        * this is due to difference on dynamic components between ios and android
        * ref: https://github.com/Vinylize/Yetta-App/issues/69
@@ -1189,7 +682,7 @@ class Home extends Component {
           position: 'absolute',
           right: 20,
           bottom: 20,
-          height: (Platform.OS === 'android' && this.state.cardAppeared) ? 0 : 40,
+          height: (Platform.OS === 'android' && this.props.cardAppeared) ? 0 : 40,
           width: 40,
           borderRadius: 50,
           backgroundColor: 'white',
@@ -1199,8 +692,8 @@ class Home extends Component {
           zIndex: 0
         }}
         onPress={() => {
-          this.animateCardAppear();
-          this.setState({cardAppeared: true});
+          animateCardAppear();
+          this.props.setCardAppeared(true);
         }}
       />
     );
@@ -1240,7 +733,7 @@ class Home extends Component {
           {this.renderAddBtn()}
           <SearchBar/>
           {this.renderLocationBtn()}
-          {this.renderCardContainer()}
+          <BottomCardView/>
           <ApproveCard navigator={this.props.navigator}/>
           {this.props.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>
@@ -1291,7 +784,8 @@ const mapStateToProps = (state) => {
     searchedAddressTextView: state.home.searchedAddressTextView,
     currentLocation: state.home.currentLocation,
     busyOnWaitingNewRunner: state.home.busyOnWaitingNewRunner,
-    animatedCardBottomVal: state.home.animatedCardBottomVal
+    animatedCardBottomVal: state.home.animatedCardBottomVal,
+    cardAppeared: state.bottomCardView.cardAppeared
   };
 };
 
@@ -1310,7 +804,8 @@ const mapDispatchToProps = (dispatch) => {
     setShowApproveAddressCard: (showApproveAddressCard) => dispatch(setShowApproveAddressCard(showApproveAddressCard)),
     setSearchedAddressTextView: (searchedAddressTextView) => dispatch(setSearchedAddressTextView(searchedAddressTextView)),
     setCurrentLocation: (currentLocation) => dispatch(setCurrentLocation(currentLocation)),
-    setBusyOnWaitingNewRunner: (busyOnWaitingNewRunner) => dispatch(setBusyOnWaitingNewRunner(busyOnWaitingNewRunner))
+    setBusyOnWaitingNewRunner: (busyOnWaitingNewRunner) => dispatch(setBusyOnWaitingNewRunner(busyOnWaitingNewRunner)),
+    setCardAppeared: (cardAppeared) => dispatch(dispatch(setCardAppeared(cardAppeared)))
   };
 };
 
@@ -1353,7 +848,11 @@ Home.propTypes = {
   setCurrentLocation: PropTypes.func,
   busyOnWaitingNewRunner: PropTypes.bool,
   setBusyOnWaitingNewRunner: PropTypes.func,
-  animatedCardBottomVal: PropTypes.any
+  animatedCardBottomVal: PropTypes.any,
+
+  // components/bottomCardView
+  cardAppeared: PropTypes.bool,
+  setCardAppeared: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

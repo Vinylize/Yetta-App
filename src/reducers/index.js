@@ -6,6 +6,7 @@ import runnerStatusReducer from './runnerStatus';
 import busyWaitingReducer from './busyWaiting';
 import pushNotificationReducer from './pushNotification';
 import homeReducer from './components/home';
+import bottomCardViewReducer from './components/bottomCardView';
 
 export default combineReducers({
   auth: authReducer,
@@ -14,5 +15,6 @@ export default combineReducers({
   runnerStatus: runnerStatusReducer,
   busyWaiting: busyWaitingReducer,
   pushNotification: pushNotificationReducer,
-  home: homeReducer
+  home: homeReducer,
+  bottomCardView: bottomCardViewReducer
 });

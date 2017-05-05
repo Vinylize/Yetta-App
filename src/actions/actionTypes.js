@@ -21,6 +21,9 @@ export const setSearchedAddressTextView = 'SET_SEARCHED_ADDRESS_TEXT_VIEW';
 export const setCurrentLocation = 'SET_CURRENT_LOCATION';
 export const setBusyOnWaitingNewRunner = 'SET_BUSY_ON_WAITING_NEW_RUNNER';
 
+// components/bottomCardActions
+export const setCardAppeared = 'SET_CARD_APPEARED';
+
 // createOrder
 export const setNodeList = 'SET_NODE_LIST';
 export const setStagedNode = 'SET_STAGED_NODE';
