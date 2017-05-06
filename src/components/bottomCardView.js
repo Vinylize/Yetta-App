@@ -53,6 +53,7 @@ class BottomCardView extends Component {
       }]
     };
     this.handleScroll = this.handleScroll.bind(this);
+    this.scrollToEnd = this.scrollToEnd.bind(this);
   }
 
   componentWillMount() {
@@ -65,6 +66,12 @@ class BottomCardView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    /**
+     * Since bottomCardView is using pagingEnabled prop for pagination, multiples of
+     * scrollView's width will determine the pagination and in order to show left and
+     * right cards, their margin values are dynamically changed like below.
+     */
+    // [start dynamic_cards_margin_values]
     if (this.props.currentFocusedCardIndex !== nextProps.currentFocusedCardIndex) {
       // console.log(this.props.currentFocusedCardIndex, nextProps.currentFocusedCardIndex);
       LayoutAnimation.easeInEaseOut();
@@ -106,6 +113,28 @@ class BottomCardView extends Component {
         })};
       });
     }
+    // [end dynamic_cards_margin_values]
+  }
+
+  componentDidUpdate(prevProps) {
+    /**
+     * When new order is added, bottomCardView should be showing the newly added card.
+     * The following is trying to scroll it to the end where the new order would be at.
+     */
+    // [start compare orderStatusList]
+    const { orderStatusList } = this.props;
+    if (orderStatusList && prevProps.orderStatusList) {
+      if (orderStatusList.length !== prevProps.orderStatusList.length) {
+        this.scrollToEnd();
+      }
+      for (let i = 0; i < orderStatusList.length; i = i + 1) {
+        if (JSON.stringify(orderStatusList[i]) !== JSON.stringify(prevProps.orderStatusList[i])) {
+          this.scrollToEnd();
+          break;
+        }
+      }
+    }
+    // [end compare orderStatusList]
   }
 
   cardHandlePanResponderMove(e, gestureState) {
@@ -214,6 +243,16 @@ class BottomCardView extends Component {
     const x = nativeEvent.contentOffset.x;
     // console.log('card index: ', this.props.currentFocusedCardIndex);
     this.props.setCurrentFocusedCardIndex((x / WIDTH).toFixed(0));
+  }
+
+  scrollToEnd() {
+    if (this.bottomCardScrollView) {
+      this.bottomCardScrollView.scrollTo({
+        x: (this.props.orderStatusList.length - 1) * WIDTH,
+        y: 0,
+        animating: true
+      });
+    }
   }
 
   renderProcess() {
@@ -418,9 +457,6 @@ class BottomCardView extends Component {
   }
 
   renderCard(foundRunner, index, id) {
-    this.state.cardsMarginVals.map((el, i) => {
-      console.log(i, el.marginLeft, el.marginRight);
-    });
     return (
       <View
         style={{
@@ -434,6 +470,7 @@ class BottomCardView extends Component {
           shadowOpacity: 0.23,
           elevation: 2
         }}
+        key={id}
       >
         <View style={{
           flex: 1,
