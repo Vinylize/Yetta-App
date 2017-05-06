@@ -23,6 +23,7 @@ export const setBusyOnWaitingNewRunner = 'SET_BUSY_ON_WAITING_NEW_RUNNER';
 
 // components/bottomCardActions
 export const setCardAppeared = 'SET_CARD_APPEARED';
+export const setCurrentFocusedCardIndex = 'SET_CURRENT_FOCUSED_CARD_INDEX';
 
 // createOrder
 export const setNodeList = 'SET_NODE_LIST';

@@ -10,11 +10,15 @@ import {
   PanResponder,
   Platform,
   Easing,
-  ScrollView
+  ScrollView,
+  UIManager
 } from 'react-native';
 
 // [start redux functions]
-import { setCardAppeared } from './../actions/componentsActions/bottomCardActions';
+import {
+  setCardAppeared,
+  setCurrentFocusedCardIndex
+} from './../actions/componentsActions/bottomCardActions';
 // [end redux functions]
 
 // constants
@@ -25,9 +29,13 @@ export const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
 export const cardInitBottom = -expandedCardHeight + cardHeight;
 export const cardHidedBottom = -expandedCardHeight;
+const defaultMarginVal = (WIDTH - cardWidth) / 2;
 const PLATFORM_SPECIFIC = {
   animatedCardLeftVal: (Platform.OS === 'ios') ? 0 : -WIDTH
 };
+
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+
 
 class BottomCardView extends Component {
   constructor() {
@@ -38,8 +46,13 @@ class BottomCardView extends Component {
       cardExpanded: false,
       busyOnCardMoveX: false,
       busyOnCardMoveY: false,
-      processState: 2
+      processState: 2,
+      cardsMarginVals: [{
+        marginLeft: defaultMarginVal,
+        marginRight: defaultMarginVal
+      }]
     };
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   componentWillMount() {
@@ -49,6 +62,50 @@ class BottomCardView extends Component {
       onPanResponderMove: this.cardHandlePanResponderMove.bind(this),
       onPanResponderRelease: this.cardHandlePanResponderRelease.bind(this)
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.currentFocusedCardIndex !== nextProps.currentFocusedCardIndex) {
+      // console.log(this.props.currentFocusedCardIndex, nextProps.currentFocusedCardIndex);
+      LayoutAnimation.easeInEaseOut();
+      this.setState(() => {
+        if (this.props.orderStatusList && this.props.orderStatusList.length === 1) {
+          // there is only one card to show
+          return [{
+            marginLeft: defaultMarginVal,
+            marginRight: defaultMarginVal
+          }];
+        }
+        // there are at least two orders to show as cards
+        return {cardsMarginVals: this.props.orderStatusList.map((el, i) => {
+          const currentIndex = parseInt(nextProps.currentFocusedCardIndex, 10);
+          if (currentIndex - 1 === i) {
+            // this is previous card of currently focused one
+            return {
+              marginLeft: defaultMarginVal * 2.5,
+              marginRight: 0
+            };
+          } else if (currentIndex === i) {
+            // this is currently focused card
+            return {
+              marginLeft: defaultMarginVal * 0.5,
+              marginRight: defaultMarginVal * 0.5
+            };
+          } else if (currentIndex + 1 === i) {
+            // this is next card of currently focused one
+            return {
+              marginLeft: 0,
+              marginRight: defaultMarginVal * 2.5
+            };
+          }
+          // the rest of the cards
+          return {
+            marginLeft: defaultMarginVal,
+            marginRight: defaultMarginVal
+          };
+        })};
+      });
+    }
   }
 
   cardHandlePanResponderMove(e, gestureState) {
@@ -75,25 +132,19 @@ class BottomCardView extends Component {
   }
 
   cardHandlePanResponderRelease(e, gestureState) {
-    const { dx, dy } = gestureState;
-    const { busyOnCardMoveX, busyOnCardMoveY, cardExpanded } = this.state;
+    const { dy } = gestureState;
+    const { busyOnCardMoveY, cardExpanded } = this.state;
+    const offset = 25;
+
     if (!busyOnCardMoveY) {
-      if (Math.abs(dx) < WIDTH / 4 && dy === 0) {
-        this.animateCardPosResetX(dx);
-      } else if (busyOnCardMoveX && dx > 0) {
-        // move card to the left
-        this.animateCardPosLeft(dx);
-      } else if (busyOnCardMoveX && dx < 0) {
-        // move card to the right
-        this.animateCardPosRight(dx);
-      } else if (dy < 0 && !cardExpanded) {
+      if (dy < -offset && !cardExpanded) {
         // expand card
         this.setState({busyOnCardMoveY: true});
         this.animateCardExpand(dy);
-      } else if (dy > 0 && cardExpanded) {
+      } else if (dy > offset && cardExpanded) {
         // shrink card after expanded
         this.animateCardPosResetY(dy);
-      } else if (dy > 0 && !cardExpanded) {
+      } else if (dy > offset && !cardExpanded) {
         // hide card
         this.animateCardHide(dy);
       }
@@ -101,18 +152,6 @@ class BottomCardView extends Component {
         busyOnCardMoveX: false
       });
     }
-  }
-
-  animateCardPosResetX(left) {
-    this.state.animatedCardLeftVal.setValue(left);
-    Animated.timing(
-      this.state.animatedCardLeftVal,
-      {
-        toValue: 0,
-        duration: 100,
-        easing: Easing.linear
-      }
-    ).start();
   }
 
   animateCardPosResetY(dy) {
@@ -126,38 +165,6 @@ class BottomCardView extends Component {
       }
     ).start(() => {
       this.setState({cardExpanded: false});
-    });
-  }
-
-  animateCardPosLeft(left) {
-    this.state.animatedCardLeftVal.setValue(left);
-    Animated.timing(
-      this.state.animatedCardLeftVal,
-      {
-        toValue: cardWidth + 10,
-        duration: 200,
-        easing: Easing.linear
-      }
-    ).start(() => {
-      this.setState({cardIndex: this.state.cardIndex - 1});
-      // this.refViewCardContainer.setNativeProps({style: {left: 0}});
-      // this.state.animatedCardLeftVal.setValue(0);
-    });
-  }
-
-  animateCardPosRight(left) {
-    this.state.animatedCardLeftVal.setValue(left);
-    Animated.timing(
-      this.state.animatedCardLeftVal,
-      {
-        toValue: -cardWidth - 10,
-        duration: 200,
-        easing: Easing.linear
-      }
-    ).start(() => {
-      this.setState({cardIndex: this.state.cardIndex + 1});
-      // this.refViewCardContainer.setNativeProps({style: {left: 0}});
-      // this.state.animatedCardLeftVal.setValue(0);
     });
   }
 
@@ -200,6 +207,13 @@ class BottomCardView extends Component {
       console.log(this.props.cardAppeared);
       this.props.setCardAppeared(false);
     });
+  }
+
+  handleScroll(event) {
+    const { nativeEvent } = event;
+    const x = nativeEvent.contentOffset.x;
+    // console.log('card index: ', this.props.currentFocusedCardIndex);
+    this.props.setCurrentFocusedCardIndex((x / WIDTH).toFixed(0));
   }
 
   renderProcess() {
@@ -403,14 +417,18 @@ class BottomCardView extends Component {
     );
   }
 
-  renderCard(foundRunner, id) {
+  renderCard(foundRunner, index, id) {
+    this.state.cardsMarginVals.map((el, i) => {
+      console.log(i, el.marginLeft, el.marginRight);
+    });
     return (
       <View
         style={{
           width: cardWidth,
           height: expandedCardHeight - 20,
           backgroundColor: 'white',
-          marginLeft: 10,
+          marginLeft: (this.state.cardsMarginVals[index]) ? this.state.cardsMarginVals[index].marginLeft : defaultMarginVal,
+          marginRight: (this.state.cardsMarginVals[index]) ? this.state.cardsMarginVals[index].marginRight : defaultMarginVal,
           flexDirection: 'column',
           shadowOffset: {height: 1, width: 2},
           shadowOpacity: 0.23,
@@ -515,18 +533,24 @@ class BottomCardView extends Component {
       >
         <ScrollView
           style={{flex: 1}}
+          ref={component => {
+            this.bottomCardScrollView = component;
+          }}
           horizontal
-          /* having cardPanResponder in upper/lower component will stop ScrollView working properly */
+          pagingEnabled
+          onScroll={this.handleScroll}
+          scrollEventThrottle={5}
+          /* having cardPanResponder elsewhere will stop ScrollView working properly */
           {...this.cardPanResponder.panHandlers}
         >
           <View style={{
-            width: (cardWidth + 10) * this.props.orderStatusList.length + 10,
+            width: WIDTH * this.props.orderStatusList.length,
             height: 100,
             flexDirection: 'row'
           }}>
-            {this.props.orderStatusList.map(order => {
+            {this.props.orderStatusList.map((order, index) => {
               const { foundRunner, id } = order;
-              return this.renderCard(foundRunner, id);
+              return this.renderCard(foundRunner, index, id);
             })}
           </View>
         </ScrollView>
@@ -549,6 +573,8 @@ BottomCardView.propTypes = {
   // reducers/components/bottomCardView
   setCardAppeared: PropTypes.func,
   cardAppeared: PropTypes.bool,
+  currentFocusedCardIndex: PropTypes.string,
+  setCurrentFocusedCardIndex: PropTypes.func,
 
   // reducers/orderStatus
   orderStatusList: PropTypes.array
@@ -559,13 +585,15 @@ function mapStateToProps(state) {
     animatedCardBottomVal: state.home.animatedCardBottomVal,
     busyOnWaitingNewRunner: state.home.busyOnWaitingNewRunner,
     cardAppeared: state.bottomCardView.cardAppeared,
+    currentFocusedCardIndex: state.bottomCardView.currentFocusedCardIndex,
     orderStatusList: state.orderStatus.orderStatusList
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setCardAppeared: (cardAppeared) => dispatch(setCardAppeared(cardAppeared))
+    setCardAppeared: (cardAppeared) => dispatch(setCardAppeared(cardAppeared)),
+    setCurrentFocusedCardIndex: (currentFocusedCardIndex) => dispatch(setCurrentFocusedCardIndex(currentFocusedCardIndex))
   };
 };
 

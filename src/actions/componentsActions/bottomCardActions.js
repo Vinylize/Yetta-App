@@ -28,3 +28,10 @@ export const setCardAppeared = (cardAppeared) => {
     cardAppeared
   };
 };
+
+export const setCurrentFocusedCardIndex = (currentFocusedCardIndex) => {
+  return {
+    type: types.setCurrentFocusedCardIndex,
+    currentFocusedCardIndex
+  };
+};
