@@ -54,8 +54,7 @@ import {
   setBusyOnWaitingNewRunner
 } from './../actions/componentsActions/homeActions';
 import {
-  animateCardAppear,
-  setCardAppeared
+  animateCardAppear
 } from './../actions/componentsActions/bottomCardActions';
 // [end redux functions]
 
@@ -405,12 +404,20 @@ class Home extends Component {
        */
       return null;
     }
+    let cardBottomVal;
+    if (this.props.showApproveAddressCard) {
+      cardBottomVal = 130;
+    } else if (this.props.cardAppeared) {
+      cardBottomVal = 100;
+    } else {
+      cardBottomVal = 80;
+    }
     return (
       <TouchableOpacity
         style={{
           position: 'absolute',
           right: 26,
-          bottom: (this.props.showApproveAddressCard) ? 130 : 80,
+          bottom: cardBottomVal,
           height: (Platform.OS === 'android' && this.state.trackingCurrentPos) ? 0 : 25,
           width: 25,
           borderRadius: 20,
@@ -695,7 +702,6 @@ class Home extends Component {
         onPress={() => {
           if (this.props.orderStatusList.length > 0) {
             animateCardAppear();
-            this.props.setCardAppeared(true);
           }
         }}
       />
@@ -808,8 +814,7 @@ const mapDispatchToProps = (dispatch) => {
     setShowApproveAddressCard: (showApproveAddressCard) => dispatch(setShowApproveAddressCard(showApproveAddressCard)),
     setSearchedAddressTextView: (searchedAddressTextView) => dispatch(setSearchedAddressTextView(searchedAddressTextView)),
     setCurrentLocation: (currentLocation) => dispatch(setCurrentLocation(currentLocation)),
-    setBusyOnWaitingNewRunner: (busyOnWaitingNewRunner) => dispatch(setBusyOnWaitingNewRunner(busyOnWaitingNewRunner)),
-    setCardAppeared: (cardAppeared) => dispatch(dispatch(setCardAppeared(cardAppeared)))
+    setBusyOnWaitingNewRunner: (busyOnWaitingNewRunner) => dispatch(setBusyOnWaitingNewRunner(busyOnWaitingNewRunner))
   };
 };
 
@@ -856,7 +861,6 @@ Home.propTypes = {
 
   // reducers/components/bottomCardView
   cardAppeared: PropTypes.bool,
-  setCardAppeared: PropTypes.func,
 
   // reducers/orderStatus
   orderStatusList: PropTypes.array

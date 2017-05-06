@@ -117,6 +117,7 @@ class BottomCardView extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    // todo: [Android] scrollToEnd does not work
     /**
      * When new order is added, bottomCardView should be showing the newly added card.
      * The following is trying to scroll it to the end where the new order would be at.
@@ -515,7 +516,7 @@ class BottomCardView extends Component {
                 <Text style={{
                   marginBottom: 3,
                   marginLeft: 12
-                }}>{this.props.busyOnWaitingNewRunner ?
+                }}>{(foundRunner === false) ?
                   '근처의 러너를 찾는중'
                   : id}</Text>
               </View>

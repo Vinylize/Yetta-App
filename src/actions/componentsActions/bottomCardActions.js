@@ -9,6 +9,13 @@ import {
   cardInitBottom
 } from './../../components/home';
 
+export const setCardAppeared = (cardAppeared) => {
+  return {
+    type: types.setCardAppeared,
+    cardAppeared
+  };
+};
+
 export const animateCardAppear = () => {
   const { animatedCardBottomVal } = store.getState().home;
   animatedCardBottomVal.setValue(-expandedCardHeight);
@@ -19,14 +26,9 @@ export const animateCardAppear = () => {
       duration: 100,
       easing: Easing.linear
     }
-  ).start();
-};
-
-export const setCardAppeared = (cardAppeared) => {
-  return {
-    type: types.setMapCameraPos,
-    cardAppeared
-  };
+  ).start(() => {
+    store.dispatch(setCardAppeared(true));
+  });
 };
 
 export const setCurrentFocusedCardIndex = (currentFocusedCardIndex) => {

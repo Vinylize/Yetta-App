@@ -42,6 +42,7 @@ export const setCurrentLocation = (currentLocation) => {
   };
 };
 
+// todo: this is deprecated, remove
 export const setBusyOnWaitingNewRunner = (busyOnWaitingNewRunner) => {
   return {
     type: types.setBusyOnWaitingNewRunner,
