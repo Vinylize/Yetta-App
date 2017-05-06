@@ -506,7 +506,7 @@ class BottomCardView extends Component {
           position: 'absolute',
           left: 0,
           bottom: this.props.animatedCardBottomVal,
-          width: WIDTH * 3,
+          width: WIDTH,
           height: expandedCardHeight,
           zIndex: 1,
           backgroundColor: 'transparent',
@@ -520,7 +520,7 @@ class BottomCardView extends Component {
           {...this.cardPanResponder.panHandlers}
         >
           <View style={{
-            width: WIDTH * this.props.orderStatusList.length * 2,
+            width: (cardWidth + 10) * this.props.orderStatusList.length + 10,
             height: 100,
             flexDirection: 'row'
           }}>
