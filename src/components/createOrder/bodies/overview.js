@@ -88,7 +88,9 @@ class RegisterOrder extends Component {
     const addNewOrderScheme = {
       foundRunner: false,
       id: orderId,
-      data: null
+      data: {
+        node: this.props.stagedNode
+      }
     };
     this.props.addNewOrder(addNewOrderScheme);
     // const ref = firebase.database().ref().child('order').child(orderId).child('runnerId');

@@ -234,7 +234,6 @@ class BottomCardView extends Component {
       }
     ).start(() => {
       LayoutAnimation.easeInEaseOut();
-      console.log(this.props.cardAppeared);
       this.props.setCardAppeared(false);
     });
   }
@@ -457,7 +456,15 @@ class BottomCardView extends Component {
     );
   }
 
-  renderCard(foundRunner, index, id) {
+  renderCard(order, index) {
+    const { foundRunner, data } = order;
+    const { node } = data;
+    let nodeName = '';
+    let nodeAddr = '';
+    if (node && node.name) {
+      nodeName = node.name;
+      nodeAddr = node.addr;
+    }
     return (
       <View
         style={{
@@ -471,7 +478,7 @@ class BottomCardView extends Component {
           shadowOpacity: 0.23,
           elevation: 2
         }}
-        key={id}
+        key={index}
       >
         <View style={{
           flex: 1,
@@ -518,7 +525,7 @@ class BottomCardView extends Component {
                   marginLeft: 12
                 }}>{(foundRunner === false) ?
                   '근처의 러너를 찾는중'
-                  : id}</Text>
+                  : nodeName}</Text>
               </View>
               <View style={{flex: 1}}>
                 <Text style={{
@@ -526,7 +533,9 @@ class BottomCardView extends Component {
                   marginLeft: 12,
                   fontSize: 11,
                   color: '#adb3b4'
-                }}>$3,500 - 4,500 (Delivery fee only)</Text>
+                }}>{(foundRunner === false) ?
+                  nodeName
+                  : nodeAddr}</Text>
               </View>
             </View>
             <View style={{
@@ -587,8 +596,7 @@ class BottomCardView extends Component {
             flexDirection: 'row'
           }}>
             {this.props.orderStatusList.map((order, index) => {
-              const { foundRunner, id } = order;
-              return this.renderCard(foundRunner, index, id);
+              return this.renderCard(order, index);
             })}
           </View>
         </ScrollView>
