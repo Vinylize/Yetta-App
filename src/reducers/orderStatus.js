@@ -28,6 +28,16 @@ const orderStatus = (state = initialState, action = {}) => {
       ...state,
       orderStatusList: state.orderStatusList.filter(el => el.id !== action.id)
     };
+  case types.foundRunnerAndUpdateOrder:
+    return {
+      ...state,
+      orderStatusList: state.orderStatusList.map(el => {
+        if (el.id === action.catchOrderId) {
+          return {...el, foundRunner: true};
+        }
+        return el;
+      })
+    };
   default:
     return state;
   }

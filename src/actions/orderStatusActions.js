@@ -20,3 +20,10 @@ export const deleteOrder = (id) => {
     id
   };
 };
+
+export const foundRunnerAndUpdateOrder = (catchOrderId) => {
+  return {
+    type: types.foundRunnerAndUpdateOrder,
+    catchOrderId
+  };
+};

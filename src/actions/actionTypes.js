@@ -36,7 +36,8 @@ export const setStagedDestination = 'SET_STAGED_DESTINATION';
 export const discardOrder = 'DISCARD_ORDER';
 export const setDestinationLocation = 'SET_DESTINATION_LOCATION';
 
-// orderStatusList
+// orderStatus
 export const setOrderStatusList = 'SET_ORDER_STATUS_LIST';
 export const addNewOrder = 'ADD_NEW_ORDER';
 export const deleteOrder = 'DELETE_ORDER';
+export const foundRunnerAndUpdateOrder = 'FOUND_RUNNER_AND_UPDATE_ORDER';
