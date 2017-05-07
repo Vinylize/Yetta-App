@@ -44,7 +44,7 @@ export default class Header extends Component {
           fontSize: 16,
           color: 'black'
         }}>
-          Find store
+          {(this.props.headerText) ? this.props.headerText : ' '}
         </Text>
         <TouchableOpacity
           style={{
@@ -67,5 +67,6 @@ export default class Header extends Component {
 
 Header.propTypes = {
   back: PropTypes.func.isRequired,
-  next: PropTypes.func
+  next: PropTypes.func,
+  headerText: PropTypes.string
 };

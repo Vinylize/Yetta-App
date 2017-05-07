@@ -158,7 +158,10 @@ class FindStore extends PureComponent {
         backgroundColor: 'white',
         flexDirection: 'column'
       }}>
-        <Header back={this.props.back}/>
+        <Header
+          headerText="스토어 선택"
+          back={this.props.back}
+        />
         <View style={{
           height: 58,
           width: WIDTH,

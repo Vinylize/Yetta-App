@@ -8,6 +8,7 @@ import pushNotificationReducer from './pushNotification';
 import homeReducer from './components/home';
 import bottomCardViewReducer from './components/bottomCardView';
 import orderStatusReducer from './orderStatus';
+import addProductReducer from './components/addProduct';
 
 export default combineReducers({
   auth: authReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
   pushNotification: pushNotificationReducer,
   home: homeReducer,
   bottomCardView: bottomCardViewReducer,
-  orderStatus: orderStatusReducer
+  orderStatus: orderStatusReducer,
+  addProduct: addProductReducer
 });

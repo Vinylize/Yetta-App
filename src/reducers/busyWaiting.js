@@ -8,7 +8,11 @@ const initialState = {
   /**
    * GoogleMapsAPI geocoding
    */
-  busyWaitingGeocodingAPI: false
+  busyWaitingGeocodingAPI: false,
+  /**
+   * busy on waiting response from userCreateOrder mutation
+   */
+  busyWaitingUserCreateOrder: false
 };
 
 const busyWaiting = (state = initialState, action = {}) => {
@@ -17,6 +21,8 @@ const busyWaiting = (state = initialState, action = {}) => {
     return {...state, busyWaitingPlaceDetailAPI: action.busyWaitingPlaceDetailAPI };
   case types.setBusyWaitingGeocodingAPI:
     return {...state, busyWaitingGeocodingAPI: action.busyWaitingGeocodingAPI };
+  case types.setBusyWaitingUserCreateOrder:
+    return {...state, busyWaitingUserCreateOrder: action.busyWaitingUserCreateOrder };
   default:
     return state;
   }
