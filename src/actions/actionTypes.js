@@ -21,6 +21,10 @@ export const setSearchedAddressTextView = 'SET_SEARCHED_ADDRESS_TEXT_VIEW';
 export const setCurrentLocation = 'SET_CURRENT_LOCATION';
 export const setBusyOnWaitingNewRunner = 'SET_BUSY_ON_WAITING_NEW_RUNNER';
 
+// components/bottomCardActions
+export const setCardAppeared = 'SET_CARD_APPEARED';
+export const setCurrentFocusedCardIndex = 'SET_CURRENT_FOCUSED_CARD_INDEX';
+
 // createOrder
 export const setNodeList = 'SET_NODE_LIST';
 export const setStagedNode = 'SET_STAGED_NODE';
@@ -31,3 +35,9 @@ export const decreaseStagedItemCount = 'deCREASE_STAGED_ITEM_COUNT';
 export const setStagedDestination = 'SET_STAGED_DESTINATION';
 export const discardOrder = 'DISCARD_ORDER';
 export const setDestinationLocation = 'SET_DESTINATION_LOCATION';
+
+// orderStatus
+export const setOrderStatusList = 'SET_ORDER_STATUS_LIST';
+export const addNewOrder = 'ADD_NEW_ORDER';
+export const deleteOrder = 'DELETE_ORDER';
+export const foundRunnerAndUpdateOrder = 'FOUND_RUNNER_AND_UPDATE_ORDER';

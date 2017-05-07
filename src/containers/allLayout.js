@@ -7,7 +7,11 @@ import {
 import React, { PropTypes } from 'react';
 import { loginNavigatorRoute } from '../navigator/navigatorRoutes';
 import { connect } from 'react-redux';
+
+// [start redux actions]
 import { setRunnerNotification } from './../actions/pushNotificationActions';
+import { foundRunnerAndUpdateOrder } from './../actions/orderStatusActions';
+// [end redux actions]
 
 const renderScene = (route, navigator) => {
   const { Component } = route;
@@ -62,6 +66,8 @@ class All extends React.Component {
       const chunk = { message, data };
       const newArr = this.props.runnerNotification.concat(chunk);
       this.props.setRunnerNotification(newArr);
+    } else if (data && data.type === 'CATCH_ORDER') {
+      this.props.foundRunnerAndUpdateOrder(data.data);
     }
   }
 
@@ -76,6 +82,8 @@ class All extends React.Component {
       const chunk = { message, data };
       const newArr = this.props.runnerNotification.concat(chunk);
       this.props.setRunnerNotification(newArr);
+    } else if (data && data.type === 'CATCH_ORDER') {
+      this.props.foundRunnerAndUpdateOrder(data.data);
     }
   }
 
@@ -92,25 +100,28 @@ class All extends React.Component {
 }
 
 All.propTypes = {
+  // reducers/pushNotification
   setRunnerNotification: PropTypes.func,
-  runnerNotification: PropTypes.any
+  runnerNotification: PropTypes.any,
+
+  // reducers/orderStatus
+  foundRunnerAndUpdateOrder: PropTypes.func
 };
 
 function mapStateToProps(state) {
   return {
-    runnerNotification: state.pushNotification.runnerNotification
+    runnerNotification: state.pushNotification.runnerNotification,
+    orderStatusList: state.orderStatus.orderStatusList
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner))
+    setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner)),
+    foundRunnerAndUpdateOrder: (catchOrderId) => dispatch(foundRunnerAndUpdateOrder(catchOrderId))
   };
 };
 
-const AllLayout = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(All);
+const AllLayout = connect(mapStateToProps, mapDispatchToProps)(All);
 
 export default AllLayout;

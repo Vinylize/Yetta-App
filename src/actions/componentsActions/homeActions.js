@@ -1,13 +1,4 @@
 import * as types from './../actionTypes';
-import store from './../../store';
-import {
-  Animated,
-  Easing
-} from 'react-native';
-import {
-  expandedCardHeight,
-  cardInitBottom
-} from './../../components/home';
 
 export const setCameraWillMoveByPlaceDetailAPI = (cameraWillMoveByPlaceDetailAPI) => {
   return {
@@ -51,22 +42,10 @@ export const setCurrentLocation = (currentLocation) => {
   };
 };
 
+// todo: this is deprecated, remove
 export const setBusyOnWaitingNewRunner = (busyOnWaitingNewRunner) => {
   return {
     type: types.setBusyOnWaitingNewRunner,
     busyOnWaitingNewRunner
   };
-};
-
-export const animateCardAppear = () => {
-  const { animatedCardBottomVal } = store.getState().home;
-  animatedCardBottomVal.setValue(-expandedCardHeight);
-  Animated.timing(
-    animatedCardBottomVal,
-    {
-      toValue: cardInitBottom,
-      duration: 100,
-      easing: Easing.linear
-    }
-  ).start();
 };

@@ -5,7 +5,7 @@ import Profile from './../components/profile';
 import Register from './../components/register';
 import PhoneVerification from './../components/phoneVerification';
 import PaymentInfo from './../components/paymentInfo/paymentInfo';
-import CreateOrderLayout from './../containers/createOrderLayout';
+import CreateOrder from './../components/createOrder/createOrder';
 import Setting from './../components/settings/setting';
 import OrderHistory from './../components/orderHistory/orderHistory';
 import RunnerHistory from './../components/runnerHistory/runnerHistory';
@@ -40,7 +40,7 @@ export function phoneVerificationNavigatorRoute() {
 
 export function createOrderNavigatorRoute() {
   return {
-    Component: CreateOrderLayout,
+    Component: CreateOrder,
     sceneConfig
   };
 }

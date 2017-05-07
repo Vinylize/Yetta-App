@@ -5,11 +5,8 @@ import {
 } from 'react-native';
 
 // [start redux actions]
-import { setNode } from './../../actions/createOrderActions';
-import {
-  setBusyOnWaitingNewRunner,
-  animateCardAppear
-} from './../../actions/componentsActions/homeActions';
+import { setBusyOnWaitingNewRunner } from './../../actions/componentsActions/homeActions';
+import { animateCardAppear } from './../../actions/componentsActions/bottomCardActions';
 // [end redux actions]
 
 import Overview from './bodies/overview';
@@ -129,7 +126,6 @@ class CreateOrder extends Component {
 CreateOrder.propTypes = {
   navigator: PropTypes.any,
   mapCameraPos: PropTypes.object,
-  setNode: PropTypes.func,
   node: PropTypes.array,
 
   // reducers/components/home
@@ -148,7 +144,6 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setNode: (node) => dispatch(setNode(node)),
     setBusyOnWaitingNewRunner: (busyOnWaitingNewRunner) => dispatch(setBusyOnWaitingNewRunner(busyOnWaitingNewRunner))
   };
 };
