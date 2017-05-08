@@ -18,6 +18,7 @@ import java.util.List;
 import com.pingstersapp.LocationService.YettaLocationPackage;
 import com.pingstersapp.VinylMap.VinylMapPackage;
 import com.pingstersapp.fcm.YettaFcmPackage;
+import com.pingstersapp.UDID.YettaUDIDPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -38,7 +39,8 @@ public class MainApplication extends Application implements ReactApplication {
             new BackgroundTimerPackage(),
             new YettaFcmPackage(),
             new YettaLocationPackage(),
-            new VinylMapPackage()
+            new VinylMapPackage(),
+            new YettaUDIDPackage()
       );
     }
   };

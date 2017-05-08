@@ -166,6 +166,7 @@ class Login extends Component {
 
   getUUID() {
     const iOSUUIDManager = NativeModules.YettaUUID;
+    const AndroidUDIDManager = NativeModules.YettaUDIDManager;
     if (Platform.OS === 'ios') {
       iOSUUIDManager.getUUID((error, events) => {
         if (error) {
@@ -177,7 +178,15 @@ class Login extends Component {
         }
       });
     } else if (Platform.OS === 'android') {
-      // todo: implement this
+      AndroidUDIDManager.getUDID(
+        (msg) => {
+          console.log(msg);
+        },
+        (UDID) => {
+          console.log('UDID', UDID);
+          // todo:
+        }
+      );
     }
   }
 
