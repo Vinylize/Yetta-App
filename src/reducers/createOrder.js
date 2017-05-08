@@ -4,6 +4,7 @@ const initialState = {
   nodeList: [],
   stagedNode: {},
   stagedDestination: {},
+  // todo: this is not being used, delete this or addProduct.productList
   stagedItems: [],
   destinationLocation: {lat: undefined, lon: undefined}
 };

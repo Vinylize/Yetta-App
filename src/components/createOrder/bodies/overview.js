@@ -7,7 +7,13 @@ import {
   Dimensions
 } from 'react-native';
 import Header from './../header/header';
+import Loading from './../../globalViews/loading';
+
+// [start redux functions]
 import { addNewOrder } from './../../../actions/orderStatusActions';
+import { resetProductList } from './../../../actions/componentsActions/addProductActions';
+import { setBusyWaitingUserCreateOrder } from './../../../actions/busyWaitingActions';
+// [end redux functions]
 
 import { URL, handleError } from '../../../utils';
 import * as firebase from 'firebase';
@@ -32,17 +38,18 @@ const styles = {
 };
 
 class RegisterOrder extends Component {
-  constructor() {
-    super();
-    this.state = {
-      // TBD
-    };
-  }
-
   createOrderHelper() {
-    const {id, name, addr} = this.props.stagedNode;
-    console.log(name);
-    console.log(addr);
+    const {id} = this.props.stagedNode;
+    this.props.setBusyWaitingUserCreateOrder(true);
+    let customItems = '[';
+    this.props.productList.map(el => {
+      customItems = customItems + `{
+          n: "${el.name}",
+          cnt: ${el.cnt}
+        },`;
+    });
+    customItems = customItems + ']';
+    console.log(customItems);
     firebase.auth().currentUser.getToken()
       .then(token => {
         client._transport._httpOptions.headers = {
@@ -50,21 +57,12 @@ class RegisterOrder extends Component {
         };
         client.mutate(`{
           userCreateOrder(input:{
-            regItems:[
-              {
-                iId:"4334423",
-                n:"바나나킥3",
-                p:2300,
-                cnt:1}],
-            customItems:[
-              {
-                manu:"농심",
-                n:"바나나 우유3",
-                cnt:2}],
+            regItems: [],
+            customItems: ${customItems},
             nId: "${id}",
             dest:{
               n1:"${this.props.searchedAddressTextView.firstAddressToken}",
-              n2:"910호",
+              n2:"",
               lat:${this.props.destinationLocation.lat},
               lon:${this.props.destinationLocation.lon}
             },
@@ -77,10 +75,17 @@ class RegisterOrder extends Component {
         }`)
           .then(res => {
             console.log(res);
+            this.props.setBusyWaitingUserCreateOrder(false);
+            this.props.resetProductList();
+            // todo: handle errors
             return res.userCreateOrder.result;
           })
           .then(this.addNewRunnerListener.bind(this))
-          .catch(handleError);
+          .catch(err => {
+            console.log(err);
+            this.props.setBusyWaitingUserCreateOrder(false);
+            handleError(err);
+          });
       });
   }
 
@@ -140,7 +145,7 @@ class RegisterOrder extends Component {
       >
         <Text style={{
           color: 'white'
-        }}>Register order</Text>
+        }}>주문 하기</Text>
       </TouchableOpacity>
     );
   }
@@ -173,7 +178,7 @@ class RegisterOrder extends Component {
           <Text style={{
             marginTop: 5
           }}>
-            CU Jongro K twin tower
+            {this.props.stagedNode.name}
           </Text>
           <Text style={{
             marginTop: 3,
@@ -181,7 +186,7 @@ class RegisterOrder extends Component {
             fontSize: 11,
             color: 'grey'
           }}>
-            50 Jong-ro 1-gil, Jongno-gu, Seoul
+            {this.props.stagedNode.addr}
           </Text>
         </View>
         <View style={{
@@ -210,7 +215,7 @@ class RegisterOrder extends Component {
           <Text style={{
             marginTop: 5
           }}>
-            8126 Greenfelder Square Suite 067
+            {this.props.searchedAddressTextView.firstAddressToken}
           </Text>
         </View>
       </View>
@@ -253,27 +258,24 @@ class RegisterOrder extends Component {
 
   renderProducts() {
     return (
-      <View style={{paddingBottom: 4}}>
-        {this.renderProduct('Nongsim', 'Sin 라면')}
-        {this.renderProduct('삼양', '삼양라면')}
+      <View style={{
+        marginBottom: 12
+      }}>
+        {this.props.productList.map((el, index) => {
+          return this.renderProduct(el, index);
+        })}
       </View>
     );
   }
 
-  renderProduct(company, product) {
+  renderProduct(product, index) {
     return (
-      <View>
+      <View
+        key={index}
+      >
         <Text style={{
           marginTop: 5
-        }}>{company}</Text>
-        <Text style={{
-          marginTop: 4,
-          marginBottom: 16,
-          fontSize: 11,
-          color: 'grey'
-        }}>
-          {product}
-        </Text>
+        }}>{product.name} X {product.cnt}</Text>
       </View>
     );
   }
@@ -295,7 +297,10 @@ class RegisterOrder extends Component {
             left: WIDTH * 0.1 + 20,
             alignSelf: 'flex-start'
           }}>
-            <Text>Your order</Text>
+            <Text style={{
+              fontWeight: '500',
+              color: 'black'
+            }}>주문 내역</Text>
           </View>
           {this.renderOrderBody()}
           {this.renderTriangles()}
@@ -306,6 +311,7 @@ class RegisterOrder extends Component {
           </View>
           {this.renderOrderBtn()}
         </View>
+        <Loading show={this.props.busyWaitingUserCreateOrder}/>
       </View>
     );
   }
@@ -323,20 +329,33 @@ RegisterOrder.propTypes = {
   searchedAddressTextView: PropTypes.object,
 
   // reducers/orderStatus
-  addNewOrder: PropTypes.func
+  addNewOrder: PropTypes.func,
+
+  // reducers/components/addProduct
+  productList: PropTypes.array,
+  resetProductList: PropTypes.func,
+
+  // reducers/busyWaiting
+  busyWaitingUserCreateOrder: PropTypes.bool,
+  setBusyWaitingUserCreateOrder: PropTypes.func
 };
 
 function mapStateToProps(state) {
   return {
     stagedNode: state.createOrder.stagedNode,
     destinationLocation: state.createOrder.destinationLocation,
-    searchedAddressTextView: state.home.searchedAddressTextView
+    searchedAddressTextView: state.home.searchedAddressTextView,
+    productList: state.addProduct.productList,
+    busyWaitingUserCreateOrder: state.busyWaiting.busyWaitingUserCreateOrder
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addNewOrder: (newOrder) => dispatch(addNewOrder(newOrder))
+    addNewOrder: (newOrder) => dispatch(addNewOrder(newOrder)),
+    resetProductList: () => dispatch(resetProductList()),
+    setBusyWaitingUserCreateOrder: (busyWaitingUserCreateOrder) =>
+      dispatch(setBusyWaitingUserCreateOrder(busyWaitingUserCreateOrder))
   };
 };
 

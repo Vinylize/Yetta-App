@@ -13,3 +13,10 @@ export const setBusyWaitingGeocodingAPI = (busyWaitingGeocodingAPI) => {
     busyWaitingGeocodingAPI
   };
 };
+
+export const setBusyWaitingUserCreateOrder = (busyWaitingUserCreateOrder) => {
+  return {
+    type: types.setBusyWaitingUserCreateOrder,
+    busyWaitingUserCreateOrder
+  };
+};

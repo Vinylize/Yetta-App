@@ -4,6 +4,7 @@ export const setIsRunner = 'SET_IS_RUNNER';
 // busyWaiting
 export const setBusyWaitingPlaceDetailAPI = 'SET_BUSY_WAITING_PLACE_DETAIL_API';
 export const setBusyWaitingGeocodingAPI = 'SET_BUSY_WAITING_GEOCODING_API';
+export const setBusyWaitingUserCreateOrder = 'SET_BUSY_WAITING_USER_CREATE_ORDER';
 
 // runnerStatus
 export const setWaitingNewOrder = 'SET_WAITING_NEW_ORDER';
@@ -41,3 +42,10 @@ export const setOrderStatusList = 'SET_ORDER_STATUS_LIST';
 export const addNewOrder = 'ADD_NEW_ORDER';
 export const deleteOrder = 'DELETE_ORDER';
 export const foundRunnerAndUpdateOrder = 'FOUND_RUNNER_AND_UPDATE_ORDER';
+
+// components/addProduct
+export const addProduct = 'ADD_PRODUCT';
+export const deleteProduct = 'DELETE_PRODUCT';
+export const resetProductList = 'RESET_PRODUCT_LIST';
+export const changeProductName = 'CHANGE_PRODUCT_NAME';
+export const changeProductNum = 'CHANGE_PRODUCT_NUM';
