@@ -7,17 +7,9 @@ import {
   Dimensions,
   StyleSheet
 } from 'react-native';
+import * as YettaServerAPI from './../../service/YettaServerAPI/client';
 
-import firebase from 'firebase';
-
-import { URL, handleError } from '../../utils';
-
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
+import { handleError } from '../../utils';
 
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
@@ -118,75 +110,72 @@ class OrderHistory extends Component {
   }
 
   componentDidMount() {
-    firebase.auth().currentUser.getToken().then((token) => {
-      client._transport._httpOptions.headers = {
-        authorization: token
-      };
-      return client.query(`{
-        viewer{
-          orderStatusCategory
-          orderHistory {
-            id
-            nId{
-              n
-              addr
-            }
-            rId{
-              n
-            }
-            eDP
-            rDP
-            tP
-            cAt
-            status
-            dest {
-              n1
-              n2
-              lat
-              lon
-            }
-            items{
-              regItem {
-                iId
+    YettaServerAPI.getLokkaClient()
+      .then(client => {
+        return client.query(`{
+          viewer{
+            orderStatusCategory
+            orderHistory {
+              id
+              nId{
                 n
-                p
-                cnt
+                addr
               }
-              customItem {
-                manu
+              rId{
                 n
-                cnt
+              }
+              eDP
+              rDP
+              tP
+              cAt
+              status
+              dest {
+                n1
+                n2
+                lat
+                lon
+              }
+              items{
+                regItem {
+                  iId
+                  n
+                  p
+                  cnt
+                }
+                customItem {
+                  manu
+                  n
+                  cnt
+                }
               }
             }
           }
-        }
-      }`
-      )
-        .then(res => {
-          this.setState({
-            statusCategory: JSON.parse(res.viewer.orderStatusCategory)
-          });
-          return res.viewer.orderHistory;
-        })
-        .then(orderHistory => {
-          this.setState({
-            orderHistory: orderHistory.map(order => {
-              return {
-                status: order.status,
-                statusString: this.state.statusCategory[`${order.status}`].name,
-                date: new Date(order.cAt).toISOString().slice(0, 10),
-                itemSummary: this.getOrderItemSummary(order.items),
-                startNode: `${order.nId.addr} ${order.nId.n}`,
-                dest: `${order.dest.n1} ${order.dest.n2}`,
-                eDP: order.eDP,
-                rDP: order.rDP,
-                tP: order.tP
-              };
-            })
-          });
-        })
-        .catch(handleError);
-    });
+        }`);
+      })
+      .then(res => {
+        this.setState({
+          statusCategory: JSON.parse(res.viewer.orderStatusCategory)
+        });
+        return res.viewer.orderHistory;
+      })
+      .then(orderHistory => {
+        this.setState({
+          orderHistory: orderHistory.map(order => {
+            return {
+              status: order.status,
+              statusString: this.state.statusCategory[`${order.status}`].name,
+              date: new Date(order.cAt).toISOString().slice(0, 10),
+              itemSummary: this.getOrderItemSummary(order.items),
+              startNode: `${order.nId.addr} ${order.nId.n}`,
+              dest: `${order.dest.n1} ${order.dest.n2}`,
+              eDP: order.eDP,
+              rDP: order.rDP,
+              tP: order.tP
+            };
+          })
+        });
+      })
+      .catch(handleError);
   }
 
   getOrderItemSummary(item) {

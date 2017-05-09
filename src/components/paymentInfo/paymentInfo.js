@@ -1,24 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
-  // Image,
   Text,
   View,
   Dimensions,
   StyleSheet
 } from 'react-native';
-// import BTclient from 'braintree-web/client';
-// const createClient = BTclient.create;
-import firebase from 'firebase';
-
-import { URL } from './../../utils';
-
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
 
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
@@ -70,54 +57,6 @@ const styles = {
 class PaymentInfo extends Component {
   constructor() {
     super();
-  }
-
-  componentDidMount() {
-    firebase.auth().currentUser.getToken().then((token) => {
-      client._transport._httpOptions.headers = {
-        authorization: token
-      };
-      return client.query(`{
-        viewer{
-          braintreeToken
-        }
-      }`
-      );
-    });
-    // .then(res => {
-    //   createClient({
-    //     authorization: res.viewer.braintreeToken
-    //   }, function (createErr, clientInstance) {
-    //     console.log(createErr,clientInstance);
-    //     const data = {
-    //       creditCard: {
-    //         number: '12332132232323',
-    //         cvv: '332',
-    //         expirationDate: '0434',
-    //         // billingAddress: {
-    //         //   postalCode: form['cc-postal'].value
-    //         // },
-    //         options: {
-    //           validate: false
-    //         }
-    //       }
-    //     };
-    //
-    //     // Warning: For a merchant to be eligible for the easiest level of PCI compliance (SAQ A),
-    //     // payment fields cannot be hosted on your checkout page.
-    //     // For an alternative to the following, use Hosted Fields.
-    //     clientInstance.request({
-    //       endpoint: 'payment_methods/credit_cards',
-    //       method: 'post',
-    //       data: data
-    //     }, function (requestErr, response) {
-    //       // More detailed example of handling API errors: https://codepen.io/braintree/pen/MbwjdM
-    //       if (requestErr) { throw new Error(requestErr); }
-    //
-    //       console.log('Got nonce:', response.creditCards[0].nonce);
-    //     });
-    //   });
-    // });
   }
 
   renderProfileList(subject, content) {
