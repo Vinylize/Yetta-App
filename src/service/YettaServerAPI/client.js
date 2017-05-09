@@ -57,3 +57,14 @@ export const getLokkaClient = () => {
     })
     .catch(console.log);
 };
+
+export const getLokkaClientForRegistration = () => {
+  return getDeviceID()
+    .then(deviceID => {
+      client._transport._httpOptions.headers = {
+        device: deviceID
+      };
+      return client;
+    })
+    .catch(console.log);
+};
