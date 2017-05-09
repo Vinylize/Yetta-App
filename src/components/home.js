@@ -30,8 +30,9 @@ import ApproveCard from './searchAddress/approveCard';
 import RunnerView from './runnerView/runnerView';
 import RunnerOnDeliveryView from './runnerView/runnerOnDeliveryView';
 import BottomCardView from './bottomCardView';
-import { URL } from './../utils';
+
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
+import * as YettaServerAPI from './../service/YettaServerAPI/client';
 
 // [start redux functions]
 import { setIsRunner } from './../actions/userStatusActions';
@@ -62,13 +63,6 @@ import UserModeTransition from './globalViews/userModeTransition';
 import GlobalLoading from './globalViews/loading';
 
 let vmm = NativeModules.VinylMapManager;
-
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
 
 const { YettaLocationServiceManger } = NativeModules;
 const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServiceManger);
@@ -204,7 +198,7 @@ class Home extends Component {
           vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
         }
         if (firebase.auth().currentUser) {
-          firebase.auth().currentUser.getToken().then(token => this.userUpdateCoordinateHelper(token, data));
+          this.userUpdateCoordinateHelper(data);
         }
       });
       DeviceEventEmitter.addListener('didUpdateToLocationAndroidBackground', async(data) => {
@@ -219,7 +213,7 @@ class Home extends Component {
           vmm.animateToLocation(data.latitude, data.longitude);
         }
         if (firebase.auth().currentUser) {
-          firebase.auth().currentUser.getToken().then(token => this.userUpdateCoordinateHelper(token, data));
+          this.userUpdateCoordinateHelper(data);
         }
       });
     } else if (Platform.OS === 'ios') {
@@ -241,7 +235,7 @@ class Home extends Component {
             vmm.animateToLocation(data.latitude, data.longitude);
           }
           if (firebase.auth().currentUser) {
-            firebase.auth().currentUser.getToken().then(token => this.userUpdateCoordinateHelper(token, data));
+            this.userUpdateCoordinateHelper(data);
           }
         }
       );
@@ -262,12 +256,11 @@ class Home extends Component {
     }
   }
 
-  userUpdateCoordinateHelper(token, data) {
+  userUpdateCoordinateHelper(data) {
     // console.log(token);
-    client._transport._httpOptions.headers = {
-      authorization: token
-    };
-    client.mutate(`{
+    YettaServerAPI.getLokkaClient()
+      .then(client => {
+        return client.mutate(`{
             runnerUpdateCoordinate(
               input:{
                 lat: ${data.latitude},
@@ -277,7 +270,8 @@ class Home extends Component {
               result
             }
           }`
-    )
+        );
+      })
       .then(console.log)
       .catch(console.log);
   }
