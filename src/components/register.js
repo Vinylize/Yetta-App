@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
   Keyboard,
+  KeyboardAvoidingView,
   TouchableOpacity,
   Dimensions,
   Image
@@ -165,74 +166,83 @@ export default class Register extends Component {
 
   render() {
     return (
-    <View
+    <TouchableOpacity
       ref={component => {
         this.refViewContainer = component;
       }}
       onLayout={() => {
         this.setState({ refViewForBlurView: findNodeHandle(this.refViewContainer) });
       }}
-      style={styles.container}
+      style={{flex: 1}}
+      activeOpacity={1}
+      onPress={() => Keyboard.dismiss()}
     >
-      <View style={styles.topContainer}>
-        <Text style={styles.topContainerText}>회원가입</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.sectionText}>이름</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={(text) => this.setState({userName: text})}
-          value={this.state.userName}
-        />
-        <View style={{height: 33}} />
-        <Text style={styles.sectionText}>이메일주소</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={(text) => this.setState({userEmail: text})}
-          value={this.state.userEmail}
-          onSubmitEditing={Keyboard.dismiss}
-          autoCapitalize={'none'}
-        />
-        <Text style={styles.sectionText}>비밀번호</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={(text) => this.setState({password: text})}
-          value={this.state.password}
-          onSubmitEditing={Keyboard.dismiss}
-          autoCapitalize={'none'}
-          secureTextEntry={true}
-        />
-        <Text style={styles.sectionText}>비밀번호 확인</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={(text) => this.setState({cPassword: text})}
-          value={this.state.cPassword}
-          onSubmitEditing={Keyboard.dismiss}
-          autoCapitalize={'none'}
-          secureTextEntry={true}
-        />
-        <View style={{alignItems: 'flex-end', marginTop: 39}}>
-          <TouchableOpacity onPress={this.handleRegisterButton.bind(this)}>
-            <Image style={styles.registerBtnImg} source={require('../../assets/next-step.png')} />
+      <KeyboardAvoidingView
+        behavior="position"
+        contentContainerStyle={styles.container}
+        keyboardVerticalOffset={-120}
+        style={{flex: 1}}
+      >
+        <View style={styles.topContainer}>
+          <Text style={styles.topContainerText}>회원가입</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.sectionText}>이름</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => this.setState({userName: text})}
+            value={this.state.userName}
+          />
+          <View style={{height: 33}} />
+          <Text style={styles.sectionText}>이메일주소</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => this.setState({userEmail: text})}
+            value={this.state.userEmail}
+            onSubmitEditing={Keyboard.dismiss}
+            autoCapitalize={'none'}
+          />
+          <Text style={styles.sectionText}>비밀번호</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => this.setState({password: text})}
+            value={this.state.password}
+            onSubmitEditing={Keyboard.dismiss}
+            autoCapitalize={'none'}
+            secureTextEntry={true}
+          />
+          <Text style={styles.sectionText}>비밀번호 확인</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => this.setState({cPassword: text})}
+            value={this.state.cPassword}
+            onSubmitEditing={Keyboard.dismiss}
+            autoCapitalize={'none'}
+            secureTextEntry={true}
+          />
+          <View style={{alignItems: 'flex-end', marginTop: 39}}>
+            <TouchableOpacity onPress={this.handleRegisterButton.bind(this)}>
+              <Image style={styles.registerBtnImg} source={require('../../assets/next-step.png')} />
+            </TouchableOpacity>
+          </View>
+
+        </View>
+        <View style={styles.footer}>
+          <Text style={{fontSize: 14, fontWeight: '500', color: '#bbb'}}>이미 회원이신가요? </Text>
+          <TouchableOpacity onPress={() => this.props.navigator.pop()}>
+            <Text
+              style={{marginTop: 1, fontSize: 14, fontWeight: '600', color: '#ff9700'}}
+            >
+              로그인
+            </Text>
           </TouchableOpacity>
         </View>
-
-      </View>
-      <View style={styles.footer}>
-        <Text style={{fontSize: 14, fontWeight: '500', color: '#bbb'}}>이미 회원이신가요? </Text>
-        <TouchableOpacity onPress={() => this.props.navigator.pop()}>
-          <Text
-            style={{marginTop: 1, fontSize: 14, fontWeight: '600', color: '#ff9700'}}
-          >
-            로그인
-          </Text>
-        </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
       <GlobalLoading
         refViewForBlurView={this.state.refViewForBlurView}
         show={this.state.busyWaiting}
       />
-    </View>
+    </TouchableOpacity>
     );
   }
 }

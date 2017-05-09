@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
   Keyboard,
+  KeyboardAvoidingView,
   TouchableOpacity,
   Dimensions,
   Image,
@@ -283,58 +284,67 @@ class Login extends Component {
         colors={['#ffba56', '#ff9700']}
         style={styles.linearGradient}
       >
-        <View style={styles.container}>
-          <Image style={styles.logo} source={IMG_LOGO} />
-          <View style={styles.textInputContainer}>
-            <TextInput
-              ref='inputEmail'
-              style={styles.textInput}
-              onChangeText={(text) => this.setState({userEmail: text})}
-              value={this.state.userEmail}
-              placeholderTextColor={'#fff'}
-              placeholder={'이메일주소'}
-              onSubmitEditing={Keyboard.dismiss}
-              autoCapitalize={'none'}
-              underlineColorAndroid={'transparent'}
-            />
-          </View>
-          <View style={styles.textInputContainer}>
-            <TextInput
-              ref='inputPassword'
-              style={styles.textInput}
-              onChangeText={(text) => this.setState({password: text})}
-              value={this.state.password}
-              placeholderTextColor={'#fff'}
-              placeholder={'비밀번호'}
-              onSubmitEditing={Keyboard.dismiss}
-              autoCapitalize={'none'}
-              secureTextEntry={true}
-              underlineColorAndroid={'transparent'}
-            />
-          </View>
-          <View>
-            <TouchableOpacity
-              style={{marginTop: 14, width: WIDTH * 0.75, alignItems: 'flex-end'}}
-              onPress={() => this.props.navigator.push(registerNavigatorRoute())}
-            >
-              <Text style={{color: '#FFF', fontWeight: '500', fontSize: 12}}>비밀번호를 잊으셨나요?</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            style={styles.loginBtn}
-            onPress={this.handleLoginButton.bind(this)}
+        <TouchableOpacity
+          style={{flex: 1}}
+          onPress={() => Keyboard.dismiss()}
+          activeOpacity={1}
+        >
+          <KeyboardAvoidingView
+            behavior="padding"
+            style={styles.container}
           >
-            <Text style={styles.loginBtnText}>Login</Text>
-          </TouchableOpacity>
-          <View style={styles.footer}>
-            <Text
-              style={{fontSize: 14, fontWeight: '500', color: '#fee5c0'}}
-            >아직 회원이 아니신가요? </Text>
-            <TouchableOpacity onPress={() => this.props.navigator.push(registerNavigatorRoute())}>
-              <Text style={{marginTop: 1, fontSize: 14, fontWeight: '500', color: '#FFF'}}>회원가입</Text>
+            <Image style={styles.logo} source={IMG_LOGO} />
+            <View style={styles.textInputContainer}>
+              <TextInput
+                ref='inputEmail'
+                style={styles.textInput}
+                onChangeText={(text) => this.setState({userEmail: text})}
+                value={this.state.userEmail}
+                placeholderTextColor={'#fff'}
+                placeholder={'이메일주소'}
+                onSubmitEditing={Keyboard.dismiss}
+                autoCapitalize={'none'}
+                underlineColorAndroid={'transparent'}
+              />
+            </View>
+            <View style={styles.textInputContainer}>
+              <TextInput
+                ref='inputPassword'
+                style={styles.textInput}
+                onChangeText={(text) => this.setState({password: text})}
+                value={this.state.password}
+                placeholderTextColor={'#fff'}
+                placeholder={'비밀번호'}
+                onSubmitEditing={Keyboard.dismiss}
+                autoCapitalize={'none'}
+                secureTextEntry={true}
+                underlineColorAndroid={'transparent'}
+              />
+            </View>
+            <View>
+              <TouchableOpacity
+                style={{marginTop: 14, width: WIDTH * 0.75, alignItems: 'flex-end'}}
+                onPress={() => this.props.navigator.push(registerNavigatorRoute())}
+              >
+                <Text style={{color: '#FFF', fontWeight: '500', fontSize: 12}}>비밀번호를 잊으셨나요?</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.loginBtn}
+              onPress={this.handleLoginButton.bind(this)}
+            >
+              <Text style={styles.loginBtnText}>Login</Text>
             </TouchableOpacity>
-          </View>
-        </View>
+            <View style={styles.footer}>
+              <Text
+                style={{fontSize: 14, fontWeight: '500', color: '#fee5c0'}}
+              >아직 회원이 아니신가요? </Text>
+              <TouchableOpacity onPress={() => this.props.navigator.push(registerNavigatorRoute())}>
+                <Text style={{marginTop: 1, fontSize: 14, fontWeight: '500', color: '#FFF'}}>회원가입</Text>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
+        </TouchableOpacity>
         <GlobalLoading
           refViewForBlurView={this.state.refViewContainer}
           show={this.state.busyWaiting}/>
