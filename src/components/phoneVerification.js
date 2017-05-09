@@ -6,16 +6,9 @@ import {
   LayoutAnimation,
   Dimensions
 } from 'react-native';
-import * as firebase from 'firebase';
-import { URL, handleError } from './../utils';
+import * as YettaServerAPI from './../service/YettaServerAPI/client';
+import { handleError } from './../utils';
 import { homeNavigatorRoute } from './../navigator/navigatorRoutes';
-
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -113,12 +106,9 @@ export default class PhoneVerification extends Component {
   }
 
   requestVerificationHelper(phoneNumber) {
-    firebase.auth().currentUser.getToken()
-      .then(token => {
-        client._transport._httpOptions.headers = {
-          authorization: token
-        };
-        client.mutate(`{
+    YettaServerAPI.getLokkaClient()
+      .then(client => {
+        return client.mutate(`{
           userRequestPhoneVerification(
             input:{
               p: "${phoneNumber}"
@@ -126,25 +116,24 @@ export default class PhoneVerification extends Component {
           ) {
             result
           }
-        }`)
-          .then(res => {
-            console.log(res);
-            LayoutAnimation.easeInEaseOut();
-            this.setState({
-              showResponse: true,
-              showEnterBtn: false
-            });
-          }).catch(handleError);
-      });
+        }`);
+      })
+      .then(res => {
+        console.log(res);
+        LayoutAnimation.easeInEaseOut();
+        this.setState({
+          showResponse: true,
+          showEnterBtn: false
+        });
+      }).catch(handleError);
   }
 
   responseVerificationHelper(code) {
-    firebase.auth().currentUser.getToken()
-      .then(token => {
-        client._transport._httpOptions.headers = {
-          authorization: token
-        };
-        client.mutate(`{
+    let lokkaClient;
+    YettaServerAPI.getLokkaClient()
+      .then(client => {
+        lokkaClient = client;
+        return client.mutate(`{
           userResponsePhoneVerification(
             input:{
               code: ${code}
@@ -152,27 +141,27 @@ export default class PhoneVerification extends Component {
           ) {
             result
           }
-        }`)
-          .then(res => {
-            console.log(res);
-            // todo: check ok sign
-            return client.query(`{
-              viewer{
-                isPV
-              }
-            }`);
-          })
-          .then(res => {
-            if (res.viewer.isPhoneValid === true) {
-              this.props.navigator.resetTo(homeNavigatorRoute());
-            } else {
-              // todo: isPhoneValid is still false after phone verification
-              // todo: determine what to do
-              this.props.navigator.pop();
-            }
-          })
-          .catch(handleError);
-      });
+        }`);
+      })
+      .then(res => {
+        console.log(res);
+        // todo: check ok sign
+        return lokkaClient.query(`{
+          viewer{
+            isPV
+          }
+        }`);
+      })
+      .then(res => {
+        if (res.viewer.isPhoneValid === true) {
+          this.props.navigator.resetTo(homeNavigatorRoute());
+        } else {
+          // todo: isPhoneValid is still false after phone verification
+          // todo: determine what to do
+          this.props.navigator.pop();
+        }
+      })
+      .catch(handleError);
   }
 
   handleEnterBtn() {

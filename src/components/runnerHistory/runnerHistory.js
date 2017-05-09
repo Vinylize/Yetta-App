@@ -8,17 +8,6 @@ import {
   StyleSheet
 } from 'react-native';
 
-import firebase from 'firebase';
-
-import { URL } from '../../utils';
-
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
-
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
 const LIST_BORDER_COLOR = '#eee';
@@ -69,20 +58,6 @@ const styles = {
 class RunnerHistory extends Component {
   constructor() {
     super();
-  }
-
-  componentDidMount() {
-    firebase.auth().currentUser.getToken().then((token) => {
-      client._transport._httpOptions.headers = {
-        authorization: token
-      };
-      return client.query(`{
-        viewer{
-          braintreeToken
-        }
-      }`
-      );
-    });
   }
 
   renderOrderHistoryRow() {
