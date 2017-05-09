@@ -14,13 +14,14 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as firebase from 'firebase';
+import * as YettaServerAPI from './../service/YettaServerAPI/client';
 
 import GlobalLoading from './globalViews/loading';
 
 import { setUser } from '../actions/authActions';
 import { setRunnerNotification } from './../actions/pushNotificationActions';
 
-import { URL, handleFirebaseSignInError } from './../utils';
+import { handleFirebaseSignInError } from './../utils';
 import {
   registerNavigatorRoute,
   homeNavigatorRoute,
@@ -28,13 +29,6 @@ import {
 } from './../navigator/navigatorRoutes';
 
 import IMG_LOGO from './../../assets/logo.png';
-
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -140,110 +134,108 @@ class Login extends Component {
     // this is for readability
     const iOSFCMManager = NativeModules.YettaFCMManager;
     const AndroidFCMManager = NativeModules.YettaFCMManager;
-
-    if (Platform.OS === 'ios') {
-      iOSFCMManager.getToken((error, events) => {
-        if (error) {
-          // todo: handle error or edge cases
-          console.log(error);
-        } else {
-          console.log(events);
-          this.userUpdateDeviceToken(events[0]);
-        }
-      });
-    } else if (Platform.OS === 'android') {
-      AndroidFCMManager.getToken(
-        (msg) => {
-          console.log(msg);
-        },
-        (FCMToken) => {
-          console.log(FCMToken);
-          this.userUpdateDeviceToken(FCMToken);
-        }
-      );
-    }
-  }
-
-  getUUID() {
-    const iOSUUIDManager = NativeModules.YettaUUID;
-    const AndroidUDIDManager = NativeModules.YettaUDIDManager;
-    if (Platform.OS === 'ios') {
-      iOSUUIDManager.getUUID((error, events) => {
-        if (error) {
-          // todo: handle error or edge cases
-          console.log(error);
-        } else {
-          console.log('UUID: ', events);
-          // todo:
-        }
-      });
-    } else if (Platform.OS === 'android') {
-      AndroidUDIDManager.getUDID(
-        (msg) => {
-          console.log(msg);
-        },
-        (UDID) => {
-          console.log('UDID', UDID);
-          // todo:
-        }
-      );
-    }
-  }
-
-  queryUser(token) {
     return new Promise((resolve, reject) => {
-      client._transport._httpOptions.headers = {
-        authorization: token
-      };
-      client.query(`{
-      viewer{
-        isPV,
-        e,
-        n,
-        p
+      if (Platform.OS === 'ios') {
+        return iOSFCMManager.getToken((error, events) => {
+          if (error) {
+            // todo: handle error or edge cases
+            console.log(error);
+            return reject(error);
+          }
+          console.log(events);
+          return resolve(events[0]);
+        });
+      } else if (Platform.OS === 'android') {
+        return AndroidFCMManager.getToken(
+          (msg) => {
+            console.log(msg);
+            return reject(msg);
+          },
+          (FCMToken) => {
+            console.log(FCMToken);
+            return resolve(FCMToken);
+            // this.userSignIn(FCMToken, client);
+          }
+        );
       }
-    }`)
+      return reject();
+    });
+  }
+
+  queryUser(client) {
+    return new Promise((resolve, reject) => {
+      return client.query(`{
+        viewer{
+          isPV,
+          e,
+          n,
+          p
+        }
+      }`)
         .then(({viewer}) => {
           this.props.setUser(viewer);
           this.hideLoading();
+          console.log(viewer);
           return resolve(viewer);
         })
         .catch(e => {
           this.hideLoading();
+          console.log(e);
           return reject(e);
         });
     });
   }
 
-  userUpdateDeviceToken(token) {
-    console.log(token);
-    client.mutate(`{
-      userUpdateDeviceToken(
-        input:{
-          dt: "${token}"
-        }
-      ) {
-        result
-      }
-    }`)
-      .then(console.log)
-      .catch(console.log);
+  userSignIn(token, client) {
+    return YettaServerAPI.getDeviceID()
+      .then(deviceID => {
+        return new Promise((resolve, reject) => {
+          return client.mutate(`{
+            userSignIn(
+              input:{
+                dt: "${token}",
+                d: "${deviceID}"
+              }
+            ) {
+              result
+            }
+          }`)
+            .then(res => {
+              return resolve(res);
+            })
+            .catch(err => {
+              console.log(err);
+              return reject(err);
+            });
+        });
+      });
   }
 
   internalAuth() {
-    firebase.auth().currentUser.getToken()
-      .then(this.queryUser.bind(this))
-      .then((viewer) => {
+    let lokkaClient;
+    YettaServerAPI.getLokkaClient()
+      .then(client => {
+        lokkaClient = client;
+        return this.getFCMToken();
+      })
+      .then(fcmToken => this.userSignIn(fcmToken, lokkaClient))
+      .then(res => {
+        // todo: handle on res error codes
+        console.log(res);
+        return this.queryUser(lokkaClient);
+      })
+      .then(viewer => {
         this.hideLoading();
-        this.getFCMToken();
-        this.getUUID();
         if (viewer.isPV) {
           this.navigateToHome();
         } else {
           this.navigateToPhoneVerification();
         }
       })
-      .catch(console.log);
+      .catch(err => {
+        console.log(err);
+        this.hideLoading();
+      });
   }
 
   login(email, password) {
