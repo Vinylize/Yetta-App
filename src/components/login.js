@@ -164,6 +164,32 @@ class Login extends Component {
     }
   }
 
+  getUUID() {
+    const iOSUUIDManager = NativeModules.YettaUUID;
+    const AndroidUDIDManager = NativeModules.YettaUDIDManager;
+    if (Platform.OS === 'ios') {
+      iOSUUIDManager.getUUID((error, events) => {
+        if (error) {
+          // todo: handle error or edge cases
+          console.log(error);
+        } else {
+          console.log('UUID: ', events);
+          // todo:
+        }
+      });
+    } else if (Platform.OS === 'android') {
+      AndroidUDIDManager.getUDID(
+        (msg) => {
+          console.log(msg);
+        },
+        (UDID) => {
+          console.log('UDID', UDID);
+          // todo:
+        }
+      );
+    }
+  }
+
   queryUser(token) {
     return new Promise((resolve, reject) => {
       client._transport._httpOptions.headers = {
@@ -210,6 +236,7 @@ class Login extends Component {
       .then((viewer) => {
         this.hideLoading();
         this.getFCMToken();
+        this.getUUID();
         if (viewer.isPV) {
           this.navigateToHome();
         } else {
