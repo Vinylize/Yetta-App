@@ -8,19 +8,12 @@ import {
   ListView
 } from 'react-native';
 import Header from './../header/header';
+import * as YettaServerAPI from './../../../service/YettaServerAPI/client';
 
-import { URL } from './../../../utils';
-import * as firebase from 'firebase';
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
 import {
   setNodeList,
   setStagedNode
 } from './../../../actions/createOrderActions';
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
 
 // const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -93,26 +86,25 @@ class FindStore extends PureComponent {
     this.getStoreListFromServer();
   }
 
-  queryNodeHelper(token) {
-    client._transport._httpOptions.headers = {
-      authorization: token
-    };
-    const { lat, lon } = this.props.coordinate;
-    return client.query(`{
-      viewer{
-        nodeList (lat: ${lat}, lon: ${lon}, radius: 432532434234, c1: 0, c2: 0) {
-          n,
-          addr,
-          formattedDistance,
-          id
-        }
-      }
-    }`);
+  queryNodeHelper() {
+    return YettaServerAPI.getLokkaClient()
+      .then(client => {
+        const { lat, lon } = this.props.coordinate;
+        return client.query(`{
+          viewer{
+            nodeList (lat: ${lat}, lon: ${lon}, radius: 432532434234, c1: 0, c2: 0) {
+              n,
+              addr,
+              formattedDistance,
+              id
+            }
+          }
+        }`);
+      });
   }
 
   getStoreListFromServer() {
-    return firebase.auth().currentUser.getToken()
-      .then(this.queryNodeHelper)
+    return this.queryNodeHelper()
       .then(this.setStoreListFromServer)
       .catch(console.log);
   }

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Header from './../header/header';
 import Loading from './../../globalViews/loading';
+import * as YettaServerAPI from './../../../service/YettaServerAPI/client';
 
 // [start redux functions]
 import { addNewOrder } from './../../../actions/orderStatusActions';
@@ -15,18 +16,10 @@ import { resetProductList } from './../../../actions/componentsActions/addProduc
 import { setBusyWaitingUserCreateOrder } from './../../../actions/busyWaitingActions';
 // [end redux functions]
 
-import { URL, handleError } from '../../../utils';
-import * as firebase from 'firebase';
+import { handleError } from '../../../utils';
 
 // const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
-
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
 
 const styles = {
   container: {
@@ -50,12 +43,9 @@ class RegisterOrder extends Component {
     });
     customItems = customItems + ']';
     console.log(customItems);
-    firebase.auth().currentUser.getToken()
-      .then(token => {
-        client._transport._httpOptions.headers = {
-          authorization: token
-        };
-        client.mutate(`{
+    YettaServerAPI.getLokkaClient()
+      .then(client => {
+        return client.mutate(`{
           userCreateOrder(input:{
             regItems: [],
             customItems: ${customItems},
@@ -72,20 +62,20 @@ class RegisterOrder extends Component {
           }) {
             result
           }
-        }`)
-          .then(res => {
-            console.log(res);
-            this.props.setBusyWaitingUserCreateOrder(false);
-            this.props.resetProductList();
-            // todo: handle errors
-            return res.userCreateOrder.result;
-          })
-          .then(this.addNewRunnerListener.bind(this))
-          .catch(err => {
-            console.log(err);
-            this.props.setBusyWaitingUserCreateOrder(false);
-            handleError(err);
-          });
+        }`);
+      })
+      .then(res => {
+        console.log(res);
+        this.props.setBusyWaitingUserCreateOrder(false);
+        this.props.resetProductList();
+        // todo: handle errors
+        return res.userCreateOrder.result;
+      })
+      .then(this.addNewRunnerListener.bind(this))
+      .catch(err => {
+        console.log(err);
+        this.props.setBusyWaitingUserCreateOrder(false);
+        handleError(err);
       });
   }
 
@@ -104,28 +94,6 @@ class RegisterOrder extends Component {
     //   // todo: implement this
     // });
     this.props.handleCreateOrderDone();
-  }
-
-  // todo: use this
-  runnerCatchOrderHelper(orderId) {
-    firebase.auth().currentUser.getToken()
-      .then(token => {
-        client._transport._httpOptions.headers = {
-          authorization: token
-        };
-        client.mutate(`{
-          runnerCatchOrder(input:{
-            orderId:"${orderId}"
-          }) {
-            result
-            clientMutationId
-          }
-        }`)
-          .then(res => {
-            console.log(res);
-          })
-          .catch(console.log);
-      });
   }
 
   renderOrderBtn() {
