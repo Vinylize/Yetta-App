@@ -2,6 +2,7 @@ import * as types from './actionTypes';
 import store from './../store';
 import * as firebase from 'firebase';
 import * as YettaServerAPIauth from './../service/YettaServerAPI/auth';
+import * as YettaServerAPIclient from './../service/YettaServerAPI/client';
 import { loginNavigatorRoute } from './../navigator/navigatorRoutes';
 
 export const setUser = (user) => {
@@ -23,6 +24,7 @@ export const userSignout = () => {
       } else {
         console.log('ERROR: navigator is undefined');
       }
+      YettaServerAPIclient.resetLokkaClient();
     })
     .catch(error => {
       console.log(error);

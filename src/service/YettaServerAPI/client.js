@@ -68,3 +68,9 @@ export const getLokkaClientForRegistration = () => {
     })
     .catch(console.log);
 };
+
+export const resetLokkaClient = () => {
+  client._transport._httpOptions.headers = {
+    authorization: null
+  };
+};
