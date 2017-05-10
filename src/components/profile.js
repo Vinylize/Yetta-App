@@ -8,13 +8,6 @@ import {
   StyleSheet
 } from 'react-native';
 
-// const Lokka = require('lokka').Lokka;
-// const Transport = require('lokka-transport-http').Transport;
-//
-// const client = new Lokka({
-//   transport: new Transport(URL)
-// });
-
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
 const LIST_BORDER_COLOR = '#eee';

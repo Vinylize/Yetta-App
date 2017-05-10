@@ -11,15 +11,9 @@ import {
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Animation from 'lottie-react-native';
 import BackgroundTimer from 'react-native-background-timer';
-import * as firebase from 'firebase';
-import { URL, handleError } from './../../utils';
+import { handleError } from './../../utils';
 
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
+import * as YettaServerAPI from './../../service/YettaServerAPI/client';
 
 import loadingJSON from '../../../assets/lottie/loading-2.json';
 
@@ -172,12 +166,9 @@ export default class RunnerView extends Component {
 
   mutationRunnerCatchOrder(orderId) {
     console.log(orderId);
-    firebase.auth().currentUser.getToken()
-      .then(token => {
-        client._transport._httpOptions.headers = {
-          authorization: token
-        };
-        client.mutate(`{
+    YettaServerAPI.getLokkaClient()
+      .then(client => {
+        return client.mutate(`{
           runnerCatchOrder(
             input:{
               orderId: "${orderId}"
@@ -185,11 +176,11 @@ export default class RunnerView extends Component {
           ) {
             result
           }
-        }`)
-          .then(res => {
-            console.log(res);
-          }).catch(handleError);
-      });
+        }`);
+      })
+      .then(res => {
+        console.log(res);
+      }).catch(handleError);
   }
 
   renderBodyFoundNewOrder() {

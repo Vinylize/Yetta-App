@@ -10,15 +10,8 @@ import {
   Dimensions,
   Image
 } from 'react-native';
-import { URL } from './../utils';
 import GlobalLoading from './globalViews/loading';
-
-const Lokka = require('lokka').Lokka;
-const Transport = require('lokka-transport-http').Transport;
-
-const client = new Lokka({
-  transport: new Transport(URL)
-});
+import * as YettaServerAPI from './../service/YettaServerAPI/client';
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -54,7 +47,6 @@ const styles = {
     paddingLeft: 15,
     backgroundColor: '#fff',
     borderRadius: 2,
-    // shadowColor: '#000000',
     shadowOffset: {
       height: 2,
       width: 0
@@ -100,18 +92,21 @@ export default class Register extends Component {
   }
 
   registerHelper(email, name, password) {
-    client.mutate(`{
-      createUser(
-        input:{
-          e: "${email}",
-          n: "${name}",
-          pw: "${password}"
-        }
-      ) {
-        result
-      }
-    }`
-    ).then(response => {
+    YettaServerAPI.getLokkaClientForRegistration()
+      .then(client => {
+        return client.mutate(`{
+          createUser(
+            input:{
+              e: "${email}",
+              n: "${name}",
+              pw: "${password}"
+            }
+          ) {
+            result
+          }
+        }`);
+      })
+    .then(response => {
       console.log(response);
       this.hideLoading();
       this.props.navigator.pop();
@@ -158,6 +153,7 @@ export default class Register extends Component {
     });
   }
 
+  // todo: remove
   checkTextInputAllFilled() {
     let { userName, password, userEmail } = this.state;
     return (userName && password && userEmail);
