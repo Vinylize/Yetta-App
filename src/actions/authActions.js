@@ -13,7 +13,7 @@ export const setUser = (user) => {
 };
 
 export const userSignout = () => {
-  YettaServerAPIauth.userSignOut()
+  return YettaServerAPIauth.userSignOut()
     .then(() => firebase.auth().signOut())
     .then((res) => {
       console.log(res, 'signed out');

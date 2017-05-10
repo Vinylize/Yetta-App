@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import {
+  Alert,
   Dimensions,
   Text,
   TouchableOpacity,
@@ -44,7 +45,10 @@ const styles = {
 
 export default class Setting extends Component {
   handleLogout() {
-    authActions.userSignout();
+    authActions.userSignout()
+      .then(() => {
+        Alert.alert('signed out');
+      });
   }
 
   renderSettingsList(subject, func) {
