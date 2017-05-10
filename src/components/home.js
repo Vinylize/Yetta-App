@@ -33,6 +33,7 @@ import BottomCardView from './bottomCardView';
 
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
 import * as YettaServerAPI from './../service/YettaServerAPI/client';
+import { handleError } from './../utils/errorHandlers';
 
 // [start redux functions]
 import { setIsRunner } from './../actions/userStatusActions';
@@ -273,7 +274,7 @@ class Home extends Component {
         );
       })
       .then(console.log)
-      .catch(console.log);
+      .catch(handleError);
   }
 
   componentDidMount() {

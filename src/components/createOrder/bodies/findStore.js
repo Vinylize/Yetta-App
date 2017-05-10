@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Header from './../header/header';
 import * as YettaServerAPI from './../../../service/YettaServerAPI/client';
+import { handleError } from './../../../utils/errorHandlers';
 
 import {
   setNodeList,
@@ -99,7 +100,8 @@ class FindStore extends PureComponent {
               id
             }
           }
-        }`);
+        }`)
+          .catch(handleError);
       });
   }
 
