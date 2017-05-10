@@ -21,15 +21,6 @@ export const handleError = (error, fromSignin) => {
   }
 };
 
-export const handleFbError = (error) => {
-  const { message } = error;
-  if (message) {
-    Alert.alert(
-      message
-    );
-  }
-};
-
 export const handleFirebaseSignInError = (error) => {
   const errorCode = error.code;
   const errorMessage = error.message;
