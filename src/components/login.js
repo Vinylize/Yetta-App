@@ -22,7 +22,7 @@ import GlobalLoading from './globalViews/loading';
 import { setUser } from '../actions/authActions';
 import { setRunnerNotification } from './../actions/pushNotificationActions';
 
-import { handleFirebaseSignInError } from './../utils';
+import { handleFirebaseSignInError, handleError } from './../utils';
 import {
   registerNavigatorRoute,
   homeNavigatorRoute,
@@ -206,6 +206,7 @@ class Login extends Component {
             })
             .catch(err => {
               console.log(err);
+              handleError(err);
               return reject(err);
             });
         });
