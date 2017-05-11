@@ -88,7 +88,7 @@ class Menu extends Component {
   menuHandlePanResponderMove(e, gestureState) {
     const { dx } = gestureState;
     // console.log(this.animMenuValue);
-    if (this.checkIfMenuInMiddle()) {
+    if (this.props.busyWaitingUserModeSwitch === false && this.checkIfMenuInMiddle()) {
       // menu is touched while animating
       this.props.animMenu.stopAnimation();
     }
@@ -101,7 +101,7 @@ class Menu extends Component {
   menuHandlePanResponderRelease(e, gestureState) {
     const { dx } = gestureState;
     if (this.checkIfMenuInMiddle() && (this.animMenuValue + dx) < 0) {
-      if (this.animMenuValue + dx > -WIDTH * 0.4) {
+      if (this.props.busyWaitingUserModeSwitch === false && this.animMenuValue + dx > -WIDTH * 0.4) {
         animateMenuAppear(this.animMenuValue + dx);
       } else {
         animateMenuHide(this.animMenuValue + dx);
@@ -297,6 +297,7 @@ Menu.propTypes = {
   setIsRunner: PropTypes.func,
 
   // reducers/busyWaiting
+  busyWaitingUserModeSwitch: PropTypes.bool,
   setBusyWaitingUserModeSwitch: PropTypes.func
 };
 
@@ -304,7 +305,8 @@ const mapStateToProps = (state) => {
   return {
     user: state.auth.user,
     isRunner: state.userStatus.isRunner,
-    animMenu: state.menu.animMenu
+    animMenu: state.menu.animMenu,
+    busyWaitingUserModeSwitch: state.busyWaiting.busyWaitingUserModeSwitch
   };
 };
 

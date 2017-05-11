@@ -53,3 +53,6 @@ export const changeProductNum = 'CHANGE_PRODUCT_NUM';
 
 // navigator
 export const setNavigator = 'SET_NAVIGATOR';
+
+// components/menu
+export const setMenuAppeared = 'SET_MENU_APPEARED';

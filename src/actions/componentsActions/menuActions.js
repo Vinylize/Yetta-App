@@ -1,10 +1,17 @@
-// import * as types from './../actionTypes';
+import * as types from './../actionTypes';
 import store from './../../store';
 import {
   Animated,
   Dimensions
 } from 'react-native';
 const WIDTH = Dimensions.get('window').width;
+
+export const setMenuAppeared = (menuAppeared) => {
+  return {
+    type: types.setMenuAppeared,
+    menuAppeared
+  };
+};
 
 export const animateMenuAppear = (dx) => {
   const { animMenu } = store.getState().menu;
@@ -17,7 +24,7 @@ export const animateMenuAppear = (dx) => {
       toValue: 0,
       duration: 500
     }
-  ).start();
+  ).start(() => store.dispatch(setMenuAppeared(true)));
 };
 
 export const animateMenuHide = (dx) => {
@@ -31,6 +38,5 @@ export const animateMenuHide = (dx) => {
       toValue: -WIDTH,
       duration: 500
     }
-  ).start();
+  ).start(() => store.dispatch(setMenuAppeared(false)));
 };
-
