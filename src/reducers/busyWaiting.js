@@ -12,7 +12,11 @@ const initialState = {
   /**
    * busy on waiting response from userCreateOrder mutation
    */
-  busyWaitingUserCreateOrder: false
+  busyWaitingUserCreateOrder: false,
+  /**
+   * busy on waiting user mode switch between order/runner
+   */
+  busyWaitingUserModeSwitch: false
 };
 
 const busyWaiting = (state = initialState, action = {}) => {
@@ -23,6 +27,8 @@ const busyWaiting = (state = initialState, action = {}) => {
     return {...state, busyWaitingGeocodingAPI: action.busyWaitingGeocodingAPI };
   case types.setBusyWaitingUserCreateOrder:
     return {...state, busyWaitingUserCreateOrder: action.busyWaitingUserCreateOrder };
+  case types.setBusyWaitingUserModeSwitch:
+    return {...state, busyWaitingUserModeSwitch: action.busyWaitingUserModeSwitch};
   default:
     return state;
   }

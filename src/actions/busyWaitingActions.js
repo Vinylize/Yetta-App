@@ -20,3 +20,10 @@ export const setBusyWaitingUserCreateOrder = (busyWaitingUserCreateOrder) => {
     busyWaitingUserCreateOrder
   };
 };
+
+export const setBusyWaitingUserModeSwitch = (busyWaitingUserModeSwitch) => {
+  return {
+    type: types.setBusyWaitingUserModeSwitch,
+    busyWaitingUserModeSwitch
+  };
+};

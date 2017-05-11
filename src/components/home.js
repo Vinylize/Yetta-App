@@ -6,8 +6,6 @@ import {
   View,
   Dimensions,
   LayoutAnimation,
-  Image,
-  PanResponder,
   Platform,
   NativeModules,
   NativeEventEmitter,
@@ -16,12 +14,6 @@ import {
   DeviceEventEmitter
 } from 'react-native';
 import * as firebase from 'firebase';
-import {
-  profileNavigatorRoute,
-  settingsNavigatorRoute,
-  paymentInfoNavigatorRoute,
-  orderHistoryNavigatorRoute
-} from '../navigator/navigatorRoutes';
 
 import VinylMapAndroid from './VinylMapAndroid';
 import VinylMapIOS from './VinylMapIOS';
@@ -30,6 +22,7 @@ import ApproveCard from './searchAddress/approveCard';
 import RunnerView from './runnerView/runnerView';
 import RunnerOnDeliveryView from './runnerView/runnerOnDeliveryView';
 import BottomCardView from './bottomCardView';
+import Menu from './menu';
 
 import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
 import * as YettaServerAPI from './../service/YettaServerAPI/client';
@@ -58,6 +51,9 @@ import {
 import {
   animateCardAppear
 } from './../actions/componentsActions/bottomCardActions';
+import {
+  animateMenuAppear
+} from './../actions/componentsActions/menuActions';
 // [end redux functions]
 
 import UserModeTransition from './globalViews/userModeTransition';
@@ -75,7 +71,6 @@ export const expandedCardHeight = HEIGHT * 0.43;
 const cardHeight = 90;
 export const cardInitBottom = -expandedCardHeight + cardHeight;
 export const cardHidedBottom = -expandedCardHeight;
-const menuWidth = WIDTH;
 
 class Home extends Component {
   constructor() {
@@ -84,51 +79,16 @@ class Home extends Component {
       // todo: remove unnecessary states
       text: '',
       toggle: false,
-      menuClicked: false,
       shrinkValue: new Animated.Value(1),
       markerTest: false,
       clickedMarkerID: undefined,
-      animMenu: new Animated.Value(-menuWidth),
       trackingCurrentPos: false,
-      refViewForBlurView: null,
-      userModeSwitchBtnClicked: false,
-      showRunnerView: false
+      refViewForBlurView: null
     };
     this.initialLocationUpdate = false;
   }
 
   componentWillMount() {
-    this.menuPanResponder = PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: this.menuHandlePanResponderMove.bind(this),
-      onPanResponderRelease: this.menuHandlePanResponderRelease.bind(this)
-    });
-    this.switchPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.handleSwitch.bind(this)
-    });
-    this.profilePanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.handleProfile.bind(this)
-    });
-    this.paymentInfoPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.handlePaymentInfo.bind(this)
-    });
-    this.orderHistoryPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.handleOrderHistory.bind(this)
-    });
-    this.settingsPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.navigateToSettings.bind(this)
-    });
-    this.menuBackgroundPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderRelease: this.hideMenuWhenBackgroundTapped.bind(this)
-    });
-
-
     if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener('onMarkerPress', (e) => {
         console.log(e);
@@ -170,20 +130,6 @@ class Home extends Component {
         }
       });
     }
-
-    this.state.animMenu.addListener(value => {
-      this.animMenuValue = value.value;
-      /**
-       * todo: resolve issue only in Android
-       * msg: The specified child already has a parent. You must call removeView() on the child's parent first.
-       */
-
-      if (Platform.OS === 'ios') {
-        this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
-      } else if (Platform.OS === 'android') {
-        this.refMapAndroid.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
-      }
-    });
 
     if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener('didUpdateToLocationAndroidForeground', async(data) => {
@@ -258,7 +204,6 @@ class Home extends Component {
   }
 
   userUpdateCoordinateHelper(data) {
-    // console.log(token);
     YettaServerAPI.getLokkaClient()
       .then(client => {
         return client.mutate(`{
@@ -284,40 +229,6 @@ class Home extends Component {
         vmm.animateToLocationWithZoom(String(lat), String(lon), 16.0);
       }
     }
-  }
-
-  /*
-   * switch to either runner/order
-   */
-  handleSwitch() {
-    this.props.setIsRunner(!this.props.isRunner);
-    this.setState(() => {
-      return {userModeSwitchBtnClicked: true};
-    });
-
-    this.animateMenuHide();
-
-    // todo: this should be done dynamically. Remove.
-    setTimeout(() => {
-      this.setState(() => {
-        return {
-          userModeSwitchBtnClicked: false,
-          showRunnerView: !this.state.showRunnerView
-        };
-      });
-    }, 2000);
-  }
-
-  handleProfile() {
-    this.props.navigator.push(profileNavigatorRoute());
-  }
-
-  handlePaymentInfo() {
-    this.props.navigator.push(paymentInfoNavigatorRoute());
-  }
-
-  handleOrderHistory() {
-    this.props.navigator.push(orderHistoryNavigatorRoute());
   }
 
   renderMap() {
@@ -438,212 +349,7 @@ class Home extends Component {
     );
   }
 
-  animateMenuAppear(dx) {
-    if (dx) {
-      this.state.animMenu.setValue(dx);
-    }
-    Animated.timing(
-      this.state.animMenu,
-      {
-        toValue: 0,
-        duration: 500
-      }
-    ).start();
-  }
-
-  animateMenuHide(dx) {
-    if (dx) {
-      this.state.animMenu.setValue(dx);
-    }
-    Animated.timing(
-      this.state.animMenu,
-      {
-        toValue: -WIDTH,
-        duration: 500
-      }
-    ).start();
-  }
-
-  checkIfMenuInMiddle() {
-    return (this.animMenuValue < 0 || this.animMenuValue > -WIDTH * 0.8);
-  }
-
-  hideMenuWhenBackgroundTapped() {
-    this.animateMenuHide();
-  }
-
-  menuHandlePanResponderMove(e, gestureState) {
-    const { dx } = gestureState;
-    // console.log(this.animMenuValue);
-    if (this.checkIfMenuInMiddle()) {
-      // menu is touched while animating
-      this.state.animMenu.stopAnimation();
-    }
-    if (this.animMenuValue + dx < 0) {
-      this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
-      if (Platform.OS === 'ios') {
-        this.refViewContainerWithoutMenu.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
-      } else if (Platform.OS === 'android') {
-        this.refMapAndroid.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
-      }
-    }
-  }
-
-  menuHandlePanResponderRelease(e, gestureState) {
-    const { dx } = gestureState;
-    if (this.checkIfMenuInMiddle() && (this.animMenuValue + dx) < 0) {
-      if (this.animMenuValue + dx > -WIDTH * 0.4) {
-        this.animateMenuAppear(this.animMenuValue + dx);
-      } else {
-        this.animateMenuHide(this.animMenuValue + dx);
-      }
-    }
-  }
-
-  renderMenu() {
-    return (
-      <Animated.View
-        ref={component => {
-          this.refMenu = component;
-        }}
-        style={{
-          position: 'absolute',
-          left: this.state.animMenu,
-          top: 0,
-          zIndex: 3,
-          backgroundColor: 'transparent',
-          width: WIDTH,
-          height: HEIGHT - ((Platform.OS === 'android') ? 20 : 0),
-          flexDirection: 'row',
-          shadowOffset: {height: 1, width: 1},
-          shadowOpacity: 0.2,
-          elevation: 100
-        }}
-        {...this.menuPanResponder.panHandlers}
-      >
-        <View style={{
-          flex: 75,
-          paddingLeft: 48,
-          borderBottomWidth: 1,
-          borderColor: '#e0e3e5',
-          width: WIDTH * 0.75,
-          height: HEIGHT,
-          backgroundColor: 'white',
-          flexDirection: 'column',
-          elevation: 30
-        }}>
-          <Image style={{
-            height: 105,
-            width: 105,
-            borderRadius: 52.5,
-            marginTop: 56
-          }} source={require('../../assets/defaultProfileImg.png')}/>
-          <View style={{
-            marginTop: 20,
-            flexDirection: 'row'
-          }}>
-            <Text style={{fontSize: 17, flex: 1, fontWeight: '600'}}>{this.props.user.n}</Text>
-            <View
-              style={{marginRight: 50, padding: 3, alignItems: 'flex-end'}}
-              {...this.profilePanResponder.panHandlers}
-            >
-              <Text style={{fontSize: 11}}>EDIT</Text>
-            </View>
-          </View>
-          <View style={{marginTop: 9}}>
-            <Text style={{fontSize: 13}}>{this.props.user.e}</Text>
-          </View>
-          <View style={{
-            elevation: 30,
-            marginTop: HEIGHT * 0.06,
-            width: WIDTH * 0.75 - 48
-          }}>
-            <TouchableOpacity
-              style ={{
-                marginRight: 10
-              }}
-            >
-              <Text
-                style={{fontSize: 18, marginTop: 48}}
-                {...this.paymentInfoPanResponder.panHandlers}
-              >
-                결제정보
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style ={{
-                marginRight: 10
-              }}>
-              <Text style={{fontSize: 18, marginTop: 31}}
-                    {...this.orderHistoryPanResponder.panHandlers}
-              >
-                주문내역
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style ={{
-                marginRight: 10
-              }}>
-              <Text style={{
-                fontSize: 18,
-                marginTop: 31
-              }}>
-                고객센터
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style ={{
-                marginRight: 10
-              }}
-            >
-              <Text
-                style={{fontSize: 18, marginTop: 31}}
-                {...this.settingsPanResponder.panHandlers}
-              >
-                설정
-              </Text>
-            </TouchableOpacity>
-          </View>
-          {this.renderSwitchBtn()}
-        </View>
-        <View
-          style={{flex: 30, backgroundColor: 'transparent'}}
-          {...this.menuBackgroundPanResponder.panHandlers}
-        />
-      </Animated.View>
-    );
-  }
-
-  navigateToSettings() {
-    this.props.navigator.push(settingsNavigatorRoute());
-  }
-
-  renderSwitchBtn() {
-    return (
-      // todo: improve the platform specific bottom value
-      <View
-        style={{
-          position: 'absolute',
-          bottom: (Platform.OS === 'ios') ? -1 : 23,
-          left: 0,
-          paddingRight: 16,
-          backgroundColor: '#ff9700',
-          height: 40,
-          width: WIDTH * 0.75,
-          justifyContent: 'center',
-          alignItems: 'flex-end'
-        }}
-        {...this.switchPanResponder.panHandlers}
-      >
-        <Text style={{fontSize: 15, color: 'white'}}>
-          {(this.props.isRunner) ? '주문받기' : '배달하기'}
-        </Text>
-      </View>
-    );
-  }
-
   renderMenuButton() {
-    // const { menuClicked } = this.state;
     return (
       <TouchableOpacity
         style={{
@@ -659,9 +365,8 @@ class Home extends Component {
           elevation: 70
         }}
         onPress={() => {
-          // this.setState({menuClicked: !menuClicked});
           if (this.props.searchBarExpanded === false) {
-            this.animateMenuAppear(-WIDTH * 0.8);
+            animateMenuAppear(-WIDTH * 0.8);
           }
         }}
       >
@@ -725,7 +430,6 @@ class Home extends Component {
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
-        {this.renderMenu()}
         {this.renderMenuButton()}
         <Animated.View
           ref={component => {
@@ -742,7 +446,7 @@ class Home extends Component {
           {this.props.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>
         <UserModeTransition
-          show={this.state.userModeSwitchBtnClicked}
+          show={this.props.busyWaitingUserModeSwitch}
           isRunner={this.props.isRunner}
           refViewForBlurView={this.state.refViewForBlurView}/>
         <GlobalLoading
@@ -751,7 +455,6 @@ class Home extends Component {
           msg={'위치 찾는중'}
         />
         <RunnerView
-          isRunner={this.state.showRunnerView}
           waitingNewOrder={this.props.waitingNewOrder}
           setWaitingNewOrder={this.props.setWaitingNewOrder}
           runnerNotification={this.props.runnerNotification}
@@ -767,6 +470,10 @@ class Home extends Component {
           setOnDelivery={this.props.setOnDelivery}
           setRunnerNotification={this.props.setRunnerNotification}
         />
+        <Menu
+          navigator={this.props.navigator}
+          refBlurView={(Platform.OS === 'ios') ?
+            this.refViewContainerWithoutMenu : this.refMapAndroid}/>
       </View>
     );
   }
@@ -778,6 +485,7 @@ const mapStateToProps = (state) => {
     isRunner: state.userStatus.isRunner,
     busyWaitingPlaceDetailAPI: state.busyWaiting.busyWaitingPlaceDetailAPI,
     busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI,
+    busyWaitingUserModeSwitch: state.busyWaiting.busyWaitingUserModeSwitch,
     waitingNewOrder: state.runnerStatus.waitingNewOrder,
     onDelivery: state.runnerStatus.onDelivery,
     runnerNotification: state.pushNotification.runnerNotification,
@@ -814,7 +522,9 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 Home.propTypes = {
-  navigator: PropTypes.any,
+  navigator: PropTypes.any.isRequired,
+
+  // reducers/auth
   user: PropTypes.object,
 
   // reducers/userStatus
@@ -824,6 +534,7 @@ Home.propTypes = {
   // reducers/busyWaiting
   busyWaitingPlaceDetailAPI: PropTypes.bool,
   busyWaitingGeocodingAPI: PropTypes.bool,
+  busyWaitingUserModeSwitch: PropTypes.bool,
   setBusyWaitingPlaceDetailAPI: PropTypes.func,
   setBusyWaitingGeocodingAPI: PropTypes.func,
 

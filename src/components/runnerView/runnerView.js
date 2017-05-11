@@ -1,4 +1,5 @@
 import React, { Component, PropTypes} from 'react';
+import { connect } from 'react-redux';
 import {
   View,
   Dimensions,
@@ -37,7 +38,7 @@ const styles = {
   }
 };
 
-export default class RunnerView extends Component {
+class RunnerView extends Component {
   constructor() {
     super();
     this.state = {
@@ -297,10 +298,21 @@ export default class RunnerView extends Component {
 
 RunnerView.propTypes = {
   navigator: PropTypes.any,
-  isRunner: PropTypes.bool.isRequired,
   waitingNewOrder: PropTypes.bool.isRequired,
   setWaitingNewOrder: PropTypes.func.isRequired,
   runnerNotification: PropTypes.any.isRequired,
   onDelivery: PropTypes.bool.isRequired,
-  setOnDelivery: PropTypes.func.isRequired
+  setOnDelivery: PropTypes.func.isRequired,
+
+  // reducers/userStatus
+  isRunner: PropTypes.bool
 };
+
+const mapStateToProps = (state) => {
+  return {
+    isRunner: state.userStatus.isRunner
+  };
+};
+
+
+export default connect(mapStateToProps, undefined)(RunnerView);
