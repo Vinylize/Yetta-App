@@ -10,6 +10,7 @@ import bottomCardViewReducer from './components/bottomCardView';
 import orderStatusReducer from './orderStatus';
 import addProductReducer from './components/addProduct';
 import navigatorReducer from './navigator';
+import menuReducer from './components/menu';
 
 export default combineReducers({
   auth: authReducer,
@@ -22,5 +23,6 @@ export default combineReducers({
   bottomCardView: bottomCardViewReducer,
   orderStatus: orderStatusReducer,
   addProduct: addProductReducer,
-  navigator: navigatorReducer
+  navigator: navigatorReducer,
+  menu: menuReducer
 });

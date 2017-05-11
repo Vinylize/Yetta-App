@@ -5,6 +5,7 @@ export const setIsRunner = 'SET_IS_RUNNER';
 export const setBusyWaitingPlaceDetailAPI = 'SET_BUSY_WAITING_PLACE_DETAIL_API';
 export const setBusyWaitingGeocodingAPI = 'SET_BUSY_WAITING_GEOCODING_API';
 export const setBusyWaitingUserCreateOrder = 'SET_BUSY_WAITING_USER_CREATE_ORDER';
+export const setBusyWaitingUserModeSwitch = 'SET_BUSY_WAITING_USER_MODE_SWITCH';
 
 // runnerStatus
 export const setWaitingNewOrder = 'SET_WAITING_NEW_ORDER';
@@ -52,3 +53,6 @@ export const changeProductNum = 'CHANGE_PRODUCT_NUM';
 
 // navigator
 export const setNavigator = 'SET_NAVIGATOR';
+
+// components/menu
+export const setMenuAppeared = 'SET_MENU_APPEARED';

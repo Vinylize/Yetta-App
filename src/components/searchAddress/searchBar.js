@@ -2,18 +2,22 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
   Alert,
-  TextInput,
-  View,
-  Keyboard,
   Dimensions,
-  Text,
-  TouchableOpacity,
+  TextInput,
+  Keyboard,
+  LayoutAnimation,
   ListView,
   NativeModules,
-  Platform
+  Platform,
+  Text,
+  TouchableOpacity,
+  UIManager,
+  View
 } from 'react-native';
 import { APIKEY } from './../../utils';
 import * as GOOGLE_MAPS_API from './../../service/GoogleMapsAPI';
+
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 // [start redux functions]
 import { setBusyWaitingPlaceDetailAPI } from './../../actions/busyWaitingActions';
@@ -263,6 +267,7 @@ class SearchBar extends Component {
             onPress={() => {
               // only work when not focused
               if (!onFocused) {
+                LayoutAnimation.easeInEaseOut();
                 this.setState({onFocused: true});
                 this.props.setSearchBarExpanded(true);
               }

@@ -128,11 +128,6 @@ class Login extends Component {
     return (this.state.userEmail && this.state.password);
   }
 
-  // observeShipLocation() {
-  //   firebase.database().ref('/userProperties/coordinate').child('voMxBx91EYPx5wWpnS70f9sYQTC2').on('value',
-  //   (childSnapshot, prevChildKey) => console.log(childSnapshot.val(), prevChildKey));
-  // }
-
   getFCMToken() {
     // this is for readability
     const iOSFCMManager = NativeModules.YettaFCMManager;

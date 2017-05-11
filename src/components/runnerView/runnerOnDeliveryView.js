@@ -48,7 +48,6 @@ export default class RunnerOnDeliveryView extends Component {
     let body = '';
     if (this.props.runnerNotification) {
       lastNotif = this.props.runnerNotification[this.props.runnerNotification.length - 1];
-      console.log(lastNotif);
       if (lastNotif) {
         const { message } = lastNotif;
         if (message) {
