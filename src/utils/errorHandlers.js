@@ -17,6 +17,9 @@ export const handleError = (error, fromSignin) => {
       } else {
         Alert.alert('Another device logged in, signing out');
       }
+    } else if (message.includes('There is no items selected')) {
+      // error on creating order when no times selected
+      Alert.alert('선택된 물품이 없습니다.');
     }
   }
 };
