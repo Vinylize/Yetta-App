@@ -37,6 +37,10 @@ class Menu extends Component {
     this.state = {
       userModeSwitchBtnClicked: false,
       shouldStartMenuButtonPanResponder: false,
+      /**
+       * -1: user mode switch button
+       * from 0 to 3: each menu buttons from top to the bottom responsively
+       */
       highlightingBtnNum: undefined,
       backgroundTapped: false
     };
@@ -52,7 +56,8 @@ class Menu extends Component {
     });
     this.switchPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.handleSwitch.bind(this)
+      onPanResponderGrant: () => this.grantMenuButtonsPanResponders(-1),
+      onPanResponderRelease: this.handleSwitch.bind(this)
     });
     this.profilePanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -93,7 +98,6 @@ class Menu extends Component {
   }
 
   grantMenuButtonsPanResponders(highlightingBtnNum) {
-    console.log('asdf');
     this.setState(() => {
       return {
         shouldStartMenuButtonPanResponder: true,
@@ -155,6 +159,7 @@ class Menu extends Component {
     setTimeout(() => {
       this.props.setBusyWaitingUserModeSwitch(false);
       this.props.setIsRunner(!this.props.isRunner);
+      this.degrantMenuButtonsPanResponders();
     }, 2000);
   }
 
@@ -191,7 +196,8 @@ class Menu extends Component {
           height: 52,
           width: WIDTH * 0.75,
           justifyContent: 'center',
-          alignItems: 'flex-end'
+          alignItems: 'flex-end',
+          opacity: (this.state.highlightingBtnNum === -1) ? 0.5 : 1
         }}
         {...this.switchPanResponder.panHandlers}
       >
