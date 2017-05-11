@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import * as YettaServerAPI from './../../service/YettaServerAPI/client';
 
-import { handleError } from '../../utils';
+import { handleError } from '../../utils/errorHandlers';
 
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;

@@ -16,7 +16,7 @@ import { resetProductList } from './../../../actions/componentsActions/addProduc
 import { setBusyWaitingUserCreateOrder } from './../../../actions/busyWaitingActions';
 // [end redux functions]
 
-import { handleError } from '../../../utils';
+import { handleError } from '../../../utils/errorHandlers';
 
 // const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;

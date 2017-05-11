@@ -49,3 +49,6 @@ export const deleteProduct = 'DELETE_PRODUCT';
 export const resetProductList = 'RESET_PRODUCT_LIST';
 export const changeProductName = 'CHANGE_PRODUCT_NAME';
 export const changeProductNum = 'CHANGE_PRODUCT_NUM';
+
+// navigator
+export const setNavigator = 'SET_NAVIGATOR';

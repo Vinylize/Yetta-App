@@ -7,8 +7,7 @@ import {
   StyleSheet,
   View
 } from 'react-native';
-import { loginNavigatorRoute } from './../../navigator/navigatorRoutes';
-import * as firebase from 'firebase';
+import * as authActions from './../../actions/authActions';
 
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
@@ -46,11 +45,10 @@ const styles = {
 
 export default class Setting extends Component {
   handleLogout() {
-    firebase.auth().signOut().then((res) => {
-      console.log(res, 'signed out');
-      Alert.alert('signed out');
-      this.props.navigator.replace(loginNavigatorRoute());
-    });
+    authActions.userSignout()
+      .then(() => {
+        Alert.alert('signed out');
+      });
   }
 
   renderSettingsList(subject, func) {

@@ -21,8 +21,9 @@ import GlobalLoading from './globalViews/loading';
 
 import { setUser } from '../actions/authActions';
 import { setRunnerNotification } from './../actions/pushNotificationActions';
+import { setNavigator } from './../actions/navigatorActions';
 
-import { handleFirebaseSignInError, handleError } from './../utils';
+import { handleFirebaseSignInError, handleError } from './../utils/errorHandlers';
 import {
   registerNavigatorRoute,
   homeNavigatorRoute,
@@ -99,6 +100,7 @@ class Login extends Component {
   }
 
   componentWillMount() {
+    this.props.setNavigator(this.props.navigator);
     this.fireBaseListener = firebase.auth().onAuthStateChanged((user) => {
       this.fireBaseListener && this.fireBaseListener();
       if (user) {
@@ -206,7 +208,7 @@ class Login extends Component {
             })
             .catch(err => {
               console.log(err);
-              handleError(err);
+              handleError(err, true);
               return reject(err);
             });
         });
@@ -348,9 +350,16 @@ class Login extends Component {
 
 Login.propTypes = {
   navigator: PropTypes.any,
+
+  // reducers/auth
   setUser: PropTypes.func,
+
+  // reducers/pushNotification
   runnerNotification: PropTypes.any,
-  setRunnerNotification: PropTypes.func
+  setRunnerNotification: PropTypes.func,
+
+  // reducers/navigator
+  setNavigator: PropTypes.func
 };
 
 function mapStateToProps(state) {
@@ -362,7 +371,8 @@ function mapStateToProps(state) {
 let mapDispatchToProps = (dispatch) => {
   return {
     setUser: (user) => dispatch(setUser(user)),
-    setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner))
+    setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner)),
+    setNavigator: (navigator) => dispatch(setNavigator(navigator))
   };
 };
 

@@ -7,7 +7,7 @@ import {
   Dimensions
 } from 'react-native';
 import * as YettaServerAPI from './../service/YettaServerAPI/client';
-import { handleError } from './../utils';
+import { handleError } from './../utils/errorHandlers';
 import { homeNavigatorRoute } from './../navigator/navigatorRoutes';
 
 const HEIGHT = Dimensions.get('window').height;

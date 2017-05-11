@@ -11,7 +11,7 @@ import {
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Animation from 'lottie-react-native';
 import BackgroundTimer from 'react-native-background-timer';
-import { handleError } from './../../utils';
+import { handleError } from './../../utils/errorHandlers';
 
 import * as YettaServerAPI from './../../service/YettaServerAPI/client';
 
