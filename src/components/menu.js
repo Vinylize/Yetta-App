@@ -16,6 +16,7 @@ import {
   paymentInfoNavigatorRoute,
   orderHistoryNavigatorRoute
 } from '../navigator/navigatorRoutes';
+import * as YettaServerAPIauth from './../service/YettaServerAPI/auth';
 
 // [start redux functions]
 import { setIsRunner } from './../actions/userStatusActions';
@@ -157,12 +158,29 @@ class Menu extends Component {
     this.props.setBusyWaitingUserModeSwitch(true);
     animateMenuHide();
 
-    // todo: this should be done dynamically. Remove.
-    setTimeout(() => {
-      this.props.setBusyWaitingUserModeSwitch(false);
-      this.props.setIsRunner(!this.props.isRunner);
-      this.degrantMenuButtonsPanResponders();
-    }, 2000);
+    /**
+     * mode indicates each:
+     * 0 : order
+     * 1 : runner
+     */
+    let mode;
+    if (this.props.isRunner) {
+      // switching from runner to order
+      mode = 0;
+    } else {
+      // switching from order to runner
+      mode = 1;
+    }
+    YettaServerAPIauth.userSetMode(mode)
+      .then(() => {
+        this.props.setBusyWaitingUserModeSwitch(false);
+        this.props.setIsRunner(!this.props.isRunner);
+        this.degrantMenuButtonsPanResponders();
+      })
+      .catch(() => {
+        this.props.setBusyWaitingUserModeSwitch(false);
+        this.degrantMenuButtonsPanResponders();
+      });
   }
 
   handleProfile() {

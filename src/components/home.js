@@ -383,7 +383,6 @@ class Home extends Component {
        */
       return null;
     }
-    console.log(this.props.orderStatusList.length);
     return (
       <TouchableOpacity
         style={{

@@ -20,6 +20,10 @@ export const handleError = (error, fromSignin) => {
     } else if (message.includes('There is no items selected')) {
       // error on creating order when no times selected
       Alert.alert('선택된 물품이 없습니다.');
+    } else if (message.includes('GraphQL Error:')) {
+      // handle general graphQL error
+      const prettyErrorMessage = message.substring(message.indexOf('GraphQL Error:') + 14);
+      Alert.alert(prettyErrorMessage);
     }
   }
 };

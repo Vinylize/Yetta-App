@@ -56,7 +56,6 @@ class RunnerView extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { runnerNotification } = nextProps;
-    console.log(runnerNotification);
     if (this.state.receivedNewOrder === false) {
       if (runnerNotification && runnerNotification.length > 0) {
         const { data } = runnerNotification[runnerNotification.length - 1].data;
