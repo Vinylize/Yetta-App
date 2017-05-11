@@ -188,14 +188,14 @@ class Menu extends Component {
           left: 0,
           paddingRight: 16,
           backgroundColor: '#ff9700',
-          height: 40,
+          height: 52,
           width: WIDTH * 0.75,
           justifyContent: 'center',
           alignItems: 'flex-end'
         }}
         {...this.switchPanResponder.panHandlers}
       >
-        <Text style={{fontSize: 15, color: 'white'}}>
+        <Text style={{fontSize: 17, color: 'white'}}>
           {(this.props.isRunner) ? '주문받기' : '배달하기'}
         </Text>
       </View>
