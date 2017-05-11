@@ -38,7 +38,8 @@ class Menu extends Component {
       userModeSwitchBtnClicked: false,
       shouldStartMenuButtonPanResponder: false,
       /**
-       * -1: user mode switch button
+       * SWITCH: user mode switch button,
+       * PROFILE: edit button,
        * from 0 to 3: each menu buttons from top to the bottom responsively
        */
       highlightingBtnNum: undefined,
@@ -50,17 +51,18 @@ class Menu extends Component {
 
   componentWillMount() {
     this.menuPanResponder = PanResponder.create({
-      onMoveShouldSetPanResponder: () => !this.state.shouldStartMenuButtonPanResponder,
+      onMoveShouldSetPanResponder: () => !this.state.shouldStartMenuButtonPanResponder && !this.checkIfMenuInAnimation(),
       onPanResponderMove: this.menuHandlePanResponderMove.bind(this),
       onPanResponderRelease: this.menuHandlePanResponderRelease.bind(this)
     });
     this.switchPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: () => this.grantMenuButtonsPanResponders(-1),
+      onPanResponderGrant: () => this.grantMenuButtonsPanResponders('SWITCH'),
       onPanResponderRelease: this.handleSwitch.bind(this)
     });
     this.profilePanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => this.grantMenuButtonsPanResponders('PROFILE'),
       onPanResponderRelease: this.handleProfile.bind(this)
     });
     this.paymentInfoPanResponder = PanResponder.create({
@@ -197,7 +199,7 @@ class Menu extends Component {
           width: WIDTH * 0.75,
           justifyContent: 'center',
           alignItems: 'flex-end',
-          opacity: (this.state.highlightingBtnNum === -1) ? 0.5 : 1
+          opacity: (this.state.highlightingBtnNum === 'SWITCH') ? 0.5 : 1
         }}
         {...this.switchPanResponder.panHandlers}
       >
@@ -252,7 +254,15 @@ class Menu extends Component {
           }}>
             <Text style={{fontSize: 17, flex: 1, fontWeight: '600'}}>{this.props.user.n}</Text>
             <View
-              style={{marginRight: 50, padding: 3, alignItems: 'flex-end'}}
+              style={{
+                marginRight: 50,
+                padding: 3,
+                alignItems: 'flex-end',
+                width: 44,
+                height: 20,
+                justifyContent: 'center',
+                opacity: (this.state.highlightingBtnNum === 'PROFILE') ? 0.5 : 1
+              }}
               {...this.profilePanResponder.panHandlers}
             >
               <Text style={{fontSize: 11}}>EDIT</Text>

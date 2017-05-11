@@ -7,6 +7,10 @@ const initialState = {
    * list of the products to be shown on AddProduct component
    */
   animMenu: new Animated.Value(-menuWidth),
+  /**
+   * true when animateMenuAppear completely done,
+   * false when animateMenuHide completely done
+   */
   menuAppeared: false
 };
 
