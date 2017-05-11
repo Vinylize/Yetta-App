@@ -7,7 +7,6 @@ import {
   PanResponder,
   Platform,
   Text,
-  TouchableOpacity,
   View
 } from 'react-native';
 
@@ -36,13 +35,18 @@ class Menu extends Component {
   constructor() {
     super();
     this.state = {
-      userModeSwitchBtnClicked: false
+      userModeSwitchBtnClicked: false,
+      shouldStartMenuButtonPanResponder: false,
+      highlightingBtnNum: undefined,
+      backgroundTapped: false
     };
+    this.grantMenuButtonsPanResponders = this.grantMenuButtonsPanResponders.bind(this);
+    this.degrantMenuButtonsPanResponders = this.degrantMenuButtonsPanResponders.bind(this);
   }
 
   componentWillMount() {
     this.menuPanResponder = PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => !this.state.shouldStartMenuButtonPanResponder,
       onPanResponderMove: this.menuHandlePanResponderMove.bind(this),
       onPanResponderRelease: this.menuHandlePanResponderRelease.bind(this)
     });
@@ -52,23 +56,30 @@ class Menu extends Component {
     });
     this.profilePanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.handleProfile.bind(this)
+      onPanResponderRelease: this.handleProfile.bind(this)
     });
     this.paymentInfoPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.handlePaymentInfo.bind(this)
+      onPanResponderGrant: () => this.grantMenuButtonsPanResponders(0),
+      onPanResponderRelease: this.handlePaymentInfo.bind(this)
     });
     this.orderHistoryPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.handleOrderHistory.bind(this)
+      onPanResponderGrant: () => this.grantMenuButtonsPanResponders(1),
+      onPanResponderRelease: this.handleOrderHistory.bind(this)
     });
     this.settingsPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderGrant: this.navigateToSettings.bind(this)
+      onPanResponderGrant: () => this.grantMenuButtonsPanResponders(3),
+      onPanResponderRelease: this.navigateToSettings.bind(this)
     });
     this.menuBackgroundPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderRelease: this.hideMenuWhenBackgroundTapped.bind(this)
+      onStartShouldSetPanResponder: () => {
+        this.setState(() => {
+          return {backgroundTapped: true};
+        });
+        return true;
+      }
     });
 
     this.props.animMenu.addListener(value => {
@@ -81,14 +92,33 @@ class Menu extends Component {
     });
   }
 
-  checkIfMenuInMiddle() {
-    return (this.animMenuValue < 0 || this.animMenuValue > -WIDTH * 0.8);
+  grantMenuButtonsPanResponders(highlightingBtnNum) {
+    console.log('asdf');
+    this.setState(() => {
+      return {
+        shouldStartMenuButtonPanResponder: true,
+        highlightingBtnNum
+      };
+    });
+  }
+
+  degrantMenuButtonsPanResponders() {
+    this.setState(() => {
+      return {
+        shouldStartMenuButtonPanResponder: false,
+        highlightingBtnNum: undefined
+      };
+    });
+  }
+
+  checkIfMenuInAnimation() {
+    return (this.animMenuValue < 0 && this.animMenuValue > -WIDTH * 0.8);
   }
 
   menuHandlePanResponderMove(e, gestureState) {
     const { dx } = gestureState;
     // console.log(this.animMenuValue);
-    if (this.props.busyWaitingUserModeSwitch === false && this.checkIfMenuInMiddle()) {
+    if (this.props.busyWaitingUserModeSwitch === false && this.checkIfMenuInAnimation()) {
       // menu is touched while animating
       this.props.animMenu.stopAnimation();
     }
@@ -100,7 +130,12 @@ class Menu extends Component {
 
   menuHandlePanResponderRelease(e, gestureState) {
     const { dx } = gestureState;
-    if (this.checkIfMenuInMiddle() && (this.animMenuValue + dx) < 0) {
+    if (this.state.backgroundTapped === true) {
+      animateMenuHide(this.animMenuValue + dx);
+      this.setState(() => {
+        return {backgroundTapped: false};
+      });
+    } else if (!this.checkIfMenuInAnimation() && (this.animMenuValue + dx) < 0) {
       if (this.props.busyWaitingUserModeSwitch === false && this.animMenuValue + dx > -WIDTH * 0.4) {
         animateMenuAppear(this.animMenuValue + dx);
       } else {
@@ -125,22 +160,22 @@ class Menu extends Component {
 
   handleProfile() {
     this.props.navigator.push(profileNavigatorRoute());
+    this.degrantMenuButtonsPanResponders();
   }
 
   handlePaymentInfo() {
     this.props.navigator.push(paymentInfoNavigatorRoute());
+    this.degrantMenuButtonsPanResponders();
   }
 
   handleOrderHistory() {
     this.props.navigator.push(orderHistoryNavigatorRoute());
+    this.degrantMenuButtonsPanResponders();
   }
 
   navigateToSettings() {
     this.props.navigator.push(settingsNavigatorRoute());
-  }
-
-  hideMenuWhenBackgroundTapped() {
-    animateMenuHide();
+    this.degrantMenuButtonsPanResponders();
   }
 
   renderSwitchBtn() {
@@ -225,51 +260,66 @@ class Menu extends Component {
             marginTop: HEIGHT * 0.06,
             width: WIDTH * 0.75 - 48
           }}>
-            <TouchableOpacity
+            <View
               style ={{
-                marginRight: 10
+                marginTop: 40,
+                height: 40,
+                width: WIDTH * 0.2,
+                justifyContent: 'center',
+                opacity: (this.state.highlightingBtnNum === 0) ? 0.5 : 1
               }}
             >
               <Text
-                style={{fontSize: 18, marginTop: 48}}
+                style={{fontSize: 18}}
                 {...this.paymentInfoPanResponder.panHandlers}
               >
                 결제정보
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </View>
+            <View
               style ={{
-                marginRight: 10
+                marginTop: 12,
+                height: 40,
+                width: WIDTH * 0.2,
+                justifyContent: 'center',
+                opacity: (this.state.highlightingBtnNum === 1) ? 0.5 : 1
               }}>
-              <Text style={{fontSize: 18, marginTop: 31}}
+              <Text style={{fontSize: 18}}
                     {...this.orderHistoryPanResponder.panHandlers}
               >
                 주문내역
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </View>
+            <View
               style ={{
-                marginRight: 10
+                marginTop: 12,
+                height: 40,
+                width: WIDTH * 0.2,
+                justifyContent: 'center',
+                opacity: (this.state.highlightingBtnNum === 2) ? 0.5 : 1
               }}>
               <Text style={{
-                fontSize: 18,
-                marginTop: 31
+                fontSize: 18
               }}>
                 고객센터
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </View>
+            <View
               style ={{
-                marginRight: 10
+                marginTop: 12,
+                height: 40,
+                width: WIDTH * 0.2,
+                justifyContent: 'center',
+                opacity: (this.state.highlightingBtnNum === 3) ? 0.5 : 1
               }}
             >
               <Text
-                style={{fontSize: 18, marginTop: 31}}
+                style={{fontSize: 18}}
                 {...this.settingsPanResponder.panHandlers}
               >
                 설정
               </Text>
-            </TouchableOpacity>
+            </View>
           </View>
           {this.renderSwitchBtn()}
         </View>
