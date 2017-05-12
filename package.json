@@ -2,10 +2,13 @@
   "name": "pingstersApp",
   "version": "0.0.1",
   "private": true,
+  "main": "pingstersApp.sketchplugin",
+  "manifest": "reactSketchApp/manifest.json",
   "scripts": {
     "start": "react-native run-android & react-native run-ios & node node_modules/react-native/local-cli/cli.js start --port 8082",
     "test": "eslint src/**/*.js && jest",
-    "lint": "eslint --ignore-path .gitignore src"
+    "lint": "eslint --ignore-path .gitignore src",
+    "render": "skpm build --watch --run"
   },
   "pre-commit": [
     "lint"
@@ -42,6 +45,9 @@
     "graphql": "^0.8.2",
     "jest": "18.0.0",
     "pre-commit": "^1.2.2",
+    "react-dom": "^15.5.4",
+    "react-primitives": "^0.3.4",
+    "react-sketchapp": "^0.10.3",
     "react-test-renderer": "15.4.1",
     "rnpm-plugin-upgrade": "^0.26.0"
   },
