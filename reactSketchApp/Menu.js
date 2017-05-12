@@ -1,10 +1,11 @@
 import React from 'react';
+import { Image } from 'react-sketchapp';
 import { Text, View, Platform } from 'react-primitives';
 
-const WIDTH = 336;
-const HEIGHT = 675;
+const WIDTH = 375;
+const HEIGHT = 667;
 
-const App = () => {
+const Menu = () => {
   return (
     <View
       style={{
@@ -32,12 +33,12 @@ const App = () => {
         flexDirection: 'column',
         elevation: 30
       }}>
-        <View style={{
+        <Image style={{
           height: 105,
           width: 105,
           borderRadius: 52.5,
           marginTop: 56
-        }}/>
+        }} source={{uri: 'https://www.dropbox.com/s/zv0zdbj578hw704/defaultProfileImg.png?raw=1'}}/>
         <View style={{
           marginTop: 20,
           flexDirection: 'row'
@@ -121,10 +122,27 @@ const App = () => {
         </View>
       </View>
       <View
-        style={{flex: 30, backgroundColor: 'transparent'}}
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          paddingRight: 16,
+          backgroundColor: '#ff9700',
+          height: 52,
+          width: WIDTH * 0.75,
+          justifyContent: 'center',
+          alignItems: 'flex-end'
+        }}
+      >
+        <Text style={{fontSize: 17, color: 'white'}}>
+          배달하기
+        </Text>
+      </View>
+      <View
+        style={{flex: 30, backgroundColor: 'grey'}}
       />
     </View>
   );
 };
 
-export default App;
+export default Menu;

@@ -170,3 +170,5 @@ data/schema.json
 # utilities
 src/utils.js
 
+# react-sketchapp
+pingstersApp.sketchplugin/
