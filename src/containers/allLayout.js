@@ -36,18 +36,16 @@ class All extends React.Component {
   }
 
   componentWillMount() {
+    // [start adding FCM listeners]
     if (Platform.OS === 'android') {
       // todo: research how to remove these listeners from DeviceEventEmitter for possible memory leaks
       DeviceEventEmitter.addListener('FCMNotificationReceived', async(data) => this.receivedRemoteNotificationAndroid(data));
-    } else {
+    } else if (Platform.OS === 'ios') {
       PushNotificationIOS.addEventListener('register', console.log);
       PushNotificationIOS.addEventListener('registrationError', console.log);
       PushNotificationIOS.addEventListener('notification', this.receivedRemoteNotificationIOS);
     }
-  }
-
-  componentDidMount() {
-    console.log(this.props.runnerNotification);
+    // [end adding FCM listeners]
   }
 
   componentWillUnmount() {

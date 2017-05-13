@@ -111,5 +111,5 @@ export default class Setting extends Component {
 }
 
 Setting.propTypes = {
-  navigator: PropTypes.any
+  navigation: PropTypes.object.isRequired
 };

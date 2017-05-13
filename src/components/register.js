@@ -110,7 +110,7 @@ export default class Register extends Component {
     .then(response => {
       console.log(response);
       this.hideLoading();
-      this.props.navigator.pop();
+      this.props.navigation.goBack();
     }).catch((error) => {
       this.hideLoading();
       const { rawError } = error;
@@ -225,7 +225,7 @@ export default class Register extends Component {
         </View>
         <View style={styles.footer}>
           <Text style={{fontSize: 14, fontWeight: '500', color: '#bbb'}}>이미 회원이신가요? </Text>
-          <TouchableOpacity onPress={() => this.props.navigator.pop()}>
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <Text
               style={{marginTop: 1, fontSize: 14, fontWeight: '600', color: '#ff9700'}}
             >
@@ -244,6 +244,6 @@ export default class Register extends Component {
 }
 
 Register.propTypes = {
-  navigator: PropTypes.any,
+  navigation: PropTypes.object.isRequired,
   goToLogin: PropTypes.func
 };

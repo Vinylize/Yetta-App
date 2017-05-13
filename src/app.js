@@ -3,13 +3,9 @@ import { Platform } from 'react-native';
 import { Provider } from 'react-redux';
 import HockeyApp from 'react-native-hockeyapp';
 import store from './store';
-import AllLayout from './containers/allLayout';
+import AppWithNavigationState from './navigator/navigatorRoutes';
 
 export default class Yetta extends Component {
-  constructor() {
-    super();
-  }
-
   componentWillMount() {
     const HOCKEY_APP_ID = Platform.OS === 'android' ?
       'a2b9cda775f044ebb66dd827eb98c03f' :
@@ -33,7 +29,7 @@ export default class Yetta extends Component {
   render() {
     return (
       <Provider store={store}>
-        <AllLayout/>
+        <AppWithNavigationState/>
       </Provider>
     );
   }

@@ -8,12 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as firebase from 'firebase';
 import * as YettaServerAPIauth from './../service/YettaServerAPI/auth';
 import * as YettaServerAPIuserInfo from './../service/YettaServerAPI/userInfo';
-
-import {
-  loginNavigatorRoute,
-  homeNavigatorRoute,
-  phoneVerificationNavigatorRoute
-} from './../navigator/navigatorRoutes';
+import { NavigationActions } from 'react-navigation';
 
 // [start redux functions]
 import { setUser } from '../actions/authActions';
@@ -32,7 +27,7 @@ class Splash extends Component {
   }
 
   componentWillMount() {
-    this.props.setNavigator(this.props.navigator);
+    this.props.setNavigator(this.props.navigation);
     this.autoLoginIfUserFound();
   }
 
@@ -84,16 +79,34 @@ class Splash extends Component {
   }
 
   navigateToLoginPage() {
-    this.props.navigator.replace(loginNavigatorRoute());
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Login' })
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
 
   navigateToHome() {
-    this.props.navigator.replace(homeNavigatorRoute());
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Home' })
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
 
   navigateToPhoneVerification() {
-    this.props.navigator.replace(homeNavigatorRoute());
-    this.props.navigator.push(phoneVerificationNavigatorRoute());
+    const resetAction = NavigationActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Home' }),
+        NavigationActions.navigate({ routeName: 'PhoneVerification' })
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
 
   render() {
@@ -116,7 +129,8 @@ class Splash extends Component {
         />
         <Text style={{
           fontSize: 30,
-          color: 'white'
+          color: 'white',
+          backgroundColor: 'transparent'
         }}>
           YETTA BETA
         </Text>
@@ -126,7 +140,7 @@ class Splash extends Component {
 }
 
 Splash.propTypes = {
-  navigator: PropTypes.any,
+  navigation: PropTypes.object.isRequired,
   setNavigator: PropTypes.func,
   setUser: PropTypes.func
 };

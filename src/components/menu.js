@@ -9,13 +9,6 @@ import {
   Text,
   View
 } from 'react-native';
-
-import {
-  profileNavigatorRoute,
-  settingsNavigatorRoute,
-  paymentInfoNavigatorRoute,
-  orderHistoryNavigatorRoute
-} from '../navigator/navigatorRoutes';
 import * as YettaServerAPIauth from './../service/YettaServerAPI/auth';
 
 // [start redux functions]
@@ -155,6 +148,7 @@ class Menu extends Component {
    * switch to either runner/order
    */
   handleSwitch() {
+    console.log(this.props);
     this.props.setBusyWaitingUserModeSwitch(true);
     animateMenuHide();
 
@@ -184,22 +178,22 @@ class Menu extends Component {
   }
 
   handleProfile() {
-    this.props.navigator.push(profileNavigatorRoute());
+    this.props.navigation.navigate('Profile');
     this.degrantMenuButtonsPanResponders();
   }
 
   handlePaymentInfo() {
-    this.props.navigator.push(paymentInfoNavigatorRoute());
+    this.props.navigation.navigate('PaymentInfo');
     this.degrantMenuButtonsPanResponders();
   }
 
   handleOrderHistory() {
-    this.props.navigator.push(orderHistoryNavigatorRoute());
+    this.props.navigation.navigate('OrderHistory');
     this.degrantMenuButtonsPanResponders();
   }
 
   navigateToSettings() {
-    this.props.navigator.push(settingsNavigatorRoute());
+    this.props.navigation.navigate('Setting');
     this.degrantMenuButtonsPanResponders();
   }
 
@@ -367,7 +361,7 @@ class Menu extends Component {
 }
 
 Menu.propTypes = {
-  navigator: PropTypes.any.isRequired,
+  navigation: PropTypes.any.isRequired,
   refBlurView: PropTypes.any.isRequired,
 
   // reducers/components/menu

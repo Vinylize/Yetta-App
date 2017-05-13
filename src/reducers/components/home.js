@@ -2,7 +2,7 @@ import * as types from '../../actions/actionTypes';
 import {
   Animated
 } from 'react-native';
-import { cardHidedBottom } from './../../components/home';
+import { cardHidedBottom } from '../../components/homeScreen/home';
 
 const initialState = {
   // intention: avoid unnecessary geocoding from placeAutocomplete API prediction

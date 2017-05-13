@@ -15,30 +15,30 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase';
 
-import VinylMapAndroid from './VinylMapAndroid';
-import VinylMapIOS from './VinylMapIOS';
-import SearchBar from './searchAddress/searchBar';
-import ApproveCard from './searchAddress/approveCard';
-import RunnerView from './runnerView/runnerView';
-import RunnerOnDeliveryView from './runnerView/runnerOnDeliveryView';
-import BottomCardView from './bottomCardView';
-import Menu from './menu';
+import VinylMapAndroid from '../VinylMapAndroid';
+import VinylMapIOS from '../VinylMapIOS';
+import SearchBar from '../searchAddress/searchBar';
+import ApproveCard from '../searchAddress/approveCard';
+import RunnerView from '../runnerView/runnerView';
+import RunnerOnDeliveryView from '../runnerView/runnerOnDeliveryView';
+import BottomCardView from '../bottomCardView';
+import Menu from '../menu';
 
-import * as GOOGLE_MAPS_API from './../service/GoogleMapsAPI';
-import * as YettaServerAPI from './../service/YettaServerAPI/client';
-import { handleError } from './../utils/errorHandlers';
+import * as GOOGLE_MAPS_API from '../../service/GoogleMapsAPI';
+import * as YettaServerAPI from '../../service/YettaServerAPI/client';
+import { handleError } from '../../utils/errorHandlers';
 
 // [start redux functions]
-import { setIsRunner } from './../actions/userStatusActions';
+import { setIsRunner } from '../../actions/userStatusActions';
 import {
   setBusyWaitingPlaceDetailAPI,
   setBusyWaitingGeocodingAPI
-} from './../actions/busyWaitingActions';
+} from '../../actions/busyWaitingActions';
 import {
   setWaitingNewOrder,
   setOnDelivery
-} from './../actions/runnerStatusActions';
-import { setRunnerNotification } from './../actions/pushNotificationActions';
+} from '../../actions/runnerStatusActions';
+import { setRunnerNotification } from '../../actions/pushNotificationActions';
 import {
   setCameraWillMoveByPlaceDetailAPI,
   setSearchBarExpanded,
@@ -47,17 +47,17 @@ import {
   setSearchedAddressTextView,
   setCurrentLocation,
   setBusyOnWaitingNewRunner
-} from './../actions/componentsActions/homeActions';
+} from '../../actions/componentsActions/homeActions';
 import {
   animateCardAppear
-} from './../actions/componentsActions/bottomCardActions';
+} from '../../actions/componentsActions/bottomCardActions';
 import {
   animateMenuAppear
-} from './../actions/componentsActions/menuActions';
+} from '../../actions/componentsActions/menuActions';
 // [end redux functions]
 
-import UserModeTransition from './globalViews/userModeTransition';
-import GlobalLoading from './globalViews/loading';
+import UserModeTransition from '../globalViews/userModeTransition';
+import GlobalLoading from '../globalViews/loading';
 
 let vmm = NativeModules.VinylMapManager;
 
@@ -223,6 +223,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
     const { lat, lon } = this.props.currentLocation;
     if (vmm) {
       if (Platform.OS === 'ios') {
@@ -441,7 +442,7 @@ class Home extends Component {
           <SearchBar/>
           {this.renderLocationBtn()}
           <BottomCardView/>
-          <ApproveCard navigator={this.props.navigator}/>
+          <ApproveCard navigator={this.props.navigation}/>
           {this.props.showApproveAddressCard ? this.renderAddressSearchPin() : <View/>}
         </Animated.View>
         <UserModeTransition
@@ -522,6 +523,7 @@ const mapDispatchToProps = (dispatch) => {
 
 Home.propTypes = {
   navigator: PropTypes.any.isRequired,
+  navigation: PropTypes.any.isRequired,
 
   // reducers/auth
   user: PropTypes.object,

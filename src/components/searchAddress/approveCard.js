@@ -10,7 +10,6 @@ import {
   Platform
 } from 'react-native';
 import { setShowApproveAddressCard } from './../../actions/componentsActions/homeActions';
-import { createOrderNavigatorRoute } from './../../navigator/navigatorRoutes';
 
 // const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -26,7 +25,7 @@ class ApproveCard extends Component {
   }
 
   handleApproveBtn() {
-    this.props.navigator.push(createOrderNavigatorRoute());
+    this.props.navigator.navigate('CreateOrder', {navigator: this.props.navigator});
     this.props.setShowApproveAddressCard(false);
   }
 

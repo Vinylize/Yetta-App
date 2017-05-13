@@ -7,7 +7,7 @@ import {
 import {
   expandedCardHeight,
   cardInitBottom
-} from './../../components/home';
+} from '../../components/homeScreen/home';
 
 export const setCardAppeared = (cardAppeared) => {
   return {

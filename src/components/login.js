@@ -11,6 +11,7 @@ import {
   Dimensions,
   Image
 } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
 import * as firebase from 'firebase';
 import * as YettaServerAPIauth from './../service/YettaServerAPI/auth';
@@ -23,11 +24,6 @@ import { setRunnerNotification } from './../actions/pushNotificationActions';
 import { setNavigator } from './../actions/navigatorActions';
 
 import { handleFirebaseSignInError } from './../utils/errorHandlers';
-import {
-  registerNavigatorRoute,
-  homeNavigatorRoute,
-  phoneVerificationNavigatorRoute
-} from './../navigator/navigatorRoutes';
 
 import IMG_LOGO from './../../assets/logo.png';
 
@@ -159,12 +155,24 @@ class Login extends Component {
   }
 
   navigateToHome() {
-    this.props.navigator.replace(homeNavigatorRoute());
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Home', params: {navigation: this.props.navigation}})
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
 
   navigateToPhoneVerification() {
-    this.props.navigator.replace(homeNavigatorRoute());
-    this.props.navigator.push(phoneVerificationNavigatorRoute());
+    const resetAction = NavigationActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Home', params: {navigation: this.props.navigation}}),
+        NavigationActions.navigate({ routeName: 'PhoneVerification', params: {navigation: this.props.navigation}})
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
 
   handleLoginButton() {
@@ -226,9 +234,14 @@ class Login extends Component {
             <View>
               <TouchableOpacity
                 style={{marginTop: 14, width: WIDTH * 0.75, alignItems: 'flex-end'}}
-                onPress={() => this.props.navigator.push(registerNavigatorRoute())}
+                onPress={() => this.props.navigation.navigate('Register')}
               >
-                <Text style={{color: '#FFF', fontWeight: '500', fontSize: 12}}>비밀번호를 잊으셨나요?</Text>
+                <Text style={{
+                  color: '#FFF',
+                  fontWeight: '500',
+                  fontSize: 12,
+                  backgroundColor: 'transparent'
+                }}>비밀번호를 잊으셨나요?</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
@@ -239,10 +252,21 @@ class Login extends Component {
             </TouchableOpacity>
             <View style={styles.footer}>
               <Text
-                style={{fontSize: 14, fontWeight: '500', color: '#fee5c0'}}
+                style={{
+                  fontSize: 14,
+                  fontWeight: '500',
+                  color: '#fee5c0',
+                  backgroundColor: 'transparent'
+                }}
               >아직 회원이 아니신가요? </Text>
-              <TouchableOpacity onPress={() => this.props.navigator.push(registerNavigatorRoute())}>
-                <Text style={{marginTop: 1, fontSize: 14, fontWeight: '500', color: '#FFF'}}>회원가입</Text>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
+                <Text style={{
+                  marginTop: 1,
+                  fontSize: 14,
+                  fontWeight: '500',
+                  color: '#FFF',
+                  backgroundColor: 'transparent'
+                }}>회원가입</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
@@ -256,7 +280,7 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  navigator: PropTypes.any,
+  navigation: PropTypes.any,
 
   // reducers/auth
   setUser: PropTypes.func,
