@@ -7,6 +7,7 @@ import {
   StyleSheet,
   View
 } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import * as authActions from './../../actions/authActions';
 
 const WIDTH = Dimensions.get('window').width;
@@ -48,6 +49,13 @@ export default class Setting extends Component {
     authActions.userSignout()
       .then(() => {
         Alert.alert('signed out');
+        const resetAction = NavigationActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Login' })
+          ]
+        });
+        this.props.navigation.dispatch(resetAction);
       });
   }
 
