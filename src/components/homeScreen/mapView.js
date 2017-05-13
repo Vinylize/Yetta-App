@@ -67,10 +67,6 @@ const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServic
 // constants
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
-export const expandedCardHeight = HEIGHT * 0.43;
-const cardHeight = 90;
-export const cardInitBottom = -expandedCardHeight + cardHeight;
-export const cardHidedBottom = -expandedCardHeight;
 
 class Home extends Component {
   constructor() {
