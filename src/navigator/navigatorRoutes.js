@@ -9,6 +9,8 @@ import CreateOrder from './../components/createOrder/createOrder';
 import Setting from './../components/settings/setting';
 import OrderHistory from './../components/orderHistory/orderHistory';
 import RunnerHistory from './../components/runnerHistory/runnerHistory';
+import Splash from './../components/splash';
+
 const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
 
 export function homeNavigatorRoute() {
@@ -76,6 +78,13 @@ export function orderHistoryNavigatorRoute() {
 export function runnerHistoryNavigatorRoute() {
   return {
     Component: RunnerHistory,
+    sceneConfig
+  };
+}
+
+export function splashNavigatorRoute() {
+  return {
+    Component: Splash,
     sceneConfig
   };
 }

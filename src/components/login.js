@@ -9,13 +9,12 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Dimensions,
-  Image,
-  NativeModules,
-  Platform
+  Image
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as firebase from 'firebase';
-import * as YettaServerAPI from './../service/YettaServerAPI/client';
+import * as YettaServerAPIauth from './../service/YettaServerAPI/auth';
+import * as YettaServerAPIuserInfo from './../service/YettaServerAPI/userInfo';
 
 import GlobalLoading from './globalViews/loading';
 
@@ -23,7 +22,7 @@ import { setUser } from '../actions/authActions';
 import { setRunnerNotification } from './../actions/pushNotificationActions';
 import { setNavigator } from './../actions/navigatorActions';
 
-import { handleFirebaseSignInError, handleError } from './../utils/errorHandlers';
+import { handleFirebaseSignInError } from './../utils/errorHandlers';
 import {
   registerNavigatorRoute,
   homeNavigatorRoute,
@@ -99,19 +98,6 @@ class Login extends Component {
     };
   }
 
-  componentWillMount() {
-    this.props.setNavigator(this.props.navigator);
-    this.fireBaseListener = firebase.auth().onAuthStateChanged((user) => {
-      this.fireBaseListener && this.fireBaseListener();
-      if (user) {
-        this.showLoading();
-        this.internalAuth();
-      } else {
-        // TBD
-      }
-    });
-  }
-
   showLoading() {
     this.setState(() => {
       return {busyWaiting: true};
@@ -128,100 +114,26 @@ class Login extends Component {
     return (this.state.userEmail && this.state.password);
   }
 
-  getFCMToken() {
-    // this is for readability
-    const iOSFCMManager = NativeModules.YettaFCMManager;
-    const AndroidFCMManager = NativeModules.YettaFCMManager;
-    return new Promise((resolve, reject) => {
-      if (Platform.OS === 'ios') {
-        return iOSFCMManager.getToken((error, events) => {
-          if (error) {
-            // todo: handle error or edge cases
-            console.log(error);
-            return reject(error);
-          }
-          console.log(events);
-          return resolve(events[0]);
-        });
-      } else if (Platform.OS === 'android') {
-        return AndroidFCMManager.getToken(
-          (msg) => {
-            console.log(msg);
-            return reject(msg);
-          },
-          (FCMToken) => {
-            console.log(FCMToken);
-            return resolve(FCMToken);
-            // this.userSignIn(FCMToken, client);
-          }
-        );
-      }
-      return reject();
-    });
-  }
-
-  queryUser(client) {
-    return new Promise((resolve, reject) => {
-      return client.query(`{
-        viewer{
-          isPV,
-          e,
-          n,
-          p
-        }
-      }`)
-        .then(({viewer}) => {
-          this.props.setUser(viewer);
-          this.hideLoading();
-          console.log(viewer);
-          return resolve(viewer);
-        })
-        .catch(e => {
-          this.hideLoading();
-          console.log(e);
-          return reject(e);
-        });
-    });
-  }
-
-  userSignIn(token, client) {
-    return YettaServerAPI.getDeviceID()
-      .then(deviceID => {
-        return new Promise((resolve, reject) => {
-          return client.mutate(`{
-            userSignIn(
-              input:{
-                dt: "${token}",
-                d: "${deviceID}"
-              }
-            ) {
-              result
-            }
-          }`)
-            .then(res => {
-              return resolve(res);
-            })
-            .catch(err => {
-              console.log(err);
-              handleError(err, true);
-              return reject(err);
-            });
-        });
+  queryUser() {
+    return YettaServerAPIuserInfo.queryUser()
+      .then((viewer) => {
+        this.props.setUser(viewer);
+        this.hideLoading();
+        console.log(viewer);
+        return viewer;
+      })
+      .catch(e => {
+        this.hideLoading();
+        console.log(e);
+        return e;
       });
   }
 
   internalAuth() {
-    let lokkaClient;
-    YettaServerAPI.getLokkaClient()
-      .then(client => {
-        lokkaClient = client;
-        return this.getFCMToken();
-      })
-      .then(fcmToken => this.userSignIn(fcmToken, lokkaClient))
+    YettaServerAPIauth.userSignIn()
       .then(res => {
-        // todo: handle on res error codes
         console.log(res);
-        return this.queryUser(lokkaClient);
+        return this.queryUser();
       })
       .then(viewer => {
         this.hideLoading();
@@ -363,7 +275,7 @@ function mapStateToProps(state) {
   };
 }
 
-let mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setUser: (user) => dispatch(setUser(user)),
     setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner)),

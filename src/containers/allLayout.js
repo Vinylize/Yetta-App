@@ -5,7 +5,7 @@ import {
   Platform
 } from 'react-native';
 import React, { PropTypes } from 'react';
-import { loginNavigatorRoute } from '../navigator/navigatorRoutes';
+import { splashNavigatorRoute } from '../navigator/navigatorRoutes';
 import { connect } from 'react-redux';
 
 // [start redux actions]
@@ -88,7 +88,7 @@ class All extends React.Component {
   }
 
   render() {
-    const initialRoute = loginNavigatorRoute();
+    const initialRoute = splashNavigatorRoute();
     return (
       <Navigator
         initialRoute={initialRoute}
