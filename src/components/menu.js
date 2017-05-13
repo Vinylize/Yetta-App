@@ -148,7 +148,6 @@ class Menu extends Component {
    * switch to either runner/order
    */
   handleSwitch() {
-    console.log(this.props);
     this.props.setBusyWaitingUserModeSwitch(true);
     animateMenuHide();
 
