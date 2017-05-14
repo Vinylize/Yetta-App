@@ -408,8 +408,8 @@ class Home extends Component {
   }
 
   renderAddressSearchPin() {
-    const length = 40;
-    const ImageSideLength = 32;
+    const length = 50;
+    const ImageHeightLength = 32;
     return (
       <View style={{
         position: 'absolute',
@@ -424,9 +424,9 @@ class Home extends Component {
       }}>
         <Image
           style={{
-            height: ImageSideLength,
-            width: ImageSideLength,
-            marginBottom: ImageSideLength / 2
+            height: ImageHeightLength,
+            width: 32,
+            marginBottom: ImageHeightLength / 2
           }}
           source={ImgSearchPin}
         />
