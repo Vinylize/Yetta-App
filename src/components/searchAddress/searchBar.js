@@ -39,7 +39,10 @@ class SearchBar extends Component {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       onFocused: false,
-      listViewDataSource: ds.cloneWithRows([])
+      listViewDataSource: ds.cloneWithRows([
+        {first: '내 위치'},
+        {last: '핀으로 찾기'}
+      ])
     };
     this.renderListView = this.renderListView.bind(this);
     this.handleAddressBtn = this.handleAddressBtn.bind(this);
@@ -289,6 +292,7 @@ class SearchBar extends Component {
             }}>
               {(onFocused) ?
                 <TouchableOpacity onPress={() => {
+                  LayoutAnimation.easeInEaseOut();
                   this.setState({onFocused: false});
                   this.props.setSearchBarExpanded(false);
                   Keyboard.dismiss();
