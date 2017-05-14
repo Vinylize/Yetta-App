@@ -67,11 +67,24 @@
 
 // uncomment the following which may help if white blank shows between Splash and JS
 //  UIImageView *launchView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"LaunchImage"]];
+//  launchView.frame = self.window.bounds;
+//  launchView.contentMode = UIViewContentModeScaleAspectFill;
 //  rootView.loadingView = launchView;
-//  rootView.loadingViewFadeDelay = 0.20;
-//  rootView.loadingViewFadeDuration = 0.20;
-  
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.00 green:0.73 blue:0.34 alpha:1];
+
+// TODO: the following still does not stop white blinking between LaunchScreen and JS
+  NSArray *allPngImageNames = [[NSBundle mainBundle] pathsForResourcesOfType:@"png" inDirectory:nil];
+  for (NSString *imgName in allPngImageNames){
+    if ([imgName containsString:@"LaunchImage"]){
+      NSLog(@"asdfasdf");
+      UIImage *img = [UIImage imageNamed:imgName];
+      
+      if (img.scale == [UIScreen mainScreen].scale && CGSizeEqualToSize(img.size, [UIScreen mainScreen].bounds.size)) {
+        rootView.backgroundColor = [UIColor colorWithPatternImage:img];
+      }
+    }
+  }
+
+  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
   rootView.appProperties = appProperties;
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
