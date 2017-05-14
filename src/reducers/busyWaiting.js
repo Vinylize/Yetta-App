@@ -16,7 +16,11 @@ const initialState = {
   /**
    * busy on waiting user mode switch between order/runner
    */
-  busyWaitingUserModeSwitch: false
+  busyWaitingUserModeSwitch: false,
+  /**
+   * busy on querying NodeList from findStore component
+   */
+  busyWaitingQueryNodeList: false
 };
 
 const busyWaiting = (state = initialState, action = {}) => {
@@ -29,6 +33,8 @@ const busyWaiting = (state = initialState, action = {}) => {
     return {...state, busyWaitingUserCreateOrder: action.busyWaitingUserCreateOrder };
   case types.setBusyWaitingUserModeSwitch:
     return {...state, busyWaitingUserModeSwitch: action.busyWaitingUserModeSwitch};
+  case types.setBusyWaitingQueryNodeList:
+    return {...state, busyWaitingQueryNodeList: action.busyWaitingQueryNodeList};
   default:
     return state;
   }

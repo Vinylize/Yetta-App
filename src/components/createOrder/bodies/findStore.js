@@ -1,6 +1,7 @@
 import React, { PureComponent, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
+  ActivityIndicator,
   Dimensions,
   TouchableOpacity,
   Text,
@@ -11,17 +12,18 @@ import Header from './../header/header';
 import * as YettaServerAPI from './../../../service/YettaServerAPI/client';
 import { handleError } from './../../../utils/errorHandlers';
 
+// [start redux functions]
 import {
   setNodeList,
   setStagedNode
 } from './../../../actions/createOrderActions';
+import { setBusyWaitingQueryNodeList } from './../../../actions/busyWaitingActions';
+// [end redux functions]
 
-// const HEIGHT = Dimensions.get('window').height;
+
+// constants
+const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
-
-// const styles = {
-//   // TBD
-// };
 
 class FindStore extends PureComponent {
   constructor() {
@@ -90,6 +92,7 @@ class FindStore extends PureComponent {
   queryNodeHelper() {
     return YettaServerAPI.getLokkaClient()
       .then(client => {
+        this.props.setBusyWaitingQueryNodeList(true);
         const { lat, lon } = this.props.coordinate;
         return client.query(`{
           viewer{
@@ -101,7 +104,10 @@ class FindStore extends PureComponent {
             }
           }
         }`)
-          .catch(handleError);
+          .catch(err => {
+            this.props.setBusyWaitingQueryNodeList(false);
+            handleError(err);
+          });
       });
   }
 
@@ -114,6 +120,7 @@ class FindStore extends PureComponent {
   setStoreListFromServer(res) {
     const { nodeList } = res.viewer;
     this.props.setNodeList(nodeList);
+    this.props.setBusyWaitingQueryNodeList(false);
   }
 
   renderBrandListRow(name) {
@@ -130,6 +137,89 @@ class FindStore extends PureComponent {
           {name}
         </Text>
       </TouchableOpacity>
+    );
+  }
+
+  renderTextWhenNoNodeListFound() {
+    if (this.props.busyWaitingQueryNodeList) {
+      return this.renderWaitingServerResView();
+    }
+    return (
+      <View style={{
+        flex: 1,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        paddingTop: HEIGHT * 0.26
+      }}>
+        <Text style={{
+          fontSize: 18,
+          color: '#bfbfbf',
+          fontWeight: '400'
+        }}>
+          근처에 등록된 곳이 없습니다. ㅠㅠ
+        </Text>
+      </View>
+    );
+  }
+
+  renderBrandList(brandList) {
+    if (this.props.busyWaitingQueryNodeList) {
+      return null;
+    }
+    return (
+      <ListView
+        dataSource={brandList}
+        renderRow={this.renderBrandListRow}
+        style={{
+          backgroundColor: 'white',
+          marginLeft: 14
+        }}
+        enableEmptySections
+        removeClippedSubviews={false}
+        contentContainerStyle={{alignItems: 'center'}}
+        horizontal
+      />
+    );
+  }
+
+  renderNodeList(ds) {
+    if (this.props.busyWaitingQueryNodeList) {
+      return this.renderWaitingServerResView();
+    }
+    return (
+      <ListView
+        dataSource={ds.cloneWithRows(this.props.nodeList)}
+        renderRow={(rowData) => this.renderVerticalRow(rowData)}
+        style={{backgroundColor: 'white'}}
+        enableEmptySections
+        removeClippedSubviews={false}
+        contentContainerStyle={{alignItems: 'center'}}
+      />
+    );
+  }
+
+  renderWaitingServerResView() {
+    return (
+      <View style={{
+        flex: 1,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        paddingTop: HEIGHT * 0.23,
+        flexDirection: 'column'
+      }}>
+        <ActivityIndicator
+          animating={true}
+          size="large"
+        />
+        <Text style={{
+          fontSize: 18,
+          color: '#bfbfbf',
+          fontWeight: '400',
+          marginTop: 20
+        }}>
+          찾는중..
+        </Text>
+      </View>
     );
   }
 
@@ -167,31 +257,19 @@ class FindStore extends PureComponent {
           paddingRight: 40,
           marginTop: 90
         }}>
-          <ListView
-            dataSource={brandList}
-            renderRow={this.renderBrandListRow}
-            style={{
-              backgroundColor: 'white',
-              marginLeft: 14
-            }}
-            enableEmptySections
-            removeClippedSubviews={false}
-            contentContainerStyle={{alignItems: 'center'}}
-            horizontal
-          />
+          {(this.props.nodeList.length === 0) ?
+            null :
+            this.renderBrandList(brandList)
+          }
         </View>
         <View style={{
           flex: 1,
           backgroundColor: 'white'
         }}>
-          <ListView
-            dataSource={ds.cloneWithRows(this.props.nodeList)}
-            renderRow={(rowData) => this.renderVerticalRow(rowData)}
-            style={{backgroundColor: 'white'}}
-            enableEmptySections
-            removeClippedSubviews={false}
-            contentContainerStyle={{alignItems: 'center'}}
-          />
+          {(this.props.nodeList.length === 0) ?
+            this.renderTextWhenNoNodeListFound() :
+            this.renderNodeList(ds)
+          }
         </View>
       </View>
     );
@@ -208,19 +286,25 @@ FindStore.propTypes = {
   // reducers/createOrder
   setNodeList: PropTypes.func,
   nodeList: PropTypes.array,
-  setStagedNode: PropTypes.func
+  setStagedNode: PropTypes.func,
+
+  // reducers/busyWaiting
+  busyWaitingQueryNodeList: PropTypes.bool,
+  setBusyWaitingQueryNodeList: PropTypes.func
 };
 
 function mapStateToProps(state) {
   return {
-    nodeList: state.createOrder.nodeList
+    nodeList: state.createOrder.nodeList,
+    busyWaitingQueryNodeList: state.busyWaiting.busyWaitingQueryNodeList
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setNodeList: (nodeList) => dispatch(setNodeList(nodeList)),
-    setStagedNode: (id, name, addr) => dispatch(setStagedNode(id, name, addr))
+    setStagedNode: (id, name, addr) => dispatch(setStagedNode(id, name, addr)),
+    setBusyWaitingQueryNodeList: (busyWaitingQueryNodeList) => dispatch(setBusyWaitingQueryNodeList(busyWaitingQueryNodeList))
   };
 };
 

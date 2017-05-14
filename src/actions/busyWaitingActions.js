@@ -27,3 +27,10 @@ export const setBusyWaitingUserModeSwitch = (busyWaitingUserModeSwitch) => {
     busyWaitingUserModeSwitch
   };
 };
+
+export const setBusyWaitingQueryNodeList = (busyWaitingQueryNodeList) => {
+  return {
+    type: types.setBusyWaitingQueryNodeList,
+    busyWaitingQueryNodeList
+  };
+};

@@ -129,7 +129,7 @@ class Home extends Component {
 
     if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener('didUpdateToLocationAndroidForeground', async(data) => {
-        console.log('foreground location update: ', data);
+        // console.log('foreground location update: ', data);
         // Alert.alert('foreground location update', JSON.stringify(data));
         this.props.setCurrentLocation({
           lat: data.latitude,
@@ -145,7 +145,7 @@ class Home extends Component {
         }
       });
       DeviceEventEmitter.addListener('didUpdateToLocationAndroidBackground', async(data) => {
-        console.log('background location update: ', data);
+        // console.log('background location update: ', data);
         // Alert.alert('background location update', JSON.stringify(data));
         this.props.setCurrentLocation({
           lat: data.latitude,
@@ -168,7 +168,7 @@ class Home extends Component {
             vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
             this.initialLocationUpdate = true;
           }
-          console.log(data);
+          // console.log(data);
           this.props.setCurrentLocation({
             lat: data.latitude,
             lon: data.longitude
@@ -187,7 +187,7 @@ class Home extends Component {
 
   componentWillUnmount() {
     if (this.subscriptionLocationServiceIOS) {
-      console.log('unsubscribe locationServiceIOS');
+      // console.log('unsubscribe locationServiceIOS');
       this.subscriptionLocationServiceIOS.remove();
     }
 
@@ -219,7 +219,6 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
     const { lat, lon } = this.props.currentLocation;
     if (vmm) {
       if (Platform.OS === 'ios') {
@@ -245,7 +244,7 @@ class Home extends Component {
             this.setState({markerClicked: !this.state.markerClicked});
           }}
           onMapMove={(e) => {
-            console.log('mapmoved', e.nativeEvent);
+            // console.log('mapmoved', e.nativeEvent);
             const { gesture } = e.nativeEvent;
             const { trackingCurrentPos } = this.state;
             // if gesture is true, map is moved by user
@@ -256,7 +255,7 @@ class Home extends Component {
           }}
           onChangeCameraPosition={(e) => {
             // todo: rename this method since it is actually when camera position idle
-            console.log('camera position changed: ', e.nativeEvent);
+            // console.log('camera position changed: ', e.nativeEvent);
             const { latitude, longitude } = e.nativeEvent;
 
             this.props.setMapCameraPos({lat: latitude, lon: longitude});

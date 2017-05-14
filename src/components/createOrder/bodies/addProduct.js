@@ -7,7 +7,9 @@ import {
   Text,
   TextInput,
   LayoutAnimation,
-  View
+  View,
+  Platform,
+  StyleSheet
 } from 'react-native';
 import Header from './../header/header';
 
@@ -33,7 +35,15 @@ const styles = {
     marginBottom: 0,
     shadowOffset: {height: 3, width: 1},
     shadowOpacity: 0.2,
-    elevation: 5
+    elevation: 1
+  },
+  androidBorder: {
+    ...Platform.select({
+      android: {
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: '#bfbfbf'
+      }
+    })
   }
 };
 
@@ -51,7 +61,7 @@ class AddProduct extends Component {
     return this.props.productList.map((el, i) => {
       return (
         <TouchableOpacity
-          style={[styles.addingProduct, {
+          style={[styles.addingProduct, styles.androidBorder, {
             justifyContent: 'space-between',
             flexDirection: 'row'
           }]}
@@ -63,7 +73,7 @@ class AddProduct extends Component {
         >
           <TextInput
             style={{
-              height: 30,
+              height: 40,
               width: WIDTH - 80 - 140,
               marginLeft: 28,
               backgroundColor: 'transparent',
@@ -144,7 +154,7 @@ class AddProduct extends Component {
   renderAddingNewProductView() {
     return (
       <TouchableOpacity
-        style={[styles.addingProduct, {
+        style={[styles.addingProduct, styles.androidBorder, {
           justifyContent: 'center',
           alignItems: 'center',
           flexDirection: 'row'
@@ -197,16 +207,16 @@ class AddProduct extends Component {
           }}
         >
           <Text>상점 정보</Text>
-          <View style={{
+          <View style={[styles.androidBorder, {
             width: WIDTH - 80,
             backgroundColor: 'white',
             marginTop: 12,
             marginBottom: 38,
             shadowOffset: {height: 3, width: 1},
             shadowOpacity: 0.2,
-            elevation: 5,
+            elevation: 1,
             padding: 16
-          }}>
+          }]}>
             <Text style={{
               color: 'black',
               marginBottom: 10

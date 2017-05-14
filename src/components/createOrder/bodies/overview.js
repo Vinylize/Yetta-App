@@ -132,7 +132,7 @@ class RegisterOrder extends Component {
         paddingRight: 24,
         paddingTop: 20,
         flexDirection: 'column',
-        zIndex: 10
+        zIndex: 50
       }}>
         <View style={{
           borderBottomWidth: 1,
