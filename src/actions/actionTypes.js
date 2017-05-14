@@ -6,6 +6,7 @@ export const setBusyWaitingPlaceDetailAPI = 'SET_BUSY_WAITING_PLACE_DETAIL_API';
 export const setBusyWaitingGeocodingAPI = 'SET_BUSY_WAITING_GEOCODING_API';
 export const setBusyWaitingUserCreateOrder = 'SET_BUSY_WAITING_USER_CREATE_ORDER';
 export const setBusyWaitingUserModeSwitch = 'SET_BUSY_WAITING_USER_MODE_SWITCH';
+export const setBusyWaitingQueryNodeList = 'SET_BUSY_WAITING_QUERY_NODE_LIST';
 
 // runnerStatus
 export const setWaitingNewOrder = 'SET_WAITING_NEW_ORDER';
