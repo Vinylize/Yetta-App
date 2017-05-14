@@ -16,7 +16,7 @@ import {
   setStagedNode
 } from './../../../actions/createOrderActions';
 
-// const HEIGHT = Dimensions.get('window').height;
+const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
 // const styles = {
@@ -133,6 +133,55 @@ class FindStore extends PureComponent {
     );
   }
 
+  renderTextWhenNoNodeListFound() {
+    return (
+      <View style={{
+        flex: 1,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        paddingTop: HEIGHT * 0.26
+      }}>
+        <Text style={{
+          fontSize: 18,
+          color: '#bfbfbf',
+          fontWeight: '400'
+        }}>
+          근처에 등록된 곳이 없습니다. ㅠㅠ
+        </Text>
+      </View>
+    );
+  }
+
+  renderBrandList(brandList) {
+    return (
+      <ListView
+        dataSource={brandList}
+        renderRow={this.renderBrandListRow}
+        style={{
+          backgroundColor: 'white',
+          marginLeft: 14
+        }}
+        enableEmptySections
+        removeClippedSubviews={false}
+        contentContainerStyle={{alignItems: 'center'}}
+        horizontal
+      />
+    );
+  }
+
+  renderNodeList(ds) {
+    return (
+      <ListView
+        dataSource={ds.cloneWithRows(this.props.nodeList)}
+        renderRow={(rowData) => this.renderVerticalRow(rowData)}
+        style={{backgroundColor: 'white'}}
+        enableEmptySections
+        removeClippedSubviews={false}
+        contentContainerStyle={{alignItems: 'center'}}
+      />
+    );
+  }
+
   render() {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     const { selectedBrand } = this.props;
@@ -167,31 +216,19 @@ class FindStore extends PureComponent {
           paddingRight: 40,
           marginTop: 90
         }}>
-          <ListView
-            dataSource={brandList}
-            renderRow={this.renderBrandListRow}
-            style={{
-              backgroundColor: 'white',
-              marginLeft: 14
-            }}
-            enableEmptySections
-            removeClippedSubviews={false}
-            contentContainerStyle={{alignItems: 'center'}}
-            horizontal
-          />
+          {(this.props.nodeList.length === 0) ?
+            null :
+            this.renderBrandList(brandList)
+          }
         </View>
         <View style={{
           flex: 1,
           backgroundColor: 'white'
         }}>
-          <ListView
-            dataSource={ds.cloneWithRows(this.props.nodeList)}
-            renderRow={(rowData) => this.renderVerticalRow(rowData)}
-            style={{backgroundColor: 'white'}}
-            enableEmptySections
-            removeClippedSubviews={false}
-            contentContainerStyle={{alignItems: 'center'}}
-          />
+          {(this.props.nodeList.length === 0) ?
+            this.renderTextWhenNoNodeListFound() :
+            this.renderNodeList(ds)
+          }
         </View>
       </View>
     );
