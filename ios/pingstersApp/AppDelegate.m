@@ -34,7 +34,7 @@
 }
 @end
 #endif
-
+ 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -54,9 +54,8 @@
       [appProperties setObject:notification forKey:@"initialNotification"];
     }
   }
-
 #ifdef DEBUG
-  jsCodeLocation = [NSURL URLWithString:@"http://127.0.0.1:8081/index.ios.bundle?platform=ios&dev=true"];
+  jsCodeLocation = [NSURL URLWithString:@"http://localhost:8082/index.ios.bundle?platform=ios&dev=true"];
 #else
   jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
@@ -65,7 +64,14 @@
                                                       moduleName:@"pingstersApp"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+
+// uncomment the following which may help if white blank shows between Splash and JS
+//  UIImageView *launchView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"LaunchImage"]];
+//  rootView.loadingView = launchView;
+//  rootView.loadingViewFadeDelay = 0.20;
+//  rootView.loadingViewFadeDuration = 0.20;
+  
+  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.00 green:0.73 blue:0.34 alpha:1];
   rootView.appProperties = appProperties;
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

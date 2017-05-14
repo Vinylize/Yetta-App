@@ -118,7 +118,8 @@ class Splash extends Component {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          backgroundColor: '#ffba56'
         }}
       >
         <Image

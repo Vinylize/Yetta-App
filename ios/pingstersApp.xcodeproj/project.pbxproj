@@ -25,7 +25,6 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		171C02BF1E4587F7002DB33B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 171C02BE1E4587F7002DB33B /* Podfile */; };
-		174261D31E77E67100012E9A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 174261D21E77E67100012E9A /* GoogleService-Info.plist */; };
 		1768ADB01E7FF94F00C8565E /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1768ADAD1E7FF91200C8565E /* libRCTPushNotification.a */; };
 		1768ADF01E80469300C8565E /* YettaLocationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1768ADEF1E80469300C8565E /* YettaLocationService.m */; };
 		1768AE351E80F59E00C8565E /* YettaLocationServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1768AE341E80F59E00C8565E /* YettaLocationServiceManager.m */; };
@@ -34,9 +33,11 @@
 		1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1779137E1E464064000454F2 /* VinylMapViewManager.m */; };
 		179BEF581E7156650087C0DB /* VinylMapMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */; };
 		179D3A1D1E4F3F6B00038FE8 /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */; };
+		17A19C9F1EBC6DD3008C785B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17A19C9E1EBC6DD3008C785B /* GoogleService-Info.plist */; };
 		17C055F91EB635BA001F513A /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; };
 		17C0568B1EB6427F001F513A /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; };
 		17C0568C1EB6427F001F513A /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		17D699681EC065D00052117A /* YettaUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D699671EC065D00052117A /* YettaUUID.m */; };
 		17F5CB531EB5D7CF00201D7B /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F5CB521EB5D7C300201D7B /* libART.a */; };
 		260CDADB65DD47CB9827DD6F /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 096E3902413A4408A5817DB1 /* libLottieReactNative.a */; };
 		41E423D59A32F0EA37376C9C /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */; };
@@ -352,7 +353,6 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		171C02BE1E4587F7002DB33B /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		174261D11E77E3AD00012E9A /* pingstersApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = pingstersApp.entitlements; path = pingstersApp/pingstersApp.entitlements; sourceTree = "<group>"; };
-		174261D21E77E67100012E9A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1768ADA71E7FF91200C8565E /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		1768ADEF1E80469300C8565E /* YettaLocationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaLocationService.m; sourceTree = "<group>"; };
 		1768AE0C1E8046A100C8565E /* YettaLocationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YettaLocationService.h; sourceTree = "<group>"; };
@@ -367,7 +367,10 @@
 		179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VinylMapMarkerView.swift; sourceTree = "<group>"; };
 		179BEF7F1E727BBD0087C0DB /* pingstersApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pingstersApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-pingstersApp.a"; path = "../../../Library/Developer/Xcode/DerivedData/pingstersApp-djwrprktbzexhdgdqgptqhvxgiwn/Build/Products/Debug-iphonesimulator/libPods-pingstersApp.a"; sourceTree = "<group>"; };
+		17A19C9E1EBC6DD3008C785B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		17C055CA1EB632F8001F513A /* Lottie.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lottie.xcodeproj; path = "../node_modules/lottie-ios/Lottie.xcodeproj"; sourceTree = "<group>"; };
+		17D699671EC065D00052117A /* YettaUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaUUID.m; sourceTree = "<group>"; };
+		17D699691EC065DD0052117A /* YettaUUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YettaUUID.h; sourceTree = "<group>"; };
 		17F5CB4D1EB5D7C300201D7B /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		1E396242CED6475EA35DE044 /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundTimer.a; sourceTree = "<group>"; };
 		3C1A0ED488494194B56E9107 /* LottieReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LottieReactNative.xcodeproj; path = "../node_modules/lottie-react-native/lib/ios/LottieReactNative.xcodeproj"; sourceTree = "<group>"; };
@@ -502,7 +505,8 @@
 		13B07FAE1A68108700A75B9A /* pingstersApp */ = {
 			isa = PBXGroup;
 			children = (
-				174261D21E77E67100012E9A /* GoogleService-Info.plist */,
+				17D699441EC065440052117A /* YettaUUID */,
+				17A19C9E1EBC6DD3008C785B /* GoogleService-Info.plist */,
 				174261D11E77E3AD00012E9A /* pingstersApp.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -571,6 +575,15 @@
 				17C0566C1EB64266001F513A /* libLottie.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		17D699441EC065440052117A /* YettaUUID */ = {
+			isa = PBXGroup;
+			children = (
+				17D699671EC065D00052117A /* YettaUUID.m */,
+				17D699691EC065DD0052117A /* YettaUUID.h */,
+			);
+			name = YettaUUID;
 			sourceTree = "<group>";
 		};
 		17F5CAAF1EB5D6F100201D7B /* Products */ = {
@@ -1128,7 +1141,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				174261D31E77E67100012E9A /* GoogleService-Info.plist in Resources */,
+				17A19C9F1EBC6DD3008C785B /* GoogleService-Info.plist in Resources */,
 				171C02BF1E4587F7002DB33B /* Podfile in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
@@ -1217,6 +1230,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				1768AE351E80F59E00C8565E /* YettaLocationServiceManager.m in Sources */,
+				17D699681EC065D00052117A /* YettaUUID.m in Sources */,
 				0DEE91221EB30B8E00279ACB /* RNHockeyApp.m in Sources */,
 				1768ADF01E80469300C8565E /* YettaLocationService.m in Sources */,
 				1776E6C01E791AC900A31769 /* YettaFCM.m in Sources */,
@@ -1316,6 +1330,7 @@
 			baseConfigurationReference = D298115BD0EB9190BBD4918E /* Pods-pingstersApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = pingstersApp/pingstersApp.entitlements;
 				CURRENT_PROJECT_VERSION = 5;
@@ -1358,6 +1373,7 @@
 			baseConfigurationReference = 541CB24A49262EC50D77A6B1 /* Pods-pingstersApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = pingstersApp/pingstersApp.entitlements;
 				CURRENT_PROJECT_VERSION = 5;
