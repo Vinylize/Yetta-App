@@ -9,13 +9,13 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Dimensions,
-  Image,
-  NativeModules,
-  Platform
+  Image
 } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import LinearGradient from 'react-native-linear-gradient';
 import * as firebase from 'firebase';
-import * as YettaServerAPI from './../service/YettaServerAPI/client';
+import * as YettaServerAPIauth from './../service/YettaServerAPI/auth';
+import * as YettaServerAPIuserInfo from './../service/YettaServerAPI/userInfo';
 
 import GlobalLoading from './globalViews/loading';
 
@@ -23,12 +23,7 @@ import { setUser } from '../actions/authActions';
 import { setRunnerNotification } from './../actions/pushNotificationActions';
 import { setNavigator } from './../actions/navigatorActions';
 
-import { handleFirebaseSignInError, handleError } from './../utils/errorHandlers';
-import {
-  registerNavigatorRoute,
-  homeNavigatorRoute,
-  phoneVerificationNavigatorRoute
-} from './../navigator/navigatorRoutes';
+import { handleFirebaseSignInError } from './../utils/errorHandlers';
 
 import IMG_LOGO from './../../assets/logo.png';
 
@@ -99,19 +94,6 @@ class Login extends Component {
     };
   }
 
-  componentWillMount() {
-    this.props.setNavigator(this.props.navigator);
-    this.fireBaseListener = firebase.auth().onAuthStateChanged((user) => {
-      this.fireBaseListener && this.fireBaseListener();
-      if (user) {
-        this.showLoading();
-        this.internalAuth();
-      } else {
-        // TBD
-      }
-    });
-  }
-
   showLoading() {
     this.setState(() => {
       return {busyWaiting: true};
@@ -128,100 +110,26 @@ class Login extends Component {
     return (this.state.userEmail && this.state.password);
   }
 
-  getFCMToken() {
-    // this is for readability
-    const iOSFCMManager = NativeModules.YettaFCMManager;
-    const AndroidFCMManager = NativeModules.YettaFCMManager;
-    return new Promise((resolve, reject) => {
-      if (Platform.OS === 'ios') {
-        return iOSFCMManager.getToken((error, events) => {
-          if (error) {
-            // todo: handle error or edge cases
-            console.log(error);
-            return reject(error);
-          }
-          console.log(events);
-          return resolve(events[0]);
-        });
-      } else if (Platform.OS === 'android') {
-        return AndroidFCMManager.getToken(
-          (msg) => {
-            console.log(msg);
-            return reject(msg);
-          },
-          (FCMToken) => {
-            console.log(FCMToken);
-            return resolve(FCMToken);
-            // this.userSignIn(FCMToken, client);
-          }
-        );
-      }
-      return reject();
-    });
-  }
-
-  queryUser(client) {
-    return new Promise((resolve, reject) => {
-      return client.query(`{
-        viewer{
-          isPV,
-          e,
-          n,
-          p
-        }
-      }`)
-        .then(({viewer}) => {
-          this.props.setUser(viewer);
-          this.hideLoading();
-          console.log(viewer);
-          return resolve(viewer);
-        })
-        .catch(e => {
-          this.hideLoading();
-          console.log(e);
-          return reject(e);
-        });
-    });
-  }
-
-  userSignIn(token, client) {
-    return YettaServerAPI.getDeviceID()
-      .then(deviceID => {
-        return new Promise((resolve, reject) => {
-          return client.mutate(`{
-            userSignIn(
-              input:{
-                dt: "${token}",
-                d: "${deviceID}"
-              }
-            ) {
-              result
-            }
-          }`)
-            .then(res => {
-              return resolve(res);
-            })
-            .catch(err => {
-              console.log(err);
-              handleError(err, true);
-              return reject(err);
-            });
-        });
+  queryUser() {
+    return YettaServerAPIuserInfo.queryUser()
+      .then((viewer) => {
+        this.props.setUser(viewer);
+        this.hideLoading();
+        console.log(viewer);
+        return viewer;
+      })
+      .catch(e => {
+        this.hideLoading();
+        console.log(e);
+        return e;
       });
   }
 
   internalAuth() {
-    let lokkaClient;
-    YettaServerAPI.getLokkaClient()
-      .then(client => {
-        lokkaClient = client;
-        return this.getFCMToken();
-      })
-      .then(fcmToken => this.userSignIn(fcmToken, lokkaClient))
+    YettaServerAPIauth.userSignIn()
       .then(res => {
-        // todo: handle on res error codes
         console.log(res);
-        return this.queryUser(lokkaClient);
+        return this.queryUser();
       })
       .then(viewer => {
         this.hideLoading();
@@ -247,12 +155,24 @@ class Login extends Component {
   }
 
   navigateToHome() {
-    this.props.navigator.replace(homeNavigatorRoute());
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Home', params: {navigation: this.props.navigation}})
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
 
   navigateToPhoneVerification() {
-    this.props.navigator.replace(homeNavigatorRoute());
-    this.props.navigator.push(phoneVerificationNavigatorRoute());
+    const resetAction = NavigationActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Home', params: {navigation: this.props.navigation}}),
+        NavigationActions.navigate({ routeName: 'PhoneVerification', params: {navigation: this.props.navigation}})
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
 
   handleLoginButton() {
@@ -314,9 +234,14 @@ class Login extends Component {
             <View>
               <TouchableOpacity
                 style={{marginTop: 14, width: WIDTH * 0.75, alignItems: 'flex-end'}}
-                onPress={() => this.props.navigator.push(registerNavigatorRoute())}
+                onPress={() => this.props.navigation.navigate('Register')}
               >
-                <Text style={{color: '#FFF', fontWeight: '500', fontSize: 12}}>비밀번호를 잊으셨나요?</Text>
+                <Text style={{
+                  color: '#FFF',
+                  fontWeight: '500',
+                  fontSize: 12,
+                  backgroundColor: 'transparent'
+                }}>비밀번호를 잊으셨나요?</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
@@ -327,10 +252,21 @@ class Login extends Component {
             </TouchableOpacity>
             <View style={styles.footer}>
               <Text
-                style={{fontSize: 14, fontWeight: '500', color: '#fee5c0'}}
+                style={{
+                  fontSize: 14,
+                  fontWeight: '500',
+                  color: '#fee5c0',
+                  backgroundColor: 'transparent'
+                }}
               >아직 회원이 아니신가요? </Text>
-              <TouchableOpacity onPress={() => this.props.navigator.push(registerNavigatorRoute())}>
-                <Text style={{marginTop: 1, fontSize: 14, fontWeight: '500', color: '#FFF'}}>회원가입</Text>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
+                <Text style={{
+                  marginTop: 1,
+                  fontSize: 14,
+                  fontWeight: '500',
+                  color: '#FFF',
+                  backgroundColor: 'transparent'
+                }}>회원가입</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
@@ -344,7 +280,7 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  navigator: PropTypes.any,
+  navigation: PropTypes.any,
 
   // reducers/auth
   setUser: PropTypes.func,
@@ -363,7 +299,7 @@ function mapStateToProps(state) {
   };
 }
 
-let mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     setUser: (user) => dispatch(setUser(user)),
     setRunnerNotification: (isRunner) => dispatch(setRunnerNotification(isRunner)),

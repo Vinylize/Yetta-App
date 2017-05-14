@@ -1,8 +1,11 @@
 import * as types from '../../actions/actionTypes';
 import {
-  Animated
+  Animated,
+  Dimensions
 } from 'react-native';
-import { cardHidedBottom } from './../../components/home';
+const HEIGHT = Dimensions.get('window').height;
+export const expandedCardHeight = HEIGHT * 0.43;
+const cardHidedBottom = -expandedCardHeight;
 
 const initialState = {
   // intention: avoid unnecessary geocoding from placeAutocomplete API prediction

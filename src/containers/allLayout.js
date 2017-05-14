@@ -5,7 +5,7 @@ import {
   Platform
 } from 'react-native';
 import React, { PropTypes } from 'react';
-import { loginNavigatorRoute } from '../navigator/navigatorRoutes';
+import { splashNavigatorRoute } from '../navigator/navigatorRoutes';
 import { connect } from 'react-redux';
 
 // [start redux actions]
@@ -36,18 +36,16 @@ class All extends React.Component {
   }
 
   componentWillMount() {
+    // [start adding FCM listeners]
     if (Platform.OS === 'android') {
       // todo: research how to remove these listeners from DeviceEventEmitter for possible memory leaks
       DeviceEventEmitter.addListener('FCMNotificationReceived', async(data) => this.receivedRemoteNotificationAndroid(data));
-    } else {
+    } else if (Platform.OS === 'ios') {
       PushNotificationIOS.addEventListener('register', console.log);
       PushNotificationIOS.addEventListener('registrationError', console.log);
       PushNotificationIOS.addEventListener('notification', this.receivedRemoteNotificationIOS);
     }
-  }
-
-  componentDidMount() {
-    console.log(this.props.runnerNotification);
+    // [end adding FCM listeners]
   }
 
   componentWillUnmount() {
@@ -88,7 +86,7 @@ class All extends React.Component {
   }
 
   render() {
-    const initialRoute = loginNavigatorRoute();
+    const initialRoute = splashNavigatorRoute();
     return (
       <Navigator
         initialRoute={initialRoute}

@@ -1,81 +1,33 @@
-import { Navigator } from 'react-native';
-import Home from './../components/home';
-import Login from './../components/login';
-import Profile from './../components/profile';
-import Register from './../components/register';
-import PhoneVerification from './../components/phoneVerification';
-import PaymentInfo from './../components/paymentInfo/paymentInfo';
-import CreateOrder from './../components/createOrder/createOrder';
-import Setting from './../components/settings/setting';
-import OrderHistory from './../components/orderHistory/orderHistory';
-import RunnerHistory from './../components/runnerHistory/runnerHistory';
-const sceneConfig = Navigator.SceneConfigs.FloatFromBottom;
+import React from 'react';
+import { StackNavigator } from 'react-navigation';
 
-export function homeNavigatorRoute() {
-  return {
-    Component: Home,
-    sceneConfig
-  };
-}
+import MapView from '../components/homeScreen/mapView';
+import LoginScreen from './../components/login';
+import ProfileScreen from './../components/profile';
+import RegisterScreen from './../components/register';
+import PhoneVerificationScreen from './../components/phoneVerification';
+import PaymentInfoScreen from './../components/paymentInfo/paymentInfo';
+import CreateOrderScreen from './../components/createOrder/createOrder';
+import SettingScreen from './../components/settings/setting';
+import OrderHistoryScreen from './../components/orderHistory/orderHistory';
+import RunnerHistoryScreen from './../components/runnerHistory/runnerHistory';
+import SplashScreen from './../components/splash';
 
-export function loginNavigatorRoute() {
-  return {
-    Component: Login,
-    sceneConfig
-  };
-}
+export const AppNavigator = StackNavigator({
+  Login: { screen: LoginScreen },
+  Register: { screen: RegisterScreen },
+  PhoneVerification: { screen: PhoneVerificationScreen },
+  CreateOrder: { screen: CreateOrderScreen },
+  PaymentInfo: { screen: PaymentInfoScreen },
+  Profile: { screen: ProfileScreen },
+  Setting: { screen: SettingScreen },
+  OrderHistory: { screen: OrderHistoryScreen },
+  RunnerHistory: { screen: RunnerHistoryScreen },
+  Splash: { screen: SplashScreen },
+  Home: { screen: MapView }
+}, {
+  initialRouteName: 'Splash',
+  headerMode: 'none'
+});
 
-export function registerNavigatorRoute() {
-  return {
-    Component: Register
-  };
-}
-
-export function phoneVerificationNavigatorRoute() {
-  return {
-    Component: PhoneVerification,
-    sceneConfig
-  };
-}
-
-export function createOrderNavigatorRoute() {
-  return {
-    Component: CreateOrder,
-    sceneConfig
-  };
-}
-
-export function paymentInfoNavigatorRoute() {
-  return {
-    Component: PaymentInfo,
-    sceneConfig
-  };
-}
-
-export function profileNavigatorRoute() {
-  return {
-    Component: Profile,
-    sceneConfig
-  };
-}
-
-export function settingsNavigatorRoute() {
-  return {
-    Component: Setting,
-    sceneConfig
-  };
-}
-
-export function orderHistoryNavigatorRoute() {
-  return {
-    Component: OrderHistory,
-    sceneConfig
-  };
-}
-
-export function runnerHistoryNavigatorRoute() {
-  return {
-    Component: RunnerHistory,
-    sceneConfig
-  };
-}
+export default () => <AppNavigator />;

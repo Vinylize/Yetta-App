@@ -2,12 +2,14 @@ import * as types from './../actionTypes';
 import store from './../../store';
 import {
   Animated,
+  Dimensions,
   Easing
 } from 'react-native';
-import {
-  expandedCardHeight,
-  cardInitBottom
-} from './../../components/home';
+// constants
+const HEIGHT = Dimensions.get('window').height;
+export const expandedCardHeight = HEIGHT * 0.43;
+const cardHeight = 90;
+const cardInitBottom = -expandedCardHeight + cardHeight;
 
 export const setCardAppeared = (cardAppeared) => {
   return {

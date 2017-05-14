@@ -45,7 +45,7 @@ class CreateOrder extends Component {
 
   handleHeaderBackBtn() {
     if (this.state.step === 0) {
-      this.props.navigator.pop();
+      this.props.navigation.goBack();
     } else {
       this.setState({step: this.state.step - 1});
     }
@@ -65,7 +65,7 @@ class CreateOrder extends Component {
   }
 
   handleCreateOrderDone() {
-    this.props.navigator.pop();
+    this.props.navigation.goBack();
     animateCardAppear();
     /**
      * this disables native API that returns coordinate of the map center
@@ -124,7 +124,7 @@ class CreateOrder extends Component {
 }
 
 CreateOrder.propTypes = {
-  navigator: PropTypes.any,
+  navigation: PropTypes.object.isRequired,
   mapCameraPos: PropTypes.object,
   node: PropTypes.array,
 

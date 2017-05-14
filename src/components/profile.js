@@ -84,7 +84,7 @@ class Profile extends Component {
 }
 
 Profile.propTypes = {
-  navigator: PropTypes.any,
+  navigation: PropTypes.object.isRequired,
   user: PropTypes.object
 };
 

@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import * as YettaServerAPI from './../service/YettaServerAPI/client';
 import { handleError } from './../utils/errorHandlers';
-import { homeNavigatorRoute } from './../navigator/navigatorRoutes';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -154,11 +153,11 @@ export default class PhoneVerification extends Component {
       })
       .then(res => {
         if (res.viewer.isPhoneValid === true) {
-          this.props.navigator.resetTo(homeNavigatorRoute());
+          this.props.navigation.goBack();
         } else {
           // todo: isPhoneValid is still false after phone verification
           // todo: determine what to do
-          this.props.navigator.pop();
+          this.props.navigation.goBack();
         }
       })
       .catch(handleError);
@@ -186,7 +185,7 @@ export default class PhoneVerification extends Component {
               this.setState({showResponse: false});
               (this.state.digit.length > 11) && this.setState({showEnterBtn: true});
             } else if (this.state.showResponse === false) {
-              this.props.navigator.pop();
+              this.props.navigation.goBack();
             }
           }}
         >
@@ -394,5 +393,5 @@ export default class PhoneVerification extends Component {
 }
 
 PhoneVerification.propTypes = {
-  navigator: PropTypes.any.isRequired
+  navigation: PropTypes.object.isRequired
 };
