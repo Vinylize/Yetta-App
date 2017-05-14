@@ -1,17 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
-  findNodeHandle,
-  Text,
-  View,
+  Animated,
+  DeviceEventEmitter,
   Dimensions,
+  findNodeHandle,
+  Image,
   LayoutAnimation,
-  Platform,
   NativeModules,
   NativeEventEmitter,
+  Platform,
+  Text,
   TouchableOpacity,
-  Animated,
-  DeviceEventEmitter
+  View
 } from 'react-native';
 import * as firebase from 'firebase';
 
@@ -55,6 +56,9 @@ import {
   animateMenuAppear
 } from '../../actions/componentsActions/menuActions';
 // [end redux functions]
+
+// Assets
+import ImgSearchPin from './../../../assets/pin.png';
 
 import UserModeTransition from '../globalViews/userModeTransition';
 import GlobalLoading from '../globalViews/loading';
@@ -405,6 +409,7 @@ class Home extends Component {
 
   renderAddressSearchPin() {
     const length = 40;
+    const ImageSideLength = 32;
     return (
       <View style={{
         position: 'absolute',
@@ -412,12 +417,19 @@ class Home extends Component {
         top: HEIGHT / 2 - length / 2,
         width: length,
         height: length,
-        zIndex: 10,
+        zIndex: 1,
         backgroundColor: 'transparent',
         justifyContent: 'center',
         alignItems: 'center'
       }}>
-        <Text>핀</Text>
+        <Image
+          style={{
+            height: ImageSideLength,
+            width: ImageSideLength,
+            marginBottom: ImageSideLength / 2
+          }}
+          source={ImgSearchPin}
+        />
       </View>
     );
   }
