@@ -4,6 +4,7 @@ import {
   Alert,
   Dimensions,
   TextInput,
+  Image,
   Keyboard,
   LayoutAnimation,
   ListView,
@@ -30,6 +31,9 @@ import {
 import { setDestinationLocation } from './../../actions/createOrderActions';
 // [end redux functions]
 
+// Assets
+import GOOGLE_LOGO_IMG from './../../../assets/googleLogo/powered_by_google_on_white.png';
+
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
@@ -39,10 +43,44 @@ class SearchBar extends Component {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       onFocused: false,
-      listViewDataSource: ds.cloneWithRows([])
+      listViewDataSource: ds.cloneWithRows([
+        {first: '내 위치'},
+        {last: '핀으로 찾기'}
+      ]),
+      keyboardDidShow: false,
+      keyboardHeight: 0
     };
     this.renderListView = this.renderListView.bind(this);
     this.handleAddressBtn = this.handleAddressBtn.bind(this);
+    this.renderGoogleLogo = this.renderGoogleLogo.bind(this);
+  }
+
+  componentWillMount() {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow.bind(this));
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide.bind(this));
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  keyboardDidShow(e) {
+    const { height } = e.endCoordinates;
+    LayoutAnimation.easeInEaseOut();
+    this.setState(() => {
+      return {
+        keyboardDidShow: true,
+        keyboardHeight: height
+      };
+    });
+  }
+
+  keyboardDidHide() {
+    LayoutAnimation.easeInEaseOut();
+    this.setState(() => {
+      return {keyboardDidShow: false};
+    });
   }
 
   handleAddressBtn(firstAddressToken, addressTextView, coordinate) {
@@ -74,6 +112,32 @@ class SearchBar extends Component {
 
     this.props.setShowApproveAddressCard(true);
     this.props.setSearchedAddressTextView({firstAddressToken, addressTextView});
+  }
+
+  renderGoogleLogo() {
+    if (Platform.OS === 'ios' && this.state.onFocused === false) {
+      return null;
+    }
+    const bottomValueOnHide = (Platform.OS === 'ios') ? 0 : 20;
+    const bottomValueOnShow = this.state.keyboardHeight;
+    return (
+      <View style={{
+        position: 'absolute',
+        bottom: (this.state.keyboardDidShow === true) ? bottomValueOnShow : bottomValueOnHide,
+        right: 0,
+        height: (this.state.onFocused === false) ? 0 : 40,
+        width: 200,
+        zIndex: 10,
+        backgroundColor: 'transparent',
+        justifyContent: 'center'
+      }}>
+        <Image
+          style={{width: 200, marginLeft: 20}}
+          source={GOOGLE_LOGO_IMG}
+          resizeMode="contain"
+        />
+      </View>
+    );
   }
 
   renderRow(rowData) {
@@ -289,6 +353,7 @@ class SearchBar extends Component {
             }}>
               {(onFocused) ?
                 <TouchableOpacity onPress={() => {
+                  LayoutAnimation.easeInEaseOut();
                   this.setState({onFocused: false});
                   this.props.setSearchBarExpanded(false);
                   Keyboard.dismiss();
@@ -319,6 +384,7 @@ class SearchBar extends Component {
             </View>
             : null}
         </View>
+        {this.renderGoogleLogo()}
       </View>
     );
   }
