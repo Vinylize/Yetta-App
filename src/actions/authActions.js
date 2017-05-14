@@ -3,7 +3,7 @@ import store from './../store';
 import * as firebase from 'firebase';
 import * as YettaServerAPIauth from './../service/YettaServerAPI/auth';
 import * as YettaServerAPIclient from './../service/YettaServerAPI/client';
-import { loginNavigatorRoute } from './../navigator/navigatorRoutes';
+import { NavigationActions } from 'react-navigation';
 
 export const setUser = (user) => {
   return {
@@ -18,9 +18,14 @@ export const userSignout = () => {
     .then((res) => {
       console.log(res, 'signed out');
       const { navigator } = store.getState().navigator;
-      console.log(navigator);
       if (navigator) {
-        navigator.replace(loginNavigatorRoute());
+        const resetAction = NavigationActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Login' })
+          ]
+        });
+        navigator.dispatch(resetAction);
       } else {
         console.log('ERROR: navigator is undefined');
       }
