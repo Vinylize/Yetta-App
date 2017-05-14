@@ -10,7 +10,6 @@ import {
   NativeModules,
   NativeEventEmitter,
   Platform,
-  Text,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -59,6 +58,9 @@ import {
 
 // Assets
 import ImgSearchPin from './../../../assets/pin.png';
+import ImgMenu from './../../../assets/menu.png';
+import ImgCompass from './../../../assets/compass.png';
+import ImgSortUp from './../../../assets/sort-up.png';
 
 import UserModeTransition from '../globalViews/userModeTransition';
 import GlobalLoading from '../globalViews/loading';
@@ -324,10 +326,10 @@ class Home extends Component {
           position: 'absolute',
           right: 26,
           bottom: cardBottomVal,
-          height: (Platform.OS === 'android' && this.state.trackingCurrentPos) ? 0 : 25,
-          width: 25,
+          height: (Platform.OS === 'android' && this.state.trackingCurrentPos) ? 0 : 28,
+          width: 28,
           borderRadius: 20,
-          backgroundColor: '#2E3031',
+          backgroundColor: 'transparent',
           shadowOffset: {height: 1, width: 1},
           shadowOpacity: 0.2,
           elevation: 3,
@@ -345,7 +347,12 @@ class Home extends Component {
           LayoutAnimation.easeInEaseOut();
           this.setState({trackingCurrentPos: true});
         }}
-      />
+      >
+        <Image
+          style={{height: 28, width: 28}}
+          source={ImgCompass}
+        />
+      </TouchableOpacity>
     );
   }
 
@@ -370,7 +377,11 @@ class Home extends Component {
           }
         }}
       >
-        <Text style={{fontSize: 11}}>Menu</Text>
+        <Image
+          style={{height: 24, width: 24}}
+          source={ImgMenu}
+          resizeMode="contain"
+        />
       </TouchableOpacity>
     );
   }
@@ -396,14 +407,26 @@ class Home extends Component {
           shadowOffset: {height: 1, width: 2},
           shadowOpacity: 0.23,
           elevation: 3,
-          zIndex: 0
+          zIndex: 0,
+          justifyContent: 'center',
+          alignItems: 'center'
         }}
         onPress={() => {
           if (this.props.orderStatusList.length > 0) {
             animateCardAppear();
           }
         }}
-      />
+      >
+        <Image
+          style={{
+            height: 20,
+            width: 20,
+            marginBottom: 2,
+            opacity: 0.85
+          }}
+          source={ImgSortUp}
+        />
+      </TouchableOpacity>
     );
   }
 
