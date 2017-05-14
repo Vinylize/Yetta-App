@@ -47,7 +47,8 @@ class SearchBar extends Component {
         {first: '내 위치'},
         {last: '핀으로 찾기'}
       ]),
-      keyboardDidShow: false
+      keyboardDidShow: false,
+      keyboardHeight: 0
     };
     this.renderListView = this.renderListView.bind(this);
     this.handleAddressBtn = this.handleAddressBtn.bind(this);
@@ -64,10 +65,14 @@ class SearchBar extends Component {
     this.keyboardDidHideListener.remove();
   }
 
-  keyboardDidShow() {
+  keyboardDidShow(e) {
+    const { height } = e.endCoordinates;
     LayoutAnimation.easeInEaseOut();
     this.setState(() => {
-      return {keyboardDidShow: true};
+      return {
+        keyboardDidShow: true,
+        keyboardHeight: height
+      };
     });
   }
 
@@ -114,7 +119,7 @@ class SearchBar extends Component {
       return null;
     }
     const bottomValueOnHide = (Platform.OS === 'ios') ? 0 : 20;
-    const bottomValueOnShow = (Platform.OS === 'ios') ? 260 : 320;
+    const bottomValueOnShow = this.state.keyboardHeight;
     return (
       <View style={{
         position: 'absolute',
