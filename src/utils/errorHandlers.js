@@ -20,7 +20,7 @@ export const handleError = (error, fromSignin) => {
       // error on creating order when no times selected
       Alert.alert('선택된 물품이 없습니다.');
     } else if (message.includes('Verify your phone first')) {
-      Alert.alert('폰 인증을 먼저 해주세요');
+      Alert.alert('휴대폰 인증을 먼저 해주세요');
     } else if (message.includes('GraphQL Error:')) {
       // handle general graphQL error
       const prettyErrorMessage = message.substring(message.indexOf('GraphQL Error:') + 14);

@@ -43,9 +43,9 @@ class IdVerification extends Component {
       skipBackup: true,
       path: 'images',
       mediaType: 'photo',
-      quality: 0.3,
-      maxWidth: 50,
-      maxHeight: 50
+      quality: 0.9,
+      maxWidth: 1000,
+      maxHeight: 1000
     };
     ImagePicker.showImagePicker(options, (response) => {
       console.log(response);
