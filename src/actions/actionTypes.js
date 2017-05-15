@@ -7,6 +7,7 @@ export const setBusyWaitingGeocodingAPI = 'SET_BUSY_WAITING_GEOCODING_API';
 export const setBusyWaitingUserCreateOrder = 'SET_BUSY_WAITING_USER_CREATE_ORDER';
 export const setBusyWaitingUserModeSwitch = 'SET_BUSY_WAITING_USER_MODE_SWITCH';
 export const setBusyWaitingQueryNodeList = 'SET_BUSY_WAITING_QUERY_NODE_LIST';
+export const setBusyWaitingRunnerIdImageUpload = 'SET_BUSY_WAITING_RUNNER_ID_IMAGE_UPLOAD';
 
 // runnerStatus
 export const setWaitingNewOrder = 'SET_WAITING_NEW_ORDER';
@@ -59,3 +60,6 @@ export const setNavigator = 'SET_NAVIGATOR';
 
 // components/menu
 export const setMenuAppeared = 'SET_MENU_APPEARED';
+
+// components/runnerView
+export const setRefRunnerView = 'SET_REF_RUNNER_VIEW';

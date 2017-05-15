@@ -94,7 +94,8 @@ class Menu extends Component {
        * todo: resolve issue only in Android
        * msg: The specified child already has a parent. You must call removeView() on the child's parent first.
        */
-      this.props.refBlurView.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
+      this.props.refBlurView && this.props.refBlurView.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
+      this.props.refRunnerView && this.props.refRunnerView.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
     });
   }
 
@@ -129,7 +130,9 @@ class Menu extends Component {
     }
     if (this.animMenuValue + dx < 0) {
       this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
-      this.props.refBlurView.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
+      this.props.refBlurView && this.props.refBlurView.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
+      // console.log(this.prop)
+      this.props.refRunnerView && this.props.refRunnerView.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
     }
   }
 
@@ -182,7 +185,6 @@ class Menu extends Component {
         } else {
           this.props.setIdVerified(false);
         }
-        console.log(this.props.setIsWaitingForJudge);
         if (isWJ === true) {
           this.props.setIsWaitingForJudge(true);
         } else {
@@ -415,7 +417,10 @@ Menu.propTypes = {
 
   // reducers/busyWaiting
   busyWaitingUserModeSwitch: PropTypes.bool,
-  setBusyWaitingUserModeSwitch: PropTypes.func
+  setBusyWaitingUserModeSwitch: PropTypes.func,
+
+  // reducers/components/runnerView
+  refRunnerView: PropTypes.any
 };
 
 const mapStateToProps = (state) => {
@@ -423,7 +428,8 @@ const mapStateToProps = (state) => {
     user: state.auth.user,
     isRunner: state.userStatus.isRunner,
     animMenu: state.menu.animMenu,
-    busyWaitingUserModeSwitch: state.busyWaiting.busyWaitingUserModeSwitch
+    busyWaitingUserModeSwitch: state.busyWaiting.busyWaitingUserModeSwitch,
+    refRunnerView: state.runnerView.refRunnerView
   };
 };
 

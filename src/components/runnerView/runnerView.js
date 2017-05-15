@@ -18,6 +18,9 @@ import { handleError } from './../../utils/errorHandlers';
 
 import * as YettaServerAPI from './../../service/YettaServerAPI/client';
 
+// redux functions
+import { setRefRunnerView } from './../../actions/componentsActions/runnerViewActions';
+
 // assets
 import loadingJSON from './../../../assets/lottie/loading-2.json';
 import IMG_CLOCK from './../../../assets/clock.png';
@@ -34,9 +37,8 @@ const styles = {
     top: 0,
     width: WIDTH,
     height: HEIGHT,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: 'black',
     alignItems: 'center',
-    paddingTop: 100,
     elevation: 50,
     zIndex: 1
   }
@@ -116,7 +118,7 @@ class RunnerView extends Component {
 
   renderBodyRequireIdVerification() {
     return (
-      <View style={{flex: 1.5}}>
+      <View style={{flex: 1}}>
         <IdVerification/>
       </View>
     );
@@ -125,7 +127,7 @@ class RunnerView extends Component {
   renderBodyWaitingForJudge() {
     return (
       <View style={{
-        flex: 1.5,
+        flex: 1,
         backgroundColor: 'transparent',
         top: HEIGHT * 0.15,
         alignItems: 'center'
@@ -148,7 +150,7 @@ class RunnerView extends Component {
   renderBodyWaitingNewOrder() {
     return (
       <View style={{
-        flex: 1.5,
+        flex: 1,
         backgroundColor: 'transparent',
         top: HEIGHT * 0.1
       }}>
@@ -274,9 +276,24 @@ class RunnerView extends Component {
 
   render() {
     return (
-      <View style={[styles.container,
-        {top: (this.props.isRunner && !this.props.onDelivery) ? 0 : HEIGHT}]}>
+      <View
+        style={[styles.container,
+        {top: (this.props.isRunner && !this.props.onDelivery) ? 0 : HEIGHT}]}
+      >
+        <View
+          ref={component => {
+            this.refRunnerView = component;
+            this.props.setRefRunnerView(component);
+          }}
+          style={{
+            flex: 1,
+            width: WIDTH,
+            backgroundColor: '#f9f9f9',
+            paddingTop: 100
+          }}
+        >
         {this.renderBody()}
+        </View>
       </View>
     );
   }
@@ -295,7 +312,10 @@ RunnerView.propTypes = {
 
   // reducers/runnerStatus
   idVerified: PropTypes.bool,
-  isWaitingForJudge: PropTypes.bool
+  isWaitingForJudge: PropTypes.bool,
+
+  // reducers/components/runnerView
+  setRefRunnerView: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
@@ -306,4 +326,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, undefined)(RunnerView);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setRefRunnerView: (refRunnerView) => dispatch(setRefRunnerView(refRunnerView))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RunnerView);

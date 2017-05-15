@@ -20,7 +20,11 @@ const initialState = {
   /**
    * busy on querying NodeList from findStore component
    */
-  busyWaitingQueryNodeList: false
+  busyWaitingQueryNodeList: false,
+  /**
+   * busy on runner id image upload and runnerApplyFirstJudge mutation following by
+   */
+  busyWaitingRunnerIdImageUpload: false
 };
 
 const busyWaiting = (state = initialState, action = {}) => {
@@ -35,6 +39,8 @@ const busyWaiting = (state = initialState, action = {}) => {
     return {...state, busyWaitingUserModeSwitch: action.busyWaitingUserModeSwitch};
   case types.setBusyWaitingQueryNodeList:
     return {...state, busyWaitingQueryNodeList: action.busyWaitingQueryNodeList};
+  case types.setBusyWaitingRunnerIdImageUpload:
+    return {...state, busyWaitingRunnerIdImageUpload: action.busyWaitingRunnerIdImageUpload};
   default:
     return state;
   }

@@ -34,3 +34,10 @@ export const setBusyWaitingQueryNodeList = (busyWaitingQueryNodeList) => {
     busyWaitingQueryNodeList
   };
 };
+
+export const setBusyWaitingRunnerIdImageUpload = (busyWaitingRunnerIdImageUpload) => {
+  return {
+    type: types.setBusyWaitingRunnerIdImageUpload,
+    busyWaitingRunnerIdImageUpload
+  };
+};
