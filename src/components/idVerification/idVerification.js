@@ -36,8 +36,20 @@ class IdVerification extends Component {
 
   showImagePicker() {
     // change options for dialog customization
-    const options = null;
+    const options = {
+      cancelButtonTitle: '취소',
+      takePhotoButtonTitle: '사진 촬영하기',
+      chooseFromLibraryButtonTitle: '라이브러리에서 가져오기',
+      skipBackup: true,
+      path: 'images',
+      mediaType: 'photo',
+      quality: 0.3,
+      maxWidth: 50,
+      maxHeight: 50
+    };
     ImagePicker.showImagePicker(options, (response) => {
+      console.log(response);
+      __DEV__ && console.log(response); // eslint-disable-line no-undef
       if (response.didCancel) {
         __DEV__ && console.log('User cancelled image picker'); // eslint-disable-line no-undef
       } else if (response.error) {
