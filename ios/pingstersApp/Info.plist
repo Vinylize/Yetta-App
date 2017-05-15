@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>사진을 촬영할 수 있습니다.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>라이브러리에 저장된 사진을 가져올 수 있습니다.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -38,9 +42,9 @@
 		</dict>
 	</dict>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>please allow location always</string>
+	<string>현재 위치를 항상 받아올 수 있습니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>please allow locaion when in use</string>
+	<string>현재 위치를 받아올 수 있습니다.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
