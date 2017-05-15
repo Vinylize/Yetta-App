@@ -35,7 +35,9 @@
 @end
 #endif
  
-@implementation AppDelegate
+@implementation AppDelegate {
+  RCTRootView * rootView;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -55,23 +57,19 @@
     }
   }
 #ifdef DEBUG
-  jsCodeLocation = [NSURL URLWithString:@"http://localhost:8082/index.ios.bundle?platform=ios&dev=true"];
+  jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
 #else
   jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
+  rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"pingstersApp"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
 
-// uncomment the following which may help if white blank shows between Splash and JS
-//  UIImageView *launchView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"LaunchImage"]];
-//  rootView.loadingView = launchView;
-//  rootView.loadingViewFadeDelay = 0.20;
-//  rootView.loadingViewFadeDuration = 0.20;
-  
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.00 green:0.73 blue:0.34 alpha:1];
+
+  [self setRootViewBGColorToLaunchImage];
+
   rootView.appProperties = appProperties;
   
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -109,6 +107,11 @@
   return YES;
 }
 
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+  [self setRootViewBGColorToLaunchImage];
+}
+
 - (void)addLocationServiceObservers
 {
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -118,6 +121,10 @@
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(stopLocationService)
                                                name:@"stopLocationService"
+                                             object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(changeRootViewBGColor)
+                                               name:@"changeRootViewBGColor"
                                              object:nil];
 }
 
@@ -132,6 +139,25 @@
 {
   [_yettaLocationService stopLocationService];
   NSLog(@"stop location service");
+}
+
+- (void)setRootViewBGColorToLaunchImage
+{
+  NSArray *allPngImageNames = [[NSBundle mainBundle] pathsForResourcesOfType:@"png" inDirectory:nil];
+  for (NSString *imgName in allPngImageNames){
+    if ([imgName containsString:@"LaunchImage"]){
+      UIImage *img = [UIImage imageNamed:imgName];
+      
+      if (img.scale == [UIScreen mainScreen].scale && CGSizeEqualToSize(img.size, [UIScreen mainScreen].bounds.size)) {
+        rootView.backgroundColor = [UIColor colorWithPatternImage:img];
+      }
+    }
+  }
+}
+
+- (void)changeRootViewBGColor
+{
+  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
