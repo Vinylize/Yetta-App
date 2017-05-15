@@ -296,7 +296,7 @@ class RunnerView extends Component {
 }
 
 RunnerView.propTypes = {
-  navigator: PropTypes.any,
+  navigation: PropTypes.object.isRequired,
   waitingNewOrder: PropTypes.bool.isRequired,
   setWaitingNewOrder: PropTypes.func.isRequired,
   runnerNotification: PropTypes.any.isRequired,
@@ -304,14 +304,17 @@ RunnerView.propTypes = {
   setOnDelivery: PropTypes.func.isRequired,
 
   // reducers/userStatus
-  isRunner: PropTypes.bool
+  isRunner: PropTypes.bool,
+
+  // reducers/runnerStatus
+  idVerified: PropTypes.idVerified
 };
 
 const mapStateToProps = (state) => {
   return {
-    isRunner: state.userStatus.isRunner
+    isRunner: state.userStatus.isRunner,
+    idVerified: state.runnerStatus.idVerified
   };
 };
-
 
 export default connect(mapStateToProps, undefined)(RunnerView);

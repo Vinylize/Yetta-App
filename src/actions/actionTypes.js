@@ -11,6 +11,7 @@ export const setBusyWaitingQueryNodeList = 'SET_BUSY_WAITING_QUERY_NODE_LIST';
 // runnerStatus
 export const setWaitingNewOrder = 'SET_WAITING_NEW_ORDER';
 export const setOnDelivery = 'SET_ON_DELIEVERY';
+export const setIdVerified = 'SET_ID_VERIFIED';
 
 // pushNotification
 export const setRunnerNotification = 'SET_RUNNER_NOTIFICATION';

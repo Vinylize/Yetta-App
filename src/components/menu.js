@@ -10,9 +10,11 @@ import {
   View
 } from 'react-native';
 import * as YettaServerAPIauth from './../service/YettaServerAPI/auth';
+import * as YettaServerAPIuserInfo from './../service/YettaServerAPI/userInfo';
 
 // [start redux functions]
 import { setIsRunner } from './../actions/userStatusActions';
+import { setIdVerified } from './../actions/runnerStatusActions';
 import {
   animateMenuAppear,
   animateMenuHide
@@ -156,18 +158,44 @@ class Menu extends Component {
      * 0 : order
      * 1 : runner
      */
-    let mode;
     if (this.props.isRunner) {
       // switching from runner to order
-      mode = 0;
+      this.userModeSwitchHelperFromRunnerToOrder();
     } else {
       // switching from order to runner
-      mode = 1;
+      this.userModeSwitchHelperFromOrderToRunner();
     }
-    YettaServerAPIauth.userSetMode(mode)
+  }
+
+  userModeSwitchHelperFromOrderToRunner() {
+    const USER_MODE_RUNNER = 1;
+    YettaServerAPIauth.userSetMode(USER_MODE_RUNNER)
+      .then(YettaServerAPIuserInfo.checkRunnerIDVerification)
+      .then(viewer => {
+        __DEV__ && console.log(viewer); // eslint-disable-line no-undef
+        const { isRA } = viewer;
+        if (isRA === true) {
+          this.props.setIdVerified(true);
+        } else {
+          this.props.setIdVerified(false);
+          this.props.navigation.navigate('IdVerification');
+        }
+        this.props.setBusyWaitingUserModeSwitch(false);
+        this.props.setIsRunner(true);
+        this.degrantMenuButtonsPanResponders();
+      })
+      .catch(() => {
+        this.props.setBusyWaitingUserModeSwitch(false);
+        this.degrantMenuButtonsPanResponders();
+      });
+  }
+
+  userModeSwitchHelperFromRunnerToOrder() {
+    const USER_MODE_ORDER = 0;
+    YettaServerAPIauth.userSetMode(USER_MODE_ORDER)
       .then(() => {
         this.props.setBusyWaitingUserModeSwitch(false);
-        this.props.setIsRunner(!this.props.isRunner);
+        this.props.setIsRunner(false);
         this.degrantMenuButtonsPanResponders();
       })
       .catch(() => {
@@ -373,6 +401,9 @@ Menu.propTypes = {
   isRunner: PropTypes.bool,
   setIsRunner: PropTypes.func,
 
+  // reducers/runnerStatus
+  setIdVerified: PropTypes.func,
+
   // reducers/busyWaiting
   busyWaitingUserModeSwitch: PropTypes.bool,
   setBusyWaitingUserModeSwitch: PropTypes.func
@@ -390,6 +421,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner)),
+    setIdVerified: (idVerified) => dispatch(setIdVerified(idVerified)),
     setBusyWaitingUserModeSwitch: (busyWaitingUserModeSwitch) => dispatch(setBusyWaitingUserModeSwitch(busyWaitingUserModeSwitch))
   };
 };

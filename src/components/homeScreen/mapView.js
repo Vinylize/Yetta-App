@@ -485,6 +485,7 @@ class Home extends Component {
           msg={'위치 찾는중'}
         />
         <RunnerView
+          navigation={this.props.navigation}
           waitingNewOrder={this.props.waitingNewOrder}
           setWaitingNewOrder={this.props.setWaitingNewOrder}
           runnerNotification={this.props.runnerNotification}

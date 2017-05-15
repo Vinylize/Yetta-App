@@ -13,3 +13,10 @@ export const setOnDelivery = (onDelivery) => {
     onDelivery
   };
 };
+
+export const setIdVerified = (idVerified) => {
+  return {
+    type: types.setIdVerified,
+    idVerified
+  };
+};
