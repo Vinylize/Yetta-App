@@ -44,3 +44,25 @@ export const checkRunnerIDVerification = () => {
       });
   });
 };
+
+export const checkRunnerWaitingForJudge = () => {
+  return new Promise((resolve, reject) => {
+    return YettaServerAPIclient.getLokkaClient()
+      .then(client => {
+        return client.query(`{
+          viewer{
+            isRA,
+            isWJ
+          }
+        }`);
+      })
+      .then(({viewer}) => {
+        return resolve(viewer);
+      })
+      .catch(e => {
+        handleError(e);
+        console.log(e);
+        return reject(e);
+      });
+  });
+};

@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 
+import * as YettaServerAPIverification from './../../service/YettaServerAPI/verification';
+
 // assets
 import IMG_BACK from './../../../assets/left-arrow-key.png';
 import IMG_ID_CARD from './../../../assets/id-card.png';
@@ -28,7 +30,8 @@ class IdVerification extends Component {
   constructor() {
     super();
     this.state = {
-      idImage: undefined
+      idImage: undefined,
+      imageUri: undefined
     };
   }
 
@@ -48,10 +51,15 @@ class IdVerification extends Component {
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
         __DEV__ && console.log(source); // eslint-disable-line no-undef
         this.setState({
-          idImage: source
+          idImage: source,
+          imageDataBase64: `data:image/jpeg;base64,${response.data}`
         });
       }
     });
+  }
+
+  handleSubmitButton() {
+    YettaServerAPIverification.idVerificationImageUpload(this.state.imageDataBase64);
   }
 
   renderImage() {
@@ -120,7 +128,8 @@ class IdVerification extends Component {
         >
           <Text style={{
             marginRight: 20,
-            fontSize: 16
+            fontSize: 16,
+            color: 'black'
           }}>Skip</Text>
         </TouchableOpacity>
       </View>
@@ -142,13 +151,15 @@ class IdVerification extends Component {
           <Text style={{
             fontSize: 24,
             fontWeight: '600',
-            marginTop: 16
+            marginTop: 16,
+            color: 'black'
           }}>
             러너 시작하기
           </Text>
           <Text style={{
             fontSize: 16,
-            marginTop: 12
+            marginTop: 12,
+            color: 'black'
           }}>
             간단히 신분증 사진만 찍으면 시작할수있어요!
           </Text>
@@ -191,7 +202,7 @@ class IdVerification extends Component {
             color: 'white',
             fontWeight: '500'
           }}>
-            {(this.state.idImage) ? '다시올리기' : '업로드하기'}
+            {(this.state.idImage) ? '다시고르기' : '사진고르기'}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -204,6 +215,7 @@ class IdVerification extends Component {
             alignItems: 'center'
           }}
           activeOpacity={(this.state.idImage) ? 0.7 : 1}
+          onPress={this.handleSubmitButton.bind(this)}
         >
           <Text style={{
             backgroundColor: 'transparent',
