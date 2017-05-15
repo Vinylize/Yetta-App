@@ -30,27 +30,6 @@ export const checkRunnerIDVerification = () => {
       .then(client => {
         return client.query(`{
           viewer{
-            isRA
-          }
-        }`);
-      })
-      .then(({viewer}) => {
-        return resolve(viewer);
-      })
-      .catch(e => {
-        handleError(e);
-        console.log(e);
-        return reject(e);
-      });
-  });
-};
-
-export const checkRunnerWaitingForJudge = () => {
-  return new Promise((resolve, reject) => {
-    return YettaServerAPIclient.getLokkaClient()
-      .then(client => {
-        return client.query(`{
-          viewer{
             isRA,
             isWJ
           }

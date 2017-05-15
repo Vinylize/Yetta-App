@@ -12,7 +12,6 @@ import ImagePicker from 'react-native-image-picker';
 import * as YettaServerAPIverification from './../../service/YettaServerAPI/verification';
 
 // assets
-import IMG_BACK from './../../../assets/left-arrow-key.png';
 import IMG_ID_CARD from './../../../assets/id-card.png';
 
 // const HEIGHT = Dimensions.get('window').height;
@@ -100,38 +99,6 @@ class IdVerification extends Component {
             />
           }
         </View>
-      </View>
-    );
-  }
-
-  renderHeader() {
-    return (
-      <View style={{
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <TouchableOpacity
-          style={{marginTop: 10}}
-          onPress={() => this.props.navigation.goBack()}
-        >
-          <Image
-            style={{height: 24, width: 24, marginLeft: 12}}
-            source={IMG_BACK}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{marginTop: 10}}
-          onPress={() => this.props.navigation.goBack()}
-        >
-          <Text style={{
-            marginRight: 20,
-            fontSize: 16,
-            color: 'black'
-          }}>Skip</Text>
-        </TouchableOpacity>
       </View>
     );
   }
@@ -232,7 +199,6 @@ class IdVerification extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.renderHeader()}
         {this.renderBody()}
         {this.renderBottom()}
       </View>
@@ -241,7 +207,6 @@ class IdVerification extends Component {
 }
 
 IdVerification.propTypes = {
-  navigation: PropTypes.object.isRequired,
   user: PropTypes.object
 };
 

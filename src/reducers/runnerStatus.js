@@ -6,7 +6,8 @@ const initialState = {
    */
   waitingNewOrder: false,
   onDelivery: false,
-  idVerified: false
+  idVerified: false,
+  isWaitingForJudge: false
 };
 
 const runnerStatus = (state = initialState, action = {}) => {
@@ -17,6 +18,8 @@ const runnerStatus = (state = initialState, action = {}) => {
     return {...state, onDelivery: action.onDelivery};
   case types.setIdVerified:
     return {...state, idVerified: action.idVerified};
+  case types.setIsWaitingForJudge:
+    return {...state, isWaitingForJudge: action.isWaitingForJudge};
   default:
     return state;
   }

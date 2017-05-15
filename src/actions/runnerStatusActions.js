@@ -20,3 +20,10 @@ export const setIdVerified = (idVerified) => {
     idVerified
   };
 };
+
+export const setIsWaitingForJudge = (isWaitingForJudge) => {
+  return {
+    type: types.setIsWaitingForJudge,
+    isWaitingForJudge
+  };
+};

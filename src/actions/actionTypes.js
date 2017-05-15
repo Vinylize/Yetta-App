@@ -12,6 +12,7 @@ export const setBusyWaitingQueryNodeList = 'SET_BUSY_WAITING_QUERY_NODE_LIST';
 export const setWaitingNewOrder = 'SET_WAITING_NEW_ORDER';
 export const setOnDelivery = 'SET_ON_DELIEVERY';
 export const setIdVerified = 'SET_ID_VERIFIED';
+export const setIsWaitingForJudge = 'SET_IS_WAITING_FOR_JUDGE';
 
 // pushNotification
 export const setRunnerNotification = 'SET_RUNNER_NOTIFICATION';

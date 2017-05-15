@@ -14,7 +14,10 @@ import * as YettaServerAPIuserInfo from './../service/YettaServerAPI/userInfo';
 
 // [start redux functions]
 import { setIsRunner } from './../actions/userStatusActions';
-import { setIdVerified } from './../actions/runnerStatusActions';
+import {
+  setIdVerified,
+  setIsWaitingForJudge
+} from './../actions/runnerStatusActions';
 import {
   animateMenuAppear,
   animateMenuHide
@@ -173,12 +176,17 @@ class Menu extends Component {
       .then(YettaServerAPIuserInfo.checkRunnerIDVerification)
       .then(viewer => {
         __DEV__ && console.log(viewer); // eslint-disable-line no-undef
-        const { isRA } = viewer;
+        const { isRA, isWJ } = viewer;
         if (isRA === true) {
           this.props.setIdVerified(true);
         } else {
           this.props.setIdVerified(false);
-          this.props.navigation.navigate('IdVerification');
+        }
+        console.log(this.props.setIsWaitingForJudge);
+        if (isWJ === true) {
+          this.props.setIsWaitingForJudge(true);
+        } else {
+          this.props.setIsWaitingForJudge(false);
         }
         this.props.setBusyWaitingUserModeSwitch(false);
         this.props.setIsRunner(true);
@@ -403,6 +411,7 @@ Menu.propTypes = {
 
   // reducers/runnerStatus
   setIdVerified: PropTypes.func,
+  setIsWaitingForJudge: PropTypes.func,
 
   // reducers/busyWaiting
   busyWaitingUserModeSwitch: PropTypes.bool,
@@ -422,6 +431,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner)),
     setIdVerified: (idVerified) => dispatch(setIdVerified(idVerified)),
+    setIsWaitingForJudge: (isWaitingForJudge) => dispatch(setIsWaitingForJudge(isWaitingForJudge)),
     setBusyWaitingUserModeSwitch: (busyWaitingUserModeSwitch) => dispatch(setBusyWaitingUserModeSwitch(busyWaitingUserModeSwitch))
   };
 };
