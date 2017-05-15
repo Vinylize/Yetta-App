@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
   Image,
+  NativeModules,
+  Platform,
   Text
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -29,6 +31,15 @@ class Splash extends Component {
   componentWillMount() {
     this.props.setNavigator(this.props.navigation);
     this.autoLoginIfUserFound();
+  }
+
+  componentDidMount() {
+    // [start iOS changeRootViewBGColor]
+    if (Platform.OS === 'ios') {
+      const YettaUtilsIOS = NativeModules.YettaUtils;
+      YettaUtilsIOS && YettaUtilsIOS.changeRootViewBGColor();
+    }
+    // [end iOS changeRootViewBGColor]
   }
 
   autoLoginIfUserFound() {
