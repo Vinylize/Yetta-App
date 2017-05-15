@@ -26,6 +26,7 @@
     "react-native-circular-progress": "0.0.8",
     "react-native-cli": "^2.0.1",
     "react-native-hockeyapp": "^0.5.1",
+    "react-native-image-picker": "^0.26.3",
     "react-native-linear-gradient": "^2.0.0",
     "react-navigation": "^1.0.0-beta.9",
     "react-redux": "^5.0.1",

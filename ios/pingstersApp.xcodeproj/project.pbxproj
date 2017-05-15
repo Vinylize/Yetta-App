@@ -46,6 +46,7 @@
 		59461D02AEAA4C209DAB8FB3 /* libRNBackgroundTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E396242CED6475EA35DE044 /* libRNBackgroundTimer.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		9534888DD3CB4F6CB6583CF8 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 531AF14FA30045C38B49387C /* libRNImagePicker.a */; };
 		A3BFC27B8D884CDE96EA6ABA /* libRNBlur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A4B8FF18C2674B9DBCE0EB0B /* libRNBlur.a */; };
 /* End PBXBuildFile section */
 
@@ -126,6 +127,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
 			remoteInfo = "RCTPushNotification-tvOS";
+		};
+		17987F801EC99AA300BE72AF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8B3F135C137746DDB404024C /* RNImagePicker.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
+			remoteInfo = RNImagePicker;
 		};
 		179BEF4A1E7153270087C0DB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -378,11 +386,13 @@
 		1E396242CED6475EA35DE044 /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundTimer.a; sourceTree = "<group>"; };
 		3C1A0ED488494194B56E9107 /* LottieReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LottieReactNative.xcodeproj; path = "../node_modules/lottie-react-native/lib/ios/LottieReactNative.xcodeproj"; sourceTree = "<group>"; };
 		3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-pingstersApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		531AF14FA30045C38B49387C /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		541CB24A49262EC50D77A6B1 /* Pods-pingstersApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pingstersApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-pingstersApp/Pods-pingstersApp.release.xcconfig"; sourceTree = "<group>"; };
 		5B047A2D7F224226A5C2DEBA /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		8B3F135C137746DDB404024C /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		9181CF66F2EF4E37B05A861E /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		A4B8FF18C2674B9DBCE0EB0B /* libRNBlur.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBlur.a; sourceTree = "<group>"; };
 		D298115BD0EB9190BBD4918E /* Pods-pingstersApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pingstersApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pingstersApp/Pods-pingstersApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -422,6 +432,7 @@
 				A3BFC27B8D884CDE96EA6ABA /* libRNBlur.a in Frameworks */,
 				5232ACD8C8F541BF9158FA99 /* libBVLinearGradient.a in Frameworks */,
 				260CDADB65DD47CB9827DD6F /* libLottieReactNative.a in Frameworks */,
+				9534888DD3CB4F6CB6583CF8 /* libRNImagePicker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -572,6 +583,14 @@
 			name = YettaUtils;
 			sourceTree = "<group>";
 		};
+		17987F5B1EC99AA300BE72AF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				17987F811EC99AA300BE72AF /* libRNImagePicker.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		17C054DF1EB61002001F513A /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -679,6 +698,7 @@
 				5B047A2D7F224226A5C2DEBA /* RNBlur.xcodeproj */,
 				9181CF66F2EF4E37B05A861E /* BVLinearGradient.xcodeproj */,
 				3C1A0ED488494194B56E9107 /* LottieReactNative.xcodeproj */,
+				8B3F135C137746DDB404024C /* RNImagePicker.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -884,6 +904,10 @@
 					ProductGroup = 17F5CAEA1EB5D6F900201D7B /* Products */;
 					ProjectRef = 5B047A2D7F224226A5C2DEBA /* RNBlur.xcodeproj */;
 				},
+				{
+					ProductGroup = 17987F5B1EC99AA300BE72AF /* Products */;
+					ProjectRef = 8B3F135C137746DDB404024C /* RNImagePicker.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -962,6 +986,13 @@
 			fileType = archive.ar;
 			path = "libRCTPushNotification-tvOS.a";
 			remoteRef = 1768ADAE1E7FF91200C8565E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		17987F811EC99AA300BE72AF /* libRNImagePicker.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNImagePicker.a;
+			remoteRef = 17987F801EC99AA300BE72AF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		179BEF4B1E7153270087C0DB /* libyoga.a */ = {
@@ -1296,11 +1327,15 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/lottie-react-native/lib/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 				);
 				INFOPLIST_FILE = pingstersAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -1324,11 +1359,15 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/lottie-react-native/lib/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 				);
 				INFOPLIST_FILE = pingstersAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
@@ -1365,6 +1404,7 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/lottie-react-native/lib/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 				);
 				INFOPLIST_FILE = pingstersApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1408,6 +1448,7 @@
 					"$(SRCROOT)/../node_modules/react-native-blur/ios",
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/lottie-react-native/lib/ios/LottieReactNative",
+					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
 				);
 				INFOPLIST_FILE = pingstersApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 
 // assets
 import IMG_BACK from './../../../assets/left-arrow-key.png';
@@ -24,6 +25,28 @@ const styles = {
 class IdVerification extends Component {
   constructor() {
     super();
+  }
+
+  showImagePicker() {
+    // change options for dialog customization
+    const options = null;
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+        __DEV__ && console.log('User cancelled image picker'); // eslint-disable-line no-undef
+      } else if (response.error) {
+        __DEV__ && console.log('ImagePicker Error: ', response.error); // eslint-disable-line no-undef
+      } else if (response.customButton) {
+        __DEV__ && console.log('User tapped custom button: ', response.customButton); // eslint-disable-line no-undef
+      } else {
+        let source = { uri: response.uri };
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        __DEV__ && console.log(source); // eslint-disable-line no-undef
+        this.setState({
+          avatarSource: source
+        });
+      }
+    });
   }
 
   renderHeader() {
@@ -83,7 +106,13 @@ class IdVerification extends Component {
             간단히 신분증 사진만 찍으면 시작할수있어요!
           </Text>
         </View>
-        <View style={{flex: 4, backgroundColor: 'transparent'}}/>
+        <View style={{flex: 4, backgroundColor: 'transparent'}}>
+          <TouchableOpacity
+            onPress={this.showImagePicker.bind(this)}
+          >
+            <Text>Upload</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
