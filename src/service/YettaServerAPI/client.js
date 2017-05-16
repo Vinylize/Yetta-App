@@ -58,6 +58,24 @@ export const getLokkaClient = () => {
     .catch(console.log);
 };
 
+export const getFetchHeaders = () => {
+  let fcmToken;
+  return firebase.auth().currentUser.getToken()
+    .then(token => {
+      fcmToken = token;
+      return getDeviceID();
+    })
+    .then(deviceID => {
+      const headers = {
+        authorization: fcmToken,
+        device: deviceID
+      };
+      __DEV__ && console.log(headers); // eslint-disable-line no-undef
+      return headers;
+    })
+    .catch(console.log);
+};
+
 export const getLokkaClientForRegistration = () => {
   return getDeviceID()
     .then(deviceID => {

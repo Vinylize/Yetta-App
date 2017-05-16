@@ -15,14 +15,18 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase';
 
-import VinylMapAndroid from '../VinylMapAndroid';
-import VinylMapIOS from '../VinylMapIOS';
-import SearchBar from '../searchAddress/searchBar';
-import ApproveCard from '../searchAddress/approveCard';
-import RunnerView from '../runnerView/runnerView';
-import RunnerOnDeliveryView from '../runnerView/runnerOnDeliveryView';
-import BottomCardView from '../bottomCardView';
-import Menu from '../menu';
+import VinylMapAndroid from './../VinylMapAndroid';
+import VinylMapIOS from './../VinylMapIOS';
+import SearchBar from './../searchAddress/searchBar';
+import ApproveCard from './../searchAddress/approveCard';
+import RunnerView from './../runnerView/runnerView';
+import RunnerOnDeliveryView from './../runnerView/runnerOnDeliveryView';
+import BottomCardView from './../bottomCardView';
+import Menu from './../menu';
+
+import UserModeTransition from './../globalViews/userModeTransition';
+import GlobalLoading from './../globalViews/loading';
+import Loading from './../globalViews/loading';
 
 import * as GOOGLE_MAPS_API from '../../service/GoogleMapsAPI';
 import * as YettaServerAPI from '../../service/YettaServerAPI/client';
@@ -61,9 +65,6 @@ import ImgSearchPin from './../../../assets/pin.png';
 import ImgMenu from './../../../assets/menu.png';
 import ImgCompass from './../../../assets/compass.png';
 import ImgSortUp from './../../../assets/sort-up.png';
-
-import UserModeTransition from '../globalViews/userModeTransition';
-import GlobalLoading from '../globalViews/loading';
 
 let vmm = NativeModules.VinylMapManager;
 
@@ -485,6 +486,7 @@ class Home extends Component {
           msg={'위치 찾는중'}
         />
         <RunnerView
+          navigation={this.props.navigation}
           waitingNewOrder={this.props.waitingNewOrder}
           setWaitingNewOrder={this.props.setWaitingNewOrder}
           runnerNotification={this.props.runnerNotification}
@@ -500,10 +502,15 @@ class Home extends Component {
           setOnDelivery={this.props.setOnDelivery}
           setRunnerNotification={this.props.setRunnerNotification}
         />
+        <Loading
+          show={this.props.busyWaitingRunnerIdImageUpload}
+          msg="업로드 중"
+        />
         <Menu
           navigation={this.props.navigation}
           refBlurView={(Platform.OS === 'ios') ?
-            this.refViewContainerWithoutMenu : this.refMapAndroid}/>
+            this.refViewContainerWithoutMenu : this.refMapAndroid}
+        />
       </View>
     );
   }
@@ -516,6 +523,7 @@ const mapStateToProps = (state) => {
     busyWaitingPlaceDetailAPI: state.busyWaiting.busyWaitingPlaceDetailAPI,
     busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI,
     busyWaitingUserModeSwitch: state.busyWaiting.busyWaitingUserModeSwitch,
+    busyWaitingRunnerIdImageUpload: state.busyWaiting.busyWaitingRunnerIdImageUpload,
     waitingNewOrder: state.runnerStatus.waitingNewOrder,
     onDelivery: state.runnerStatus.onDelivery,
     runnerNotification: state.pushNotification.runnerNotification,
@@ -565,6 +573,7 @@ Home.propTypes = {
   busyWaitingPlaceDetailAPI: PropTypes.bool,
   busyWaitingGeocodingAPI: PropTypes.bool,
   busyWaitingUserModeSwitch: PropTypes.bool,
+  busyWaitingRunnerIdImageUpload: PropTypes.bool,
   setBusyWaitingPlaceDetailAPI: PropTypes.func,
   setBusyWaitingGeocodingAPI: PropTypes.func,
 

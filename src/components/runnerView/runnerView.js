@@ -1,14 +1,16 @@
 import React, { Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import {
-  View,
   Dimensions,
+  Image,
+  LayoutAnimation,
   Text,
   TouchableOpacity,
-  LayoutAnimation,
-  Platform,
-  UIManager
+  UIManager,
+  View
 } from 'react-native';
+import IdVerification from './../idVerification/idVerification';
+
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Animation from 'lottie-react-native';
 import BackgroundTimer from 'react-native-background-timer';
@@ -16,7 +18,12 @@ import { handleError } from './../../utils/errorHandlers';
 
 import * as YettaServerAPI from './../../service/YettaServerAPI/client';
 
-import loadingJSON from '../../../assets/lottie/loading-2.json';
+// redux functions
+import { setRefRunnerView } from './../../actions/componentsActions/runnerViewActions';
+
+// assets
+import loadingJSON from './../../../assets/lottie/loading-2.json';
+import IMG_CLOCK from './../../../assets/clock.png';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -30,9 +37,8 @@ const styles = {
     top: 0,
     width: WIDTH,
     height: HEIGHT,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: 'black',
     alignItems: 'center',
-    paddingTop: 100,
     elevation: 50,
     zIndex: 1
   }
@@ -97,43 +103,57 @@ class RunnerView extends Component {
     this.props.setWaitingNewOrder(!this.props.waitingNewOrder);
   }
 
-  renderHeadText() {
+  renderBody() {
+    if (this.props.idVerified === false) {
+      if (this.props.isWaitingForJudge === true) {
+        return this.renderBodyWaitingForJudge();
+      }
+      return this.renderBodyRequireIdVerification();
+    }
+    if (this.state.receivedNewOrder === true) {
+      return this.renderBodyFoundNewOrder();
+    }
+    return this.renderBodyWaitingNewOrder();
+  }
+
+  renderBodyRequireIdVerification() {
     return (
-      <View style={{flex: 0.3}}>
-        <Text style={{
-          color: 'black',
-          fontSize: 30,
-          fontWeight: '600'
-        }}>
-          러너
-        </Text>
+      <View style={{flex: 1}}>
+        <IdVerification/>
       </View>
     );
   }
 
-  renderBody() {
-    if (this.props.waitingNewOrder === true) {
-      if (this.state.receivedNewOrder === true) {
-        return this.renderBodyFoundNewOrder();
-      }
-      return this.renderBodyWaitingNewOrder();
-    }
-    return this.renderBodyDefault();
-  }
-
-  renderBodyDefault() {
+  renderBodyWaitingForJudge() {
     return (
-      <View style={{flex: 1.5}}>
-        <Text>별점: 5</Text>
-        <Text>이번달 수입: $100000 </Text>
-        <Text>심사 여부: yes </Text>
+      <View style={{
+        flex: 1,
+        backgroundColor: 'transparent',
+        top: HEIGHT * 0.15,
+        alignItems: 'center'
+      }}>
+        <Image
+          style={{height: 180, width: 180}}
+          source={IMG_CLOCK}
+          resizeMode="contain"
+        />
+        <Text style={{
+          fontSize: 20,
+          color: 'black',
+          marginTop: 40,
+          fontWeight: '600'
+        }}>심사를 기다리는 중입니다.</Text>
       </View>
     );
   }
 
   renderBodyWaitingNewOrder() {
     return (
-      <View style={{flex: 1.5, backgroundColor: 'transparent'}}>
+      <View style={{
+        flex: 1,
+        backgroundColor: 'transparent',
+        top: HEIGHT * 0.1
+      }}>
         <Animation
           onLayout={() => {
             // run animation when this did mount
@@ -254,49 +274,33 @@ class RunnerView extends Component {
     );
   }
 
-  renderBottom() {
-    return (
-      <View style={{flex: (Platform.OS === 'ios') ? 0.3 : 0.4}}>
-        {this.renderStartRunnerBtn()}
-      </View>
-    );
-  }
-
-  renderStartRunnerBtn() {
-    return (
-      <TouchableOpacity
-        style={{
-          width: WIDTH * 0.7,
-          height: 40,
-          backgroundColor: 'black',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 5
-        }}
-        onPress={this.handleStartRunnerBtn.bind(this)}
-      >
-        <Text style={{
-          color: 'white',
-          fontSize: 20
-        }}>{(this.props.waitingNewOrder) ? '취소' : '배달하기'}</Text>
-      </TouchableOpacity>
-    );
-  }
-
   render() {
     return (
-      <View style={[styles.container,
-        {top: (this.props.isRunner && !this.props.onDelivery) ? 0 : HEIGHT}]}>
-        {this.renderHeadText()}
+      <View
+        style={[styles.container,
+        {top: (this.props.isRunner && !this.props.onDelivery) ? 0 : HEIGHT}]}
+      >
+        <View
+          ref={component => {
+            this.refRunnerView = component;
+            this.props.setRefRunnerView(component);
+          }}
+          style={{
+            flex: 1,
+            width: WIDTH,
+            backgroundColor: '#f9f9f9',
+            paddingTop: 100
+          }}
+        >
         {this.renderBody()}
-        {this.renderBottom()}
+        </View>
       </View>
     );
   }
 }
 
 RunnerView.propTypes = {
-  navigator: PropTypes.any,
+  navigation: PropTypes.object.isRequired,
   waitingNewOrder: PropTypes.bool.isRequired,
   setWaitingNewOrder: PropTypes.func.isRequired,
   runnerNotification: PropTypes.any.isRequired,
@@ -304,14 +308,28 @@ RunnerView.propTypes = {
   setOnDelivery: PropTypes.func.isRequired,
 
   // reducers/userStatus
-  isRunner: PropTypes.bool
+  isRunner: PropTypes.bool,
+
+  // reducers/runnerStatus
+  idVerified: PropTypes.bool,
+  isWaitingForJudge: PropTypes.bool,
+
+  // reducers/components/runnerView
+  setRefRunnerView: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
   return {
-    isRunner: state.userStatus.isRunner
+    isRunner: state.userStatus.isRunner,
+    idVerified: state.runnerStatus.idVerified,
+    isWaitingForJudge: state.runnerStatus.isWaitingForJudge
   };
 };
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setRefRunnerView: (refRunnerView) => dispatch(setRefRunnerView(refRunnerView))
+  };
+};
 
-export default connect(mapStateToProps, undefined)(RunnerView);
+export default connect(mapStateToProps, mapDispatchToProps)(RunnerView);

@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>20170515052717</string>
+	<string>20170515193706</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<true/>
 	<key>LSRequiresIPhoneOS</key>
@@ -37,10 +37,14 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>사진을 촬영할 수 있습니다.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>please allow location always</string>
+	<string>현재 위치를 항상 받아올 수 있습니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>please allow locaion when in use</string>
+	<string>현재 위치를 받아올 수 있습니다.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>라이브러리에 저장된 사진을 가져올 수 있습니다.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

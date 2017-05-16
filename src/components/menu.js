@@ -10,9 +10,14 @@ import {
   View
 } from 'react-native';
 import * as YettaServerAPIauth from './../service/YettaServerAPI/auth';
+import * as YettaServerAPIuserInfo from './../service/YettaServerAPI/userInfo';
 
 // [start redux functions]
 import { setIsRunner } from './../actions/userStatusActions';
+import {
+  setIdVerified,
+  setIsWaitingForJudge
+} from './../actions/runnerStatusActions';
 import {
   animateMenuAppear,
   animateMenuHide
@@ -89,7 +94,8 @@ class Menu extends Component {
        * todo: resolve issue only in Android
        * msg: The specified child already has a parent. You must call removeView() on the child's parent first.
        */
-      this.props.refBlurView.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
+      this.props.refBlurView && this.props.refBlurView.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
+      this.props.refRunnerView && this.props.refRunnerView.setNativeProps({style: {opacity: -value.value / menuWidth + 0.2}});
     });
   }
 
@@ -124,7 +130,9 @@ class Menu extends Component {
     }
     if (this.animMenuValue + dx < 0) {
       this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
-      this.props.refBlurView.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
+      this.props.refBlurView && this.props.refBlurView.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
+      // console.log(this.prop)
+      this.props.refRunnerView && this.props.refRunnerView.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
     }
   }
 
@@ -156,18 +164,48 @@ class Menu extends Component {
      * 0 : order
      * 1 : runner
      */
-    let mode;
     if (this.props.isRunner) {
       // switching from runner to order
-      mode = 0;
+      this.userModeSwitchHelperFromRunnerToOrder();
     } else {
       // switching from order to runner
-      mode = 1;
+      this.userModeSwitchHelperFromOrderToRunner();
     }
-    YettaServerAPIauth.userSetMode(mode)
+  }
+
+  userModeSwitchHelperFromOrderToRunner() {
+    const USER_MODE_RUNNER = 1;
+    YettaServerAPIauth.userSetMode(USER_MODE_RUNNER)
+      .then(YettaServerAPIuserInfo.checkRunnerIDVerification)
+      .then(viewer => {
+        __DEV__ && console.log(viewer); // eslint-disable-line no-undef
+        const { isRA, isWJ } = viewer;
+        if (isRA === true) {
+          this.props.setIdVerified(true);
+        } else {
+          this.props.setIdVerified(false);
+        }
+        if (isWJ === true) {
+          this.props.setIsWaitingForJudge(true);
+        } else {
+          this.props.setIsWaitingForJudge(false);
+        }
+        this.props.setBusyWaitingUserModeSwitch(false);
+        this.props.setIsRunner(true);
+        this.degrantMenuButtonsPanResponders();
+      })
+      .catch(() => {
+        this.props.setBusyWaitingUserModeSwitch(false);
+        this.degrantMenuButtonsPanResponders();
+      });
+  }
+
+  userModeSwitchHelperFromRunnerToOrder() {
+    const USER_MODE_ORDER = 0;
+    YettaServerAPIauth.userSetMode(USER_MODE_ORDER)
       .then(() => {
         this.props.setBusyWaitingUserModeSwitch(false);
-        this.props.setIsRunner(!this.props.isRunner);
+        this.props.setIsRunner(false);
         this.degrantMenuButtonsPanResponders();
       })
       .catch(() => {
@@ -373,9 +411,16 @@ Menu.propTypes = {
   isRunner: PropTypes.bool,
   setIsRunner: PropTypes.func,
 
+  // reducers/runnerStatus
+  setIdVerified: PropTypes.func,
+  setIsWaitingForJudge: PropTypes.func,
+
   // reducers/busyWaiting
   busyWaitingUserModeSwitch: PropTypes.bool,
-  setBusyWaitingUserModeSwitch: PropTypes.func
+  setBusyWaitingUserModeSwitch: PropTypes.func,
+
+  // reducers/components/runnerView
+  refRunnerView: PropTypes.any
 };
 
 const mapStateToProps = (state) => {
@@ -383,13 +428,16 @@ const mapStateToProps = (state) => {
     user: state.auth.user,
     isRunner: state.userStatus.isRunner,
     animMenu: state.menu.animMenu,
-    busyWaitingUserModeSwitch: state.busyWaiting.busyWaitingUserModeSwitch
+    busyWaitingUserModeSwitch: state.busyWaiting.busyWaitingUserModeSwitch,
+    refRunnerView: state.runnerView.refRunnerView
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setIsRunner: (isRunner) => dispatch(setIsRunner(isRunner)),
+    setIdVerified: (idVerified) => dispatch(setIdVerified(idVerified)),
+    setIsWaitingForJudge: (isWaitingForJudge) => dispatch(setIsWaitingForJudge(isWaitingForJudge)),
     setBusyWaitingUserModeSwitch: (busyWaitingUserModeSwitch) => dispatch(setBusyWaitingUserModeSwitch(busyWaitingUserModeSwitch))
   };
 };

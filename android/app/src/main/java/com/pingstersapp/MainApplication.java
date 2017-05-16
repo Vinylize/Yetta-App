@@ -2,6 +2,7 @@ package com.pingstersapp;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.imagepicker.ImagePickerPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.slowpath.hockeyapp.RNHockeyAppPackage;
@@ -33,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
             new RNHockeyAppPackage(MainApplication.this),
             new MainReactPackage(),
+            new ImagePickerPackage(),
             new LottiePackage(),
             new LinearGradientPackage(),
             new BlurViewPackage(),

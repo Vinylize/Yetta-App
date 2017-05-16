@@ -11,6 +11,7 @@ import orderStatusReducer from './orderStatus';
 import addProductReducer from './components/addProduct';
 import navigatorReducer from './navigator';
 import menuReducer from './components/menu';
+import runnerViewReducer from './components/runnerView';
 
 export default combineReducers({
   auth: authReducer,
@@ -24,5 +25,6 @@ export default combineReducers({
   orderStatus: orderStatusReducer,
   addProduct: addProductReducer,
   navigator: navigatorReducer,
-  menu: menuReducer
+  menu: menuReducer,
+  runnerView: runnerViewReducer
 });

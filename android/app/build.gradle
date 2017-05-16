@@ -85,9 +85,14 @@ def enableProguardInReleaseBuilds = false
 android {
     signingConfigs {
         YettaKeyStore {
-            keyAlias 'key0'
-            keyPassword 'yettakey0'
-            storeFile file('/Users/yangwoolee/Desktop/Yetta-App/Yetta.keystore')
+            /**
+             * keyAlias 'key0'
+             * keyPassword 'yettakey0'
+             * storeFile file('/Users/yangwoolee/Desktop/Yetta-App/Yetta.keystore')
+             */
+            keyAlias 'my-key-alias'
+            keyPassword 'yettayetta'
+            storeFile file('/Users/jeyoungchan/Desktop/Yetta-App/my-release-key.keystore')
             storePassword 'yettayetta'
         }
     }
@@ -146,6 +151,7 @@ def getDate() {
 }
 
 dependencies {
+    compile project(':react-native-image-picker')
     compile project(':lottie-react-native')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-hockeyapp')

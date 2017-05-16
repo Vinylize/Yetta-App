@@ -12,6 +12,7 @@ import SettingScreen from './../components/settings/setting';
 import OrderHistoryScreen from './../components/orderHistory/orderHistory';
 import RunnerHistoryScreen from './../components/runnerHistory/runnerHistory';
 import SplashScreen from './../components/splash';
+import IdVerification from './../components/idVerification/idVerification';
 
 export const AppNavigator = StackNavigator({
   Login: { screen: LoginScreen },
@@ -24,7 +25,8 @@ export const AppNavigator = StackNavigator({
   OrderHistory: { screen: OrderHistoryScreen },
   RunnerHistory: { screen: RunnerHistoryScreen },
   Splash: { screen: SplashScreen },
-  Home: { screen: MapView }
+  Home: { screen: MapView },
+  IdVerification: { screen: IdVerification }
 }, {
   initialRouteName: 'Splash',
   headerMode: 'none'

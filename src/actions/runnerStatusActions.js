@@ -13,3 +13,17 @@ export const setOnDelivery = (onDelivery) => {
     onDelivery
   };
 };
+
+export const setIdVerified = (idVerified) => {
+  return {
+    type: types.setIdVerified,
+    idVerified
+  };
+};
+
+export const setIsWaitingForJudge = (isWaitingForJudge) => {
+  return {
+    type: types.setIsWaitingForJudge,
+    isWaitingForJudge
+  };
+};
