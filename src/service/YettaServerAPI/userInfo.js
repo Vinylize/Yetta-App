@@ -10,7 +10,8 @@ export const queryUser = () => {
             isPV,
             e,
             n,
-            p
+            p,
+            pUrl
           }
         }`);
       })

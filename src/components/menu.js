@@ -25,6 +25,9 @@ import {
 import { setBusyWaitingUserModeSwitch } from './../actions/busyWaitingActions';
 // [end redux functions]
 
+// assets
+import IMG_DEFAULT from './../../assets/defaultProfileImg.png';
+
 // constants
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -296,7 +299,7 @@ class Menu extends Component {
             width: 105,
             borderRadius: 52.5,
             marginTop: 56
-          }} source={require('../../assets/defaultProfileImg.png')}/>
+          }} source={(this.props.user.pUrl) ? {uri: this.props.user.pUrl} : IMG_DEFAULT}/>
           <View style={{
             marginTop: 20,
             flexDirection: 'row'
