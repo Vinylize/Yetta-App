@@ -151,7 +151,8 @@ class SearchBar extends Component {
             style={{
               fontSize: 10,
               color: 'grey',
-              marginRight: 5
+              marginRight: 5,
+              backgroundColor: 'transparent'
             }}
           >
             {term.value}
@@ -223,7 +224,8 @@ class SearchBar extends Component {
       >
         <Text
           style={{
-            color: '#303233'
+            color: '#303233',
+            backgroundColor: 'transparent'
           }}
           numberOfLines={1}
         >
