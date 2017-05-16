@@ -377,6 +377,7 @@ class SearchBar extends Component {
                 onChangeText={this.handleTextChange.bind(this)}
                 value={this.state.text}
                 underlineColorAndroid={'white'}
+                autoFocus
               />
               : null}
           </TouchableOpacity>

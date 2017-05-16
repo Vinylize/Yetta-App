@@ -33,3 +33,29 @@ export const userProfileImageUpload = (base64data) => {
       handleError(err);
     });
 };
+
+export const userChangeName = (newName) => {
+  return new Promise((resolve, reject) => {
+    return YettaServerAPIclient.getLokkaClient()
+      .then(client => {
+        return client.mutate(`{
+          userUpdatename(
+            input:{
+              n: "${newName}"
+            }
+          ) {
+            result
+          }
+        }`);
+      })
+      .then(res => {
+        __DEV__ && console.log(res); // eslint-disable-line no-undef
+        return resolve(res);
+      })
+      .catch(err => {
+        __DEV__ && console.log(err); // eslint-disable-line no-undef
+        handleError(err);
+        return reject(err);
+      });
+  });
+};
