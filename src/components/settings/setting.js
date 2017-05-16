@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import * as authActions from './../../actions/authActions';
+import { animateMenuHide } from './../../actions/componentsActions/menuActions';
 
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
@@ -44,8 +45,13 @@ const styles = {
   }
 };
 
-export default class Setting extends Component {
+class Setting extends Component {
+  constructor() {
+    super();
+    this.handleLogout = this.handleLogout.bind(this);
+  }
   handleLogout() {
+    animateMenuHide();
     authActions.userSignout()
       .then(() => {
         Alert.alert('signed out');
@@ -111,7 +117,7 @@ export default class Setting extends Component {
         {this.renderSettingsList('고객센터', () => {})}
         {this.renderSettingsList('환경설정', () => {})}
         <View style={{width: WIDTH, height: 50}}/>
-        {this.renderSettingsList('로그아웃', this.handleLogout)}
+        {this.renderSettingsList('로그아웃', this.handleLogout.bind(this))}
         {this.renderCopyright()}
       </View>
     );
@@ -121,3 +127,5 @@ export default class Setting extends Component {
 Setting.propTypes = {
   navigation: PropTypes.object.isRequired
 };
+
+export default Setting;

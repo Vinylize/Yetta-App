@@ -102,6 +102,10 @@ class Menu extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.animMenu.removeAllListeners();
+  }
+
   grantMenuButtonsPanResponders(highlightingBtnNum) {
     this.setState(() => {
       return {
@@ -132,7 +136,7 @@ class Menu extends Component {
       this.props.animMenu.stopAnimation();
     }
     if (this.animMenuValue + dx < 0) {
-      this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
+      this.refMenu && this.refMenu.setNativeProps && this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
       this.props.refBlurView && this.props.refBlurView.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
       // console.log(this.prop)
       this.props.refRunnerView && this.props.refRunnerView.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
