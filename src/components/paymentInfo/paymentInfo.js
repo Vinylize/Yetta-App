@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
-  Text,
-  View,
   Dimensions,
-  StyleSheet
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 const WIDTH = Dimensions.get('window').width;
@@ -58,6 +59,11 @@ class PaymentInfo extends Component {
   constructor() {
     super();
     this.renderCardInfoRow = this.renderCardInfoRow.bind(this);
+    this.handleAddNewCard = this.handleAddNewCard.bind(this);
+  }
+
+  handleAddNewCard() {
+    // todo
   }
 
   renderCardInfoList() {
@@ -88,6 +94,23 @@ class PaymentInfo extends Component {
     );
   }
 
+  renderAddNewCard() {
+    return (
+      <TouchableOpacity
+        style={[styles.profileList, {justifyContent: 'center'}]}
+        onPress={this.handleAddNewCard.bind(this)}
+      >
+        <Text style={{
+          fontSize: 16,
+          fontWeight: '500',
+          color: '#205D98'
+        }}>
+          결제 수단 추가
+        </Text>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -95,6 +118,7 @@ class PaymentInfo extends Component {
           <Text style={styles.topContainerText}>결제 정보</Text>
         </View>
         {this.renderCardInfoList()}
+        {this.renderAddNewCard()}
       </View>
     );
   }
