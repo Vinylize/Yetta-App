@@ -2,11 +2,17 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
   Dimensions,
+  Image,
+  Keyboard,
   StyleSheet,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
+import AddNewCard from './addNewCard';
+
+// assets
+import IMG_BACK from './../../../assets/left-arrow-key.png';
 
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
@@ -15,6 +21,7 @@ const LIST_BORDER_COLOR = '#eee';
 const styles = {
   container: {
     flex: 1,
+    flexDirection: 'column',
     backgroundColor: '#f9f9f9'
   },
   topContainer: {
@@ -58,12 +65,28 @@ const styles = {
 class PaymentInfo extends Component {
   constructor() {
     super();
+    this.state = {
+      showAddNewCardView: false
+    };
     this.renderCardInfoRow = this.renderCardInfoRow.bind(this);
     this.handleAddNewCard = this.handleAddNewCard.bind(this);
+    this.handleBackButton = this.handleBackButton.bind(this);
   }
 
   handleAddNewCard() {
-    // todo
+    this.setState(() => {
+      return {showAddNewCardView: true};
+    });
+  }
+
+  handleBackButton() {
+    if (this.state.showAddNewCardView === true) {
+      this.setState(() => {
+        return {showAddNewCardView: false};
+      });
+    } else {
+      this.props.navigation.goBack();
+    }
   }
 
   renderCardInfoList() {
@@ -111,15 +134,47 @@ class PaymentInfo extends Component {
     );
   }
 
-  render() {
+  renderBody() {
+    if (this.state.showAddNewCardView) {
+      return <AddNewCard navigation={this.props.navigation}/>;
+    }
     return (
-      <View style={styles.container}>
-        <View style={styles.topContainer}>
-          <Text style={styles.topContainerText}>결제 정보</Text>
-        </View>
+      <View>
         {this.renderCardInfoList()}
         {this.renderAddNewCard()}
       </View>
+    );
+  }
+
+  render() {
+    return (
+      <TouchableOpacity
+        style={styles.container}
+        onPress={Keyboard.dismiss}
+        activeOpacity={1}
+      >
+        <TouchableOpacity
+          style={{
+            height: 20,
+            width: 20,
+            top: 46,
+            marginLeft: 20,
+            marginBottom: 16
+          }}
+          onPress={this.handleBackButton.bind(this)}
+        >
+          <Image
+            style={{height: 24, width: 24}}
+            source={IMG_BACK}
+          />
+        </TouchableOpacity>
+        <View style={styles.topContainer}>
+          <Text style={styles.topContainerText}>
+            {(this.state.showAddNewCardView) ? '결제추가' : '결제 정보'}
+          </Text>
+        </View>
+        {this.renderBody()}
+      </TouchableOpacity>
     );
   }
 }
