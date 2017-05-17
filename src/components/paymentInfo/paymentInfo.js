@@ -57,14 +57,35 @@ const styles = {
 class PaymentInfo extends Component {
   constructor() {
     super();
+    this.renderCardInfoRow = this.renderCardInfoRow.bind(this);
   }
 
-  renderProfileList(subject, content) {
+  renderCardInfoList() {
+    const { userPaymentInfo } = this.props.user;
+    __DEV__ && console.log(userPaymentInfo); // eslint-disable-line no-undef
+    if (!userPaymentInfo) {
+      return (
+        <View style={[styles.profileList, { justifyContent: 'center' }]}>
+          <Text style={{
+            fontSize: 16,
+            fontWeight: '300'
+          }}>
+            등록된 카드가 없습니다
+          </Text>
+        </View>
+      );
+    }
+    return userPaymentInfo.map(this.renderCardInfoRow);
+  }
+
+  renderCardInfoRow(userPaymentInfoType) {
+    const { type, num, provider } = userPaymentInfoType;
     return (
       <View style={styles.profileList}>
-        <Text style={styles.profileSubject}>{subject}</Text>
-        <Text style={styles.profileContent}>{content}</Text>
-      </View>);
+        <Text style={styles.profileSubject}>{provider} {type}</Text>
+        <Text style={styles.profileContent}>{num}</Text>
+      </View>
+    );
   }
 
   render() {
@@ -73,9 +94,7 @@ class PaymentInfo extends Component {
         <View style={styles.topContainer}>
           <Text style={styles.topContainerText}>결제 정보</Text>
         </View>
-        {this.renderProfileList('카드1', '1111 **** 1111 ****')}
-        {this.renderProfileList('카드2', '2222 **** 2222 ****')}
-        {this.renderProfileList('카드3', '3333 **** 3333 ****')}
+        {this.renderCardInfoList()}
       </View>
     );
   }

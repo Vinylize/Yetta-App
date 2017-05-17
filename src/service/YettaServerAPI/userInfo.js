@@ -11,7 +11,12 @@ export const queryUser = () => {
             e,
             n,
             p,
-            pUrl
+            pUrl,
+            userPaymentInfo {
+              type,
+              num,
+              provider
+            }
           }
         }`);
       })
