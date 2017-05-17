@@ -151,7 +151,8 @@ class SearchBar extends Component {
             style={{
               fontSize: 10,
               color: 'grey',
-              marginRight: 5
+              marginRight: 5,
+              backgroundColor: 'transparent'
             }}
           >
             {term.value}
@@ -223,7 +224,8 @@ class SearchBar extends Component {
       >
         <Text
           style={{
-            color: '#303233'
+            color: '#303233',
+            backgroundColor: 'transparent'
           }}
           numberOfLines={1}
         >
@@ -375,6 +377,7 @@ class SearchBar extends Component {
                 onChangeText={this.handleTextChange.bind(this)}
                 value={this.state.text}
                 underlineColorAndroid={'white'}
+                autoFocus
               />
               : null}
           </TouchableOpacity>

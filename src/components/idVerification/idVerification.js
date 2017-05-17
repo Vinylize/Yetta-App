@@ -48,7 +48,6 @@ class IdVerification extends Component {
       maxHeight: 1000
     };
     ImagePicker.showImagePicker(options, (response) => {
-      console.log(response);
       __DEV__ && console.log(response); // eslint-disable-line no-undef
       if (response.didCancel) {
         __DEV__ && console.log('User cancelled image picker'); // eslint-disable-line no-undef

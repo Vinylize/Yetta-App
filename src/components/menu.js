@@ -25,6 +25,9 @@ import {
 import { setBusyWaitingUserModeSwitch } from './../actions/busyWaitingActions';
 // [end redux functions]
 
+// assets
+import IMG_DEFAULT from './../../assets/defaultProfileImg.png';
+
 // constants
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
@@ -99,6 +102,10 @@ class Menu extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.animMenu.removeAllListeners();
+  }
+
   grantMenuButtonsPanResponders(highlightingBtnNum) {
     this.setState(() => {
       return {
@@ -129,7 +136,7 @@ class Menu extends Component {
       this.props.animMenu.stopAnimation();
     }
     if (this.animMenuValue + dx < 0) {
-      this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
+      this.refMenu && this.refMenu.setNativeProps && this.refMenu.setNativeProps({style: {left: dx + this.animMenuValue}});
       this.props.refBlurView && this.props.refBlurView.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
       // console.log(this.prop)
       this.props.refRunnerView && this.props.refRunnerView.setNativeProps({style: {opacity: -(dx + this.animMenuValue) / menuWidth + 0.2}});
@@ -296,7 +303,7 @@ class Menu extends Component {
             width: 105,
             borderRadius: 52.5,
             marginTop: 56
-          }} source={require('../../assets/defaultProfileImg.png')}/>
+          }} source={(this.props.user.pUrl) ? {uri: this.props.user.pUrl} : IMG_DEFAULT}/>
           <View style={{
             marginTop: 20,
             flexDirection: 'row'
