@@ -23,6 +23,7 @@ import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.location.LocationResult;
+import com.pingstersapp.BuildConfig;
 
 import java.util.List;
 
@@ -55,10 +56,11 @@ public class LocationUpdatesBroadcastReceiver extends BroadcastReceiver {
                 if (result != null) {
                     List<Location> locations = result.getLocations();
                     Utils.setLocationUpdatesResult(context, locations);
-                    Utils.sendNotification(context, Utils.getLocationResultTitle(context, locations));
-                    Log.i(TAG, "location update in background/terminated");
-                    Log.i(TAG, Utils.getLocationUpdatesResult(context));
-
+                    if (BuildConfig.DEBUG) {
+                        Utils.sendNotification(context, Utils.getLocationResultTitle(context, locations));
+                        Log.i(TAG, "location update in background/terminated");
+                        Log.i(TAG, Utils.getLocationUpdatesResult(context));
+                    }
                     /**
                      * {@link YettaLocationModule#registerLocationUpdateBroadcastReceiver()} receives
                      * the following broadcast in order to send location info to JS.

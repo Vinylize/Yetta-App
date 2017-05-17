@@ -20,9 +20,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.location.LocationResult;
+import com.pingstersapp.BuildConfig;
 
 import java.util.List;
 
@@ -61,8 +61,10 @@ public class LocationUpdatesIntentService extends IntentService {
                 if (result != null) {
                     List<Location> locations = result.getLocations();
                     Utils.setLocationUpdatesResult(this, locations);
-                    Utils.sendNotification(this, Utils.getLocationResultTitle(this, locations));
-                    Log.i(TAG, Utils.getLocationUpdatesResult(this));
+                    if (BuildConfig.DEBUG) {
+                        Utils.sendNotification(this, Utils.getLocationResultTitle(this, locations));
+                        Log.i(TAG, Utils.getLocationUpdatesResult(this));
+                    }
 
                     /**
                      * {@link YettaLocationModule#registerLocationUpdateBroadcastReceiver()} receives

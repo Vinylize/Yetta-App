@@ -16,9 +16,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.react.ReactActivity;
-import com.airbnb.android.react.lottie.LottiePackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.cmcewen.blurview.BlurViewPackage;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
@@ -339,7 +336,9 @@ public class MainActivity extends ReactActivity implements
                         String errorMessage = "Location settings are inadequate, and cannot be " +
                                 "fixed here. Fix in Settings.";
                         Log.e(TAG, errorMessage);
-                        Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                        if (BuildConfig.DEBUG) {
+                            Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                        }
                         mRequestingLocationUpdates = false;
                 }
                 // updateUI();
@@ -502,11 +501,13 @@ public class MainActivity extends ReactActivity implements
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         // updateLocationUI();
-        Toast.makeText(
-                MainActivity.this,
-                Double.toString(location.getLatitude()) + " " +
-                Double.toString(location.getLongitude()),
-                Toast.LENGTH_LONG).show();
+        if (BuildConfig.DEBUG) {
+            Toast.makeText(
+                    MainActivity.this,
+                    Double.toString(location.getLatitude()) + " " +
+                            Double.toString(location.getLongitude()),
+                    Toast.LENGTH_LONG).show();
+        }
 
         Log.d(TAG, "위치 변경중!");
 
@@ -523,7 +524,9 @@ public class MainActivity extends ReactActivity implements
     public void onConnectionSuspended(int cause) {
         final String text = "Connection suspended";
         Log.w(TAG, text + ": Error code: " + cause);
-        Toast.makeText(MainActivity.this, "Connection suspended", Toast.LENGTH_LONG).show();
+        if (BuildConfig.DEBUG) {
+            Toast.makeText(MainActivity.this, "Connection suspended", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -531,7 +534,9 @@ public class MainActivity extends ReactActivity implements
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
-        Toast.makeText(MainActivity.this, "Connection failed", Toast.LENGTH_LONG).show();
+        if (BuildConfig.DEBUG) {
+            Toast.makeText(MainActivity.this, "Connection failed", Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
