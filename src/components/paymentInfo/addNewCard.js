@@ -25,8 +25,7 @@ const DEFAULT_LEFT = WIDTH * 0.1;
 const styles = {
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
-    marginLeft: DEFAULT_LEFT
+    backgroundColor: '#f9f9f9'
   },
   title: {
     fontSize: 12,
@@ -124,6 +123,7 @@ class AddNewCard extends Component {
         borderBottomWidth: 1,
         borderColor: (this.state.focused === FOCUSED.CARD_NUM) ? 'black' : '#b7b7b7',
         marginBottom: 20,
+        marginLeft: DEFAULT_LEFT,
         flexDirection: 'column'
       }}>
         <Text style={styles.title}>카드 번호</Text>
@@ -176,6 +176,7 @@ class AddNewCard extends Component {
         height: 50,
         width: WIDTH * 0.36,
         backgroundColor: 'transparent',
+        marginLeft: DEFAULT_LEFT,
         borderBottomWidth: 1,
         borderColor: (this.state.focused === FOCUSED.EXPIRY) ? 'black' : '#b7b7b7'
       }}>
@@ -209,15 +210,15 @@ class AddNewCard extends Component {
         backgroundColor: 'transparent',
         borderBottomWidth: 1,
         borderColor: (this.state.focused === FOCUSED.PW2) ? 'black' : '#b7b7b7',
-        marginLeft: WIDTH * 0.08,
-        justifyContent: 'flex-end'
+        marginLeft: WIDTH * 0.08
       }}>
         <TextInput
           style={{
-            height: 34,
+            height: 40,
             width: WIDTH * 0.34,
             backgroundColor: 'transparent',
-            marginLeft: 4
+            marginLeft: 4,
+            marginTop: 14
           }}
           placeholder="비밀번호 앞 두자리"
           onChangeText={(text) => this.setState({pw2: text})}
@@ -238,6 +239,7 @@ class AddNewCard extends Component {
         height: 56,
         width: WIDTH * 0.8,
         backgroundColor: 'transparent',
+        marginLeft: DEFAULT_LEFT,
         borderBottomWidth: 1,
         borderColor: (this.state.focused === FOCUSED.BIRTH) ? 'black' : '#b7b7b7',
         marginBottom: 10,
@@ -275,7 +277,6 @@ class AddNewCard extends Component {
         style={{
           position: 'absolute',
           bottom: this.state.keyboardHeight,
-          left: -DEFAULT_LEFT,
           height: 40,
           width: WIDTH,
           backgroundColor: '#ff9700',

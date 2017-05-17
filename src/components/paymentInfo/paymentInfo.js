@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   Keyboard,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -32,7 +33,8 @@ const styles = {
   },
   topContainerText: {
     fontSize: 30,
-    fontWeight: '500'
+    fontWeight: '500',
+    color: 'black'
   },
   profileImage: {
     width: 110,
@@ -155,11 +157,11 @@ class PaymentInfo extends Component {
       >
         <TouchableOpacity
           style={{
-            height: 20,
-            width: 20,
+            height: 24,
+            width: 24,
             top: 46,
             marginLeft: 20,
-            marginBottom: 16
+            marginBottom: (Platform.OS === 'ios') ? 16 : 4
           }}
           onPress={this.handleBackButton.bind(this)}
         >
