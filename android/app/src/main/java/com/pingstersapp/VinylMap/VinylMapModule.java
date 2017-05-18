@@ -60,10 +60,10 @@ public class VinylMapModule extends MapView implements
         // Add a marker in Sydney, Australia, and move the camera.
         LatLng sydney = new LatLng(-34, 151);
 
-        marker = this.mMap.addMarker(new MarkerOptions()
-                .position(sydney)
-                .title("Marker in Sydney")
-                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmap())));
+//        marker = this.mMap.addMarker(new MarkerOptions()
+//                .position(sydney)
+//                .title("Marker in Sydney")
+//                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmap())));
 
         mMap.setOnCameraIdleListener(this);
         mMap.setOnCameraMoveStartedListener(this);
@@ -82,6 +82,8 @@ public class VinylMapModule extends MapView implements
                 return false;
             }
         });
+        this.mMap.setMyLocationEnabled(true);
+        this.mMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
     @Override
