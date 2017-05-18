@@ -68,7 +68,7 @@ import ImgSortUp from './../../../assets/sort-up.png';
 
 let vmm = NativeModules.VinylMapManager;
 
-const { YettaLocationServiceManger } = NativeModules;
+const { YettaLocationServiceManger, YettaLocationAndroid } = NativeModules;
 const locationServiceManagerEmitter = new NativeEventEmitter(YettaLocationServiceManger);
 
 // constants
@@ -135,6 +135,7 @@ class Home extends Component {
     }
 
     if (Platform.OS === 'android') {
+      YettaLocationAndroid.startLocationService();
       DeviceEventEmitter.addListener('didUpdateToLocationAndroidForeground', async(data) => {
         // console.log('foreground location update: ', data);
         // Alert.alert('foreground location update', JSON.stringify(data));
@@ -203,6 +204,8 @@ class Home extends Component {
      */
     if (Platform.OS === 'ios') {
       YettaLocationServiceManger.stopLocationService();
+    } else if (Platform.OS === 'android') {
+      YettaLocationAndroid.stopLocationService();
     }
   }
 

@@ -98,7 +98,7 @@ public class MainActivity extends ReactActivity implements
      * Tracks the status of the location updates request. Value changes when the user presses the
      * Start Updates and Stop Updates buttons.
      */
-    protected Boolean mRequestingLocationUpdates;
+    protected Boolean mRequestingLocationUpdates = false;
 
     /**
      * Time when the location was updated represented as a String.
@@ -152,11 +152,23 @@ public class MainActivity extends ReactActivity implements
         }, intentFilter);
         // [END handle push notification after app terminated]
 
-        // [START handle location service]
-
-        // todo: change the following to follow user settings
-        mRequestingLocationUpdates = true;
-        mLastUpdateTime = "";
+        // [START register broadcastReceivers for LocationService Methods]
+        IntentFilter intentFilterStartLocationUpdates = new IntentFilter("com.pingstersapp.LocationService.ReceiveStartLocationUpdates");
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mRequestingLocationUpdates = true;
+                startLocationUpdates();
+            }
+        }, intentFilterStartLocationUpdates);
+        IntentFilter intentFilterStopLocationUpdates = new IntentFilter("com.pingstersapp.LocationService.ReceiveStartLocationUpdates");
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                stopLocationUpdates();
+            }
+        }, intentFilterStopLocationUpdates);
+        // [START register broadcastReceivers for LocationService Methods]
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
@@ -451,17 +463,17 @@ public class MainActivity extends ReactActivity implements
         // user launches the activity,
         // moves to a new location, and then changes the device orientation, the original location
         // is displayed as the activity is re-created.
-        if (mCurrentLocation == null) {
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-            // updateLocationUI();
-        }
         if (mRequestingLocationUpdates) {
             Log.d(TAG, "removing background location update");
             removeLocationUpdatesBackground();
 
             Log.i(TAG, "in onConnected(), starting location updates");
             startLocationUpdates();
+        }
+        if (mCurrentLocation == null) {
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+            // updateLocationUI();
         }
     }
 

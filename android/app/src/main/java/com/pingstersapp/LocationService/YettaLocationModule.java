@@ -13,6 +13,7 @@ import android.location.Location;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.gms.location.LocationResult;
@@ -81,5 +82,17 @@ public class YettaLocationModule extends ReactContextBaseJavaModule {
                 }
             }
         }, intentFilter);
+    }
+
+    @ReactMethod
+    public void startLocationService() {
+        Intent i = new Intent("com.pingstersapp.LocationService.ReceiveStartLocationUpdates");
+        getReactApplicationContext().sendOrderedBroadcast(i, null);
+    }
+
+    @ReactMethod
+    public void stopLocationService() {
+        Intent i = new Intent("com.pingstersapp.LocationService.ReceiveStopLocationUpdates");
+        getReactApplicationContext().sendOrderedBroadcast(i, null);
     }
 }
