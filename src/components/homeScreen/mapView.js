@@ -230,10 +230,8 @@ class Home extends Component {
 
   componentDidMount() {
     const { lat, lon } = this.props.currentLocation;
-    if (vmm) {
-      if (Platform.OS === 'ios') {
-        vmm.animateToLocationWithZoom(String(lat), String(lon), 16.0);
-      }
+    if (lat && lon) {
+      vmm && vmm.animateToLocationWithZoom(String(lat), String(lon), 16.0);
     }
   }
 
@@ -342,11 +340,12 @@ class Home extends Component {
         activeOpacity={1}
         onPress={() => {
           const { lat, lon } = this.props.currentLocation;
-          console.log(lat, lon);
-          if (Platform.OS === 'android') {
-            vmm.animateToLocationWithZoom(lat, lon, 16.0);
-          } else {
-            vmm.animateToLocation(String(lat), String(lon));
+          if (lat && lon) {
+            if (Platform.OS === 'android') {
+              vmm && vmm.animateToLocationWithZoom(lat, lon, 16.0);
+            } else if (Platform.OS === 'ios') {
+              vmm && vmm.animateToLocation(String(lat), String(lon));
+            }
           }
           LayoutAnimation.easeInEaseOut();
           this.setState({trackingCurrentPos: true});
