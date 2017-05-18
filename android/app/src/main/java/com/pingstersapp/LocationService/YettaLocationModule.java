@@ -95,4 +95,16 @@ public class YettaLocationModule extends ReactContextBaseJavaModule {
         Intent i = new Intent("com.pingstersapp.LocationService.ReceiveStopLocationUpdates");
         getReactApplicationContext().sendOrderedBroadcast(i, null);
     }
+
+    @ReactMethod
+    public void startBackgroundLocationService() {
+        Intent i = new Intent("com.pingstersapp.LocationService.ReceiveStartBackgroundLocationUpdates");
+        getReactApplicationContext().sendOrderedBroadcast(i, null);
+    }
+
+    @ReactMethod
+    public void stopBackgroundLocationService() {
+        Intent i = new Intent("com.pingstersapp.LocationService.ReceiveStopBackgroundLocationUpdates");
+        getReactApplicationContext().sendOrderedBroadcast(i, null);
+    }
 }

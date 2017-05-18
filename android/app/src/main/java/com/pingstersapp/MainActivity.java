@@ -92,10 +92,13 @@ public class MainActivity extends ReactActivity implements
     protected Location mCurrentLocation;
 
     /**
-     * Tracks the status of the location updates request. Value changes when the user presses the
-     * Start Updates and Stop Updates buttons.
+     * Tracks the status of the location updates request. Value changes from JS method
      */
     protected Boolean mRequestingLocationUpdates = false;
+    /**
+     * Tracks the status of the background location updates request.
+     */
+    protected Boolean mRequestingLocationUpdatesBackground = false;
 
     /**
      * Time when the location was updated represented as a String.
@@ -150,7 +153,8 @@ public class MainActivity extends ReactActivity implements
         // [END handle push notification after app terminated]
 
         // [START register broadcastReceivers for LocationService Methods]
-        IntentFilter intentFilterStartLocationUpdates = new IntentFilter("com.pingstersapp.LocationService.ReceiveStartLocationUpdates");
+        IntentFilter intentFilterStartLocationUpdates = new IntentFilter(
+                "com.pingstersapp.LocationService.ReceiveStartLocationUpdates");
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -158,13 +162,31 @@ public class MainActivity extends ReactActivity implements
                 startLocationUpdates();
             }
         }, intentFilterStartLocationUpdates);
-        IntentFilter intentFilterStopLocationUpdates = new IntentFilter("com.pingstersapp.LocationService.ReceiveStartLocationUpdates");
+        IntentFilter intentFilterStopLocationUpdates = new IntentFilter(
+                "com.pingstersapp.LocationService.ReceiveStopLocationUpdates");
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 stopLocationUpdates();
             }
         }, intentFilterStopLocationUpdates);
+        IntentFilter intentFilterStartBackgroundLocationUpdates = new IntentFilter(
+                "com.pingstersapp.LocationService.ReceiveStartBackgroundLocationUpdates");
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mRequestingLocationUpdatesBackground = true;
+                requestLocationUpdatesBackground();
+            }
+        }, intentFilterStartBackgroundLocationUpdates);
+        IntentFilter intentFilterStopBackgroundLocationUpdates = new IntentFilter(
+                "com.pingstersapp.LocationService.ReceiveStopBackgroundLocationUpdates");
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                removeLocationUpdatesBackground();
+            }
+        }, intentFilterStopBackgroundLocationUpdates);
         // [START register broadcastReceivers for LocationService Methods]
 
         // Update values using data stored in the Bundle.
@@ -362,10 +384,12 @@ public class MainActivity extends ReactActivity implements
      */
     public void requestLocationUpdatesBackground() {
         try {
-            Log.i(TAG, "Starting location updates BACKGROUND");
-            Utils.setRequestingLocationUpdates(this, true);
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, getPendingIntent());
+            if (mRequestingLocationUpdatesBackground) {
+                Log.i(TAG, "Starting location updates BACKGROUND");
+                Utils.setRequestingLocationUpdates(this, true);
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                        mGoogleApiClient, mLocationRequest, getPendingIntent());
+            }
         } catch (SecurityException e) {
             Utils.setRequestingLocationUpdates(this, false);
             e.printStackTrace();
@@ -381,6 +405,7 @@ public class MainActivity extends ReactActivity implements
         Utils.setRequestingLocationUpdates(this, false);
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,
                 getPendingIntent());
+        mRequestingLocationUpdatesBackground = false;
     }
 
     /**
