@@ -60,33 +60,35 @@ class AddNewCard extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    console.log(nextState);
     if (nextState.cardNum) {
-      // [start user typing new numbers]
-      if (nextState.cardNum.length === 4 && this.state.cardNum.length === 3) {
-        this.setState({cardNum: `${nextState.cardNum}-`});
-      } else if (nextState.cardNum.length === 9 && this.state.cardNum.length === 8) {
-        this.setState({cardNum: `${nextState.cardNum}-`});
-      } else if (nextState.cardNum.length === 14 && this.state.cardNum.length === 13) {
-        this.setState({cardNum: `${nextState.cardNum}-`});
+      const strWithoutHyphen = nextState.cardNum.replace(/-/g, '');
+      const num = parseInt(strWithoutHyphen, 10).toString();
+      if (num.length > 4 && num.length < 8) {
+        const updatedNum = `${num.substring(0, 4)}-${num.substring(4)}`;
+        if (updatedNum !== this.state.cardNum) {
+          this.setState({cardNum: updatedNum});
+        }
+      } else if (num.length > 8 && num.length < 12) {
+        const updatedNum = `${num.substring(0, 4)}-${num.substring(4, 8)}-${num.substring(8)}`;
+        if (updatedNum !== this.state.cardNum) {
+          this.setState({cardNum: updatedNum});
+        }
+      } else if (num.length > 12) {
+        const updatedNum = `${num.substring(0, 4)}-${num.substring(4, 8)}-${num.substring(8, 12)}-${num.substring(12)}`;
+        if (updatedNum !== this.state.cardNum) {
+          this.setState({cardNum: updatedNum});
+        }
       }
-      // [end user typing new numbers]
-      // [start user deleting numbers]
-      else if (nextState.cardNum.length === 15 && this.state.cardNum.length === 16) {
-        this.setState({cardNum: nextState.cardNum.substring(0, 14)});
-      } else if (nextState.cardNum.length === 10 && this.state.cardNum.length === 11) {
-        this.setState({cardNum: nextState.cardNum.substring(0, 9)});
-      } else if (nextState.cardNum.length === 5 && this.state.cardNum.length === 6) {
-        this.setState({cardNum: nextState.cardNum.substring(0, 4)});
-      }
-      // [end user deleting numbers]
     }
 
     if (nextState.expiry) {
-      if (nextState.expiry.length === 4 && this.state.expiry.length === 3) {
-        this.setState({expiry: `${nextState.expiry}-`});
-      } else if (nextState.expiry.length === 5 && this.state.expiry.length === 6) {
-        this.setState({expiry: this.state.expiry.substring(0, 4)});
+      const strWithoutHyphen = nextState.expiry.replace('-', '');
+      const exp = parseInt(strWithoutHyphen, 10).toString();
+      if (exp.length > 4) {
+        const updatedExpiry = `${exp.substring(0, 4)}-${exp.substring(4)}`;
+        if (updatedExpiry !== this.state.expiry) {
+          this.setState({expiry: updatedExpiry});
+        }
       }
     }
   }
