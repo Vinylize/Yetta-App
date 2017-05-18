@@ -1,11 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
-  Text,
-  View,
   Dimensions,
-  StyleSheet
+  Image,
+  Keyboard,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
+import AddNewCard from './addNewCard';
+
+// assets
+import IMG_BACK from './../../../assets/left-arrow-key.png';
 
 const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
@@ -14,6 +22,7 @@ const LIST_BORDER_COLOR = '#eee';
 const styles = {
   container: {
     flex: 1,
+    flexDirection: 'column',
     backgroundColor: '#f9f9f9'
   },
   topContainer: {
@@ -24,7 +33,8 @@ const styles = {
   },
   topContainerText: {
     fontSize: 30,
-    fontWeight: '500'
+    fontWeight: '500',
+    color: 'black'
   },
   profileImage: {
     width: 110,
@@ -57,26 +67,116 @@ const styles = {
 class PaymentInfo extends Component {
   constructor() {
     super();
+    this.state = {
+      showAddNewCardView: false
+    };
+    this.renderCardInfoRow = this.renderCardInfoRow.bind(this);
+    this.handleAddNewCard = this.handleAddNewCard.bind(this);
+    this.handleBackButton = this.handleBackButton.bind(this);
   }
 
-  renderProfileList(subject, content) {
+  handleAddNewCard() {
+    this.setState(() => {
+      return {showAddNewCardView: true};
+    });
+  }
+
+  handleBackButton() {
+    if (this.state.showAddNewCardView === true) {
+      this.setState(() => {
+        return {showAddNewCardView: false};
+      });
+    } else {
+      this.props.navigation.goBack();
+    }
+  }
+
+  renderCardInfoList() {
+    const { userPaymentInfo } = this.props.user;
+    __DEV__ && console.log(userPaymentInfo); // eslint-disable-line no-undef
+    if (!userPaymentInfo) {
+      return (
+        <View style={[styles.profileList, { justifyContent: 'center' }]}>
+          <Text style={{
+            fontSize: 16,
+            fontWeight: '300'
+          }}>
+            등록된 카드가 없습니다
+          </Text>
+        </View>
+      );
+    }
+    return userPaymentInfo.map(this.renderCardInfoRow);
+  }
+
+  renderCardInfoRow(userPaymentInfoType) {
+    const { type, num, provider } = userPaymentInfoType;
     return (
       <View style={styles.profileList}>
-        <Text style={styles.profileSubject}>{subject}</Text>
-        <Text style={styles.profileContent}>{content}</Text>
-      </View>);
+        <Text style={styles.profileSubject}>{provider} {type}</Text>
+        <Text style={styles.profileContent}>{num}</Text>
+      </View>
+    );
+  }
+
+  renderAddNewCard() {
+    return (
+      <TouchableOpacity
+        style={[styles.profileList, {justifyContent: 'center'}]}
+        onPress={this.handleAddNewCard.bind(this)}
+      >
+        <Text style={{
+          fontSize: 16,
+          fontWeight: '500',
+          color: '#205D98'
+        }}>
+          결제 수단 추가
+        </Text>
+      </TouchableOpacity>
+    );
+  }
+
+  renderBody() {
+    if (this.state.showAddNewCardView) {
+      return <AddNewCard navigation={this.props.navigation}/>;
+    }
+    return (
+      <View>
+        {this.renderCardInfoList()}
+        {this.renderAddNewCard()}
+      </View>
+    );
   }
 
   render() {
     return (
-      <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={Keyboard.dismiss}
+        activeOpacity={1}
+      >
+        <TouchableOpacity
+          style={{
+            height: 24,
+            width: 24,
+            top: 46,
+            marginLeft: 20,
+            marginBottom: (Platform.OS === 'ios') ? 16 : 4
+          }}
+          onPress={this.handleBackButton.bind(this)}
+        >
+          <Image
+            style={{height: 24, width: 24}}
+            source={IMG_BACK}
+          />
+        </TouchableOpacity>
         <View style={styles.topContainer}>
-          <Text style={styles.topContainerText}>결제 정보</Text>
+          <Text style={styles.topContainerText}>
+            {(this.state.showAddNewCardView) ? '결제추가' : '결제 정보'}
+          </Text>
         </View>
-        {this.renderProfileList('카드1', '1111 **** 1111 ****')}
-        {this.renderProfileList('카드2', '2222 **** 2222 ****')}
-        {this.renderProfileList('카드3', '3333 **** 3333 ****')}
-      </View>
+        {this.renderBody()}
+      </TouchableOpacity>
     );
   }
 }
