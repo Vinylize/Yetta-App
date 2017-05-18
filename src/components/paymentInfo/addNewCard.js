@@ -44,10 +44,10 @@ class AddNewCard extends Component {
   constructor() {
     super();
     this.state = {
-      cardNum: null,
-      expiry: null,
-      pw2: null,
-      birth: null,
+      cardNum: '',
+      expiry: '',
+      pw2: '',
+      birth: '',
       focused: FOCUSED.CARD_NUM,
       keyboardDidShow: true,
       keyboardHeight: 0
@@ -57,6 +57,38 @@ class AddNewCard extends Component {
   componentWillMount() {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow.bind(this));
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide.bind(this));
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    console.log(nextState);
+    if (nextState.cardNum) {
+      // [start user typing new numbers]
+      if (nextState.cardNum.length === 4 && this.state.cardNum.length === 3) {
+        this.setState({cardNum: `${nextState.cardNum}-`});
+      } else if (nextState.cardNum.length === 9 && this.state.cardNum.length === 8) {
+        this.setState({cardNum: `${nextState.cardNum}-`});
+      } else if (nextState.cardNum.length === 14 && this.state.cardNum.length === 13) {
+        this.setState({cardNum: `${nextState.cardNum}-`});
+      }
+      // [end user typing new numbers]
+      // [start user deleting numbers]
+      else if (nextState.cardNum.length === 15 && this.state.cardNum.length === 16) {
+        this.setState({cardNum: nextState.cardNum.substring(0, 14)});
+      } else if (nextState.cardNum.length === 10 && this.state.cardNum.length === 11) {
+        this.setState({cardNum: nextState.cardNum.substring(0, 9)});
+      } else if (nextState.cardNum.length === 5 && this.state.cardNum.length === 6) {
+        this.setState({cardNum: nextState.cardNum.substring(0, 4)});
+      }
+      // [end user deleting numbers]
+    }
+
+    if (nextState.expiry) {
+      if (nextState.expiry.length === 4 && this.state.expiry.length === 3) {
+        this.setState({expiry: `${nextState.expiry}-`});
+      } else if (nextState.expiry.length === 5 && this.state.expiry.length === 6) {
+        this.setState({expiry: this.state.expiry.substring(0, 4)});
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -87,7 +119,10 @@ class AddNewCard extends Component {
 
   handleCancelCardNum() {
     this.setState(() => {
-      return {cardNum: null};
+      return {
+        cardNum: null,
+        formattedCardNum: null
+      };
     });
   }
 
@@ -112,6 +147,12 @@ class AddNewCard extends Component {
       .catch(err => {
         __DEV__ && console.log(err); // eslint-disable-line no-undef
       });
+  }
+
+  onChangeTextCardNum(text) {
+    this.setState(() => {
+      return {cardNum: text};
+    });
   }
 
   renderCardNum() {
@@ -144,12 +185,12 @@ class AddNewCard extends Component {
               backgroundColor: 'transparent',
               marginLeft: 12
             }}
-            onChangeText={(text) => this.setState({cardNum: text})}
+            onChangeText={(text) => this.onChangeTextCardNum(text)}
             value={this.state.cardNum}
             underlineColorAndroid={'transparent'}
             autoFocus
             keyboardType="numeric"
-            maxLength={16}
+            maxLength={19}
             onFocus={() => this.setState({focused: FOCUSED.CARD_NUM})}
           />
           <TouchableOpacity
@@ -190,12 +231,12 @@ class AddNewCard extends Component {
             backgroundColor: 'transparent',
             marginLeft: 4
           }}
-          placeholder="월/연도"
+          placeholder="YYYY-MM"
           onChangeText={(text) => this.setState({expiry: text})}
           value={this.state.expiry}
           underlineColorAndroid={'transparent'}
           keyboardType="numeric"
-          maxLength={4}
+          maxLength={7}
           onFocus={() => this.setState({focused: FOCUSED.EXPIRY})}
         />
       </View>
@@ -263,7 +304,7 @@ class AddNewCard extends Component {
             value={this.state.birth}
             underlineColorAndroid={'transparent'}
             keyboardType="numeric"
-            maxLength={16}
+            maxLength={6}
             onFocus={() => this.setState({focused: FOCUSED.BIRTH})}
           />
         </View>
