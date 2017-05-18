@@ -49,19 +49,16 @@ public class MainActivity extends ReactActivity implements
     protected static final String TAG = "MainActivity";
 
     /**
-     * for foreground
      * Constant used in the location settings dialog.
      */
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
 
     /**
-     * for foreground
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 2 * 60 * 1000;
 
     /**
-     * for foreground
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
      * than this value.
      */
