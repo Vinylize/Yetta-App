@@ -130,9 +130,8 @@ class Splash extends Component {
 
   navigateToPhoneVerification() {
     const resetAction = NavigationActions.reset({
-      index: 1,
+      index: 0,
       actions: [
-        NavigationActions.navigate({ routeName: 'Home' }),
         NavigationActions.navigate({ routeName: 'PhoneVerification' })
       ]
     });

@@ -166,9 +166,8 @@ class Login extends Component {
 
   navigateToPhoneVerification() {
     const resetAction = NavigationActions.reset({
-      index: 1,
+      index: 0,
       actions: [
-        NavigationActions.navigate({ routeName: 'Home', params: {navigation: this.props.navigation}}),
         NavigationActions.navigate({ routeName: 'PhoneVerification', params: {navigation: this.props.navigation}})
       ]
     });

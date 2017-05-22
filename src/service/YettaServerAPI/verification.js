@@ -69,3 +69,53 @@ export const idVerificationImageUpload = (base64data) => {
       handleError(err);
     });
 };
+
+export const userRequestPhoneVerification = (phoneNum) => {
+  return new Promise((resolve, reject) => {
+    return YettaServerAPIclient.getLokkaClient()
+      .then(client => {
+        return client.mutate(`{
+          userRequestPhoneVerification(
+            input:{
+              p: "${phoneNum}"
+            }
+          ) {
+            result
+          }
+        }`);
+      })
+      .then(res => {
+        __DEV__ && console.log(res); // eslint-disable-line no-undef
+        return resolve(res);
+      })
+      .catch(err => {
+        __DEV__ && console.log(err); // eslint-disable-line no-undef
+        return reject(err);
+      });
+  });
+};
+
+export const userResponsePhoneVerification = (code) => {
+  return new Promise((resolve, reject) => {
+    return YettaServerAPIclient.getLokkaClient()
+      .then(client => {
+        return client.mutate(`{
+          userResponsePhoneVerification(
+            input:{
+              code: ${code}
+            }
+          ) {
+            result
+          }
+        }`);
+      })
+      .then(res => {
+        __DEV__ && console.log(res); // eslint-disable-line no-undef
+        return resolve(res);
+      })
+      .catch(err => {
+        __DEV__ && console.log(err); // eslint-disable-line no-undef
+        return reject(err);
+      });
+  });
+};
