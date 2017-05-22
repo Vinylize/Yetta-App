@@ -49,19 +49,16 @@ public class MainActivity extends ReactActivity implements
     protected static final String TAG = "MainActivity";
 
     /**
-     * for foreground
      * Constant used in the location settings dialog.
      */
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
 
     /**
-     * for foreground
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 2 * 60 * 1000;
 
     /**
-     * for foreground
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
      * than this value.
      */
@@ -95,10 +92,13 @@ public class MainActivity extends ReactActivity implements
     protected Location mCurrentLocation;
 
     /**
-     * Tracks the status of the location updates request. Value changes when the user presses the
-     * Start Updates and Stop Updates buttons.
+     * Tracks the status of the location updates request. Value changes from JS method
      */
-    protected Boolean mRequestingLocationUpdates;
+    protected Boolean mRequestingLocationUpdates = false;
+    /**
+     * Tracks the status of the background location updates request.
+     */
+    protected Boolean mRequestingLocationUpdatesBackground = false;
 
     /**
      * Time when the location was updated represented as a String.
@@ -152,11 +152,42 @@ public class MainActivity extends ReactActivity implements
         }, intentFilter);
         // [END handle push notification after app terminated]
 
-        // [START handle location service]
-
-        // todo: change the following to follow user settings
-        mRequestingLocationUpdates = true;
-        mLastUpdateTime = "";
+        // [START register broadcastReceivers for LocationService Methods]
+        IntentFilter intentFilterStartLocationUpdates = new IntentFilter(
+                "com.pingstersapp.LocationService.ReceiveStartLocationUpdates");
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mRequestingLocationUpdates = true;
+                startLocationUpdates();
+            }
+        }, intentFilterStartLocationUpdates);
+        IntentFilter intentFilterStopLocationUpdates = new IntentFilter(
+                "com.pingstersapp.LocationService.ReceiveStopLocationUpdates");
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                stopLocationUpdates();
+            }
+        }, intentFilterStopLocationUpdates);
+        IntentFilter intentFilterStartBackgroundLocationUpdates = new IntentFilter(
+                "com.pingstersapp.LocationService.ReceiveStartBackgroundLocationUpdates");
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mRequestingLocationUpdatesBackground = true;
+                requestLocationUpdatesBackground();
+            }
+        }, intentFilterStartBackgroundLocationUpdates);
+        IntentFilter intentFilterStopBackgroundLocationUpdates = new IntentFilter(
+                "com.pingstersapp.LocationService.ReceiveStopBackgroundLocationUpdates");
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                removeLocationUpdatesBackground();
+            }
+        }, intentFilterStopBackgroundLocationUpdates);
+        // [START register broadcastReceivers for LocationService Methods]
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
@@ -353,10 +384,12 @@ public class MainActivity extends ReactActivity implements
      */
     public void requestLocationUpdatesBackground() {
         try {
-            Log.i(TAG, "Starting location updates BACKGROUND");
-            Utils.setRequestingLocationUpdates(this, true);
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, getPendingIntent());
+            if (mRequestingLocationUpdatesBackground) {
+                Log.i(TAG, "Starting location updates BACKGROUND");
+                Utils.setRequestingLocationUpdates(this, true);
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                        mGoogleApiClient, mLocationRequest, getPendingIntent());
+            }
         } catch (SecurityException e) {
             Utils.setRequestingLocationUpdates(this, false);
             e.printStackTrace();
@@ -372,6 +405,7 @@ public class MainActivity extends ReactActivity implements
         Utils.setRequestingLocationUpdates(this, false);
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,
                 getPendingIntent());
+        mRequestingLocationUpdatesBackground = false;
     }
 
     /**
@@ -451,17 +485,17 @@ public class MainActivity extends ReactActivity implements
         // user launches the activity,
         // moves to a new location, and then changes the device orientation, the original location
         // is displayed as the activity is re-created.
-        if (mCurrentLocation == null) {
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-            // updateLocationUI();
-        }
         if (mRequestingLocationUpdates) {
             Log.d(TAG, "removing background location update");
             removeLocationUpdatesBackground();
 
             Log.i(TAG, "in onConnected(), starting location updates");
             startLocationUpdates();
+        }
+        if (mCurrentLocation == null) {
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+            // updateLocationUI();
         }
     }
 

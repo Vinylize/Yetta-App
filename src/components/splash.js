@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import store from './../store';
 import {
+  DeviceEventEmitter,
   Image,
   NativeModules,
   Platform,
@@ -15,6 +17,7 @@ import { NavigationActions } from 'react-navigation';
 // [start redux functions]
 import { setUser } from '../actions/authActions';
 import { setNavigator } from './../actions/navigatorActions';
+import { setCurrentLocation } from './../actions/componentsActions/homeActions';
 // [end redux functions]
 
 import IMG_LOGO from './../../assets/logo.png';
@@ -31,6 +34,21 @@ class Splash extends Component {
   componentWillMount() {
     this.props.setNavigator(this.props.navigation);
     this.autoLoginIfUserFound();
+
+    // trying to get one-time location update
+    if (Platform.OS === 'android') {
+      const { YettaLocationAndroid } = NativeModules;
+      YettaLocationAndroid.startLocationService();
+      DeviceEventEmitter.addListener('didUpdateToLocationAndroidForeground', async(data) => {
+        // console.log('foreground location update: ', data);
+        // Alert.alert('foreground location update', JSON.stringify(data));
+        store.dispatch(setCurrentLocation({
+          lat: data.latitude,
+          lon: data.longitude
+        }));
+        YettaLocationAndroid.stopLocationService();
+      });
+    }
   }
 
   componentDidMount() {
