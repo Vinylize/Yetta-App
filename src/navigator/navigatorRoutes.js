@@ -28,7 +28,7 @@ export const AppNavigator = StackNavigator({
   Home: { screen: MapView },
   IdVerification: { screen: IdVerification }
 }, {
-  initialRouteName: 'PhoneVerification',
+  initialRouteName: 'Splash',
   headerMode: 'none'
 });
 

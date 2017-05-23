@@ -20,7 +20,7 @@ export const getDeviceID = () => {
       return iOSUUIDManager.getUUID((error, events) => {
         if (error) {
           // todo: handle error or edge cases
-          console.log(error);
+          __DEV__ && console.log(error); // eslint-disable-line no-undef
         }
         console.log('UUID: ', events);
         return resolve(events[0]);
@@ -28,10 +28,10 @@ export const getDeviceID = () => {
     } else if (Platform.OS === 'android') {
       return AndroidUDIDManager.getUDID(
         (msg) => {
-          console.log(msg);
+          __DEV__ && console.log(msg); // eslint-disable-line no-undef
         },
         (UDID) => {
-          console.log('UDID', UDID);
+          __DEV__ && console.log(UDID); // eslint-disable-line no-undef
           return resolve(UDID);
         }
       );

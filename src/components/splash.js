@@ -96,9 +96,9 @@ class Splash extends Component {
         return this.queryUser(lokkaClient);
       })
       .then(viewer => {
-        if (viewer.isPV) {
+        if (viewer.isPV === true) {
           this.navigateToHome();
-        } else {
+        } else if (viewer.isPV === false) {
           this.navigateToPhoneVerification();
         }
       })

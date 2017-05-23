@@ -90,6 +90,7 @@ export const userRequestPhoneVerification = (phoneNum) => {
       })
       .catch(err => {
         __DEV__ && console.log(err); // eslint-disable-line no-undef
+        handleError(err);
         return reject(err);
       });
   });
@@ -115,6 +116,7 @@ export const userResponsePhoneVerification = (code) => {
       })
       .catch(err => {
         __DEV__ && console.log(err); // eslint-disable-line no-undef
+        handleError(err);
         return reject(err);
       });
   });

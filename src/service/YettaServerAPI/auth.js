@@ -42,6 +42,7 @@ export const userSignIn = () => {
   return YettaServerAPIclient.getLokkaClient()
     .then(client => {
       lokkaClient = client;
+      console.log(client);
       return YettaServerAPIclient.getDeviceID();
     })
     .then(deviceID => {
@@ -72,6 +73,10 @@ export const userSignIn = () => {
     });
 };
 
+/*
+ * this should be internally used with firebase.signout
+ * by userSignout from actions/authActions.js
+ */
 export const userSignOut = () => {
   return new Promise((resolve, reject) => {
     return YettaServerAPIclient.getLokkaClient()

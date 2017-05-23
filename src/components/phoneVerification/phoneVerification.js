@@ -13,7 +13,8 @@ import {
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
-// import * as YettaServerAPIverification from './../../service/YettaServerAPI/verification';
+import * as YettaServerAPIverification from './../../service/YettaServerAPI/verification';
+import * as authActions from './../../actions/authActions';
 
 // assets
 import IMG_BACK from './../../../assets/left-arrow-key.png';
@@ -56,15 +57,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f1f1',
     alignSelf: 'center',
     marginTop: HEIGHT * 0.07,
-    borderRadius: 5,
-    paddingLeft: 8
+    borderRadius: 5
   },
   phoneVerificationPhoneNumberTextInput: {
     height: 40,
     width: WIDTH * 0.65 - 20,
     backgroundColor: '#f1f1f1',
     alignSelf: 'center',
-    borderRadius: 5
+    borderRadius: 5,
+    textAlign: 'center'
   },
   phoneVerificationSendButton: {
     width: WIDTH,
@@ -97,12 +98,36 @@ export default class PhoneVerification extends Component {
     this.shouldActivateSendButton = this.shouldActivateSendButton.bind(this);
     this.handleSendButton = this.handleSendButton.bind(this);
     this.handleBackButton = this.handleBackButton.bind(this);
+    this.onChangeUserResponseTextInput = this.onChangeUserResponseTextInput.bind(this);
   }
 
   componentWillMount() {
     LayoutAnimation.easeInEaseOut();
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow.bind(this));
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide.bind(this));
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.phoneNumber) {
+      const num = nextState.phoneNumber.replace(/\s/g, '');
+      console.log(num);
+      if (num.length > 3 && num.length < 6) {
+        const updatedNum = `${num.substring(0, 3)} ${num.substring(3)}`;
+        if (updatedNum !== this.state.phoneNumber) {
+          this.setState({phoneNumber: updatedNum});
+        }
+      } else if (num.length > 6 && num.length <= 10) {
+        const updatedNum = `${num.substring(0, 3)} ${num.substring(3, 6)} ${num.substring(6)}`;
+        if (updatedNum !== this.state.phoneNumber) {
+          this.setState({phoneNumber: updatedNum});
+        }
+      } else if (num.length > 10) {
+        const updatedNum = `${num.substring(0, 3)} ${num.substring(3, 7)} ${num.substring(7)}`;
+        if (updatedNum !== this.state.phoneNumber) {
+          this.setState({phoneNumber: updatedNum});
+        }
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -135,24 +160,55 @@ export default class PhoneVerification extends Component {
     return (this.state.phoneNumber.length >= 10);
   }
 
+  onChangeUserResponseTextInput(text) {
+    LayoutAnimation.easeInEaseOut();
+    this.setState({fourDigitNumber: text});
+    if (text.length === 4) {
+      YettaServerAPIverification.userResponsePhoneVerification(text)
+        .then(res => {
+          __DEV__ && console.log(res); // eslint-disable-line no-undef
+          if (res.result === 'OK') {
+            this.navigateToHome();
+          }
+        })
+        .catch(err => {
+          __DEV__ && console.log(err); // eslint-disable-line no-undef
+        });
+    }
+  }
+
+  navigateToHome() {
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Home', params: {navigation: this.props.navigation}})
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
+  }
+
   handleSendButton() {
-    if (this.shouldActivateSendButton()) {
-      // YettaServerAPIverification.userRequestPhoneVerification(this.state.phoneNumber)
-      //   .then(res => {
-      //     __DEV__ && console.log(res); // eslint-disable-line no-undef
-      //     this.setState(() => {
-      //       return {showUserResponseView: true};
-      //     });
-      //   })
-      //   .catch(err => {
-      //     __DEV__ && console.log(err); // eslint-disable-line no-undef
-      //   });
-      this.setState({showUserResponseView: true});
+    if (this.state.showUserResponseView === false) {
+      const phoneNumber = this.state.phoneNumber.replace(/ /g, '');
+      if (this.shouldActivateSendButton()) {
+        YettaServerAPIverification.userRequestPhoneVerification(phoneNumber)
+          .then(res => {
+            __DEV__ && console.log(res); // eslint-disable-line no-undef
+            this.setState(() => {
+              return {showUserResponseView: true};
+            });
+          })
+          .catch(err => {
+            __DEV__ && console.log(err); // eslint-disable-line no-undef
+          });
+        this.setState({showUserResponseView: true});
+      }
     }
   }
 
   handleBackButton() {
     if (this.state.showUserResponseView === false) {
+      authActions.userSignout();
       this.navigateBackToLogin();
     } else if (this.state.showUserResponseView === true) {
       LayoutAnimation.easeInEaseOut();
@@ -213,7 +269,7 @@ export default class PhoneVerification extends Component {
             value={this.state.phoneNumber}
             underlineColorAndroid={'transparent'}
             keyboardType="numeric"
-            maxLength={11}
+            maxLength={13}
             autoFocus
           />
         </View>
@@ -237,26 +293,10 @@ export default class PhoneVerification extends Component {
         <Text style={[styles.phoneVerificationBodyText, {marginTop: HEIGHT * 0.033}]}>
           전송받은 인증번호를 입력해 주세요
         </Text>
-        <View style={styles.phoneVerificationPhoneNumberTextInputContainer}>
+        <View style={[styles.phoneVerificationPhoneNumberTextInputContainer, {width: 100}]}>
           <TextInput
-            style={styles.phoneVerificationPhoneNumberTextInput}
-            onChangeText={(text) => {
-              LayoutAnimation.easeInEaseOut();
-              this.setState({fourDigitNumber: text});
-              if (text.length === 4) {
-                /*
-                 YettaServerAPIverification.userResponsePhoneVerification(text)
-                 .then(res => {
-                 __DEV__ && console.log(res); // eslint-disable-line no-undef
-                 // todo:
-                 })
-                 .catch(err => {
-                 __DEV__ && console.log(err); // eslint-disable-line no-undef
-                 });
-                 */
-                this.setState({showUserResponseView: false});
-              }
-            }}
+            style={[styles.phoneVerificationPhoneNumberTextInput, {width: 100}]}
+            onChangeText={this.onChangeUserResponseTextInput}
             value={this.state.fourDigitNumber}
             underlineColorAndroid={'transparent'}
             keyboardType="numeric"
