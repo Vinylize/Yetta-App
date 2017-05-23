@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
-import * as YettaServerAPIverification from './../../service/YettaServerAPI/verification';
+// import * as YettaServerAPIverification from './../../service/YettaServerAPI/verification';
 
 // assets
 import IMG_BACK from './../../../assets/left-arrow-key.png';
