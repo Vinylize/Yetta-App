@@ -12,6 +12,7 @@ import {
   View
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
+import Loading from './../globalViews/loading';
 
 import * as YettaServerAPIverification from './../../service/YettaServerAPI/verification';
 import * as authActions from './../../actions/authActions';
@@ -44,12 +45,12 @@ const styles = StyleSheet.create({
   phoneVerificationBodyText: {
     fontSize: 18,
     color: 'black',
-    marginTop: HEIGHT * 0.07
+    marginTop: HEIGHT * 0.05
   },
   phoneVerificationBottomText: {
     fontSize: 14,
     color: 'grey',
-    marginTop: HEIGHT * 0.05
+    marginTop: HEIGHT * 0.04
   },
   phoneVerificationPhoneNumberTextInputContainer: {
     height: 40,
@@ -93,7 +94,8 @@ export default class PhoneVerification extends Component {
       fourDigitNumber: '',
       keyboardDidShow: false,
       keyboardHeight: 0,
-      showUserResponseView: false
+      showUserResponseView: false,
+      busyWaitingUserResponsePV: false
     };
     this.shouldActivateSendButton = this.shouldActivateSendButton.bind(this);
     this.handleSendButton = this.handleSendButton.bind(this);
@@ -133,6 +135,7 @@ export default class PhoneVerification extends Component {
   componentWillUnmount() {
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
+    Keyboard.dismiss();
   }
 
   keyboardDidShow(e) {
@@ -164,15 +167,16 @@ export default class PhoneVerification extends Component {
     LayoutAnimation.easeInEaseOut();
     this.setState({fourDigitNumber: text});
     if (text.length === 4) {
+      this.setState({busyWaitingUserResponsePV: true});
       YettaServerAPIverification.userResponsePhoneVerification(text)
         .then(res => {
           __DEV__ && console.log(res); // eslint-disable-line no-undef
-          if (res.result === 'OK') {
-            this.navigateToHome();
-          }
+          this.setState({busyWaitingUserResponsePV: false});
+          this.navigateToHome();
         })
         .catch(err => {
           __DEV__ && console.log(err); // eslint-disable-line no-undef
+          this.setState({busyWaitingUserResponsePV: false});
         });
     }
   }
@@ -290,10 +294,10 @@ export default class PhoneVerification extends Component {
           휴대폰 인증
         </Text>
         <Text style={{marginTop: HEIGHT * 0.07, color: 'grey'}}>{this.state.phoneNumber}</Text>
-        <Text style={[styles.phoneVerificationBodyText, {marginTop: HEIGHT * 0.033}]}>
+        <Text style={[styles.phoneVerificationBodyText, {marginTop: HEIGHT * 0.03}]}>
           전송받은 인증번호를 입력해 주세요
         </Text>
-        <View style={[styles.phoneVerificationPhoneNumberTextInputContainer, {width: 100}]}>
+        <View style={[styles.phoneVerificationPhoneNumberTextInputContainer, {width: 100, marginTop: HEIGHT * 0.045}]}>
           <TextInput
             style={[styles.phoneVerificationPhoneNumberTextInput, {width: 100}]}
             onChangeText={this.onChangeUserResponseTextInput}
@@ -344,6 +348,7 @@ export default class PhoneVerification extends Component {
         {this.renderHeader()}
         {this.renderBody()}
         {this.renderSendButton()}
+        <Loading show={this.state.busyWaitingUserResponsePV}/>
       </View>
     );
   }
