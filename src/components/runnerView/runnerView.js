@@ -6,7 +6,6 @@ import {
   LayoutAnimation,
   Text,
   TouchableOpacity,
-  UIManager,
   View
 } from 'react-native';
 import IdVerification from './../idVerification/idVerification';
@@ -27,8 +26,6 @@ import IMG_CLOCK from './../../../assets/clock.png';
 
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
-
-UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 const styles = {
   container: {
