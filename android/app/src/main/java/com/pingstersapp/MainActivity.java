@@ -415,16 +415,18 @@ public class MainActivity extends ReactActivity implements
         // It is a good practice to remove location requests when the activity is in a paused or
         // stopped state. Doing so helps battery performance and is especially
         // recommended in applications that request frequent location updates.
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient,
-                this
-        ).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                mRequestingLocationUpdates = false;
-                // setButtonsEnabledState();
-            }
-        });
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient,
+                    this
+            ).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(@NonNull Status status) {
+                    mRequestingLocationUpdates = false;
+                    // setButtonsEnabledState();
+                }
+            });
+        }
     }
 
     @Override
@@ -525,6 +527,10 @@ public class MainActivity extends ReactActivity implements
             // updateButtonsState(Utils.getRequestingLocationUpdates(this));
             Log.d(TAG, Boolean.toString(Utils.getRequestingLocationUpdates(this)));
         }
+    }
+
+    public void checkLocationServiceConnectivity() {
+
     }
 
     /**
