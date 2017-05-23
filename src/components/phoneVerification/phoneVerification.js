@@ -5,6 +5,7 @@ import {
   Keyboard,
   LayoutAnimation,
   Platform,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -20,7 +21,7 @@ import IMG_BACK from './../../../assets/left-arrow-key.png';
 const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
-const styles = {
+const styles = StyleSheet.create({
   phoneVerificationContainer: {
     flex: 1,
     backgroundColor: '#f9f9f9',
@@ -34,22 +35,35 @@ const styles = {
     alignSelf: 'flex-start',
     marginLeft: WIDTH * 0.1
   },
+  phoneVerificationBodyContainer: {
+    width: WIDTH,
+    alignItems: 'center',
+    backgroundColor: 'transparent'
+  },
   phoneVerificationBodyText: {
     fontSize: 18,
     color: 'black',
-    marginTop: HEIGHT * 0.05
+    marginTop: HEIGHT * 0.07
   },
   phoneVerificationBottomText: {
     fontSize: 14,
     color: 'grey',
     marginTop: HEIGHT * 0.05
   },
-  phoneVerificationPhoneNumberTextInput: {
+  phoneVerificationPhoneNumberTextInputContainer: {
     height: 40,
     width: WIDTH * 0.65,
     backgroundColor: '#f1f1f1',
     alignSelf: 'center',
     marginTop: HEIGHT * 0.07,
+    borderRadius: 5,
+    paddingLeft: 8
+  },
+  phoneVerificationPhoneNumberTextInput: {
+    height: 40,
+    width: WIDTH * 0.65 - 20,
+    backgroundColor: '#f1f1f1',
+    alignSelf: 'center',
     borderRadius: 5
   },
   phoneVerificationSendButton: {
@@ -68,16 +82,17 @@ const styles = {
     alignItems: 'center',
     marginLeft: 20
   }
-};
+});
 
 export default class PhoneVerification extends Component {
   constructor() {
     super();
     this.state = {
       phoneNumber: '',
+      fourDigitNumber: '',
       keyboardDidShow: false,
       keyboardHeight: 0,
-      show4digitScreen: false
+      showUserResponseView: false
     };
     this.shouldActivateSendButton = this.shouldActivateSendButton.bind(this);
     this.handleSendButton = this.handleSendButton.bind(this);
@@ -122,22 +137,26 @@ export default class PhoneVerification extends Component {
 
   handleSendButton() {
     if (this.shouldActivateSendButton()) {
-      YettaServerAPIverification.userRequestPhoneVerification(this.state.phoneNumber)
-        .then(res => {
-          __DEV__ && console.log(res); // eslint-disable-line no-undef
-          this.setState(() => {
-            return {show4digitScreen: false};
-          });
-        })
-        .catch(err => {
-          __DEV__ && console.log(err); // eslint-disable-line no-undef
-        });
+      // YettaServerAPIverification.userRequestPhoneVerification(this.state.phoneNumber)
+      //   .then(res => {
+      //     __DEV__ && console.log(res); // eslint-disable-line no-undef
+      //     this.setState(() => {
+      //       return {showUserResponseView: true};
+      //     });
+      //   })
+      //   .catch(err => {
+      //     __DEV__ && console.log(err); // eslint-disable-line no-undef
+      //   });
+      this.setState({showUserResponseView: true});
     }
   }
 
   handleBackButton() {
-    if (this.state.show4digitScreen === false) {
+    if (this.state.showUserResponseView === false) {
       this.navigateBackToLogin();
+    } else if (this.state.showUserResponseView === true) {
+      LayoutAnimation.easeInEaseOut();
+      this.setState({showUserResponseView: false});
     }
   }
 
@@ -172,7 +191,7 @@ export default class PhoneVerification extends Component {
     );
   }
 
-  renderBodyPhoneNumber() {
+  renderBodyUserRequestView() {
     return (
       <View style={{
         width: WIDTH,
@@ -184,18 +203,20 @@ export default class PhoneVerification extends Component {
         <Text style={styles.phoneVerificationBodyText}>
           휴대전화번호를 입력해주세요
         </Text>
-        <TextInput
-          style={styles.phoneVerificationPhoneNumberTextInput}
-          onChangeText={(text) => {
-            LayoutAnimation.easeInEaseOut();
-            this.setState({phoneNumber: text});
-          }}
-          value={this.state.phoneNumber}
-          underlineColorAndroid={'transparent'}
-          keyboardType="numeric"
-          maxLength={11}
-          autoFocus
-        />
+        <View style={styles.phoneVerificationPhoneNumberTextInputContainer}>
+          <TextInput
+            style={styles.phoneVerificationPhoneNumberTextInput}
+            onChangeText={(text) => {
+              LayoutAnimation.easeInEaseOut();
+              this.setState({phoneNumber: text});
+            }}
+            value={this.state.phoneNumber}
+            underlineColorAndroid={'transparent'}
+            keyboardType="numeric"
+            maxLength={11}
+            autoFocus
+          />
+        </View>
         <Text style={styles.phoneVerificationBottomText}>
           입력하신 번호로 4자리의 인증번호를 보내드립니다
         </Text>
@@ -203,20 +224,86 @@ export default class PhoneVerification extends Component {
     );
   }
 
+  renderBodyUserResponseView() {
+    return (
+      <View style={{
+        width: WIDTH,
+        alignItems: 'center',
+        backgroundColor: 'transparent'}}>
+        <Text style={styles.phoneVerificationHeaderText}>
+          휴대폰 인증
+        </Text>
+        <Text style={{marginTop: HEIGHT * 0.07, color: 'grey'}}>{this.state.phoneNumber}</Text>
+        <Text style={[styles.phoneVerificationBodyText, {marginTop: HEIGHT * 0.033}]}>
+          전송받은 인증번호를 입력해 주세요
+        </Text>
+        <View style={styles.phoneVerificationPhoneNumberTextInputContainer}>
+          <TextInput
+            style={styles.phoneVerificationPhoneNumberTextInput}
+            onChangeText={(text) => {
+              LayoutAnimation.easeInEaseOut();
+              this.setState({fourDigitNumber: text});
+              if (text.length === 4) {
+                /*
+                 YettaServerAPIverification.userResponsePhoneVerification(text)
+                 .then(res => {
+                 __DEV__ && console.log(res); // eslint-disable-line no-undef
+                 // todo:
+                 })
+                 .catch(err => {
+                 __DEV__ && console.log(err); // eslint-disable-line no-undef
+                 });
+                 */
+                this.setState({showUserResponseView: false});
+              }
+            }}
+            value={this.state.fourDigitNumber}
+            underlineColorAndroid={'transparent'}
+            keyboardType="numeric"
+            maxLength={4}
+            autoFocus
+          />
+        </View>
+        <TouchableOpacity style={styles.phoneVerificationBottomText}>
+          <Text style={{color: '#205D98'}}>도움이 필요하신가요?</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  renderBody() {
+    if (this.state.showUserResponseView === true) {
+      return this.renderBodyUserResponseView();
+    } else if (this.state.showUserResponseView === false) {
+      return this.renderBodyUserRequestView();
+    }
+    __DEV__ && console.log('ERROR: unexpected showUserResponseView value'); // eslint-disable-line no-undef
+    return null;
+  }
+
+  renderSendButton() {
+    if (this.state.showUserResponseView === true) {
+      return null;
+    }
+    return (
+      <TouchableOpacity
+        style={[styles.phoneVerificationSendButton, {
+          backgroundColor: (this.shouldActivateSendButton()) ? '#ff9700' : 'grey',
+          bottom: (this.state.keyboardDidShow === true) ? this.state.keyboardHeight : 0}
+        ]}
+        onPress={this.handleSendButton}
+      >
+        <Text style={{color: 'white', fontWeight: '500'}}>인증번호 받기</Text>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     return (
       <View style={styles.phoneVerificationContainer}>
         {this.renderHeader()}
-        {this.renderBodyPhoneNumber()}
-        <TouchableOpacity
-          style={[styles.phoneVerificationSendButton, {
-            backgroundColor: (this.shouldActivateSendButton()) ? '#ff9700' : 'grey',
-            bottom: (this.state.keyboardDidShow === true) ? this.state.keyboardHeight : 0}
-          ]}
-          onPress={this.handleSendButton}
-        >
-          <Text style={{color: 'white', fontWeight: '500'}}>인증번호 받기</Text>
-        </TouchableOpacity>
+        {this.renderBody()}
+        {this.renderSendButton()}
       </View>
     );
   }
