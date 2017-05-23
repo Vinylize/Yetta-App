@@ -42,7 +42,6 @@ export const userSignIn = () => {
   return YettaServerAPIclient.getLokkaClient()
     .then(client => {
       lokkaClient = client;
-      console.log(client);
       return YettaServerAPIclient.getDeviceID();
     })
     .then(deviceID => {
