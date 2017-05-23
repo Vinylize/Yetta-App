@@ -529,10 +529,6 @@ public class MainActivity extends ReactActivity implements
         }
     }
 
-    public void checkLocationServiceConnectivity() {
-
-    }
-
     /**
      * Callback that fires when the location changes.
      */
