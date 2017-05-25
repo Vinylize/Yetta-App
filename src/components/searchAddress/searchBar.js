@@ -14,8 +14,8 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { APIKEY } from './../../utils';
 import * as GOOGLE_MAPS_API from './../../service/GoogleMapsAPI';
+import Config from 'react-native-config';
 
 // [start redux functions]
 import { setBusyWaitingPlaceDetailAPI } from './../../actions/busyWaitingActions';
@@ -255,7 +255,7 @@ class SearchBar extends Component {
 
   handleTextChange(text) {
     const AUTOCOMPLETEURL = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${text}` +
-      `&location=${this.props.mapCameraPos.lat},${this.props.mapCameraPos.lon}&radius=500&key=${APIKEY}`;
+      `&location=${this.props.mapCameraPos.lat},${this.props.mapCameraPos.lon}&radius=500&key=${Config.GOOGLE_MAPS_API_KEY}`;
     this.setState({
       text: text
     });

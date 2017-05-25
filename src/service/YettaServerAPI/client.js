@@ -3,13 +3,13 @@ import {
   Platform
 } from 'react-native';
 import * as firebase from 'firebase';
-import { URL } from './../../utils';
+import Config from 'react-native-config';
 
 const Lokka = require('lokka').Lokka;
 const Transport = require('lokka-transport-http').Transport;
 
 const client = new Lokka({
-  transport: new Transport(URL)
+  transport: new Transport(Config.API_URL)
 });
 
 export const getDeviceID = () => {

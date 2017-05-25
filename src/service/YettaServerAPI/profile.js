@@ -1,8 +1,8 @@
 import * as YettaServerAPIclient from './client';
 import { handleError } from './../../utils/errorHandlers';
-import { URL } from './../../utils';
+import Config from 'react-native-config';
 
-const PROFILE_UPLOAD_URL = `${URL}/upload?query=mutation{userUploadProfileImage(input:{}){imgUrl clientMutationId}}`;
+const PROFILE_UPLOAD_URL = `${Config.API_URL}/upload?query=mutation{userUploadProfileImage(input:{}){imgUrl clientMutationId}}`;
 
 export const userProfileImageUpload = (base64data) => {
   return YettaServerAPIclient.getFetchHeaders()

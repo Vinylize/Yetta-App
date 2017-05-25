@@ -1,13 +1,13 @@
 import * as YettaServerAPIclient from './client';
 import { handleError } from './../../utils/errorHandlers';
-import { URL } from './../../utils';
+import Config from 'react-native-config';
 import store from './../../store';
 
 // redux functions
 import { setIsWaitingForJudge } from './../../actions/runnerStatusActions';
 import { setBusyWaitingRunnerIdImageUpload } from './../../actions/busyWaitingActions';
 
-const ID_UPLOAD_URL = `${URL}/upload?query=mutation{userUploadIdImage(input:{}){imgUrl clientMutationId}}`;
+const ID_UPLOAD_URL = `${Config.API_URL}/upload?query=mutation{userUploadIdImage(input:{}){imgUrl clientMutationId}}`;
 
 export const runnerApplyFirstJudge = () => {
   return new Promise((resolve, reject) => {
