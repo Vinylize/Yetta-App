@@ -34,7 +34,7 @@
 }
 @end
 #endif
- 
+
 @implementation AppDelegate {
   RCTRootView * rootView;
 }
@@ -43,7 +43,7 @@
 {
   NSURL *jsCodeLocation;
   
-  [GMSServices provideAPIKey:@""];
+  [GMSServices provideAPIKey:[self getCredentials]];
 
   // Create a Mutable Dictionary to hold the appProperties to pass to React Native.
   NSMutableDictionary *appProperties = [NSMutableDictionary dictionary];
@@ -126,6 +126,38 @@
                                            selector:@selector(changeRootViewBGColor)
                                                name:@"changeRootViewBGColor"
                                              object:nil];
+}
+
+- (NSString *) getCredentials
+{
+  NSError *error = nil;
+  NSString *jsonPath = [[NSBundle mainBundle] pathForResource:@"credentials"
+                                                       ofType:@"json"];
+  NSString* fileContents =[NSString stringWithContentsOfFile:jsonPath encoding:NSUTF8StringEncoding error:&error];
+  
+  if(error)
+  {
+    #ifdef DEBUG
+    NSLog(@"Error reading file: %@", [error localizedDescription]);
+    #endif
+  }
+  
+  NSDictionary *dictCredentials = [NSJSONSerialization
+                                   JSONObjectWithData:[fileContents dataUsingEncoding:NSUTF8StringEncoding]
+                                   options:kNilOptions
+                                   error:&error];
+
+  if (error) {
+    #ifdef DEBUG
+    NSLog(@"%@", [error localizedDescription]);
+    #endif
+  }
+  else {
+    #ifdef DEBUG
+    NSLog(@"GOOGLE MAPS API: %@", dictCredentials[@"GOOGLE_MAPS_API"]);
+    #endif
+  }
+  return dictCredentials[@"GOOGLE_MAPS_API"];
 }
 
 - (void)startLocationService
