@@ -34,11 +34,12 @@
 		17987F121EC96D9A00BE72AF /* YettaUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 17987F111EC96D9A00BE72AF /* YettaUtils.m */; };
 		179BEF581E7156650087C0DB /* VinylMapMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */; };
 		179D3A1D1E4F3F6B00038FE8 /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */; };
-		17A19C9F1EBC6DD3008C785B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17A19C9E1EBC6DD3008C785B /* GoogleService-Info.plist */; };
 		17C055F91EB635BA001F513A /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; };
 		17C0568B1EB6427F001F513A /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; };
 		17C0568C1EB6427F001F513A /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		17D699681EC065D00052117A /* YettaUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D699671EC065D00052117A /* YettaUUID.m */; };
+		17E5427C1ED6A3790032E30A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17E5427B1ED6A3790032E30A /* GoogleService-Info.plist */; };
+		17E5427E1ED6B4D70032E30A /* credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 17E5427D1ED6B4D70032E30A /* credentials.json */; };
 		17F5CB531EB5D7CF00201D7B /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F5CB521EB5D7C300201D7B /* libART.a */; };
 		260CDADB65DD47CB9827DD6F /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 096E3902413A4408A5817DB1 /* libLottieReactNative.a */; };
 		41E423D59A32F0EA37376C9C /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */; };
@@ -212,6 +213,13 @@
 			remoteGlobalIDString = 62CA59B71E3C173B002D7188;
 			remoteInfo = Lottie_iOS;
 		};
+		17E542771ED6A3180032E30A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 094230855B6A46A7A473E6C2 /* RNBackgroundTimer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 641926921ECB4257009CF731;
+			remoteInfo = "RNBackgroundTimer-tvOS";
+		};
 		17F5CAD91EB5D6F600201D7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 094230855B6A46A7A473E6C2 /* RNBackgroundTimer.xcodeproj */;
@@ -378,10 +386,11 @@
 		179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VinylMapMarkerView.swift; sourceTree = "<group>"; };
 		179BEF7F1E727BBD0087C0DB /* pingstersApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pingstersApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-pingstersApp.a"; path = "../../../Library/Developer/Xcode/DerivedData/pingstersApp-djwrprktbzexhdgdqgptqhvxgiwn/Build/Products/Debug-iphonesimulator/libPods-pingstersApp.a"; sourceTree = "<group>"; };
-		17A19C9E1EBC6DD3008C785B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		17C055CA1EB632F8001F513A /* Lottie.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lottie.xcodeproj; path = "../node_modules/lottie-ios/Lottie.xcodeproj"; sourceTree = "<group>"; };
 		17D699671EC065D00052117A /* YettaUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaUUID.m; sourceTree = "<group>"; };
 		17D699691EC065DD0052117A /* YettaUUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YettaUUID.h; sourceTree = "<group>"; };
+		17E5427B1ED6A3790032E30A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		17E5427D1ED6B4D70032E30A /* credentials.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = credentials.json; sourceTree = "<group>"; };
 		17F5CB4D1EB5D7C300201D7B /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		1E396242CED6475EA35DE044 /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundTimer.a; sourceTree = "<group>"; };
 		3C1A0ED488494194B56E9107 /* LottieReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LottieReactNative.xcodeproj; path = "../node_modules/lottie-react-native/lib/ios/LottieReactNative.xcodeproj"; sourceTree = "<group>"; };
@@ -519,9 +528,10 @@
 		13B07FAE1A68108700A75B9A /* pingstersApp */ = {
 			isa = PBXGroup;
 			children = (
+				17E5427D1ED6B4D70032E30A /* credentials.json */,
+				17E5427B1ED6A3790032E30A /* GoogleService-Info.plist */,
 				17987EEC1EC96D4D00BE72AF /* YettaUtils */,
 				17D699441EC065440052117A /* YettaUUID */,
-				17A19C9E1EBC6DD3008C785B /* GoogleService-Info.plist */,
 				174261D11E77E3AD00012E9A /* pingstersApp.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -622,6 +632,7 @@
 			isa = PBXGroup;
 			children = (
 				17F5CADA1EB5D6F600201D7B /* libRNBackgroundTimer.a */,
+				17E542781ED6A3180032E30A /* libRNBackgroundTimer.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -663,7 +674,7 @@
 			isa = PBXGroup;
 			children = (
 				5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */,
-				5E9157351DD0AC6500FF2AA8 /* libRCTAnimation-tvOS.a */,
+				5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1065,6 +1076,13 @@
 			remoteRef = 17C0566B1EB64266001F513A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		17E542781ED6A3180032E30A /* libRNBackgroundTimer.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNBackgroundTimer.a;
+			remoteRef = 17E542771ED6A3180032E30A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		17F5CADA1EB5D6F600201D7B /* libRNBackgroundTimer.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1100,10 +1118,10 @@
 			remoteRef = 5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		5E9157351DD0AC6500FF2AA8 /* libRCTAnimation-tvOS.a */ = {
+		5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libRCTAnimation-tvOS.a";
+			path = libRCTAnimation.a;
 			remoteRef = 5E9157341DD0AC6500FF2AA8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1185,8 +1203,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				17A19C9F1EBC6DD3008C785B /* GoogleService-Info.plist in Resources */,
+				17E5427C1ED6A3790032E30A /* GoogleService-Info.plist in Resources */,
 				171C02BF1E4587F7002DB33B /* Podfile in Resources */,
+				17E5427E1ED6B4D70032E30A /* credentials.json in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
