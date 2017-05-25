@@ -10,7 +10,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  UIManager,
   View
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
@@ -32,8 +31,6 @@ const WIDTH = Dimensions.get('window').width;
 const DEFAULT_LEFT = WIDTH * 0.1;
 const DEFAULT_RIGHT = WIDTH * 0.1;
 const LIST_BORDER_COLOR = '#eee';
-
-UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 const styles = {
   container: {

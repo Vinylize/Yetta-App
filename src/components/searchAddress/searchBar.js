@@ -12,13 +12,10 @@ import {
   Platform,
   Text,
   TouchableOpacity,
-  UIManager,
   View
 } from 'react-native';
 import { APIKEY } from './../../utils';
 import * as GOOGLE_MAPS_API from './../../service/GoogleMapsAPI';
-
-UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 // [start redux functions]
 import { setBusyWaitingPlaceDetailAPI } from './../../actions/busyWaitingActions';

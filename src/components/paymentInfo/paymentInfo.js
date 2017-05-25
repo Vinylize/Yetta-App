@@ -26,7 +26,14 @@ const styles = {
     backgroundColor: '#f9f9f9'
   },
   topContainer: {
-    height: 100,
+    ...Platform.select({
+      ios: {
+        height: 100
+      },
+      android: {
+        height: 80
+      }
+    }),
     padding: DEFAULT_LEFT,
     marginTop: 30,
     justifyContent: 'center'
@@ -172,7 +179,7 @@ class PaymentInfo extends Component {
         </TouchableOpacity>
         <View style={styles.topContainer}>
           <Text style={styles.topContainerText}>
-            {(this.state.showAddNewCardView) ? '결제추가' : '결제 정보'}
+            {(this.state.showAddNewCardView) ? '결제 추가' : '결제 정보'}
           </Text>
         </View>
         {this.renderBody()}

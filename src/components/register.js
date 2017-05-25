@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import {
   Alert,
   findNodeHandle,
+  Platform,
   Text,
   TextInput,
   View,
@@ -18,7 +19,13 @@ const WIDTH = Dimensions.get('window').width;
 
 const styles = {
   container: {
-    padding: WIDTH * 0.125,
+    ...Platform.select({
+      ios: {
+        paddingTop: WIDTH * 0.125
+      }
+    }),
+    paddingLeft: WIDTH * 0.125,
+    paddingRight: WIDTH * 0.125,
     flex: 1,
     backgroundColor: '#f9f9f9'
   },
@@ -188,6 +195,7 @@ export default class Register extends Component {
             style={styles.textInput}
             onChangeText={(text) => this.setState({userName: text})}
             value={this.state.userName}
+            underlineColorAndroid={'transparent'}
           />
           <View style={{height: 33}} />
           <Text style={styles.sectionText}>이메일주소</Text>
@@ -197,6 +205,7 @@ export default class Register extends Component {
             value={this.state.userEmail}
             onSubmitEditing={Keyboard.dismiss}
             autoCapitalize={'none'}
+            underlineColorAndroid={'transparent'}
           />
           <Text style={styles.sectionText}>비밀번호</Text>
           <TextInput
@@ -206,6 +215,7 @@ export default class Register extends Component {
             onSubmitEditing={Keyboard.dismiss}
             autoCapitalize={'none'}
             secureTextEntry={true}
+            underlineColorAndroid={'transparent'}
           />
           <Text style={styles.sectionText}>비밀번호 확인</Text>
           <TextInput
@@ -215,6 +225,7 @@ export default class Register extends Component {
             onSubmitEditing={Keyboard.dismiss}
             autoCapitalize={'none'}
             secureTextEntry={true}
+            underlineColorAndroid={'transparent'}
           />
           <View style={{alignItems: 'flex-end', marginTop: 39}}>
             <TouchableOpacity onPress={this.handleRegisterButton.bind(this)}>

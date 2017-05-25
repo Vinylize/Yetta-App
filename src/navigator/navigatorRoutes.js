@@ -5,7 +5,7 @@ import MapView from '../components/homeScreen/mapView';
 import LoginScreen from './../components/login';
 import ProfileScreen from './../components/profile';
 import RegisterScreen from './../components/register';
-import PhoneVerificationScreen from './../components/phoneVerification';
+import PhoneVerificationScreen from './../components/phoneVerification/phoneVerification';
 import PaymentInfoScreen from './../components/paymentInfo/paymentInfo';
 import CreateOrderScreen from './../components/createOrder/createOrder';
 import SettingScreen from './../components/settings/setting';

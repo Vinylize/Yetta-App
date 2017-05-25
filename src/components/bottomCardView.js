@@ -10,8 +10,7 @@ import {
   PanResponder,
   Platform,
   Easing,
-  ScrollView,
-  UIManager
+  ScrollView
 } from 'react-native';
 
 // [start redux functions]
@@ -33,9 +32,6 @@ const defaultMarginVal = (WIDTH - cardWidth) / 2;
 const PLATFORM_SPECIFIC = {
   animatedCardLeftVal: (Platform.OS === 'ios') ? 0 : -WIDTH
 };
-
-UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
-
 
 class BottomCardView extends Component {
   constructor() {
