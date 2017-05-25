@@ -40,7 +40,6 @@
 		17C0568C1EB6427F001F513A /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		17D699681EC065D00052117A /* YettaUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D699671EC065D00052117A /* YettaUUID.m */; };
 		17E5427C1ED6A3790032E30A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17E5427B1ED6A3790032E30A /* GoogleService-Info.plist */; };
-		17E5427E1ED6B4D70032E30A /* credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 17E5427D1ED6B4D70032E30A /* credentials.json */; };
 		17F5CB531EB5D7CF00201D7B /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F5CB521EB5D7C300201D7B /* libART.a */; };
 		260CDADB65DD47CB9827DD6F /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 096E3902413A4408A5817DB1 /* libLottieReactNative.a */; };
 		41E423D59A32F0EA37376C9C /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */; };
@@ -399,7 +398,6 @@
 		17D699671EC065D00052117A /* YettaUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaUUID.m; sourceTree = "<group>"; };
 		17D699691EC065DD0052117A /* YettaUUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YettaUUID.h; sourceTree = "<group>"; };
 		17E5427B1ED6A3790032E30A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		17E5427D1ED6B4D70032E30A /* credentials.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = credentials.json; sourceTree = "<group>"; };
 		17F5CB4D1EB5D7C300201D7B /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		1E396242CED6475EA35DE044 /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundTimer.a; sourceTree = "<group>"; };
 		3C1A0ED488494194B56E9107 /* LottieReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LottieReactNative.xcodeproj; path = "../node_modules/lottie-react-native/lib/ios/LottieReactNative.xcodeproj"; sourceTree = "<group>"; };
@@ -539,7 +537,6 @@
 		13B07FAE1A68108700A75B9A /* pingstersApp */ = {
 			isa = PBXGroup;
 			children = (
-				17E5427D1ED6B4D70032E30A /* credentials.json */,
 				17E5427B1ED6A3790032E30A /* GoogleService-Info.plist */,
 				17987EEC1EC96D4D00BE72AF /* YettaUtils */,
 				17D699441EC065440052117A /* YettaUUID */,
@@ -1236,7 +1233,6 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				17E5427C1ED6A3790032E30A /* GoogleService-Info.plist in Resources */,
 				171C02BF1E4587F7002DB33B /* Podfile in Resources */,
-				17E5427E1ED6B4D70032E30A /* credentials.json in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

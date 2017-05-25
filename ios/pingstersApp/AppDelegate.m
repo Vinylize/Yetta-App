@@ -12,6 +12,7 @@
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
 #import "RCTPushNotificationManager.h"
+#import "ReactNativeConfig.h"
 
 #import "YettaFCM.h"
 #import "YettaLocationService.h"
@@ -130,34 +131,8 @@
 
 - (NSString *) getCredentials
 {
-  NSError *error = nil;
-  NSString *jsonPath = [[NSBundle mainBundle] pathForResource:@"credentials"
-                                                       ofType:@"json"];
-  NSString* fileContents =[NSString stringWithContentsOfFile:jsonPath encoding:NSUTF8StringEncoding error:&error];
-  
-  if(error)
-  {
-    #ifdef DEBUG
-    NSLog(@"Error reading file: %@", [error localizedDescription]);
-    #endif
-  }
-  
-  NSDictionary *dictCredentials = [NSJSONSerialization
-                                   JSONObjectWithData:[fileContents dataUsingEncoding:NSUTF8StringEncoding]
-                                   options:kNilOptions
-                                   error:&error];
-
-  if (error) {
-    #ifdef DEBUG
-    NSLog(@"%@", [error localizedDescription]);
-    #endif
-  }
-  else {
-    #ifdef DEBUG
-    NSLog(@"GOOGLE MAPS API: %@", dictCredentials[@"GOOGLE_MAPS_API"]);
-    #endif
-  }
-  return dictCredentials[@"GOOGLE_MAPS_API"];
+  NSString *apiKey = [ReactNativeConfig envFor:@"IOS_GOOGLE_API_KEY"];
+  return apiKey;
 }
 
 - (void)startLocationService
