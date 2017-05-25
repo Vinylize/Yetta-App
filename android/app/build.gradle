@@ -151,6 +151,7 @@ def getDate() {
 }
 
 dependencies {
+    compile project(':react-native-config')
     compile project(':react-native-image-picker')
     compile project(':lottie-react-native')
     compile project(':react-native-linear-gradient')
