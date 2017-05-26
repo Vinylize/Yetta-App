@@ -94,10 +94,10 @@ class Home extends Component {
   componentWillMount() {
     if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener('onMarkerPress', (e) => {
-        console.log(e);
+        __DEV__ && console.log(e); // eslint-disable-line no-undef
       });
       DeviceEventEmitter.addListener('onMapMove', (e) => {
-        console.log(e);
+        __DEV__ && console.log(e); // eslint-disable-line no-undef
         const { trackingCurrentPos } = this.state;
         // map moved by user
         if (trackingCurrentPos && e.gesture === '1') {
@@ -105,7 +105,7 @@ class Home extends Component {
         }
       });
       DeviceEventEmitter.addListener('onCameraIdle', (e) => {
-        console.log('camera position idle: ', e);
+        __DEV__ && console.log('camera position idle: ', e); // eslint-disable-line no-undef
         const { lat, lon } = e;
         this.props.setMapCameraPos({lat, lon});
 
@@ -128,7 +128,7 @@ class Home extends Component {
             })
             .catch(err => {
               this.props.setBusyWaitingGeocodingAPI(false);
-              console.log(err);
+              __DEV__ && console.log(err); // eslint-disable-line no-undef
             });
         }
       });
@@ -224,7 +224,9 @@ class Home extends Component {
           }`
         );
       })
-      .then(console.log)
+      .then(res => {
+        __DEV__ && console.log(res); // eslint-disable-line no-undef
+      })
       .catch(handleError);
   }
 
@@ -241,7 +243,7 @@ class Home extends Component {
         <VinylMapIOS
           style={{flex: 1}}
           onPress={(e) => {
-            console.log(e.nativeEvent);
+            __DEV__ && console.log(e.nativeEvent); // eslint-disable-line no-undef
           }}
           onMarkerPress={() => {
             // console.log(e.nativeEvent);
@@ -286,7 +288,7 @@ class Home extends Component {
                 })
                 .catch(err => {
                   this.props.setBusyWaitingGeocodingAPI(false);
-                  console.log(err);
+                  __DEV__ && console.log(err); // eslint-disable-line no-undef
                 });
             }
           }}
