@@ -58,7 +58,6 @@ class RunnerView extends Component {
       lastOrderId: undefined
     };
     this.startCount = this.startCount.bind(this);
-    this.mutationRunnerCatchOrder = this.mutationRunnerCatchOrder.bind(this);
     this.handleCancelLookingForNewOrderBtn = this.handleCancelLookingForNewOrderBtn.bind(this);
     this.handleCatchNewOrderBtn = this.handleCatchNewOrderBtn.bind(this);
   }
@@ -253,11 +252,6 @@ class RunnerView extends Component {
         </View>
       </View>
     );
-  }
-
-  mutationRunnerCatchOrder(orderId) {
-    console.log(orderId);
-
   }
 
   renderBodyFoundNewOrder() {
