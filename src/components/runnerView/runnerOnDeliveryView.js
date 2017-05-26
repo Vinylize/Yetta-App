@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
+  Dimensions,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Platform
 } from 'react-native';
 
 // [start redux functions]
@@ -14,13 +16,29 @@ import {
 import { setRunnerNotification } from '../../actions/pushNotificationActions';
 // [end redux functions]
 
+const HEIGHT = Dimensions.get('window').height;
+const WIDTH = Dimensions.get('window').width;
+
 const styles = {
   container: {
-    flex: 0.2,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    zIndex: 1,
+    elevation: 10,
+    height: HEIGHT * 0.20,
+    width: WIDTH,
     backgroundColor: '#f9f9f9',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 100
+    paddingLeft: 40,
+    shadowOffset: {height: 1, width: 1},
+    shadowOpacity: 0.2,
+    ...Platform.select({
+      ios: {
+        paddingTop: 20
+      }
+    })
   }
 };
 
@@ -39,60 +57,58 @@ class RunnerOnDeliveryView extends Component {
     return (this.props.onDelivery === true && this.props.isRunner === true);
   }
 
+  renderBtn() {
+    return (
+      <TouchableOpacity
+        style={{
+          width: 100,
+          height: 30,
+          backgroundColor: 'black',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 10
+        }}
+        onPress={() => {
+          this.props.setOnDelivery(false);
+          this.props.setWaitingNewOrder(true);
+          const newArr = this.props.runnerNotification.concat();
+          if (newArr.length > 0) {
+            newArr.pop();
+          }
+          this.props.setRunnerNotification(newArr);
+        }}
+      >
+        <Text style={{color: 'white'}}>배달완료</Text>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
-    let lastNotif = '';
-    let title = '';
-    let body = '';
-    if (this.props.runnerNotification) {
-      lastNotif = this.props.runnerNotification[this.props.runnerNotification.length - 1];
-      if (lastNotif) {
-        const { message } = lastNotif;
-        if (message) {
-          title = message.title;
-          body = message.body;
-        }
-      }
-    }
+    const { nId } = this.props.runnersOrderDetails;
 
     return (
-      <View style={styles.container}>
-        <Text
-          style={{
-            top: -40,
-            backgroundColor: 'transparent',
-            fontSize: 15,
-            fontWeight: '700'
-          }}>{title}</Text>
-        <Text
-          style={{
-            top: -20,
-            backgroundColor: 'transparent',
-            textAlign: 'center',
-            marginLeft: 30,
-            marginRight: 30
-          }}
-        >{body}</Text>
-        <TouchableOpacity
-          style={{
-            width: 100,
-            height: 30,
-            backgroundColor: 'black',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 10
-          }}
-          onPress={() => {
-            this.props.setOnDelivery(false);
-            this.props.setWaitingNewOrder(true);
-            const newArr = this.props.runnerNotification.concat();
-            if (newArr.length > 0) {
-              newArr.pop();
-            }
-            this.props.setRunnerNotification(newArr);
-          }}
-        >
-          <Text style={{color: 'white'}}>배달완료</Text>
+      <View style={[styles.container, {
+        top: (this.checkIfOnDelivery()) ? 0 : -300
+      }]}>
+        <TouchableOpacity>
+          <Text
+            style={{
+              backgroundColor: 'transparent',
+              fontSize: 22,
+              fontWeight: '700',
+              color: '#205D98'
+            }}>
+            {nId.n}
+          </Text>
         </TouchableOpacity>
+        <Text style={{
+          backgroundColor: 'transparent',
+          fontSize: 16,
+          color: 'black',
+          marginTop: 4
+        }}>
+          에서 배달물건을 구매하세요
+        </Text>
       </View>
     );
   }

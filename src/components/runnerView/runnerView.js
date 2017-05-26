@@ -22,6 +22,11 @@ import * as YettaServerAPIorder from './../../service/YettaServerAPI/order';
 // redux functions
 import { setRefRunnerView } from './../../actions/componentsActions/runnerViewActions';
 import { setBusyWaitingRunnerCatchingOrder } from './../../actions/busyWaitingActions';
+import {
+  setWaitingNewOrder,
+  setOnDelivery
+} from '../../actions/runnerStatusActions';
+import { setRunnerNotification } from '../../actions/pushNotificationActions';
 
 // assets
 import loadingJSON from './../../../assets/lottie/loading-2.json';
@@ -95,7 +100,6 @@ class RunnerView extends Component {
     this.intervalId = BackgroundTimer.setInterval(() => {
       const timeDiff = Date.now() - startedTime;
       this.setState({fill: 100 - timeDiff * maxTimeoutFactor / 1000});
-      console.log(timeDiff);
       if (this.state.fill <= 0) {
         // when timeout
         BackgroundTimer.clearTimeout(this.intervalId);
@@ -348,12 +352,14 @@ class RunnerView extends Component {
 }
 
 RunnerView.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  waitingNewOrder: PropTypes.bool.isRequired,
-  setWaitingNewOrder: PropTypes.func.isRequired,
-  runnerNotification: PropTypes.any.isRequired,
-  onDelivery: PropTypes.bool.isRequired,
-  setOnDelivery: PropTypes.func.isRequired,
+  // reducers/runnerStatus
+  waitingNewOrder: PropTypes.bool,
+  setWaitingNewOrder: PropTypes.func,
+  onDelivery: PropTypes.bool,
+  setOnDelivery: PropTypes.func,
+
+  // reducers/pushNotification
+  runnerNotification: PropTypes.any,
 
   // reducers/userStatus
   isRunner: PropTypes.bool,
@@ -373,13 +379,19 @@ const mapStateToProps = (state) => {
   return {
     isRunner: state.userStatus.isRunner,
     idVerified: state.runnerStatus.idVerified,
-    isWaitingForJudge: state.runnerStatus.isWaitingForJudge
+    isWaitingForJudge: state.runnerStatus.isWaitingForJudge,
+    waitingNewOrder: state.runnerStatus.waitingNewOrder,
+    onDelivery: state.runnerStatus.onDelivery,
+    runnerNotification: state.pushNotification.runnerNotification
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setRefRunnerView: (refRunnerView) => dispatch(setRefRunnerView(refRunnerView)),
+    setWaitingNewOrder: (waitingNewOrder) => dispatch(setWaitingNewOrder(waitingNewOrder)),
+    setRunnerNotification: (runnerNotification) => dispatch(setRunnerNotification(runnerNotification)),
+    setOnDelivery: (onDelivery) => dispatch(setOnDelivery(onDelivery)),
     setBusyWaitingRunnerCatchingOrder: (busyWaitingRunnerCatchingOrder) => dispatch(setBusyWaitingRunnerCatchingOrder(busyWaitingRunnerCatchingOrder))
   };
 };

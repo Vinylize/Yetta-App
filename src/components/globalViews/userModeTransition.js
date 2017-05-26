@@ -12,7 +12,6 @@ const styles = {
   globalContainer: {
     position: 'absolute',
     top: 0,
-    bottom: 0,
     left: 0,
     right: 0,
     elevation: 300,
@@ -81,7 +80,7 @@ export default class UserModeTransition extends PureComponent {
             top: -24,
             alignSelf: 'center'
           }}>
-            {(this.props.isRunner) ? '러너로 변신중' : '오더로 변신중'}
+            {(!this.props.isRunner) ? '러너로 변신중' : '오더로 변신중'}
           </Text>
         </BlurView>
       </View>

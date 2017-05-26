@@ -22,7 +22,7 @@ export const getDeviceID = () => {
           // todo: handle error or edge cases
           __DEV__ && console.log(error); // eslint-disable-line no-undef
         }
-        console.log('UUID: ', events);
+        __DEV__ && console.log('UUID: ', events); // eslint-disable-line no-undef
         return resolve(events[0]);
       });
     } else if (Platform.OS === 'android') {

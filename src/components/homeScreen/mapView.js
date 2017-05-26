@@ -464,7 +464,7 @@ class Home extends Component {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
         {this.renderMenuButton()}
-        {(this.props.isRunner && this.props.onDelivery) ? <RunnerOnDeliveryView/> : null}
+        <RunnerOnDeliveryView/>
         <Animated.View
           ref={component => {
             this.refViewContainerWithoutMenu = component;
@@ -473,7 +473,7 @@ class Home extends Component {
         >
           {this.renderMap()}
           {this.renderAddBtn()}
-          {(this.props.isRunner && this.props.onDelivery) ? null : <SearchBar/>}
+          <SearchBar/>
           {this.renderLocationBtn()}
           <BottomCardView/>
           <ApproveCard navigator={this.props.navigation}/>
@@ -488,14 +488,7 @@ class Home extends Component {
           refViewForBlurView={this.state.refViewForBlurView}
           msg={'위치 찾는중'}
         />
-        <RunnerView
-          navigation={this.props.navigation}
-          waitingNewOrder={this.props.waitingNewOrder}
-          setWaitingNewOrder={this.props.setWaitingNewOrder}
-          runnerNotification={this.props.runnerNotification}
-          onDelivery={this.props.onDelivery}
-          setOnDelivery={this.props.setOnDelivery}
-        />
+        <RunnerView/>
         <Loading
           show={this.props.busyWaitingRunnerIdImageUpload}
           msg="업로드 중"

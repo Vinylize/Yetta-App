@@ -260,7 +260,7 @@ class Menu extends Component {
         {...this.switchPanResponder.panHandlers}
       >
         <Text style={{fontSize: 17, color: 'white'}}>
-          {(this.props.isRunner) ? '주문받기' : '배달하기'}
+          {(this.props.isRunner) ? '주문하기' : '배달하기'}
         </Text>
       </View>
     );
