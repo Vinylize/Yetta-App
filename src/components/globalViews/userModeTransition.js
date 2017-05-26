@@ -66,9 +66,9 @@ export default class UserModeTransition extends PureComponent {
               this.lottieAnimation = animation;
             }}
             style={{
-              width: 150,
+              width: 225,
               height: 150,
-              left: (Platform.OS === 'ios') ? WIDTH / 30 : WIDTH / 18
+              left: (Platform.OS === 'ios') ? -WIDTH / 70 : -WIDTH / 28
             }}
             speed={1}
             source={require('./../../../assets/lottie/loading-2.json')}

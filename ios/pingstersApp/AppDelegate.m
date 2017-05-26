@@ -12,6 +12,7 @@
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
 #import "RCTPushNotificationManager.h"
+#import "ReactNativeConfig.h"
 
 #import "YettaFCM.h"
 #import "YettaLocationService.h"
@@ -34,7 +35,7 @@
 }
 @end
 #endif
- 
+
 @implementation AppDelegate {
   RCTRootView * rootView;
 }
@@ -43,7 +44,7 @@
 {
   NSURL *jsCodeLocation;
   
-  [GMSServices provideAPIKey:@""];
+  [GMSServices provideAPIKey:[self getCredentials]];
 
   // Create a Mutable Dictionary to hold the appProperties to pass to React Native.
   NSMutableDictionary *appProperties = [NSMutableDictionary dictionary];
@@ -126,6 +127,12 @@
                                            selector:@selector(changeRootViewBGColor)
                                                name:@"changeRootViewBGColor"
                                              object:nil];
+}
+
+- (NSString *) getCredentials
+{
+  NSString *apiKey = [ReactNativeConfig envFor:@"IOS_GOOGLE_API_KEY"];
+  return apiKey;
 }
 
 - (void)startLocationService

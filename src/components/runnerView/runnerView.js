@@ -149,8 +149,10 @@ class RunnerView extends Component {
       <View style={{
         flex: 1,
         backgroundColor: 'transparent',
+        alignItems: 'center',
         top: HEIGHT * 0.1
       }}>
+        <View>
         <Animation
           onLayout={() => {
             // run animation when this did mount
@@ -160,15 +162,17 @@ class RunnerView extends Component {
             this.lottieAnimation = animation;
           }}
           style={{
-            width: 200,
+            width: 300,
             height: 200,
-            left: 0,
+            top: 20,
+            marginBottom: 20,
             backgroundColor: 'transparent'
           }}
           speed={1}
           source={loadingJSON}
           loop
         />
+        </View>
         <Text style={{
           top: 40,
           alignSelf: 'center',

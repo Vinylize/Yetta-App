@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pingstersapp"
-    android:versionCode="1"
-    android:versionName="1.0">
+    package="com.pingstersapp">
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -20,7 +18,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/SplashTheme">
+        android:theme="@style/SplashTheme"
+        android:largeHeap="true">
         <receiver android:name="com.pingstersapp.fcm.YettaSystemBootEventReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
@@ -86,7 +85,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="${GOOGLE_API_KEY}" />
     </application>
 
 </manifest>

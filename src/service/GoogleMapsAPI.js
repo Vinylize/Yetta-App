@@ -1,7 +1,7 @@
-import { APIKEY, URL_GEOCODING } from './../utils';
+import Config from 'react-native-config';
 
 export const geocoding = (latitude, longitude) => {
-  const uri = `${URL_GEOCODING}latlng=${latitude},${longitude}&key=${APIKEY}`;
+  const uri = `${Config.URL_GEOCODING}latlng=${latitude},${longitude}&key=${Config.GOOGLE_MAPS_API_KEY}`;
   return fetch(uri)
     .then(res => res.json())
     .then(rjson => {
@@ -15,7 +15,7 @@ export const geocoding = (latitude, longitude) => {
 };
 
 export const placeDetails = (placeid) => {
-  const uri = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeid}&key=${APIKEY}`;
+  const uri = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeid}&key=${Config.GOOGLE_MAPS_API_KEY}`;
   return fetch(uri)
     .then(res => res.json())
     .then(rjson => {

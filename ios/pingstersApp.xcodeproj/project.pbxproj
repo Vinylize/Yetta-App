@@ -13,6 +13,7 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* pingstersAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* pingstersAppTests.m */; };
+		0A6A6FAF0DF7476D9E67F51F /* libReactNativeConfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4991B8B9EAA144FB8CFA1D29 /* libReactNativeConfig.a */; };
 		0DEE91221EB30B8E00279ACB /* RNHockeyApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DEE911F1EB30B8E00279ACB /* RNHockeyApp.m */; };
 		0DEE91231EB30B8E00279ACB /* YettaFCMManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DEE91211EB30B8E00279ACB /* YettaFCMManager.m */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
@@ -34,11 +35,11 @@
 		17987F121EC96D9A00BE72AF /* YettaUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 17987F111EC96D9A00BE72AF /* YettaUtils.m */; };
 		179BEF581E7156650087C0DB /* VinylMapMarkerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */; };
 		179D3A1D1E4F3F6B00038FE8 /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */; };
-		17A19C9F1EBC6DD3008C785B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17A19C9E1EBC6DD3008C785B /* GoogleService-Info.plist */; };
 		17C055F91EB635BA001F513A /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; };
 		17C0568B1EB6427F001F513A /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; };
 		17C0568C1EB6427F001F513A /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17C055D31EB632F8001F513A /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		17D699681EC065D00052117A /* YettaUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 17D699671EC065D00052117A /* YettaUUID.m */; };
+		17E5427C1ED6A3790032E30A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17E5427B1ED6A3790032E30A /* GoogleService-Info.plist */; };
 		17F5CB531EB5D7CF00201D7B /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F5CB521EB5D7C300201D7B /* libART.a */; };
 		260CDADB65DD47CB9827DD6F /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 096E3902413A4408A5817DB1 /* libLottieReactNative.a */; };
 		41E423D59A32F0EA37376C9C /* libPods-pingstersApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */; };
@@ -113,6 +114,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
+		};
+		170335471ED6C3100046B149 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1451D58CD68445F18F919F15 /* ReactNativeConfig.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EB2648DF1C7BE17A00B8F155;
+			remoteInfo = ReactNativeConfig;
 		};
 		1768ADAC1E7FF91200C8565E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -211,6 +219,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 62CA59B71E3C173B002D7188;
 			remoteInfo = Lottie_iOS;
+		};
+		17E542771ED6A3180032E30A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 094230855B6A46A7A473E6C2 /* RNBackgroundTimer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 641926921ECB4257009CF731;
+			remoteInfo = "RNBackgroundTimer-tvOS";
 		};
 		17F5CAD91EB5D6F600201D7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -359,6 +374,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = pingstersApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = pingstersApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = pingstersApp/main.m; sourceTree = "<group>"; };
+		1451D58CD68445F18F919F15 /* ReactNativeConfig.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeConfig.xcodeproj; path = "../node_modules/react-native-config/ios/ReactNativeConfig.xcodeproj"; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		171C02BE1E4587F7002DB33B /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		174261D11E77E3AD00012E9A /* pingstersApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = pingstersApp.entitlements; path = pingstersApp/pingstersApp.entitlements; sourceTree = "<group>"; };
@@ -378,14 +394,15 @@
 		179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VinylMapMarkerView.swift; sourceTree = "<group>"; };
 		179BEF7F1E727BBD0087C0DB /* pingstersApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pingstersApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		179D3A1C1E4F3F6B00038FE8 /* libPods-pingstersApp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-pingstersApp.a"; path = "../../../Library/Developer/Xcode/DerivedData/pingstersApp-djwrprktbzexhdgdqgptqhvxgiwn/Build/Products/Debug-iphonesimulator/libPods-pingstersApp.a"; sourceTree = "<group>"; };
-		17A19C9E1EBC6DD3008C785B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		17C055CA1EB632F8001F513A /* Lottie.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lottie.xcodeproj; path = "../node_modules/lottie-ios/Lottie.xcodeproj"; sourceTree = "<group>"; };
 		17D699671EC065D00052117A /* YettaUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaUUID.m; sourceTree = "<group>"; };
 		17D699691EC065DD0052117A /* YettaUUID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YettaUUID.h; sourceTree = "<group>"; };
+		17E5427B1ED6A3790032E30A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		17F5CB4D1EB5D7C300201D7B /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		1E396242CED6475EA35DE044 /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundTimer.a; sourceTree = "<group>"; };
 		3C1A0ED488494194B56E9107 /* LottieReactNative.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = LottieReactNative.xcodeproj; path = "../node_modules/lottie-react-native/lib/ios/LottieReactNative.xcodeproj"; sourceTree = "<group>"; };
 		3F3AC967AEF25E6CC15EDEA2 /* libPods-pingstersApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-pingstersApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4991B8B9EAA144FB8CFA1D29 /* libReactNativeConfig.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeConfig.a; sourceTree = "<group>"; };
 		531AF14FA30045C38B49387C /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		541CB24A49262EC50D77A6B1 /* Pods-pingstersApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pingstersApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-pingstersApp/Pods-pingstersApp.release.xcconfig"; sourceTree = "<group>"; };
 		5B047A2D7F224226A5C2DEBA /* RNBlur.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBlur.xcodeproj; path = "../node_modules/react-native-blur/ios/RNBlur.xcodeproj"; sourceTree = "<group>"; };
@@ -433,6 +450,7 @@
 				5232ACD8C8F541BF9158FA99 /* libBVLinearGradient.a in Frameworks */,
 				260CDADB65DD47CB9827DD6F /* libLottieReactNative.a in Frameworks */,
 				9534888DD3CB4F6CB6583CF8 /* libRNImagePicker.a in Frameworks */,
+				0A6A6FAF0DF7476D9E67F51F /* libReactNativeConfig.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -519,9 +537,9 @@
 		13B07FAE1A68108700A75B9A /* pingstersApp */ = {
 			isa = PBXGroup;
 			children = (
+				17E5427B1ED6A3790032E30A /* GoogleService-Info.plist */,
 				17987EEC1EC96D4D00BE72AF /* YettaUtils */,
 				17D699441EC065440052117A /* YettaUUID */,
-				17A19C9E1EBC6DD3008C785B /* GoogleService-Info.plist */,
 				174261D11E77E3AD00012E9A /* pingstersApp.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -561,6 +579,14 @@
 				179BEF511E7153270087C0DB /* libcxxreact.a */,
 				179BEF531E7153270087C0DB /* libjschelpers.a */,
 				179BEF551E7153270087C0DB /* libjschelpers.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		170335241ED6C3100046B149 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				170335481ED6C3100046B149 /* libReactNativeConfig.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -622,6 +648,7 @@
 			isa = PBXGroup;
 			children = (
 				17F5CADA1EB5D6F600201D7B /* libRNBackgroundTimer.a */,
+				17E542781ED6A3180032E30A /* libRNBackgroundTimer.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -663,7 +690,7 @@
 			isa = PBXGroup;
 			children = (
 				5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */,
-				5E9157351DD0AC6500FF2AA8 /* libRCTAnimation-tvOS.a */,
+				5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -699,6 +726,7 @@
 				9181CF66F2EF4E37B05A861E /* BVLinearGradient.xcodeproj */,
 				3C1A0ED488494194B56E9107 /* LottieReactNative.xcodeproj */,
 				8B3F135C137746DDB404024C /* RNImagePicker.xcodeproj */,
+				1451D58CD68445F18F919F15 /* ReactNativeConfig.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -897,6 +925,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 170335241ED6C3100046B149 /* Products */;
+					ProjectRef = 1451D58CD68445F18F919F15 /* ReactNativeConfig.xcodeproj */;
+				},
+				{
 					ProductGroup = 17F5CAAF1EB5D6F100201D7B /* Products */;
 					ProjectRef = 094230855B6A46A7A473E6C2 /* RNBackgroundTimer.xcodeproj */;
 				},
@@ -972,6 +1004,13 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		170335481ED6C3100046B149 /* libReactNativeConfig.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativeConfig.a;
+			remoteRef = 170335471ED6C3100046B149 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		1768ADAD1E7FF91200C8565E /* libRCTPushNotification.a */ = {
@@ -1065,6 +1104,13 @@
 			remoteRef = 17C0566B1EB64266001F513A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		17E542781ED6A3180032E30A /* libRNBackgroundTimer.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNBackgroundTimer.a;
+			remoteRef = 17E542771ED6A3180032E30A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		17F5CADA1EB5D6F600201D7B /* libRNBackgroundTimer.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1100,10 +1146,10 @@
 			remoteRef = 5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		5E9157351DD0AC6500FF2AA8 /* libRCTAnimation-tvOS.a */ = {
+		5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libRCTAnimation-tvOS.a";
+			path = libRCTAnimation.a;
 			remoteRef = 5E9157341DD0AC6500FF2AA8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1185,7 +1231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				17A19C9F1EBC6DD3008C785B /* GoogleService-Info.plist in Resources */,
+				17E5427C1ED6A3790032E30A /* GoogleService-Info.plist in Resources */,
 				171C02BF1E4587F7002DB33B /* Podfile in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
@@ -1328,12 +1374,14 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/lottie-react-native/lib/ios/LottieReactNative",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 				INFOPLIST_FILE = pingstersAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1360,12 +1408,14 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/lottie-react-native/lib/ios/LottieReactNative",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 				INFOPLIST_FILE = pingstersAppTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1405,6 +1455,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/lottie-react-native/lib/ios/LottieReactNative",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 				INFOPLIST_FILE = pingstersApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1449,6 +1500,7 @@
 					"$(SRCROOT)/../node_modules/react-native-linear-gradient/BVLinearGradient",
 					"$(SRCROOT)/../node_modules/lottie-react-native/lib/ios/LottieReactNative",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 				);
 				INFOPLIST_FILE = pingstersApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

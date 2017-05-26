@@ -23,6 +23,7 @@ const styles = {
   }
 };
 
+const HEIGHT = Dimensions.get('window').height;
 const WIDTH = Dimensions.get('window').width;
 
 const BlurView = ({children, ...rest}) => Platform.select({
@@ -60,9 +61,10 @@ export default class GlobalLoading extends PureComponent {
               this.lottieAnimation = animation;
             }}
             style={{
-              width: 150,
+              width: 225,
               height: 150,
-              left: (Platform.OS === 'ios') ? WIDTH / 30 : WIDTH / 18,
+              left: (Platform.OS === 'ios') ? -WIDTH / 70 : -WIDTH / 28,
+              marginTop: (Platform.OS === 'ios') ? HEIGHT * 0.014 : HEIGHT * 0.02,
               backgroundColor: 'transparent'
             }}
             speed={1}
