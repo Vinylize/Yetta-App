@@ -1,33 +1,30 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import {
-  View,
-  Dimensions,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from 'react-native';
 
-const WIDTH = Dimensions.get('window').width;
-const viewHeight = 150;
+// [start redux functions]
+import {
+  setWaitingNewOrder,
+  setOnDelivery
+} from '../../actions/runnerStatusActions';
+import { setRunnerNotification } from '../../actions/pushNotificationActions';
+// [end redux functions]
 
 const styles = {
   container: {
-    position: 'absolute',
-    left: 0,
-    top: -viewHeight - 20,
-    width: WIDTH,
-    height: viewHeight,
+    flex: 0.2,
     backgroundColor: '#f9f9f9',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 100,
-    elevation: 50,
-    zIndex: 1,
-    shadowOffset: {height: 1, width: 2},
-    shadowOpacity: 0.23
+    paddingTop: 100
   }
 };
 
-export default class RunnerOnDeliveryView extends Component {
+class RunnerOnDeliveryView extends Component {
   constructor() {
     super();
     this.state = {
@@ -58,8 +55,7 @@ export default class RunnerOnDeliveryView extends Component {
     }
 
     return (
-      <View style={[styles.container,
-        {top:(this.checkIfOnDelivery()) ? 0 : -viewHeight - 20}]}>
+      <View style={styles.container}>
         <Text
           style={{
             top: -40,
@@ -103,12 +99,39 @@ export default class RunnerOnDeliveryView extends Component {
 }
 
 RunnerOnDeliveryView.propTypes = {
-  navigator: PropTypes.any,
-  isRunner: PropTypes.bool.isRequired,
-  waitingNewOrder: PropTypes.bool.isRequired,
-  setWaitingNewOrder: PropTypes.func.isRequired,
-  runnerNotification: PropTypes.any.isRequired,
-  setRunnerNotification: PropTypes.func.isRequired,
-  onDelivery: PropTypes.bool.isRequired,
-  setOnDelivery: PropTypes.func.isRequired
+  // reducers/userStatus
+  isRunner: PropTypes.bool,
+
+  // reducers/runnerStatus
+  waitingNewOrder: PropTypes.bool,
+  setWaitingNewOrder: PropTypes.func,
+  onDelivery: PropTypes.bool,
+  setOnDelivery: PropTypes.func,
+
+  // reducers/pushNotification
+  runnerNotification: PropTypes.any,
+  setRunnerNotification: PropTypes.func,
+
+  // reducers/orderStatus
+  runnersOrderDetails: PropTypes.object
 };
+
+function mapStateToProps(state) {
+  return {
+    isRunner: state.userStatus.isRunner,
+    waitingNewOrder: state.runnerStatus.waitingNewOrder,
+    onDelivery: state.runnerStatus.onDelivery,
+    runnerNotification: state.pushNotification.runnerNotification,
+    runnersOrderDetails: state.orderStatus.runnersOrderDetails
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setWaitingNewOrder: (waitingNewOrder) => dispatch(setWaitingNewOrder(waitingNewOrder)),
+    setRunnerNotification: (runnerNotification) => dispatch(setRunnerNotification(runnerNotification)),
+    setOnDelivery: (onDelivery) => dispatch(setOnDelivery(onDelivery))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RunnerOnDeliveryView);

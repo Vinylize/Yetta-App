@@ -2,7 +2,7 @@ import * as types from './../actions/actionTypes';
 
 const initialState = {
   /**
-   * list of order status
+   * list of order status for Order
    * bottomCardView will be rendered upon this
    * structure:
    * orderStatusList: [{
@@ -11,13 +11,17 @@ const initialState = {
         data: object
       }]
    */
-  orderStatusList: []
+  orderStatusList: [],
+  /**
+   * order details for runner
+   */
+  runnersOrderDetails: undefined
 };
 
 const orderStatus = (state = initialState, action = {}) => {
   switch (action.type) {
   case types.setOrderStatusList:
-    return {...state, orderStatusList: action.orderStatusList};
+    return { ...state, orderStatusList: action.orderStatusList };
   case types.addNewOrder:
     return {
       ...state,
@@ -38,6 +42,8 @@ const orderStatus = (state = initialState, action = {}) => {
         return el;
       })
     };
+  case types.setRunnersOrderDetails:
+    return { ...state, runnersOrderDetails: action.runnersOrderDetails };
   default:
     return state;
   }

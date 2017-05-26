@@ -464,6 +464,7 @@ class Home extends Component {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
         {this.renderMenuButton()}
+        {(this.props.isRunner && this.props.onDelivery) ? <RunnerOnDeliveryView/> : null}
         <Animated.View
           ref={component => {
             this.refViewContainerWithoutMenu = component;
@@ -472,7 +473,7 @@ class Home extends Component {
         >
           {this.renderMap()}
           {this.renderAddBtn()}
-          <SearchBar/>
+          {(this.props.isRunner && this.props.onDelivery) ? null : <SearchBar/>}
           {this.renderLocationBtn()}
           <BottomCardView/>
           <ApproveCard navigator={this.props.navigation}/>
@@ -495,18 +496,12 @@ class Home extends Component {
           onDelivery={this.props.onDelivery}
           setOnDelivery={this.props.setOnDelivery}
         />
-        <RunnerOnDeliveryView
-          isRunner={this.props.isRunner}
-          waitingNewOrder={this.props.waitingNewOrder}
-          setWaitingNewOrder={this.props.setWaitingNewOrder}
-          runnerNotification={this.props.runnerNotification}
-          onDelivery={this.props.onDelivery}
-          setOnDelivery={this.props.setOnDelivery}
-          setRunnerNotification={this.props.setRunnerNotification}
-        />
         <Loading
           show={this.props.busyWaitingRunnerIdImageUpload}
           msg="업로드 중"
+        />
+        <Loading
+          show={this.props.busyWaitingRunnerCatchingOrder}
         />
         <Menu
           navigation={this.props.navigation}
@@ -526,6 +521,7 @@ const mapStateToProps = (state) => {
     busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI,
     busyWaitingUserModeSwitch: state.busyWaiting.busyWaitingUserModeSwitch,
     busyWaitingRunnerIdImageUpload: state.busyWaiting.busyWaitingRunnerIdImageUpload,
+    busyWaitingRunnerCatchingOrder: state.busyWaiting.busyWaitingRunnerCatchingOrder,
     waitingNewOrder: state.runnerStatus.waitingNewOrder,
     onDelivery: state.runnerStatus.onDelivery,
     runnerNotification: state.pushNotification.runnerNotification,
@@ -576,6 +572,7 @@ Home.propTypes = {
   busyWaitingGeocodingAPI: PropTypes.bool,
   busyWaitingUserModeSwitch: PropTypes.bool,
   busyWaitingRunnerIdImageUpload: PropTypes.bool,
+  busyWaitingRunnerCatchingOrder: PropTypes.bool,
   setBusyWaitingPlaceDetailAPI: PropTypes.func,
   setBusyWaitingGeocodingAPI: PropTypes.func,
 

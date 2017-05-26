@@ -16,10 +16,12 @@ import BackgroundTimer from 'react-native-background-timer';
 import { handleError } from './../../utils/errorHandlers';
 import RunnerDashboard from './runnerDashboard';
 
-import * as YettaServerAPI from './../../service/YettaServerAPI/client';
+import * as YettaServerAPIclient from './../../service/YettaServerAPI/client';
+import * as YettaServerAPIorder from './../../service/YettaServerAPI/order';
 
 // redux functions
 import { setRefRunnerView } from './../../actions/componentsActions/runnerViewActions';
+import { setBusyWaitingRunnerCatchingOrder } from './../../actions/busyWaitingActions';
 
 // assets
 import loadingJSON from './../../../assets/lottie/loading-2.json';
@@ -53,6 +55,7 @@ class RunnerView extends Component {
     this.startCount = this.startCount.bind(this);
     this.mutationRunnerCatchOrder = this.mutationRunnerCatchOrder.bind(this);
     this.handleCancelLookingForNewOrderBtn = this.handleCancelLookingForNewOrderBtn.bind(this);
+    this.handleCatchNewOrderBtn = this.handleCatchNewOrderBtn.bind(this);
   }
 
   componentWillUpdate() {
@@ -64,15 +67,21 @@ class RunnerView extends Component {
     if (this.state.receivedNewOrder === false) {
       if (runnerNotification && runnerNotification.length > 0) {
         const { data } = runnerNotification[runnerNotification.length - 1].data;
-        console.log(data);
+        __DEV__ && console.log(data); // eslint-disable-line no-undef
+
         // if newly received notification's data id is different from the previous one
         if (data && data !== this.state.lastOrderId) {
-          console.log(this.state.lastOrderId);
-          this.setState({
-            receivedNewOrder: true,
-            lastOrderId: data
-          });
-          this.startCount();
+          YettaServerAPIorder.getInitialOrderDetailsForRunner(data)
+            .then(() => {
+              this.setState({
+                receivedNewOrder: true,
+                lastOrderId: data
+              });
+              this.startCount();
+            })
+            .catch(err => {
+              __DEV__ && console.log(err); // eslint-disable-line no-undef
+            });
         }
       }
     }
@@ -100,6 +109,32 @@ class RunnerView extends Component {
     this.setState({receivedNewOrder: false});
     BackgroundTimer.clearTimeout(this.intervalId);
     this.props.setWaitingNewOrder(false);
+  }
+
+  handleCatchNewOrderBtn() {
+    this.props.setBusyWaitingRunnerCatchingOrder(true);
+    BackgroundTimer.clearTimeout(this.intervalId);
+    YettaServerAPIclient.getLokkaClient()
+      .then(client => {
+        return client.mutate(`{
+          runnerCatchOrder(
+            input:{
+              orderId: "${this.state.lastOrderId}"
+            }
+          ) {
+            result
+          }
+        }`);
+      })
+      .then(res => {
+        __DEV__ && console.log(res); // eslint-disable-line no-undef
+        this.props.setWaitingNewOrder(false);
+        this.props.setOnDelivery(true);
+        this.props.setBusyWaitingRunnerCatchingOrder(false);
+      }).catch(err => {
+        handleError(err);
+        this.props.setBusyWaitingRunnerCatchingOrder(false);
+      });
   }
 
   renderBody() {
@@ -218,21 +253,7 @@ class RunnerView extends Component {
 
   mutationRunnerCatchOrder(orderId) {
     console.log(orderId);
-    YettaServerAPI.getLokkaClient()
-      .then(client => {
-        return client.mutate(`{
-          runnerCatchOrder(
-            input:{
-              orderId: "${orderId}"
-            }
-          ) {
-            result
-          }
-        }`);
-      })
-      .then(res => {
-        console.log(res);
-      }).catch(handleError);
+
   }
 
   renderBodyFoundNewOrder() {
@@ -277,11 +298,7 @@ class RunnerView extends Component {
                   justifyContent: 'center',
                   alignItems: 'center'
                 }}
-                onPress={() => {
-                  this.mutationRunnerCatchOrder(this.state.lastOrderId);
-                  this.props.setWaitingNewOrder(false);
-                  this.props.setOnDelivery(true);
-                }}
+                onPress={this.handleCatchNewOrderBtn}
               >
                 <Text style={{
                   fontSize: 27,
@@ -346,7 +363,10 @@ RunnerView.propTypes = {
   isWaitingForJudge: PropTypes.bool,
 
   // reducers/components/runnerView
-  setRefRunnerView: PropTypes.func
+  setRefRunnerView: PropTypes.func,
+
+  // reducers/busyWaiting
+  setBusyWaitingRunnerCatchingOrder: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
@@ -359,7 +379,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setRefRunnerView: (refRunnerView) => dispatch(setRefRunnerView(refRunnerView))
+    setRefRunnerView: (refRunnerView) => dispatch(setRefRunnerView(refRunnerView)),
+    setBusyWaitingRunnerCatchingOrder: (busyWaitingRunnerCatchingOrder) => dispatch(setBusyWaitingRunnerCatchingOrder(busyWaitingRunnerCatchingOrder))
   };
 };
 

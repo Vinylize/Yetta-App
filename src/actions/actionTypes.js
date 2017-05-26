@@ -8,6 +8,7 @@ export const setBusyWaitingUserCreateOrder = 'SET_BUSY_WAITING_USER_CREATE_ORDER
 export const setBusyWaitingUserModeSwitch = 'SET_BUSY_WAITING_USER_MODE_SWITCH';
 export const setBusyWaitingQueryNodeList = 'SET_BUSY_WAITING_QUERY_NODE_LIST';
 export const setBusyWaitingRunnerIdImageUpload = 'SET_BUSY_WAITING_RUNNER_ID_IMAGE_UPLOAD';
+export const setBusyWaitingRunnerCatchingOrder = 'SET_BUSY_WAITING_RUNNER_CATCHING_ORDER';
 
 // runnerStatus
 export const setWaitingNewOrder = 'SET_WAITING_NEW_ORDER';
@@ -47,6 +48,7 @@ export const setOrderStatusList = 'SET_ORDER_STATUS_LIST';
 export const addNewOrder = 'ADD_NEW_ORDER';
 export const deleteOrder = 'DELETE_ORDER';
 export const foundRunnerAndUpdateOrder = 'FOUND_RUNNER_AND_UPDATE_ORDER';
+export const setRunnersOrderDetails = 'SET_RUNNER_ORDER_DETAILS';
 
 // components/addProduct
 export const addProduct = 'ADD_PRODUCT';
