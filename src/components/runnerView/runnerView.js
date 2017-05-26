@@ -14,6 +14,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Animation from 'lottie-react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import { handleError } from './../../utils/errorHandlers';
+import RunnerDashboard from './runnerDashboard';
 
 import * as YettaServerAPI from './../../service/YettaServerAPI/client';
 
@@ -51,6 +52,7 @@ class RunnerView extends Component {
     };
     this.startCount = this.startCount.bind(this);
     this.mutationRunnerCatchOrder = this.mutationRunnerCatchOrder.bind(this);
+    this.handleCancelLookingForNewOrderBtn = this.handleCancelLookingForNewOrderBtn.bind(this);
   }
 
   componentWillUpdate() {
@@ -94,10 +96,10 @@ class RunnerView extends Component {
     }, interval);
   }
 
-  handleStartRunnerBtn() {
+  handleCancelLookingForNewOrderBtn() {
     this.setState({receivedNewOrder: false});
     BackgroundTimer.clearTimeout(this.intervalId);
-    this.props.setWaitingNewOrder(!this.props.waitingNewOrder);
+    this.props.setWaitingNewOrder(false);
   }
 
   renderBody() {
@@ -106,6 +108,9 @@ class RunnerView extends Component {
         return this.renderBodyWaitingForJudge();
       }
       return this.renderBodyRequireIdVerification();
+    }
+    if (this.props.waitingNewOrder === false) {
+      return <RunnerDashboard/>;
     }
     if (this.state.receivedNewOrder === true) {
       return this.renderBodyFoundNewOrder();
@@ -127,7 +132,8 @@ class RunnerView extends Component {
         flex: 1,
         backgroundColor: 'transparent',
         top: HEIGHT * 0.15,
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingTop: 100
       }}>
         <Image
           style={{height: 180, width: 180}}
@@ -148,39 +154,64 @@ class RunnerView extends Component {
     return (
       <View style={{
         flex: 1,
+        flexDirection: 'column',
         backgroundColor: 'transparent',
         alignItems: 'center',
-        top: HEIGHT * 0.1
+        marginTop: HEIGHT * 0.1
       }}>
-        <View>
-        <Animation
-          onLayout={() => {
-            // run animation when this did mount
-            this.lottieAnimation.play();
-          }}
-          ref={animation => {
-            this.lottieAnimation = animation;
-          }}
-          style={{
-            width: 300,
-            height: 200,
-            top: 20,
-            marginBottom: 20,
-            backgroundColor: 'transparent'
-          }}
-          speed={1}
-          source={loadingJSON}
-          loop
-        />
+        <View style={{flex: 1, backgroundColor: 'transparent'}}>
+          <View>
+            <Animation
+              onLayout={() => {
+                // run animation when this did mount
+                this.lottieAnimation.play();
+              }}
+              ref={animation => {
+                this.lottieAnimation = animation;
+              }}
+              style={{
+                width: 300,
+                height: 200,
+                marginTop: 50,
+                backgroundColor: 'transparent'
+              }}
+              speed={1}
+              source={loadingJSON}
+              loop
+            />
+          </View>
+          <Text style={{
+            top: 40,
+            alignSelf: 'center',
+            fontSize: 20,
+            fontWeight: '600'
+          }}>
+            기다리는중..
+          </Text>
         </View>
-        <Text style={{
-          top: 40,
-          alignSelf: 'center',
-          fontSize: 20,
-          fontWeight: '600'
+        <View style={{
+          flex: 0.3,
+          justifyContent: 'center'
         }}>
-          기다리는중..
-        </Text>
+          <TouchableOpacity
+            style={{
+              height: 60,
+              width: WIDTH * 0.7,
+              backgroundColor: 'black',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 2
+            }}
+            onPress={this.handleCancelLookingForNewOrderBtn}
+          >
+            <Text style={{
+              fontSize: 18,
+              color: 'white'
+            }}>
+              취소
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -226,7 +257,7 @@ class RunnerView extends Component {
       remainingTime = 0;
     }
     return (
-      <View style={{flex: 1.5, backgroundColor: 'transparent'}}>
+      <View style={{flex: 1.5, backgroundColor: 'transparent', paddingTop: 100}}>
         <AnimatedCircularProgress
           ref="circularProgress"
           size={280}
@@ -289,11 +320,10 @@ class RunnerView extends Component {
           style={{
             flex: 1,
             width: WIDTH,
-            backgroundColor: '#f9f9f9',
-            paddingTop: 100
+            backgroundColor: '#f9f9f9'
           }}
         >
-        {this.renderBody()}
+          {this.renderBody()}
         </View>
       </View>
     );
