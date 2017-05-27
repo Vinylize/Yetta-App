@@ -126,10 +126,11 @@
 {
   CLLocationCoordinate2D myLocation = coordinates.firstObject.coordinate;
   GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:myLocation coordinate:myLocation];
-  
-  for (VinylMapCoordinate *coordinate in coordinates)
+  NSLog(@"fitToCoordinates");
+  for (VinylMapCoordinate *coordinate in coordinates) {
     bounds = [bounds includingCoordinate:coordinate.coordinate];
-  
+  }
+
   // Set Map viewport
   CGFloat top = [RCTConvert CGFloat:edgePadding[@"top"]];
   CGFloat right = [RCTConvert CGFloat:edgePadding[@"right"]];

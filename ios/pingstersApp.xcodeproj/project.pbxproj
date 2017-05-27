@@ -27,6 +27,7 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		171C02BF1E4587F7002DB33B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 171C02BE1E4587F7002DB33B /* Podfile */; };
 		172387DC1ED9660000364F2B /* VinylMapCoordinate.m in Sources */ = {isa = PBXBuildFile; fileRef = 172387DB1ED9660000364F2B /* VinylMapCoordinate.m */; };
+		172388541ED9DFC900364F2B /* RCTConvert+YettaMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 172388531ED9DFC900364F2B /* RCTConvert+YettaMap.m */; };
 		1768ADB01E7FF94F00C8565E /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1768ADAD1E7FF91200C8565E /* libRCTPushNotification.a */; };
 		1768ADF01E80469300C8565E /* YettaLocationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1768ADEF1E80469300C8565E /* YettaLocationService.m */; };
 		1768AE351E80F59E00C8565E /* YettaLocationServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1768AE341E80F59E00C8565E /* YettaLocationServiceManager.m */; };
@@ -380,6 +381,8 @@
 		171C02BE1E4587F7002DB33B /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		172387DA1ED965F200364F2B /* VinylMapCoordinate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VinylMapCoordinate.h; sourceTree = "<group>"; };
 		172387DB1ED9660000364F2B /* VinylMapCoordinate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VinylMapCoordinate.m; sourceTree = "<group>"; };
+		1723882D1ED9DFAD00364F2B /* RCTConvert+YettaMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+YettaMap.h"; sourceTree = "<group>"; };
+		172388531ED9DFC900364F2B /* RCTConvert+YettaMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+YettaMap.m"; sourceTree = "<group>"; };
 		174261D11E77E3AD00012E9A /* pingstersApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = pingstersApp.entitlements; path = pingstersApp/pingstersApp.entitlements; sourceTree = "<group>"; };
 		1768ADA71E7FF91200C8565E /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		1768ADEF1E80469300C8565E /* YettaLocationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaLocationService.m; sourceTree = "<group>"; };
@@ -600,6 +603,8 @@
 				177913781E4616EA000454F2 /* VinylMapView.m */,
 				172387DA1ED965F200364F2B /* VinylMapCoordinate.h */,
 				172387DB1ED9660000364F2B /* VinylMapCoordinate.m */,
+				1723882D1ED9DFAD00364F2B /* RCTConvert+YettaMap.h */,
+				172388531ED9DFC900364F2B /* RCTConvert+YettaMap.m */,
 			);
 			name = YettaMaps;
 			sourceTree = "<group>";
@@ -1339,6 +1344,7 @@
 				0DEE91221EB30B8E00279ACB /* RNHockeyApp.m in Sources */,
 				1768ADF01E80469300C8565E /* YettaLocationService.m in Sources */,
 				1776E6C01E791AC900A31769 /* YettaFCM.m in Sources */,
+				172388541ED9DFC900364F2B /* RCTConvert+YettaMap.m in Sources */,
 				179BEF581E7156650087C0DB /* VinylMapMarkerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

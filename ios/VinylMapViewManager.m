@@ -10,6 +10,7 @@
 
 #import "VinylMapViewManager.h"
 #import "VinylMapView.h"
+#import "RCTConvert+YettaMap.h"
 
 @implementation VinylMapManager {
   VinylMapView *_vinylMap;
@@ -78,7 +79,7 @@ RCT_EXPORT_METHOD(updateMarker:(NSString *)latitude: (NSString *)longitude)
   }
 }
 
-RCT_EXPORT_METHOD(fitToCoordinate:(nonnull NSArray<VinylMapCoordinate *> *)coordinates:
+RCT_EXPORT_METHOD(fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coordinates:
                   (nonnull NSDictionary *)edgePadding:
                   (BOOL)animated)
 {

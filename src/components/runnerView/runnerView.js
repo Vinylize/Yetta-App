@@ -135,9 +135,18 @@ class RunnerView extends Component {
         __DEV__ && console.log(res); // eslint-disable-line no-undef
 
         let vmm = NativeModules.VinylMapManager;
-
-        if (vmm) {
-          const coordinatesArray = [];
+        const { dest, nId } = this.props.runnersOrderDetails;
+        if (vmm && dest && nId) {
+          const coordinatesArray = [
+            {latitude: dest.lat, longitude: dest.lon},
+            {latitude: nId.coordinate.lat, longitude: nId.coordinate.lon},
+            {latitude: this.props.currentLocation.lat, longitude: this.props.currentLocation.lon}
+          ];
+          // todo: show markers
+          // coordinatesArray.map((el, i) => {
+          //   vmm.addMarker(String(el.latitude), String(el.longitude), String(i));
+          // });
+          __DEV__ && console.log('fitToCoordinates with: ', coordinatesArray); // eslint-disable-line no-undef
           const edgePadding = {
             left: 50,
             right: 50,
@@ -386,7 +395,10 @@ RunnerView.propTypes = {
   setBusyWaitingRunnerCatchingOrder: PropTypes.func,
 
   // reducers/orderStatus
-  runnersOrderDetails: PropTypes.object
+  runnersOrderDetails: PropTypes.object,
+
+  // reducers/home
+  currentLocation: PropTypes.object
 };
 
 const mapStateToProps = (state) => {
@@ -397,7 +409,8 @@ const mapStateToProps = (state) => {
     waitingNewOrder: state.runnerStatus.waitingNewOrder,
     onDelivery: state.runnerStatus.onDelivery,
     runnerNotification: state.pushNotification.runnerNotification,
-    runnersOrderDetails: state.orderStatus.runnersOrderDetails
+    runnersOrderDetails: state.orderStatus.runnersOrderDetails,
+    currentLocation: state.home.currentLocation
   };
 };
 
