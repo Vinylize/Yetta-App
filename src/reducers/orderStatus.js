@@ -15,7 +15,7 @@ const initialState = {
   /**
    * order details for runner
    */
-  runnersOrderDetails: undefined
+  runnersOrderDetails: {}
 };
 
 const orderStatus = (state = initialState, action = {}) => {

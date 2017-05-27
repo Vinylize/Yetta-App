@@ -98,7 +98,7 @@ class RunnerOnDeliveryView extends Component {
               fontWeight: '700',
               color: '#205D98'
             }}>
-            {nId.n}
+            {nId && nId.n}
           </Text>
         </TouchableOpacity>
         <Text style={{

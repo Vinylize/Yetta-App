@@ -141,6 +141,7 @@ class RunnerView extends Component {
   }
 
   renderBody() {
+    console.log(this.props);
     if (this.props.idVerified === false) {
       if (this.props.isWaitingForJudge === true) {
         return this.renderBodyWaitingForJudge();
