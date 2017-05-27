@@ -78,6 +78,17 @@ RCT_EXPORT_METHOD(updateMarker:(NSString *)latitude: (NSString *)longitude)
   }
 }
 
+RCT_EXPORT_METHOD(fitToCoordinate:(nonnull NSArray<VinylMapCoordinate *> *)coordinates:
+                  (nonnull NSDictionary *)edgePadding:
+                  (BOOL)animated)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap fitToCoordinates:coordinates edgePadding:edgePadding animated:animated];
+    });
+  }
+}
+
 RCT_EXPORT_METHOD(enableDidChangeCameraPosition)
 {
   if (_vinylMap) {

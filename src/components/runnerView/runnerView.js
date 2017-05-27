@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   LayoutAnimation,
+  NativeModules,
   Platform,
   Text,
   TouchableOpacity,
@@ -132,6 +133,21 @@ class RunnerView extends Component {
       })
       .then(res => {
         __DEV__ && console.log(res); // eslint-disable-line no-undef
+
+        let vmm = NativeModules.VinylMapManager;
+
+        if (vmm) {
+          const coordinatesArray = [];
+          const edgePadding = {
+            left: 50,
+            right: 50,
+            top: 50,
+            bottom: 50
+          };
+          const animated = true;
+          vmm.fitToCoordinates(coordinatesArray, edgePadding, animated);
+        }
+
         this.props.setWaitingNewOrder(false);
         this.props.setOnDelivery(true);
         this.props.setBusyWaitingRunnerCatchingOrder(false);
@@ -367,7 +383,10 @@ RunnerView.propTypes = {
   setRefRunnerView: PropTypes.func,
 
   // reducers/busyWaiting
-  setBusyWaitingRunnerCatchingOrder: PropTypes.func
+  setBusyWaitingRunnerCatchingOrder: PropTypes.func,
+
+  // reducers/orderStatus
+  runnersOrderDetails: PropTypes.object
 };
 
 const mapStateToProps = (state) => {
@@ -377,7 +396,8 @@ const mapStateToProps = (state) => {
     isWaitingForJudge: state.runnerStatus.isWaitingForJudge,
     waitingNewOrder: state.runnerStatus.waitingNewOrder,
     onDelivery: state.runnerStatus.onDelivery,
-    runnerNotification: state.pushNotification.runnerNotification
+    runnerNotification: state.pushNotification.runnerNotification,
+    runnersOrderDetails: state.orderStatus.runnersOrderDetails
   };
 };
 

@@ -11,6 +11,7 @@
 
 #import <React/RCTView.h>
 #import <GoogleMaps/GoogleMaps.h>
+#import "VinylMapCoordinate.h"
 
 @interface VinylMapView : GMSMapView<GMSMapViewDelegate>
 
@@ -23,6 +24,9 @@
 - (void)moveMap:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)animateToLocationWithZoom:(NSString*)latitude longitude:(NSString*)longitude zoom:(float)zoom;
+- (void)fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coordinates
+             edgePadding:(nonnull NSDictionary *)edgePadding
+                animated:(BOOL)animated;
 
 - (void)moveMarker:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)addMarker:(NSString *)latitude longitude:(NSString *)longitude id:(NSString*)id;

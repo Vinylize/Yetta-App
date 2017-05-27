@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "VinylMapView.h"
 #import "pingstersApp-Swift.h"
+#import <React/RCTConvert.h>
 
 @implementation VinylMapView {
   GMSMapView *_map;
@@ -117,6 +118,25 @@
     _marker.position = CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue);
     [CATransaction commit];
   }
+}
+
+- (void)fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coordinates
+             edgePadding:(nonnull NSDictionary *)edgePadding
+                animated:(BOOL)animated
+{
+  CLLocationCoordinate2D myLocation = coordinates.firstObject.coordinate;
+  GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:myLocation coordinate:myLocation];
+  
+  for (VinylMapCoordinate *coordinate in coordinates)
+    bounds = [bounds includingCoordinate:coordinate.coordinate];
+  
+  // Set Map viewport
+  CGFloat top = [RCTConvert CGFloat:edgePadding[@"top"]];
+  CGFloat right = [RCTConvert CGFloat:edgePadding[@"right"]];
+  CGFloat bottom = [RCTConvert CGFloat:edgePadding[@"bottom"]];
+  CGFloat left = [RCTConvert CGFloat:edgePadding[@"left"]];
+  
+  [_map animateWithCameraUpdate:[GMSCameraUpdate fitBounds:bounds withEdgeInsets:UIEdgeInsetsMake(top, left, bottom, right)]];
 }
 
 - (void)enableDidChangeCameraPosition
