@@ -12,8 +12,11 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -21,6 +24,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.pingstersapp.R;
@@ -41,6 +45,7 @@ public class VinylMapModule extends MapView implements
     private final ThemedReactContext context;
     private Marker marker; // todo: remove this
     private final Map<Marker, String> markerMap = new HashMap<>();
+    private final int baseMapPadding = 50;
 
     public VinylMapModule(ThemedReactContext reactContext, Context appContext, VinylMapManager manager,
                       GoogleMapOptions googleMapOptions) {
@@ -187,5 +192,30 @@ public class VinylMapModule extends MapView implements
             };
             uiHandler.post(runnable);
         }
+    }
+
+    public void fitToCoordinates(ReadableArray coordinatesArray, ReadableMap edgePadding, boolean animated) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        for (int i = 0; i < coordinatesArray.size(); i++) {
+            ReadableMap latLng = coordinatesArray.getMap(i);
+            Double lat = latLng.getDouble("lat");
+            Double lng = latLng.getDouble("lon");
+            builder.include(new LatLng(lat, lng));
+        }
+
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, baseMapPadding);
+
+        if (edgePadding != null) {
+            mMap.setPadding(edgePadding.getInt("left"), edgePadding.getInt("top"), edgePadding.getInt("right"), edgePadding.getInt("bottom"));
+        }
+
+        if (animated) {
+            mMap.animateCamera(cu);
+        } else {
+            mMap.moveCamera(cu);
+        }
+        mMap.setPadding(0, 0, 0, 0); // Without this, the Google logo is moved up by the value of edgePadding.bottom
     }
 }
