@@ -27,3 +27,10 @@ export const foundRunnerAndUpdateOrder = (catchOrderId) => {
     catchOrderId
   };
 };
+
+export const setRunnersOrderDetails = (runnersOrderDetails) => {
+  return {
+    type: types.setRunnersOrderDetails,
+    runnersOrderDetails
+  };
+};

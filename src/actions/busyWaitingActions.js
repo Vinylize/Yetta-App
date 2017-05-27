@@ -41,3 +41,10 @@ export const setBusyWaitingRunnerIdImageUpload = (busyWaitingRunnerIdImageUpload
     busyWaitingRunnerIdImageUpload
   };
 };
+
+export const setBusyWaitingRunnerCatchingOrder = (busyWaitingRunnerCatchingOrder) => {
+  return {
+    type: types.setBusyWaitingRunnerCatchingOrder,
+    busyWaitingRunnerCatchingOrder
+  };
+};

@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   LayoutAnimation,
+  Platform,
   Text,
   TouchableOpacity,
   View
@@ -14,11 +15,19 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Animation from 'lottie-react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import { handleError } from './../../utils/errorHandlers';
+import RunnerDashboard from './runnerDashboard';
 
-import * as YettaServerAPI from './../../service/YettaServerAPI/client';
+import * as YettaServerAPIclient from './../../service/YettaServerAPI/client';
+import * as YettaServerAPIorder from './../../service/YettaServerAPI/order';
 
 // redux functions
 import { setRefRunnerView } from './../../actions/componentsActions/runnerViewActions';
+import { setBusyWaitingRunnerCatchingOrder } from './../../actions/busyWaitingActions';
+import {
+  setWaitingNewOrder,
+  setOnDelivery
+} from '../../actions/runnerStatusActions';
+import { setRunnerNotification } from '../../actions/pushNotificationActions';
 
 // assets
 import loadingJSON from './../../../assets/lottie/loading-2.json';
@@ -50,7 +59,8 @@ class RunnerView extends Component {
       lastOrderId: undefined
     };
     this.startCount = this.startCount.bind(this);
-    this.mutationRunnerCatchOrder = this.mutationRunnerCatchOrder.bind(this);
+    this.handleCancelLookingForNewOrderBtn = this.handleCancelLookingForNewOrderBtn.bind(this);
+    this.handleCatchNewOrderBtn = this.handleCatchNewOrderBtn.bind(this);
   }
 
   componentWillUpdate() {
@@ -62,15 +72,21 @@ class RunnerView extends Component {
     if (this.state.receivedNewOrder === false) {
       if (runnerNotification && runnerNotification.length > 0) {
         const { data } = runnerNotification[runnerNotification.length - 1].data;
-        console.log(data);
+        __DEV__ && console.log(data); // eslint-disable-line no-undef
+
         // if newly received notification's data id is different from the previous one
         if (data && data !== this.state.lastOrderId) {
-          console.log(this.state.lastOrderId);
-          this.setState({
-            receivedNewOrder: true,
-            lastOrderId: data
-          });
-          this.startCount();
+          YettaServerAPIorder.getInitialOrderDetailsForRunner(data)
+            .then(() => {
+              this.setState({
+                receivedNewOrder: true,
+                lastOrderId: data
+              });
+              this.startCount();
+            })
+            .catch(err => {
+              __DEV__ && console.log(err); // eslint-disable-line no-undef
+            });
         }
       }
     }
@@ -84,7 +100,6 @@ class RunnerView extends Component {
     this.intervalId = BackgroundTimer.setInterval(() => {
       const timeDiff = Date.now() - startedTime;
       this.setState({fill: 100 - timeDiff * maxTimeoutFactor / 1000});
-      console.log(timeDiff);
       if (this.state.fill <= 0) {
         // when timeout
         BackgroundTimer.clearTimeout(this.intervalId);
@@ -94,10 +109,36 @@ class RunnerView extends Component {
     }, interval);
   }
 
-  handleStartRunnerBtn() {
+  handleCancelLookingForNewOrderBtn() {
     this.setState({receivedNewOrder: false});
     BackgroundTimer.clearTimeout(this.intervalId);
-    this.props.setWaitingNewOrder(!this.props.waitingNewOrder);
+    this.props.setWaitingNewOrder(false);
+  }
+
+  handleCatchNewOrderBtn() {
+    this.props.setBusyWaitingRunnerCatchingOrder(true);
+    BackgroundTimer.clearTimeout(this.intervalId);
+    YettaServerAPIclient.getLokkaClient()
+      .then(client => {
+        return client.mutate(`{
+          runnerCatchOrder(
+            input:{
+              orderId: "${this.state.lastOrderId}"
+            }
+          ) {
+            result
+          }
+        }`);
+      })
+      .then(res => {
+        __DEV__ && console.log(res); // eslint-disable-line no-undef
+        this.props.setWaitingNewOrder(false);
+        this.props.setOnDelivery(true);
+        this.props.setBusyWaitingRunnerCatchingOrder(false);
+      }).catch(err => {
+        handleError(err);
+        this.props.setBusyWaitingRunnerCatchingOrder(false);
+      });
   }
 
   renderBody() {
@@ -107,6 +148,9 @@ class RunnerView extends Component {
       }
       return this.renderBodyRequireIdVerification();
     }
+    if (this.props.waitingNewOrder === false) {
+      return <RunnerDashboard/>;
+    }
     if (this.state.receivedNewOrder === true) {
       return this.renderBodyFoundNewOrder();
     }
@@ -115,7 +159,7 @@ class RunnerView extends Component {
 
   renderBodyRequireIdVerification() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, paddingTop: (Platform.OS === 'ios') ? 100 : 80}}>
         <IdVerification/>
       </View>
     );
@@ -127,7 +171,8 @@ class RunnerView extends Component {
         flex: 1,
         backgroundColor: 'transparent',
         top: HEIGHT * 0.15,
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingTop: 100
       }}>
         <Image
           style={{height: 180, width: 180}}
@@ -148,60 +193,66 @@ class RunnerView extends Component {
     return (
       <View style={{
         flex: 1,
+        flexDirection: 'column',
         backgroundColor: 'transparent',
         alignItems: 'center',
-        top: HEIGHT * 0.1
+        marginTop: HEIGHT * 0.1
       }}>
-        <View>
-        <Animation
-          onLayout={() => {
-            // run animation when this did mount
-            this.lottieAnimation.play();
-          }}
-          ref={animation => {
-            this.lottieAnimation = animation;
-          }}
-          style={{
-            width: 300,
-            height: 200,
-            top: 20,
-            marginBottom: 20,
-            backgroundColor: 'transparent'
-          }}
-          speed={1}
-          source={loadingJSON}
-          loop
-        />
+        <View style={{flex: 1, backgroundColor: 'transparent'}}>
+          <View>
+            <Animation
+              onLayout={() => {
+                // run animation when this did mount
+                this.lottieAnimation.play();
+              }}
+              ref={animation => {
+                this.lottieAnimation = animation;
+              }}
+              style={{
+                width: 300,
+                height: 200,
+                marginTop: 50,
+                backgroundColor: 'transparent'
+              }}
+              speed={1}
+              source={loadingJSON}
+              loop
+            />
+          </View>
+          <Text style={{
+            top: 40,
+            alignSelf: 'center',
+            fontSize: 20,
+            fontWeight: '600'
+          }}>
+            기다리는중..
+          </Text>
         </View>
-        <Text style={{
-          top: 40,
-          alignSelf: 'center',
-          fontSize: 20,
-          fontWeight: '600'
+        <View style={{
+          flex: 0.3,
+          justifyContent: 'center'
         }}>
-          기다리는중..
-        </Text>
+          <TouchableOpacity
+            style={{
+              height: 60,
+              width: WIDTH * 0.7,
+              backgroundColor: 'black',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 2
+            }}
+            onPress={this.handleCancelLookingForNewOrderBtn}
+          >
+            <Text style={{
+              fontSize: 18,
+              color: 'white'
+            }}>
+              취소
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
-  }
-
-  mutationRunnerCatchOrder(orderId) {
-    console.log(orderId);
-    YettaServerAPI.getLokkaClient()
-      .then(client => {
-        return client.mutate(`{
-          runnerCatchOrder(
-            input:{
-              orderId: "${orderId}"
-            }
-          ) {
-            result
-          }
-        }`);
-      })
-      .then(res => {
-        console.log(res);
-      }).catch(handleError);
   }
 
   renderBodyFoundNewOrder() {
@@ -226,7 +277,7 @@ class RunnerView extends Component {
       remainingTime = 0;
     }
     return (
-      <View style={{flex: 1.5, backgroundColor: 'transparent'}}>
+      <View style={{flex: 1.5, backgroundColor: 'transparent', paddingTop: 100}}>
         <AnimatedCircularProgress
           ref="circularProgress"
           size={280}
@@ -246,11 +297,7 @@ class RunnerView extends Component {
                   justifyContent: 'center',
                   alignItems: 'center'
                 }}
-                onPress={() => {
-                  this.mutationRunnerCatchOrder(this.state.lastOrderId);
-                  this.props.setWaitingNewOrder(false);
-                  this.props.setOnDelivery(true);
-                }}
+                onPress={this.handleCatchNewOrderBtn}
               >
                 <Text style={{
                   fontSize: 27,
@@ -289,11 +336,10 @@ class RunnerView extends Component {
           style={{
             flex: 1,
             width: WIDTH,
-            backgroundColor: '#f9f9f9',
-            paddingTop: 100
+            backgroundColor: '#f9f9f9'
           }}
         >
-        {this.renderBody()}
+          {this.renderBody()}
         </View>
       </View>
     );
@@ -301,12 +347,14 @@ class RunnerView extends Component {
 }
 
 RunnerView.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  waitingNewOrder: PropTypes.bool.isRequired,
-  setWaitingNewOrder: PropTypes.func.isRequired,
-  runnerNotification: PropTypes.any.isRequired,
-  onDelivery: PropTypes.bool.isRequired,
-  setOnDelivery: PropTypes.func.isRequired,
+  // reducers/runnerStatus
+  waitingNewOrder: PropTypes.bool,
+  setWaitingNewOrder: PropTypes.func,
+  onDelivery: PropTypes.bool,
+  setOnDelivery: PropTypes.func,
+
+  // reducers/pushNotification
+  runnerNotification: PropTypes.any,
 
   // reducers/userStatus
   isRunner: PropTypes.bool,
@@ -316,20 +364,30 @@ RunnerView.propTypes = {
   isWaitingForJudge: PropTypes.bool,
 
   // reducers/components/runnerView
-  setRefRunnerView: PropTypes.func
+  setRefRunnerView: PropTypes.func,
+
+  // reducers/busyWaiting
+  setBusyWaitingRunnerCatchingOrder: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
   return {
     isRunner: state.userStatus.isRunner,
     idVerified: state.runnerStatus.idVerified,
-    isWaitingForJudge: state.runnerStatus.isWaitingForJudge
+    isWaitingForJudge: state.runnerStatus.isWaitingForJudge,
+    waitingNewOrder: state.runnerStatus.waitingNewOrder,
+    onDelivery: state.runnerStatus.onDelivery,
+    runnerNotification: state.pushNotification.runnerNotification
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setRefRunnerView: (refRunnerView) => dispatch(setRefRunnerView(refRunnerView))
+    setRefRunnerView: (refRunnerView) => dispatch(setRefRunnerView(refRunnerView)),
+    setWaitingNewOrder: (waitingNewOrder) => dispatch(setWaitingNewOrder(waitingNewOrder)),
+    setRunnerNotification: (runnerNotification) => dispatch(setRunnerNotification(runnerNotification)),
+    setOnDelivery: (onDelivery) => dispatch(setOnDelivery(onDelivery)),
+    setBusyWaitingRunnerCatchingOrder: (busyWaitingRunnerCatchingOrder) => dispatch(setBusyWaitingRunnerCatchingOrder(busyWaitingRunnerCatchingOrder))
   };
 };
 

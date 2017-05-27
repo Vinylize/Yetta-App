@@ -133,9 +133,9 @@ class Login extends Component {
       })
       .then(viewer => {
         this.hideLoading();
-        if (viewer.isPV) {
+        if (viewer.isPV === true) {
           this.navigateToHome();
-        } else {
+        } else if (viewer.isPV === false) {
           this.navigateToPhoneVerification();
         }
       })

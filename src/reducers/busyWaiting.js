@@ -24,7 +24,11 @@ const initialState = {
   /**
    * busy on runner id image upload and runnerApplyFirstJudge mutation following by
    */
-  busyWaitingRunnerIdImageUpload: false
+  busyWaitingRunnerIdImageUpload: false,
+  /**
+   * busy on waiting response from runnerCatchOrder from runnerView component
+   */
+  busyWaitingRunnerCatchingOrder: false
 };
 
 const busyWaiting = (state = initialState, action = {}) => {
@@ -41,6 +45,8 @@ const busyWaiting = (state = initialState, action = {}) => {
     return {...state, busyWaitingQueryNodeList: action.busyWaitingQueryNodeList};
   case types.setBusyWaitingRunnerIdImageUpload:
     return {...state, busyWaitingRunnerIdImageUpload: action.busyWaitingRunnerIdImageUpload};
+  case types.setBusyWaitingRunnerCatchingOrder:
+    return {...state, busyWaitingRunnerCatchingOrder: action.busyWaitingRunnerCatchingOrder};
   default:
     return state;
   }

@@ -81,7 +81,7 @@ export default class UserModeTransition extends PureComponent {
             top: -24,
             alignSelf: 'center'
           }}>
-            {(this.props.isRunner) ? '러너로 변신중' : '오더로 변신중'}
+            {(!this.props.isRunner) ? '러너로 변신중' : '오더로 변신중'}
           </Text>
         </BlurView>
       </View>

@@ -94,10 +94,10 @@ class Home extends Component {
   componentWillMount() {
     if (Platform.OS === 'android') {
       DeviceEventEmitter.addListener('onMarkerPress', (e) => {
-        console.log(e);
+        __DEV__ && console.log(e); // eslint-disable-line no-undef
       });
       DeviceEventEmitter.addListener('onMapMove', (e) => {
-        console.log(e);
+        __DEV__ && console.log(e); // eslint-disable-line no-undef
         const { trackingCurrentPos } = this.state;
         // map moved by user
         if (trackingCurrentPos && e.gesture === '1') {
@@ -105,7 +105,7 @@ class Home extends Component {
         }
       });
       DeviceEventEmitter.addListener('onCameraIdle', (e) => {
-        console.log('camera position idle: ', e);
+        __DEV__ && console.log('camera position idle: ', e); // eslint-disable-line no-undef
         const { lat, lon } = e;
         this.props.setMapCameraPos({lat, lon});
 
@@ -128,7 +128,7 @@ class Home extends Component {
             })
             .catch(err => {
               this.props.setBusyWaitingGeocodingAPI(false);
-              console.log(err);
+              __DEV__ && console.log(err); // eslint-disable-line no-undef
             });
         }
       });
@@ -224,7 +224,9 @@ class Home extends Component {
           }`
         );
       })
-      .then(console.log)
+      .then(res => {
+        __DEV__ && console.log(res); // eslint-disable-line no-undef
+      })
       .catch(handleError);
   }
 
@@ -241,7 +243,7 @@ class Home extends Component {
         <VinylMapIOS
           style={{flex: 1}}
           onPress={(e) => {
-            console.log(e.nativeEvent);
+            __DEV__ && console.log(e.nativeEvent); // eslint-disable-line no-undef
           }}
           onMarkerPress={() => {
             // console.log(e.nativeEvent);
@@ -286,7 +288,7 @@ class Home extends Component {
                 })
                 .catch(err => {
                   this.props.setBusyWaitingGeocodingAPI(false);
-                  console.log(err);
+                  __DEV__ && console.log(err); // eslint-disable-line no-undef
                 });
             }
           }}
@@ -464,6 +466,8 @@ class Home extends Component {
     return (
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
         {this.renderMenuButton()}
+        <RunnerOnDeliveryView/>
+        <RunnerView/>
         <Animated.View
           ref={component => {
             this.refViewContainerWithoutMenu = component;
@@ -487,26 +491,12 @@ class Home extends Component {
           refViewForBlurView={this.state.refViewForBlurView}
           msg={'위치 찾는중'}
         />
-        <RunnerView
-          navigation={this.props.navigation}
-          waitingNewOrder={this.props.waitingNewOrder}
-          setWaitingNewOrder={this.props.setWaitingNewOrder}
-          runnerNotification={this.props.runnerNotification}
-          onDelivery={this.props.onDelivery}
-          setOnDelivery={this.props.setOnDelivery}
-        />
-        <RunnerOnDeliveryView
-          isRunner={this.props.isRunner}
-          waitingNewOrder={this.props.waitingNewOrder}
-          setWaitingNewOrder={this.props.setWaitingNewOrder}
-          runnerNotification={this.props.runnerNotification}
-          onDelivery={this.props.onDelivery}
-          setOnDelivery={this.props.setOnDelivery}
-          setRunnerNotification={this.props.setRunnerNotification}
-        />
         <Loading
           show={this.props.busyWaitingRunnerIdImageUpload}
           msg="업로드 중"
+        />
+        <Loading
+          show={this.props.busyWaitingRunnerCatchingOrder}
         />
         <Menu
           navigation={this.props.navigation}
@@ -526,6 +516,7 @@ const mapStateToProps = (state) => {
     busyWaitingGeocodingAPI: state.busyWaiting.busyWaitingGeocodingAPI,
     busyWaitingUserModeSwitch: state.busyWaiting.busyWaitingUserModeSwitch,
     busyWaitingRunnerIdImageUpload: state.busyWaiting.busyWaitingRunnerIdImageUpload,
+    busyWaitingRunnerCatchingOrder: state.busyWaiting.busyWaitingRunnerCatchingOrder,
     waitingNewOrder: state.runnerStatus.waitingNewOrder,
     onDelivery: state.runnerStatus.onDelivery,
     runnerNotification: state.pushNotification.runnerNotification,
@@ -576,6 +567,7 @@ Home.propTypes = {
   busyWaitingGeocodingAPI: PropTypes.bool,
   busyWaitingUserModeSwitch: PropTypes.bool,
   busyWaitingRunnerIdImageUpload: PropTypes.bool,
+  busyWaitingRunnerCatchingOrder: PropTypes.bool,
   setBusyWaitingPlaceDetailAPI: PropTypes.func,
   setBusyWaitingGeocodingAPI: PropTypes.func,
 
