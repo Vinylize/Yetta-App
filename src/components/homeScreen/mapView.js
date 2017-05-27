@@ -467,6 +467,7 @@ class Home extends Component {
       <View style={{flex: 1, backgroundColor: '#2E3031'}}>
         {this.renderMenuButton()}
         <RunnerOnDeliveryView/>
+        <RunnerView/>
         <Animated.View
           ref={component => {
             this.refViewContainerWithoutMenu = component;
@@ -490,7 +491,6 @@ class Home extends Component {
           refViewForBlurView={this.state.refViewForBlurView}
           msg={'위치 찾는중'}
         />
-        <RunnerView/>
         <Loading
           show={this.props.busyWaitingRunnerIdImageUpload}
           msg="업로드 중"
