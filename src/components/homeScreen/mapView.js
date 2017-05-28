@@ -23,6 +23,7 @@ import RunnerView from './../runnerView/runnerView';
 import RunnerOnDeliveryView from './../runnerView/runnerOnDeliveryView';
 import BottomCardView from './../bottomCardView';
 import Menu from './../menu';
+import NodeInfoView from './../connectionViews/nodeInfoView';
 
 import UserModeTransition from './../globalViews/userModeTransition';
 import GlobalLoading from './../globalViews/loading';
@@ -59,6 +60,9 @@ import {
   animateMenuAppear
 } from '../../actions/componentsActions/menuActions';
 // [end redux functions]
+
+// map actions
+import * as mapActions from './../../actions/mapActions';
 
 // Assets
 import ImgSearchPin from './../../../assets/pin.png';
@@ -247,7 +251,10 @@ class Home extends Component {
           }}
           onMarkerPress={(e) => {
             __DEV__ && console.log(e.nativeEvent); // eslint-disable-line no-undef
-
+            const { type, id } = e.nativeEvent;
+            if (type === 'node') {
+              mapActions.onClickMarkerNode(id);
+            }
             this.setState({markerClicked: !this.state.markerClicked});
           }}
           onMapMove={(e) => {
@@ -500,6 +507,10 @@ class Home extends Component {
           refBlurView={(Platform.OS === 'ios') ?
             this.refViewContainerWithoutMenu : this.refMapAndroid}
         />
+        <NodeInfoView
+          refBackgroundView={(Platform.OS === 'ios') ?
+            this.refViewContainerWithoutMenu : this.refMapAndroid}
+        />
       </View>
     );
   }
@@ -526,7 +537,8 @@ const mapStateToProps = (state) => {
     busyOnWaitingNewRunner: state.home.busyOnWaitingNewRunner,
     animatedCardBottomVal: state.home.animatedCardBottomVal,
     cardAppeared: state.bottomCardView.cardAppeared,
-    orderStatusList: state.orderStatus.orderStatusList
+    orderStatusList: state.orderStatus.orderStatusList,
+    markerNodeTapped: state.map.markerNodeTapped
   };
 };
 
@@ -599,7 +611,10 @@ Home.propTypes = {
   cardAppeared: PropTypes.bool,
 
   // reducers/orderStatus
-  orderStatusList: PropTypes.array
+  orderStatusList: PropTypes.array,
+
+  // reducers/map
+  markerNodeTapped: PropTypes.object
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
