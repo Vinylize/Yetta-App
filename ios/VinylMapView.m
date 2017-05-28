@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "VinylMapView.h"
-#import "pingstersApp-Swift.h"
 #import <React/RCTConvert.h>
+#import "pingstersApp-Swift.h"
 
 @implementation VinylMapView {
   GMSMapView *_map;
@@ -100,17 +100,64 @@
 
 - (void)addMarker:(NSString *)latitude longitude:(NSString *)longitude id:(NSString*)id {
   GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
-  VinylMapMarkerView *markerView = [[VinylMapMarkerView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-  new_marker.iconView = markerView;
+  
+  new_marker.icon = [GMSMarker markerImageWithColor:[UIColor blackColor]];;
   new_marker.map = _map;
   [_markers addObject:new_marker];
   [_marker_ids addObject:id];
 }
 
+- (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name {
+  GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
+  NSLog(@"adding marker with node name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
+  
+  int nameLabelHeight = 30;
+  int triangleHeight = 20;
+  int triangleWidth = 8;
+  
+  UILabel *nodeNameLabel = [[UILabel alloc] init];
+  [nodeNameLabel setTextColor:[UIColor whiteColor]];
+  [nodeNameLabel setBackgroundColor:[UIColor blackColor]];
+  [nodeNameLabel setFont:[UIFont fontWithName:@"Helvetica Bold" size:16]];
+  [nodeNameLabel setText:name];
+  nodeNameLabel.textAlignment = NSTextAlignmentCenter;
+  CGSize textSize = [nodeNameLabel intrinsicContentSize];
+  
+  int WIDTH = textSize.width + 10;
+  
+  [nodeNameLabel setFrame:CGRectMake(0, 0, WIDTH, nameLabelHeight)];
+  
+  // [start draw triangle]
+  UIBezierPath* trianglePath = [UIBezierPath bezierPath];
+  [trianglePath moveToPoint:CGPointMake(0, 0)];
+  [trianglePath addLineToPoint:CGPointMake(triangleWidth/2, triangleHeight)];
+  [trianglePath addLineToPoint:CGPointMake(triangleWidth, 0)];
+  [trianglePath closePath];
+  
+  CAShapeLayer *triangleMaskLayer = [CAShapeLayer layer];
+  [triangleMaskLayer setPath:trianglePath.CGPath];
+  
+  UIView *triangleView = [[UIView alloc] initWithFrame:CGRectMake(WIDTH/2 - triangleWidth/2, nameLabelHeight, triangleWidth, triangleHeight)];
+  
+  triangleView.backgroundColor = [UIColor blackColor];
+  triangleView.layer.mask = triangleMaskLayer;
+  // [end draw triangle]
+  
+  UIView *nodeIconView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, nameLabelHeight+triangleHeight)];
+  nodeIconView.backgroundColor = [UIColor clearColor];
+  
+  [nodeIconView addSubview:nodeNameLabel];
+  [nodeIconView addSubview:triangleView];
+  
+  new_marker.iconView = nodeIconView;
+  new_marker.map = _map;
+  [_markers addObject:new_marker];
+}
+
 - (void)updateMarker: (NSString *)latitude longitude:(NSString *)longitude {
   if (_marker == nil) {
     _marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
-    // _marker.icon = [UIImage imageNamed:CAR_FOUND_IMAGE];
+    
     _marker.map = _map;
   } else {
     [CATransaction begin];

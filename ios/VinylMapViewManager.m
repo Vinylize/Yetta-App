@@ -70,6 +70,22 @@ RCT_EXPORT_METHOD(addMarker:(NSString *)latitude: (NSString *)longitude: (NSStri
   }
 }
 
+RCT_EXPORT_METHOD(addMarkerNode:(NSString *)latitude: (NSString *)longitude: (NSString *)name)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap addMarkerNode:latitude longitude:longitude name:name];
+    });
+  }
+}
+
+RCT_EXPORT_METHOD(addMarkerDest:(NSString *)latitude: (NSString *)longitude: (NSString *)name: (NSString *)pUrl)
+{
+  if (_vinylMap) {
+    
+  }
+}
+
 RCT_EXPORT_METHOD(updateMarker:(NSString *)latitude: (NSString *)longitude)
 {
   if (_vinylMap) {
