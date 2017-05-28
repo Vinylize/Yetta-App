@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableArray;
@@ -22,11 +23,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.pingstersapp.R;
 import com.pingstersapp.VinylMap.latlnginterpolation.LatLngInterpolator;
 import com.pingstersapp.VinylMap.latlnginterpolation.MarkerAnimation;
@@ -194,28 +193,46 @@ public class VinylMapModule extends MapView implements
         }
     }
 
-    public void fitToCoordinates(ReadableArray coordinatesArray, ReadableMap edgePadding, boolean animated) {
+    public void fitToCoordinates(final ReadableArray coordinatesArray, final ReadableMap edgePadding, final boolean animated) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        Log.d("MAP", "edgePadding: " + edgePadding.toString());
+        if (animated) {
+            Log.d("MAP", "animated: true");
+        } else {
+            Log.d("MAP", "animated: false");
+        }
 
         for (int i = 0; i < coordinatesArray.size(); i++) {
             ReadableMap latLng = coordinatesArray.getMap(i);
-            Double lat = latLng.getDouble("lat");
-            Double lng = latLng.getDouble("lon");
-            builder.include(new LatLng(lat, lng));
+            Log.d("MAP", latLng.toString());
+            Double lat = latLng.getDouble("latitude");
+            Double lon = latLng.getDouble("longitude");
+            builder.include(new LatLng(lat, lon));
         }
 
         LatLngBounds bounds = builder.build();
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, baseMapPadding);
+        final CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, baseMapPadding);
 
-        if (edgePadding != null) {
-            mMap.setPadding(edgePadding.getInt("left"), edgePadding.getInt("top"), edgePadding.getInt("right"), edgePadding.getInt("bottom"));
-        }
+        if (mMap != null) {
+            Handler uiHandler = new Handler(Looper.getMainLooper());
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    mMap.setPadding(
+                            edgePadding.getInt("left"),
+                            edgePadding.getInt("top"),
+                            edgePadding.getInt("right"),
+                            edgePadding.getInt("bottom"));
 
-        if (animated) {
-            mMap.animateCamera(cu);
-        } else {
-            mMap.moveCamera(cu);
+                    if (animated) {
+                        mMap.animateCamera(cu);
+                    } else {
+                        mMap.moveCamera(cu);
+                    }
+                    mMap.setPadding(0, 0, 0, 0); // Without this, the Google logo is moved up by the value of edgePadding.bottom
+                }
+            };
+            uiHandler.post(runnable);
         }
-        mMap.setPadding(0, 0, 0, 0); // Without this, the Google logo is moved up by the value of edgePadding.bottom
     }
 }

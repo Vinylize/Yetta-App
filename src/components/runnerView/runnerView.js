@@ -118,9 +118,11 @@ class RunnerView extends Component {
 
   handleCatchNewOrderBtn() {
     this.props.setBusyWaitingRunnerCatchingOrder(true);
-    BackgroundTimer.clearTimeout(this.intervalId);
     YettaServerAPIclient.getLokkaClient()
       .then(client => {
+        if (!this.props.currentLocation.lat || !this.props.currentLocation.lon) {
+          throw new Error('Error: 현재 위치를 받아올수 없습니다');
+        }
         return client.mutate(`{
           runnerCatchOrder(
             input:{
@@ -133,14 +135,15 @@ class RunnerView extends Component {
       })
       .then(res => {
         __DEV__ && console.log(res); // eslint-disable-line no-undef
-
+        BackgroundTimer.clearTimeout(this.intervalId);
         let vmm = NativeModules.VinylMapManager;
         const { dest, nId } = this.props.runnersOrderDetails;
+
         if (vmm && dest && nId) {
           const coordinatesArray = [
             {latitude: dest.lat, longitude: dest.lon},
             {latitude: nId.coordinate.lat, longitude: nId.coordinate.lon},
-            {latitude: this.props.currentLocation.lat, longitude: this.props.currentLocation.lon}
+            {latitude: parseFloat(this.props.currentLocation.lat), longitude: parseFloat(this.props.currentLocation.lon)}
           ];
           // todo: show markers
           // coordinatesArray.map((el, i) => {
