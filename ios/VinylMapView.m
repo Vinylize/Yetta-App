@@ -15,14 +15,12 @@
   GMSMapView *_map;
   GMSMarker *_marker;
   NSMutableArray *_markers;
-  NSMutableArray *_marker_ids;
 }
 
 - (instancetype)init
 {
   self = [super init];
   _markers = [[NSMutableArray alloc] init];
-  _marker_ids = [[NSMutableArray alloc] init];
   GMSCameraPosition *camera = [GMSCameraPosition cameraWithLatitude:-33.86
                                                           longitude:120.20
                                                                zoom:6];
@@ -55,13 +53,14 @@
            };
 }
 
-- (id)eventMarkerPress:(CLLocationCoordinate2D)coordinate markerID:(NSString*)markerID {
+- (id)eventMarkerPress:(CLLocationCoordinate2D)coordinate type:(NSString *)type nodeId:(NSString*)nodeId {
   return @{
            @"coordinate": @{
                @"latitude": @(coordinate.latitude),
                @"longitude": @(coordinate.longitude),
                },
-           @"id": markerID,
+           @"type": type,
+           @"id": nodeId,
            };
 }
 
@@ -104,10 +103,10 @@
   new_marker.icon = [GMSMarker markerImageWithColor:[UIColor blackColor]];;
   new_marker.map = _map;
   [_markers addObject:new_marker];
-  [_marker_ids addObject:id];
+  
 }
 
-- (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name {
+- (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name nodeId:(NSString *)nodeId {
   GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
   NSLog(@"adding marker with node name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
   
@@ -151,7 +150,13 @@
   
   new_marker.iconView = nodeIconView;
   new_marker.map = _map;
-  [_markers addObject:new_marker];
+  
+  NSDictionary *dict = @{
+                         @"marker": new_marker,
+                         @"type": @"node",
+                         @"id": nodeId
+                         };
+  [_markers addObject:dict];
 }
 
 - (void)updateMarker: (NSString *)latitude longitude:(NSString *)longitude {
@@ -226,11 +231,10 @@
 }
 
 - (BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker {
-  NSUInteger index = [_markers indexOfObject:marker];
-  NSString *markerID = _marker_ids[index];
-  
+  NSArray *filtered = [_markers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(marker == %@)", marker]];
+  NSDictionary *item = [filtered objectAtIndex:0];
   if (self.onMarkerPress) {
-    self.onMarkerPress([self eventMarkerPress:marker.position markerID:markerID]);
+    self.onMarkerPress([self eventMarkerPress:marker.position type:item[@"type"] nodeId:item[@"id"]]);
   }
   return YES;
 }

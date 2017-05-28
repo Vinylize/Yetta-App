@@ -245,12 +245,9 @@ class Home extends Component {
           onPress={(e) => {
             __DEV__ && console.log(e.nativeEvent); // eslint-disable-line no-undef
           }}
-          onMarkerPress={() => {
-            // console.log(e.nativeEvent);
-            if (this.state.markerClicked === false) {
-              // marker is clicked
-              animateCardAppear();
-            }
+          onMarkerPress={(e) => {
+            __DEV__ && console.log(e.nativeEvent); // eslint-disable-line no-undef
+
             this.setState({markerClicked: !this.state.markerClicked});
           }}
           onMapMove={(e) => {

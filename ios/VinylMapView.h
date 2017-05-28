@@ -30,7 +30,7 @@
 
 - (void)moveMarker:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)addMarker:(NSString *)latitude longitude:(NSString *)longitude id:(NSString*)id;
-- (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name;
+- (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name nodeId:(NSString *)nodeId;
 - (void)updateMarker:(NSString*)latitude longitude:(NSString*)longitude;
 
 - (void)enableDidChangeCameraPosition;

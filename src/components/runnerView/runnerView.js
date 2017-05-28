@@ -149,7 +149,7 @@ class RunnerView extends Component {
           // coordinatesArray.map((el, i) => {
           //   vmm.addMarker(String(el.latitude), String(el.longitude), String(i));
           // });
-          vmm.addMarkerNode(String(nId.coordinate.lat), String(nId.coordinate.lon), String(nId.n));
+          vmm.addMarkerNode(String(nId.coordinate.lat), String(nId.coordinate.lon), String(nId.n), String(nId.id));
           __DEV__ && console.log('fitToCoordinates with: ', coordinatesArray); // eslint-disable-line no-undef
           const edgePadding = {
             left: 50,
