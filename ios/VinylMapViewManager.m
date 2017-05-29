@@ -34,6 +34,15 @@ RCT_EXPORT_METHOD(moveMap:(NSString *)latitude: (NSString *)longitude)
   }
 }
 
+RCT_EXPORT_METHOD(clearMap)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap clearMap];
+    });
+  }
+}
+
 RCT_EXPORT_METHOD(animateToLocation:(NSString *)latitude: (NSString *)longitude)
 {
   if (_vinylMap) {
@@ -79,10 +88,21 @@ RCT_EXPORT_METHOD(addMarkerNode:(NSString *)latitude: (NSString *)longitude: (NS
   }
 }
 
-RCT_EXPORT_METHOD(addMarkerDest:(NSString *)latitude: (NSString *)longitude: (NSString *)name: (NSString *)pUrl)
+RCT_EXPORT_METHOD(addMarkerDest:(NSString *)latitude: (NSString *)longitude: (NSString *)name: (NSString *)pUrl: (NSString *)uId)
 {
   if (_vinylMap) {
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap addMarkerDest:latitude longitude:latitude name:name pUrl:pUrl uId:uId];
+    });
+  }
+}
+
+RCT_EXPORT_METHOD(removeMarker:(NSString *)id)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap removeMarker:id];
+    });
   }
 }
 

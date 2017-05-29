@@ -78,6 +78,10 @@
   _map.camera = camera;
 }
 
+- (void)clearMap {
+  [_map clear];
+}
+
 - (void)animateToLocation:(NSString *)latitude longitude:(NSString *)longitude {
   [_map animateToLocation: CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
 }
@@ -103,13 +107,48 @@
   new_marker.icon = [GMSMarker markerImageWithColor:[UIColor blackColor]];;
   new_marker.map = _map;
   [_markers addObject:new_marker];
-  
+}
+
+- (void)removeMarker:(NSString *)id {
+  NSArray *filtered = [_markers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(id == %@)", id]];
+  NSDictionary *item = [filtered objectAtIndex:0];
+  GMSMarker * marker = item[@"marker"];
+  if (marker) {
+    marker.map = nil;
+  }
 }
 
 - (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name nodeId:(NSString *)nodeId {
   GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
-  NSLog(@"adding marker with node name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
+  NSLog(@"adding node marker with node name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
   
+  new_marker.iconView = [self getNodeStyleIconView:name];
+  new_marker.map = _map;
+  
+  NSDictionary *dict = @{
+                         @"marker": new_marker,
+                         @"type": @"node",
+                         @"id": nodeId
+                         };
+  [_markers addObject:dict];
+}
+
+- (void)addMarkerDest:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name pUrl:(NSString *)pUrl uId:(NSString *)uId {
+  GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
+  NSLog(@"adding dest marker with user name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
+  
+  new_marker.iconView = [self getNodeStyleIconView:name];
+  new_marker.map = _map;
+  
+  NSDictionary *dict = @{
+                         @"marker": new_marker,
+                         @"type": @"dest",
+                         @"id": uId
+                         };
+  [_markers addObject:dict];
+}
+
+- (UIView *)getNodeStyleIconView: (NSString *)name {
   int nameLabelHeight = 30;
   int triangleHeight = 20;
   int triangleWidth = 8;
@@ -148,15 +187,7 @@
   [nodeIconView addSubview:nodeNameLabel];
   [nodeIconView addSubview:triangleView];
   
-  new_marker.iconView = nodeIconView;
-  new_marker.map = _map;
-  
-  NSDictionary *dict = @{
-                         @"marker": new_marker,
-                         @"type": @"node",
-                         @"id": nodeId
-                         };
-  [_markers addObject:dict];
+  return nodeIconView;
 }
 
 - (void)updateMarker: (NSString *)latitude longitude:(NSString *)longitude {

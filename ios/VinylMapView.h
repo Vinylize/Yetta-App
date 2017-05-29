@@ -22,6 +22,7 @@
 @property (nonatomic, assign) BOOL didChangeCameraPositionEnabled;
 
 - (void)moveMap:(NSString*)latitude longitude:(NSString*)longitude;
+- (void)clearMap;
 - (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)animateToLocationWithZoom:(NSString*)latitude longitude:(NSString*)longitude zoom:(float)zoom;
 - (void)fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coordinates
@@ -30,7 +31,9 @@
 
 - (void)moveMarker:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)addMarker:(NSString *)latitude longitude:(NSString *)longitude id:(NSString*)id;
+- (void)removeMarker:(NSString *)id;
 - (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name nodeId:(NSString *)nodeId;
+- (void)addMarkerDest:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name pUrl:(NSString *)pUrl uId:(NSString *)uId;
 - (void)updateMarker:(NSString*)latitude longitude:(NSString*)longitude;
 
 - (void)enableDidChangeCameraPosition;
