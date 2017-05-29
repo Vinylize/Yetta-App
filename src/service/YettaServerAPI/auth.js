@@ -90,11 +90,9 @@ export const userSignOut = () => {
         }`);
       })
       .then(res => {
-        console.log(res);
         return resolve(res);
       })
       .catch(err => {
-        console.log(err);
         handleError(err);
         return reject(err);
       });

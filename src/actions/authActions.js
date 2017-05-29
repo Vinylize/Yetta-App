@@ -15,8 +15,7 @@ export const setUser = (user) => {
 export const userSignout = () => {
   return YettaServerAPIauth.userSignOut()
     .then(() => firebase.auth().signOut())
-    .then((res) => {
-      console.log(res, 'signed out');
+    .then(() => {
       const { navigator } = store.getState().navigator;
       if (navigator) {
         const resetAction = NavigationActions.reset({
