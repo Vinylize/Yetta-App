@@ -67,4 +67,5 @@ export const setMenuAppeared = 'SET_MENU_APPEARED';
 export const setRefRunnerView = 'SET_REF_RUNNER_VIEW';
 
 // map
-export const setMarkerNodeTapped = 'SET_MARKER_NODE_TAPPED';
+export const setMarkerTapped = 'SET_MARKER_TAPPED';
+export const resetMarkerTapped = 'RESET_MARKER_TAPPED';

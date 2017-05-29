@@ -1,16 +1,14 @@
 import * as types from './actionTypes';
-import store from './../store';
 
-export const setMarkerNodeTapped = (markerNodeTapped) => {
+export const setMarkerTapped = (markerTapped) => {
   return {
-    type: types.setMarkerNodeTapped,
-    markerNodeTapped
+    type: types.setMarkerTapped,
+    markerTapped
   };
 };
 
-export const onClickMarkerNode = (id) => {
-  store.dispatch(setMarkerNodeTapped({
-    show: true,
-    id: id
-  }));
+export const resetMarkerTapped = () => {
+  return {
+    type: types.resetMarkerTapped
+  };
 };

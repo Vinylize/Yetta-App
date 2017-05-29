@@ -23,7 +23,10 @@ import RunnerView from './../runnerView/runnerView';
 import RunnerOnDeliveryView from './../runnerView/runnerOnDeliveryView';
 import BottomCardView from './../bottomCardView';
 import Menu from './../menu';
+
+// connectionViews
 import NodeInfoView from './../connectionViews/nodeInfoView';
+import DestInfoView from './../connectionViews/destInfoView';
 
 import UserModeTransition from './../globalViews/userModeTransition';
 import GlobalLoading from './../globalViews/loading';
@@ -34,15 +37,15 @@ import * as YettaServerAPI from '../../service/YettaServerAPI/client';
 import { handleError } from '../../utils/errorHandlers';
 
 // [start redux functions]
-import { setIsRunner } from '../../actions/userStatusActions';
+import { setIsRunner } from './../../actions/userStatusActions';
 import {
   setBusyWaitingPlaceDetailAPI,
   setBusyWaitingGeocodingAPI
-} from '../../actions/busyWaitingActions';
+} from './../../actions/busyWaitingActions';
 import {
   setWaitingNewOrder,
   setOnDelivery
-} from '../../actions/runnerStatusActions';
+} from './../../actions/runnerStatusActions';
 import { setRunnerNotification } from '../../actions/pushNotificationActions';
 import {
   setCameraWillMoveByPlaceDetailAPI,
@@ -52,17 +55,17 @@ import {
   setSearchedAddressTextView,
   setCurrentLocation,
   setBusyOnWaitingNewRunner
-} from '../../actions/componentsActions/homeActions';
+} from './../../actions/componentsActions/homeActions';
 import {
   animateCardAppear
-} from '../../actions/componentsActions/bottomCardActions';
+} from './../../actions/componentsActions/bottomCardActions';
 import {
   animateMenuAppear
-} from '../../actions/componentsActions/menuActions';
+} from './../../actions/componentsActions/menuActions';
+import {
+  setMarkerTapped
+} from './../../actions/mapActions';
 // [end redux functions]
-
-// map actions
-import * as mapActions from './../../actions/mapActions';
 
 // Assets
 import ImgSearchPin from './../../../assets/pin.png';
@@ -253,9 +256,10 @@ class Home extends Component {
             __DEV__ && console.log(e.nativeEvent); // eslint-disable-line no-undef
             const { type, id } = e.nativeEvent;
             if (type === 'node') {
-              mapActions.onClickMarkerNode(id);
+              this.props.setMarkerTapped({type, id});
+            } else if (type === 'dest') {
+              this.props.setMarkerTapped({type, id});
             }
-            this.setState({markerClicked: !this.state.markerClicked});
           }}
           onMapMove={(e) => {
             // console.log('mapmoved', e.nativeEvent);
@@ -511,6 +515,10 @@ class Home extends Component {
           refBackgroundView={(Platform.OS === 'ios') ?
             this.refViewContainerWithoutMenu : this.refMapAndroid}
         />
+        <DestInfoView
+          refBackgroundView={(Platform.OS === 'ios') ?
+            this.refViewContainerWithoutMenu : this.refMapAndroid}
+        />
       </View>
     );
   }
@@ -538,7 +546,7 @@ const mapStateToProps = (state) => {
     animatedCardBottomVal: state.home.animatedCardBottomVal,
     cardAppeared: state.bottomCardView.cardAppeared,
     orderStatusList: state.orderStatus.orderStatusList,
-    markerNodeTapped: state.map.markerNodeTapped
+    markerTapped: state.map.markerTapped
   };
 };
 
@@ -557,7 +565,8 @@ const mapDispatchToProps = (dispatch) => {
     setShowApproveAddressCard: (showApproveAddressCard) => dispatch(setShowApproveAddressCard(showApproveAddressCard)),
     setSearchedAddressTextView: (searchedAddressTextView) => dispatch(setSearchedAddressTextView(searchedAddressTextView)),
     setCurrentLocation: (currentLocation) => dispatch(setCurrentLocation(currentLocation)),
-    setBusyOnWaitingNewRunner: (busyOnWaitingNewRunner) => dispatch(setBusyOnWaitingNewRunner(busyOnWaitingNewRunner))
+    setBusyOnWaitingNewRunner: (busyOnWaitingNewRunner) => dispatch(setBusyOnWaitingNewRunner(busyOnWaitingNewRunner)),
+    setMarkerTapped: (markerTapped) => dispatch(setMarkerTapped(markerTapped))
   };
 };
 
@@ -614,7 +623,8 @@ Home.propTypes = {
   orderStatusList: PropTypes.array,
 
   // reducers/map
-  markerNodeTapped: PropTypes.object
+  markerTapped: PropTypes.object,
+  setMarkerTapped: PropTypes.func
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

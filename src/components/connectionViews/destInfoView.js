@@ -14,6 +14,9 @@ import {
   resetMarkerTapped
 } from './../../actions/mapActions';
 
+// assets
+// import IMG_DEFAULT_PROFILE from './../../../assets/defaultProfileImg.png';
+
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 
@@ -32,7 +35,7 @@ const styles = {
   }
 };
 
-class NodeInfoView extends Component {
+class DestInfoView extends Component {
   constructor() {
     super();
     this.handleCancelBtn = this.handleCancelBtn.bind(this);
@@ -59,74 +62,59 @@ class NodeInfoView extends Component {
     if (Platform.OS === 'ios' && !this.shouldShowThisComponent()) {
       return null;
     }
-    const { eDP } = this.props.runnersOrderDetails;
-    const { addr, n, p } = this.props.runnersOrderDetails.nId;
-    const { customItem, regItem } = this.props.runnersOrderDetails.items;
-    __DEV__ && console.log(regItem); // eslint-disable-line no-undef
+    const { n, p, r, pUrl } = this.props.runnersOrderDetails.oId;
+    const { n1 } = this.props.runnersOrderDetails.dest;
+    __DEV__ && console.log(r, pUrl, n1); // eslint-disable-line no-undef
     return (
       <View style={[styles.container, (Platform.OS === 'android' && !this.shouldShowThisComponent()) ? {
         height: 0} : {height: HEIGHT}]}>
         <View style={{
-          height: HEIGHT * 0.5,
+          height: HEIGHT * 0.7,
           width: WIDTH * 0.6,
-          backgroundColor: '#f9f9f9',
-          padding: 20,
-          paddingRight: 0
+          backgroundColor: 'grey',
+          flexDirection: 'column'
         }}>
-          <Text style={{
-            color: 'black',
-            fontSize: 16,
-            marginBottom: 10
-          }}>{n}</Text>
-          <Text style={{
-            color: 'black',
-            fontSize: 14,
-            marginBottom: 10
-          }}>{addr}</Text>
-          <Text style={{
-            color: 'black',
-            fontSize: 14,
-            marginBottom: 10
-          }}>{p}</Text>
-          <Text style={{
-            color: 'black',
-            fontSize: 14,
-            marginBottom: 10
-          }}>{eDP}</Text>
-          {customItem.map((el, i) =>
-            <Text
-              key={i}
+          <View style={{
+            height: HEIGHT * 0.5,
+            width: WIDTH * 0.6,
+            backgroundColor: '#f9f9f9',
+            padding: 20,
+            paddingRight: 0,
+            alignSelf: 'flex-end'
+          }}>
+            <Text style={{
+              color: 'black',
+              fontSize: 16,
+              marginBottom: 10
+            }}>{n}</Text>
+            <Text style={{
+              color: 'black',
+              fontSize: 14,
+              marginBottom: 10
+            }}>{p}</Text>
+            <TouchableOpacity
               style={{
-                color: 'black',
-                fontSize: 14,
-                marginBottom: 10
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                height: 30,
+                width: 30,
+                backgroundColor: 'transparent',
+                justifyContent: 'center',
+                alignItems: 'center'
               }}
+              onPress={this.handleCancelBtn}
             >
-              {el.n} x {el.cnt}
-            </Text>
-          )}
-          <TouchableOpacity
-            style={{
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              height: 30,
-              width: 30,
-              backgroundColor: 'transparent',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-            onPress={this.handleCancelBtn}
-          >
-            <Text style={{fontSize: 20}}>X</Text>
-          </TouchableOpacity>
+              <Text style={{fontSize: 20}}>X</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
   }
 }
 
-NodeInfoView.propTypes = {
+DestInfoView.propTypes = {
   refBackgroundView: PropTypes.any.isRequired,
 
   // reducers/map
@@ -152,4 +140,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NodeInfoView);
+export default connect(mapStateToProps, mapDispatchToProps)(DestInfoView);

@@ -2,19 +2,21 @@ import * as types from './../actions/actionTypes';
 
 const initialState = {
   /**
-   * show becomes true when node marker tapped on map
-   * id is tapped marker node ID
+   * type is one of these: 'node', 'dest'
+   * id is tapped marker ID which is either node id or user id
    */
-  markerNodeTapped: {
-    show: false,
+  markerTapped: {
+    type: undefined,
     id: undefined
   }
 };
 
 const map = (state = initialState, action = {}) => {
   switch (action.type) {
-  case types.setMarkerNodeTapped:
-    return {...state, markerNodeTapped: action.markerNodeTapped };
+  case types.setMarkerTapped:
+    return {...state, markerTapped: action.markerTapped };
+  case types.resetMarkerTapped:
+    return {...state, markerTapped: {type: undefined, id: undefined}};
   default:
     return state;
   }
