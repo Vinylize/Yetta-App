@@ -118,11 +118,15 @@
   }
 }
 
-- (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name nodeId:(NSString *)nodeId {
+- (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name nodeId:(NSString *)nodeId list:(NSArray<NSString *> *)list {
   GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
   NSLog(@"adding node marker with node name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
-  
-  new_marker.iconView = [self getNodeStyleIconView:name];
+#ifdef DEBUG
+  for (NSString * item in list) {
+    NSLog(@"item to purchase: %@", item);
+  }
+#endif
+  new_marker.iconView = [self getNodeStyleIconView:name list:list];
   new_marker.map = _map;
   
   NSDictionary *dict = @{
@@ -137,7 +141,7 @@
   GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
   NSLog(@"adding dest marker with user name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
   
-  new_marker.iconView = [self getNodeStyleIconView:name];
+  new_marker.iconView = [self getNodeStyleIconView:name list:nil];
   new_marker.map = _map;
   
   NSDictionary *dict = @{
@@ -148,22 +152,55 @@
   [_markers addObject:dict];
 }
 
-- (UIView *)getNodeStyleIconView: (NSString *)name {
-  int nameLabelHeight = 30;
-  int triangleHeight = 20;
-  int triangleWidth = 8;
+- (UIView *)getNodeStyleIconView: (NSString *)name list:(NSArray<NSString *> *)list {
+  NSInteger nameLabelHeight = 30;
+  NSInteger triangleHeight = 20;
+  NSInteger triangleWidth = 8;
+  NSInteger itemViewHeight = 16;
+  NSInteger itemListHeight = 0;
+  NSInteger itemCount = 0;
+  NSInteger rightArrowImageWidth = 10;
+  NSInteger leftMargin = 8;
   
+  if (list != nil) {
+    //itemCount = [list count];
+    itemListHeight = itemCount * itemViewHeight;
+  }
+  
+  // [start draw node name label]
   UILabel *nodeNameLabel = [[UILabel alloc] init];
   [nodeNameLabel setTextColor:[UIColor whiteColor]];
-  [nodeNameLabel setBackgroundColor:[UIColor blackColor]];
-  [nodeNameLabel setFont:[UIFont fontWithName:@"Helvetica Bold" size:16]];
+  [nodeNameLabel setBackgroundColor:[UIColor clearColor]];
+  nodeNameLabel.font = [UIFont fontWithName:@"Helvetica" size:15];
   [nodeNameLabel setText:name];
-  nodeNameLabel.textAlignment = NSTextAlignmentCenter;
+  nodeNameLabel.textAlignment = NSTextAlignmentLeft;
   CGSize textSize = [nodeNameLabel intrinsicContentSize];
   
-  int WIDTH = textSize.width + 10;
+  NSInteger WIDTH = leftMargin + textSize.width + 16 + rightArrowImageWidth;
   
-  [nodeNameLabel setFrame:CGRectMake(0, 0, WIDTH, nameLabelHeight)];
+  [nodeNameLabel setFrame:CGRectMake(leftMargin, nameLabelHeight/2 - textSize.height/2, textSize.width, textSize.height)];
+  
+  UIView *nodeNameTextWrapper = [[UIView alloc] initWithFrame:CGRectMake(0, itemListHeight, WIDTH, nameLabelHeight)];
+  nodeNameTextWrapper.backgroundColor = [UIColor blackColor];
+  [nodeNameTextWrapper addSubview:nodeNameLabel];
+  
+  // create a bezier path with the required corners rounded
+  UIBezierPath *cornersPath = [UIBezierPath bezierPathWithRoundedRect:nodeNameTextWrapper.bounds byRoundingCorners:(UIRectCornerBottomLeft|UIRectCornerBottomRight) cornerRadii:CGSizeMake(5, 5)];
+  // create a new layer to use as a mask
+  CAShapeLayer *maskLayer = [CAShapeLayer layer];
+  // set the path of the layer
+  maskLayer.path = cornersPath.CGPath;
+  nodeNameTextWrapper.layer.mask = maskLayer;
+  // [end draw node name label]
+  
+  // [start draw right-arrow image]
+  NSInteger rightArrowImageHeight = textSize.height - 6;
+  NSInteger rightArrowImageLeft = (leftMargin + textSize.width)/2 + WIDTH/2 - rightArrowImageWidth/2;
+  UIImageView * rightArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(rightArrowImageLeft, nameLabelHeight/2 - rightArrowImageHeight/2, rightArrowImageWidth, rightArrowImageHeight)];
+  rightArrowImageView.image = [UIImage imageNamed:@"right-arrow.png"];
+  rightArrowImageView.backgroundColor = [UIColor clearColor];
+  [nodeNameTextWrapper addSubview:rightArrowImageView];
+  // [end draw right-arrow image]
   
   // [start draw triangle]
   UIBezierPath* trianglePath = [UIBezierPath bezierPath];
@@ -175,16 +212,31 @@
   CAShapeLayer *triangleMaskLayer = [CAShapeLayer layer];
   [triangleMaskLayer setPath:trianglePath.CGPath];
   
-  UIView *triangleView = [[UIView alloc] initWithFrame:CGRectMake(WIDTH/2 - triangleWidth/2, nameLabelHeight, triangleWidth, triangleHeight)];
+  UIView *triangleView = [[UIView alloc] initWithFrame:CGRectMake(WIDTH/2 - triangleWidth/2, nameLabelHeight + itemListHeight, triangleWidth, triangleHeight)];
   
   triangleView.backgroundColor = [UIColor blackColor];
   triangleView.layer.mask = triangleMaskLayer;
   // [end draw triangle]
   
-  UIView *nodeIconView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, nameLabelHeight+triangleHeight)];
+  UIView *nodeIconView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, nameLabelHeight + triangleHeight + itemListHeight)];
   nodeIconView.backgroundColor = [UIColor clearColor];
   
-  [nodeIconView addSubview:nodeNameLabel];
+  // [start draw item list]
+  if (list != nil) {
+    for (NSInteger i = 0; i < itemCount; i++) {
+      UILabel * itemLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, i * itemViewHeight, WIDTH, itemViewHeight)];
+      [itemLabel setTextColor:[UIColor blackColor]];
+      [itemLabel setBackgroundColor:[UIColor whiteColor]];
+      [itemLabel setFont:[UIFont fontWithName:@"Helvetica" size:14]];
+      [itemLabel setText:[list objectAtIndex:i]];
+      itemLabel.textAlignment = NSTextAlignmentLeft;
+      
+      [nodeIconView addSubview:itemLabel];
+    };
+  }
+  // [end draw item list]
+  
+  [nodeIconView addSubview:nodeNameTextWrapper];
   [nodeIconView addSubview:triangleView];
   
   return nodeIconView;
