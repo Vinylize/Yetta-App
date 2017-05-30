@@ -156,14 +156,17 @@
   NSInteger nameLabelHeight = 30;
   NSInteger triangleHeight = 20;
   NSInteger triangleWidth = 8;
-  NSInteger itemViewHeight = 16;
+  NSInteger itemViewHeight = 24;
   NSInteger itemListHeight = 0;
   NSInteger itemCount = 0;
   NSInteger rightArrowImageWidth = 10;
-  NSInteger leftMargin = 8;
+  NSInteger textLeftMargin = 8;
+  NSInteger offsetForShadow = 15;
   
   if (list != nil) {
+    // todo: enable the following comment if all the list should be shown
     //itemCount = [list count];
+    itemCount = 1;
     itemListHeight = itemCount * itemViewHeight;
   }
   
@@ -171,31 +174,29 @@
   UILabel *nodeNameLabel = [[UILabel alloc] init];
   [nodeNameLabel setTextColor:[UIColor whiteColor]];
   [nodeNameLabel setBackgroundColor:[UIColor clearColor]];
-  nodeNameLabel.font = [UIFont fontWithName:@"Helvetica" size:15];
+  nodeNameLabel.font = [UIFont fontWithName:@"Helvetica" size:12];
   [nodeNameLabel setText:name];
   nodeNameLabel.textAlignment = NSTextAlignmentLeft;
   CGSize textSize = [nodeNameLabel intrinsicContentSize];
   
-  NSInteger WIDTH = leftMargin + textSize.width + 16 + rightArrowImageWidth;
+  NSInteger WIDTH = textLeftMargin + textSize.width + 16 + rightArrowImageWidth;
   
-  [nodeNameLabel setFrame:CGRectMake(leftMargin, nameLabelHeight/2 - textSize.height/2, textSize.width, textSize.height)];
+  [nodeNameLabel setFrame:CGRectMake(textLeftMargin, nameLabelHeight/2 - textSize.height/2, textSize.width, textSize.height)];
   
-  UIView *nodeNameTextWrapper = [[UIView alloc] initWithFrame:CGRectMake(0, itemListHeight, WIDTH, nameLabelHeight)];
+  UIView *nodeNameTextWrapper = [[UIView alloc] initWithFrame:CGRectMake(offsetForShadow/2, itemListHeight + offsetForShadow, WIDTH, nameLabelHeight)];
   nodeNameTextWrapper.backgroundColor = [UIColor blackColor];
   [nodeNameTextWrapper addSubview:nodeNameLabel];
   
-  // create a bezier path with the required corners rounded
+  // add roundedCorner on bottom left and right
   UIBezierPath *cornersPath = [UIBezierPath bezierPathWithRoundedRect:nodeNameTextWrapper.bounds byRoundingCorners:(UIRectCornerBottomLeft|UIRectCornerBottomRight) cornerRadii:CGSizeMake(5, 5)];
-  // create a new layer to use as a mask
   CAShapeLayer *maskLayer = [CAShapeLayer layer];
-  // set the path of the layer
   maskLayer.path = cornersPath.CGPath;
   nodeNameTextWrapper.layer.mask = maskLayer;
   // [end draw node name label]
   
   // [start draw right-arrow image]
   NSInteger rightArrowImageHeight = textSize.height - 6;
-  NSInteger rightArrowImageLeft = (leftMargin + textSize.width)/2 + WIDTH/2 - rightArrowImageWidth/2;
+  NSInteger rightArrowImageLeft = (textLeftMargin + textSize.width)/2 + WIDTH/2 - rightArrowImageWidth/2;
   UIImageView * rightArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(rightArrowImageLeft, nameLabelHeight/2 - rightArrowImageHeight/2, rightArrowImageWidth, rightArrowImageHeight)];
   rightArrowImageView.image = [UIImage imageNamed:@"right-arrow.png"];
   rightArrowImageView.backgroundColor = [UIColor clearColor];
@@ -212,30 +213,70 @@
   CAShapeLayer *triangleMaskLayer = [CAShapeLayer layer];
   [triangleMaskLayer setPath:trianglePath.CGPath];
   
-  UIView *triangleView = [[UIView alloc] initWithFrame:CGRectMake(WIDTH/2 - triangleWidth/2, nameLabelHeight + itemListHeight, triangleWidth, triangleHeight)];
+  UIView *triangleView = [[UIView alloc] initWithFrame:CGRectMake(WIDTH/2 - triangleWidth/2 + offsetForShadow/2, nameLabelHeight + itemListHeight + offsetForShadow, triangleWidth, triangleHeight)];
   
   triangleView.backgroundColor = [UIColor blackColor];
   triangleView.layer.mask = triangleMaskLayer;
   // [end draw triangle]
   
-  UIView *nodeIconView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, nameLabelHeight + triangleHeight + itemListHeight)];
+  UIView *nodeIconView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH + offsetForShadow, nameLabelHeight + triangleHeight + itemListHeight + offsetForShadow)];
   nodeIconView.backgroundColor = [UIColor clearColor];
+  nodeIconView.layer.shadowOffset = CGSizeMake(0, 3);
+  nodeIconView.layer.shadowColor = [UIColor blackColor].CGColor;
+  nodeIconView.layer.shadowRadius = 3.0;
+  nodeIconView.layer.shadowOpacity = .5;
   
   // [start draw item list]
-  if (list != nil) {
-    for (NSInteger i = 0; i < itemCount; i++) {
-      UILabel * itemLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, i * itemViewHeight, WIDTH, itemViewHeight)];
-      [itemLabel setTextColor:[UIColor blackColor]];
-      [itemLabel setBackgroundColor:[UIColor whiteColor]];
-      [itemLabel setFont:[UIFont fontWithName:@"Helvetica" size:14]];
-      [itemLabel setText:[list objectAtIndex:i]];
-      itemLabel.textAlignment = NSTextAlignmentLeft;
-      
-      [nodeIconView addSubview:itemLabel];
-    };
+  // TODO: remove the following commented code if not used
+//  if (list != nil) {
+//    for (NSInteger i = 0; i < itemCount; i++) {
+//      UILabel * itemLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, i * itemViewHeight, WIDTH, itemViewHeight)];
+//      [itemLabel setTextColor:[UIColor blackColor]];
+//      [itemLabel setBackgroundColor:[UIColor whiteColor]];
+//      [itemLabel setFont:[UIFont fontWithName:@"Helvetica" size:14]];
+//      [itemLabel setText:[list objectAtIndex:i]];
+//      itemLabel.textAlignment = NSTextAlignmentLeft;
+//      
+//      [nodeIconView addSubview:itemLabel];
+//    };
+//  }
+  UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(offsetForShadow/2, offsetForShadow, WIDTH, itemViewHeight)];
+  itemView.backgroundColor = [UIColor whiteColor];
+  
+  // add roundedCorner on top left and right
+  UIBezierPath *itemViewCornersPath = [UIBezierPath bezierPathWithRoundedRect:nodeNameTextWrapper.bounds byRoundingCorners:(UIRectCornerTopRight|UIRectCornerTopLeft) cornerRadii:CGSizeMake(5, 5)];
+  CAShapeLayer *itemViewMaskLayer = [CAShapeLayer layer];
+  itemViewMaskLayer.path = itemViewCornersPath.CGPath;
+  itemView.layer.mask = itemViewMaskLayer;
+  
+  UILabel *itemText = [[UILabel alloc] init];
+  [itemText setTextColor:[UIColor blackColor]];
+  [itemText setBackgroundColor:[UIColor clearColor]];
+  itemText.font = [UIFont fontWithName:@"Helvetica" size:10];
+  [itemText setText:[list firstObject]];
+  itemText.textAlignment = NSTextAlignmentLeft;
+  CGSize itemTextSize = [nodeNameLabel intrinsicContentSize];
+  
+  NSInteger itemTextWidth = itemTextSize.width;
+  
+  // add text of '외 몇개' if number of ordered item is greater than one
+  if ([list count] > 1) {
+    UILabel *restItemNumText = [[UILabel alloc] init];
+    restItemNumText.font = [UIFont fontWithName:@"Helvetica" size:10];
+    [restItemNumText setText:[NSString stringWithFormat:@"외 %lu 개", [list count] - 1]];
+    CGSize restItemNumTextSize = [restItemNumText intrinsicContentSize];
+    [restItemNumText setFrame:CGRectMake(WIDTH - restItemNumTextSize.width - textLeftMargin, itemViewHeight/2 - restItemNumTextSize.height/2, restItemNumTextSize.width, restItemNumTextSize.height)];
+    [itemView addSubview:restItemNumText];
+    
+    itemTextWidth = WIDTH - textLeftMargin * 2 - restItemNumTextSize.width;
   }
+  
+  [itemText setFrame:CGRectMake(textLeftMargin, itemViewHeight/2 - itemTextSize.height/2, itemTextWidth, itemTextSize.height)];
+  [itemView addSubview:itemText];
+  
   // [end draw item list]
   
+  [nodeIconView addSubview:itemView];
   [nodeIconView addSubview:nodeNameTextWrapper];
   [nodeIconView addSubview:triangleView];
   
@@ -314,6 +355,7 @@
 }
 
 - (BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker {
+  NSLog(@"didTapMarker");
   NSArray *filtered = [_markers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(marker == %@)", marker]];
   NSDictionary *item = [filtered objectAtIndex:0];
   if (self.onMarkerPress) {
