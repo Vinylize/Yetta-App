@@ -60,8 +60,21 @@ class NodeInfoView extends Component {
       return null;
     }
     const { eDP } = this.props.runnersOrderDetails;
-    const { addr, n, p } = this.props.runnersOrderDetails.nId;
-    const { customItem, regItem } = this.props.runnersOrderDetails.items;
+    const { nId, items } = this.props.runnersOrderDetails;
+    let addr;
+    let n;
+    let p;
+    let customItem = [];
+    let regItem = [];
+    if (nId) {
+      addr = nId.addr;
+      n = nId.n;
+      p = nId.p;
+    }
+    if (items) {
+      customItem = items.customItem;
+      regItem = items.regItem;
+    }
     __DEV__ && console.log(regItem); // eslint-disable-line no-undef
     return (
       <View style={[styles.container, (Platform.OS === 'android' && !this.shouldShowThisComponent()) ? {

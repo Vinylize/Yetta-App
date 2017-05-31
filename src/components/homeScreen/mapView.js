@@ -183,6 +183,10 @@ class Home extends Component {
             vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
             this.initialLocationUpdate = true;
           }
+          // vmm.addMarkerNode(String(data.latitude), String(data.longitude), '애오개역', String(123123), [
+          //   'adfasdfsdf', 'asdsdsss', 'xcvbxvb'
+          // ]);
+          // vmm.addMarkerDest(String(data.latitude), String(data.longitude), '양우네 집', String(123));
           // console.log(data);
           this.props.setCurrentLocation({
             lat: data.latitude,

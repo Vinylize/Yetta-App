@@ -302,7 +302,7 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
   nodeButton.backgroundColor = [UIColor clearColor];
   [nodeButton setTag:[self convertStringToAscii:tag]];
   [nodeButton addTarget:self action:@selector(markerButtonHoldDown:) forControlEvents:UIControlEventTouchDown];
-  [nodeButton addTarget:self action:@selector(markerButtonHoldRelease:) forControlEvents:UIControlEventTouchUpInside];
+  [nodeButton addTarget:self action:@selector(nodeMarkerButtonHoldRelease:) forControlEvents:UIControlEventTouchUpInside];
   [nodeButton addTarget:self action:@selector(markerButtonHoldReleaseOutside:) forControlEvents:UIControlEventTouchUpOutside];
   nodeButton.showsTouchWhenHighlighted = FALSE;
   
@@ -374,7 +374,7 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
   destButton.backgroundColor = [UIColor clearColor];
   [destButton setTag:[self convertStringToAscii:tag]];
   [destButton addTarget:self action:@selector(markerButtonHoldDown:) forControlEvents:UIControlEventTouchDown];
-  [destButton addTarget:self action:@selector(markerButtonHoldRelease:) forControlEvents:UIControlEventTouchUpInside];
+  [destButton addTarget:self action:@selector(destMarkerButtonHoldRelease:) forControlEvents:UIControlEventTouchUpInside];
   [destButton addTarget:self action:@selector(markerButtonHoldReleaseOutside:) forControlEvents:UIControlEventTouchUpOutside];
   destButton.showsTouchWhenHighlighted = FALSE;
   
@@ -395,7 +395,7 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
   }
 }
 
-- (void)markerButtonHoldRelease:(UIButton *)sender {
+- (void)destMarkerButtonHoldRelease:(UIButton *)sender {
   NSInteger index = sender.tag;
   NSLog(@"dest button hold released with tag: %ld", (long)index);
   for (UIView *i in sender.subviews) {
@@ -407,7 +407,19 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
       if (self.onMarkerPress) {
         self.onMarkerPress([self eventMarkerPress:_destMarkerCoordinate type:item[@"type"] nodeId:item[@"id"]]);
       }
-    } else if ([item[@"type"]  isEqual: @"node"] && sender.tag == convertedTag) {
+    }
+  }
+}
+
+- (void)nodeMarkerButtonHoldRelease:(UIButton *)sender {
+  NSInteger index = sender.tag;
+  NSLog(@"dest button hold released with tag: %ld", (long)index);
+  for (UIView *i in sender.subviews) {
+    i.backgroundColor = [UIColor blackColor];
+  }
+  for (NSDictionary *item in _markers) {
+    NSInteger convertedTag = [self convertStringToAscii:item[@"id"]];
+    if ([item[@"type"]  isEqual: @"node"] && sender.tag == convertedTag) {
       if (self.onMarkerPress) {
         self.onMarkerPress([self eventMarkerPress:_destMarkerCoordinate type:item[@"type"] nodeId:item[@"id"]]);
       }
@@ -523,7 +535,11 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
 //    if (!self.onChangeCameraPosition) return;
 //    self.onChangeCameraPosition([self eventCameraPositionChange:latitude longitude:longitude]);
 //  }
+  CGSize screenSize = [UIScreen mainScreen].bounds.size;
+  CGPoint endPoint = CGPointMake(screenSize.width, screenSize.height);
+  
   CGPoint mapCenter = [mapView.projection pointForCoordinate:[mapView.camera target]];
+  
   if (_destMarkerView != nil && [_destMarkerView superview] != nil) {
     CGPoint markerCenter = [mapView.projection pointForCoordinate:_destMarkerCoordinate];
     CGSize viewSize = _destMarkerView.frame.size;
@@ -534,14 +550,23 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
     NSString * destMarkerPosY;
     NSString * destMarkerPosX;
     
-    if (mapCenter.x > markerCenter.x) {
+    if (0 > markerCenter.x) {
+      newCenterX = 0;
+    } else if (endPoint.x < markerCenter.x) {
+      newCenterX = endPoint.x;
+    } else if (mapCenter.x > markerCenter.x) {
       newCenterX = markerCenter.x + viewSize.width/2;
       destMarkerPosX = AT_LEFT;
     } else if (mapCenter.x < markerCenter.x) {
       newCenterX = markerCenter.x - viewSize.width/2;
       destMarkerPosX = AT_RIGHT;
     }
-    if (mapCenter.y > markerCenter.y) {
+    
+    if (0 > markerCenter.y) {
+      newCenterY = 0;
+    } else if (endPoint.y < markerCenter.y) {
+      newCenterY = endPoint.y;
+    } else if (mapCenter.y > markerCenter.y) {
       newCenterY = markerCenter.y + viewSize.height/2;
       destMarkerPosY = AT_TOP;
     } else if (mapCenter.y < markerCenter.y) {
@@ -578,14 +603,23 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
     NSString *nodeMarkerPosY;
     NSString *nodeMarkerPosX;
     
-    if (mapCenter.x > markerCenter.x) {
+    if (0 > markerCenter.x) {
+      newCenterX = 0;
+    } else if (endPoint.x < markerCenter.x) {
+      newCenterX = endPoint.x;
+    } else if (mapCenter.x > markerCenter.x) {
       newCenterX = markerCenter.x + viewSize.width/2;
       nodeMarkerPosX = AT_LEFT;
     } else if (mapCenter.x < markerCenter.x) {
       newCenterX = markerCenter.x - viewSize.width/2;
       nodeMarkerPosX = AT_RIGHT;
     }
-    if (mapCenter.y > markerCenter.y) {
+    
+    if (0 > markerCenter.y) {
+      newCenterY = 0;
+    } else if (endPoint.y < markerCenter.y) {
+      newCenterY = endPoint.y;
+    } else if (mapCenter.y > markerCenter.y) {
       newCenterY = markerCenter.y + viewSize.height/2;
       nodeMarkerPosY = AT_TOP;
     } else if (mapCenter.y < markerCenter.y) {
