@@ -10,7 +10,20 @@
 #import "VinylMapView.h"
 #import <React/RCTConvert.h>
 #import "pingstersApp-Swift.h"
+#import <QuartzCore/QuartzCore.h>
 #include <math.h>
+
+static NSString *const AT_BOTTOM = @"AT_BOTTOM";
+static NSString *const AT_TOP = @"AT_TOP";
+static NSString *const AT_LEFT = @"AT_LEFT";
+static NSString *const AT_RIGHT = @"AT_RIGHT";
+
+@interface VinylMapView()
+@property (nonatomic, weak) NSString* destMarkerLastPosX; // either AT_LEFT or AT_RIGHT
+@property (nonatomic, weak) NSString* destMarkerLastPosY; // either AT_TOP or AT_BOTTOM
+@property (nonatomic, weak) NSString* nodeMarkerLastPosX;
+@property (nonatomic, weak) NSString* nodeMarkerLastPosY;
+@end
 
 @implementation VinylMapView {
   GMSMapView *_map;
@@ -124,6 +137,7 @@
 }
 
 - (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name nodeId:(NSString *)nodeId list:(NSArray<NSString *> *)list {
+  _nodeMarkerCoordinate = CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue);
   GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
   NSLog(@"adding node marker with node name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
 #ifdef DEBUG
@@ -131,7 +145,9 @@
     NSLog(@"item to purchase: %@", item);
   }
 #endif
-  new_marker.iconView = [self getNodeStyleIconView:name list:list];
+  [_map addSubview:[self getNodeStyleIconView:name list:list tag:nodeId]];
+  new_marker.iconView = [self getBasicIconView];
+  new_marker.groundAnchor = CGPointMake(0.5, 0.5);
   new_marker.map = _map;
   
   NSDictionary *dict = @{
@@ -148,8 +164,9 @@
   NSLog(@"adding dest marker with user name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
   
   [_map addSubview:[self getDestStyleIconView:name tag:uId]];
-  //new_marker.iconView = [self getDestStyleIconView:name tag:uId];
-  //new_marker.map = _map;
+  new_marker.iconView = [self getBasicIconView];
+  new_marker.groundAnchor = CGPointMake(0.5, 0.5);
+  new_marker.map = _map;
   
   NSDictionary *dict = @{
                          @"marker": new_marker,
@@ -159,10 +176,16 @@
   [_markers addObject:dict];
 }
 
-- (UIView *)getNodeStyleIconView: (NSString *)name list:(NSArray<NSString *> *)list {
+- (UIView *)getBasicIconView {
+  UIView *iconView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 13, 13)];
+  iconView.backgroundColor = [UIColor blackColor];
+  iconView.transform = CGAffineTransformMakeRotation(45 * M_PI/180);
+  return iconView;
+}
+
+- (UIView *)getNodeStyleIconView: (NSString *)name list:(NSArray<NSString *> *)list tag:(NSString *)tag {
   NSInteger nameLabelHeight = 30;
   NSInteger triangleHeight = 20;
-  NSInteger triangleWidth = 8;
   NSInteger itemViewHeight = 24;
   NSInteger itemListHeight = 0;
   NSInteger itemCount = 0;
@@ -177,6 +200,9 @@
     itemListHeight = itemCount * itemViewHeight;
   }
   
+  NSInteger totalParentViewHeight = nameLabelHeight + triangleHeight + offsetForShadow + itemListHeight;
+  NSInteger totalParentViewWidth;
+  
   // [start draw node name label]
   UILabel *nodeNameLabel = [[UILabel alloc] init];
   [nodeNameLabel setTextColor:[UIColor whiteColor]];
@@ -187,6 +213,7 @@
   CGSize textSize = [nodeNameLabel intrinsicContentSize];
   
   NSInteger WIDTH = textLeftMargin + textSize.width + 16 + rightArrowImageWidth;
+  totalParentViewWidth = WIDTH + offsetForShadow;
   
   [nodeNameLabel setFrame:CGRectMake(textLeftMargin, nameLabelHeight/2 - textSize.height/2, textSize.width, textSize.height)];
   
@@ -210,28 +237,12 @@
   [nodeNameTextWrapper addSubview:rightArrowImageView];
   // [end draw right-arrow image]
   
-  // [start draw triangle]
-  UIBezierPath* trianglePath = [UIBezierPath bezierPath];
-  [trianglePath moveToPoint:CGPointMake(0, 0)];
-  [trianglePath addLineToPoint:CGPointMake(triangleWidth/2, triangleHeight)];
-  [trianglePath addLineToPoint:CGPointMake(triangleWidth, 0)];
-  [trianglePath closePath];
-  
-  CAShapeLayer *triangleMaskLayer = [CAShapeLayer layer];
-  [triangleMaskLayer setPath:trianglePath.CGPath];
-  
-  UIView *triangleView = [[UIView alloc] initWithFrame:CGRectMake(WIDTH/2 - triangleWidth/2 + offsetForShadow/2, nameLabelHeight + itemListHeight + offsetForShadow, triangleWidth, triangleHeight)];
-  
-  triangleView.backgroundColor = [UIColor blackColor];
-  triangleView.layer.mask = triangleMaskLayer;
-  // [end draw triangle]
-  
-  UIView *nodeIconView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH + offsetForShadow, nameLabelHeight + triangleHeight + itemListHeight + offsetForShadow)];
-  nodeIconView.backgroundColor = [UIColor clearColor];
-  nodeIconView.layer.shadowOffset = CGSizeMake(0, 3);
-  nodeIconView.layer.shadowColor = [UIColor blackColor].CGColor;
-  nodeIconView.layer.shadowRadius = 3.0;
-  nodeIconView.layer.shadowOpacity = .5;
+  _nodeMarkerView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, totalParentViewWidth, totalParentViewHeight)];
+  _nodeMarkerView.backgroundColor = [UIColor clearColor];
+  _nodeMarkerView.layer.shadowOffset = CGSizeMake(0, 3);
+  _nodeMarkerView.layer.shadowColor = [UIColor blackColor].CGColor;
+  _nodeMarkerView.layer.shadowRadius = 3.0;
+  _nodeMarkerView.layer.shadowOpacity = .5;
   
   // [start draw item list]
   // TODO: remove the following commented code if not used
@@ -283,20 +294,39 @@
   
   // [end draw item list]
   
-  [nodeIconView addSubview:itemView];
-  [nodeIconView addSubview:nodeNameTextWrapper];
-  [nodeIconView addSubview:triangleView];
+  [_nodeMarkerView addSubview:itemView];
+  [_nodeMarkerView addSubview:nodeNameTextWrapper];
   
-  return nodeIconView;
+  UIButton *nodeButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [nodeButton setFrame:CGRectMake(0, 0, totalParentViewWidth, totalParentViewHeight)];
+  nodeButton.backgroundColor = [UIColor clearColor];
+  [nodeButton setTag:[self convertStringToAscii:tag]];
+  [nodeButton addTarget:self action:@selector(markerButtonHoldDown:) forControlEvents:UIControlEventTouchDown];
+  [nodeButton addTarget:self action:@selector(markerButtonHoldRelease:) forControlEvents:UIControlEventTouchUpInside];
+  [nodeButton addTarget:self action:@selector(markerButtonHoldReleaseOutside:) forControlEvents:UIControlEventTouchUpOutside];
+  nodeButton.showsTouchWhenHighlighted = FALSE;
+  
+  itemView.userInteractionEnabled = NO;
+  nodeNameTextWrapper.userInteractionEnabled = NO;
+  
+  [nodeButton addSubview:nodeNameTextWrapper];
+  
+  [_nodeMarkerView addSubview:nodeButton];
+  
+  return _nodeMarkerView;
 }
 
 - (UIView *)getDestStyleIconView: (NSString *)name tag:(NSString *)tag {
   NSInteger nameLabelHeight = 30;
   NSInteger triangleHeight = 20;
-  NSInteger triangleWidth = 8;
   NSInteger rightArrowImageWidth = 10;
   NSInteger textLeftMargin = 8;
   NSInteger offsetForShadow = 15;
+  
+  NSInteger totalParentViewHeight = nameLabelHeight + triangleHeight + offsetForShadow;
+  NSInteger totalParentViewWidth;
+  
+  // MAKE SURE PARENT VIEW DOES NOT HAVE THE SAME TAG VALUE AS OF THE SUBVIEW!
   
   // [start draw dest name label]
   UILabel *destNameLabel = [[UILabel alloc] init];
@@ -308,6 +338,7 @@
   CGSize textSize = [destNameLabel intrinsicContentSize];
   
   NSInteger WIDTH = textLeftMargin + textSize.width + 16 + rightArrowImageWidth;
+  totalParentViewWidth = WIDTH + offsetForShadow;
   
   [destNameLabel setFrame:CGRectMake(textLeftMargin, nameLabelHeight/2 - textSize.height/2, textSize.width, textSize.height)];
   
@@ -331,23 +362,7 @@
   [destNameTextWrapper addSubview:rightArrowImageView];
   // [end draw right-arrow image]
   
-  // [start draw triangle]
-  UIBezierPath* trianglePath = [UIBezierPath bezierPath];
-  [trianglePath moveToPoint:CGPointMake(0, 0)];
-  [trianglePath addLineToPoint:CGPointMake(triangleWidth/2, triangleHeight)];
-  [trianglePath addLineToPoint:CGPointMake(triangleWidth, 0)];
-  [trianglePath closePath];
-  
-  CAShapeLayer *triangleMaskLayer = [CAShapeLayer layer];
-  [triangleMaskLayer setPath:trianglePath.CGPath];
-  
-  UIView *triangleView = [[UIView alloc] initWithFrame:CGRectMake(WIDTH/2 - triangleWidth/2 + offsetForShadow/2, nameLabelHeight + offsetForShadow, triangleWidth, triangleHeight)];
-  
-  triangleView.backgroundColor = [UIColor blackColor];
-  triangleView.layer.mask = triangleMaskLayer;
-  // [end draw triangle]
-  
-  _destMarkerView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH + offsetForShadow, nameLabelHeight + triangleHeight + offsetForShadow)];
+  _destMarkerView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, totalParentViewWidth, totalParentViewHeight)];
   _destMarkerView.backgroundColor = [UIColor clearColor];
   _destMarkerView.layer.shadowOffset = CGSizeMake(0, 3);
   _destMarkerView.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -355,26 +370,24 @@
   _destMarkerView.layer.shadowOpacity = .5;
   
   UIButton *destButton = [UIButton buttonWithType:UIButtonTypeSystem];
-  [destButton setFrame:CGRectMake(0, 0, WIDTH + offsetForShadow, nameLabelHeight + triangleHeight + offsetForShadow)];
+  [destButton setFrame:CGRectMake(0, 0, totalParentViewWidth, totalParentViewHeight)];
   destButton.backgroundColor = [UIColor clearColor];
   [destButton setTag:[self convertStringToAscii:tag]];
-  [destButton addTarget:self action:@selector(destButtonHoldDown:) forControlEvents:UIControlEventTouchDown];
-  [destButton addTarget:self action:@selector(destButtonHoldRelease:) forControlEvents:UIControlEventTouchUpInside];
-  [destButton addTarget:self action:@selector(destButtonHoldReleaseOutside:) forControlEvents:UIControlEventTouchUpOutside];
+  [destButton addTarget:self action:@selector(markerButtonHoldDown:) forControlEvents:UIControlEventTouchDown];
+  [destButton addTarget:self action:@selector(markerButtonHoldRelease:) forControlEvents:UIControlEventTouchUpInside];
+  [destButton addTarget:self action:@selector(markerButtonHoldReleaseOutside:) forControlEvents:UIControlEventTouchUpOutside];
   destButton.showsTouchWhenHighlighted = FALSE;
   
   destNameTextWrapper.userInteractionEnabled = NO;
-  triangleView.userInteractionEnabled = NO;
-  
+
   [destButton addSubview:destNameTextWrapper];
-  [destButton addSubview:triangleView];
   
   [_destMarkerView addSubview:destButton];
   
   return _destMarkerView;
 }
 
-- (void)destButtonHoldDown: (UIButton *)sender {
+- (void)markerButtonHoldDown: (UIButton *)sender {
   NSInteger index = sender.tag;
   NSLog(@"dest button holding down with tag: %ld", (long)index);
   for (UIView *i in sender.subviews) {
@@ -382,7 +395,7 @@
   }
 }
 
-- (void)destButtonHoldRelease:(UIButton *)sender {
+- (void)markerButtonHoldRelease:(UIButton *)sender {
   NSInteger index = sender.tag;
   NSLog(@"dest button hold released with tag: %ld", (long)index);
   for (UIView *i in sender.subviews) {
@@ -394,11 +407,15 @@
       if (self.onMarkerPress) {
         self.onMarkerPress([self eventMarkerPress:_destMarkerCoordinate type:item[@"type"] nodeId:item[@"id"]]);
       }
+    } else if ([item[@"type"]  isEqual: @"node"] && sender.tag == convertedTag) {
+      if (self.onMarkerPress) {
+        self.onMarkerPress([self eventMarkerPress:_destMarkerCoordinate type:item[@"type"] nodeId:item[@"id"]]);
+      }
     }
   }
 }
 
-- (void)destButtonHoldReleaseOutside:(UIButton *)sender {
+- (void)markerButtonHoldReleaseOutside:(UIButton *)sender {
   NSInteger index = sender.tag;
   NSLog(@"dest button released outside with tag: %ld", (long)index);
   for (UIView *i in sender.subviews) {
@@ -506,8 +523,92 @@
 //    if (!self.onChangeCameraPosition) return;
 //    self.onChangeCameraPosition([self eventCameraPositionChange:latitude longitude:longitude]);
 //  }
+  CGPoint mapCenter = [mapView.projection pointForCoordinate:[mapView.camera target]];
   if (_destMarkerView != nil && [_destMarkerView superview] != nil) {
-    _destMarkerView.center = [mapView.projection pointForCoordinate:_destMarkerCoordinate];
+    CGPoint markerCenter = [mapView.projection pointForCoordinate:_destMarkerCoordinate];
+    CGSize viewSize = _destMarkerView.frame.size;
+    CGFloat newCenterX = mapCenter.x;
+    CGFloat newCenterY = mapCenter.y;
+    
+    BOOL shouldAnimate = false;
+    NSString * destMarkerPosY;
+    NSString * destMarkerPosX;
+    
+    if (mapCenter.x > markerCenter.x) {
+      newCenterX = markerCenter.x + viewSize.width/2;
+      destMarkerPosX = AT_LEFT;
+    } else if (mapCenter.x < markerCenter.x) {
+      newCenterX = markerCenter.x - viewSize.width/2;
+      destMarkerPosX = AT_RIGHT;
+    }
+    if (mapCenter.y > markerCenter.y) {
+      newCenterY = markerCenter.y + viewSize.height/2;
+      destMarkerPosY = AT_TOP;
+    } else if (mapCenter.y < markerCenter.y) {
+      newCenterY = markerCenter.y - viewSize.height/2;
+      destMarkerPosY = AT_BOTTOM;
+    }
+    
+    if (destMarkerPosX != _destMarkerLastPosX || destMarkerPosY != _destMarkerLastPosY) {
+      shouldAnimate = true;
+    }
+    _destMarkerLastPosX = destMarkerPosX;
+    _destMarkerLastPosY = destMarkerPosY;
+    
+    if (shouldAnimate == true) {
+      [UIView beginAnimations:nil context:nil];
+      [UIView setAnimationDuration:0.3];
+      [UIView setAnimationDelay:0];
+      [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+    }
+    _destMarkerView.center = CGPointMake(newCenterX, newCenterY);
+    
+    if (shouldAnimate == true) {
+      [UIView commitAnimations];
+    }
+  }
+  
+  if (_nodeMarkerView != nil && [_nodeMarkerView superview] != nil) {
+    CGPoint markerCenter = [mapView.projection pointForCoordinate:_nodeMarkerCoordinate];
+    CGSize viewSize = _nodeMarkerView.frame.size;
+    CGFloat newCenterX = mapCenter.x;
+    CGFloat newCenterY = mapCenter.y;
+    
+    BOOL shouldAnimate = false;
+    NSString *nodeMarkerPosY;
+    NSString *nodeMarkerPosX;
+    
+    if (mapCenter.x > markerCenter.x) {
+      newCenterX = markerCenter.x + viewSize.width/2;
+      nodeMarkerPosX = AT_LEFT;
+    } else if (mapCenter.x < markerCenter.x) {
+      newCenterX = markerCenter.x - viewSize.width/2;
+      nodeMarkerPosX = AT_RIGHT;
+    }
+    if (mapCenter.y > markerCenter.y) {
+      newCenterY = markerCenter.y + viewSize.height/2;
+      nodeMarkerPosY = AT_TOP;
+    } else if (mapCenter.y < markerCenter.y) {
+      newCenterY = markerCenter.y - viewSize.height/2;
+      nodeMarkerPosY = AT_BOTTOM;
+    }
+    
+    if (nodeMarkerPosX != _nodeMarkerLastPosX || nodeMarkerPosY != _nodeMarkerLastPosY) {
+      shouldAnimate = true;
+    }
+    _nodeMarkerLastPosX = nodeMarkerPosX;
+    _nodeMarkerLastPosY = nodeMarkerPosY;
+    
+    if (shouldAnimate == true) {
+      [UIView beginAnimations:nil context:nil];
+      [UIView setAnimationDuration:0.3];
+      [UIView setAnimationDelay:0];
+      [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+    }
+    _nodeMarkerView.center = CGPointMake(newCenterX, newCenterY);
+    if (shouldAnimate == true) {
+      [UIView commitAnimations];
+    }
   }
 }
 
