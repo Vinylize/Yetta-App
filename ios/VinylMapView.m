@@ -137,11 +137,11 @@
   [_markers addObject:dict];
 }
 
-- (void)addMarkerDest:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name pUrl:(NSString *)pUrl uId:(NSString *)uId {
+- (void)addMarkerDest:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name uId:(NSString *)uId {
   GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
   NSLog(@"adding dest marker with user name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
   
-  new_marker.iconView = [self getNodeStyleIconView:name list:nil];
+  new_marker.iconView = [self getDestStyleIconView:name];
   new_marker.map = _map;
   
   NSDictionary *dict = @{
@@ -281,6 +281,76 @@
   [nodeIconView addSubview:triangleView];
   
   return nodeIconView;
+}
+
+- (UIView *)getDestStyleIconView: (NSString *)name {
+  NSInteger nameLabelHeight = 30;
+  NSInteger triangleHeight = 20;
+  NSInteger triangleWidth = 8;
+  NSInteger rightArrowImageWidth = 10;
+  NSInteger textLeftMargin = 8;
+  NSInteger offsetForShadow = 15;
+  
+  // [start draw dest name label]
+  UILabel *destNameLabel = [[UILabel alloc] init];
+  [destNameLabel setTextColor:[UIColor whiteColor]];
+  [destNameLabel setBackgroundColor:[UIColor clearColor]];
+  destNameLabel.font = [UIFont fontWithName:@"Helvetica" size:12];
+  [destNameLabel setText:name];
+  destNameLabel.textAlignment = NSTextAlignmentLeft;
+  CGSize textSize = [destNameLabel intrinsicContentSize];
+  
+  NSInteger WIDTH = textLeftMargin + textSize.width + 16 + rightArrowImageWidth;
+  
+  [destNameLabel setFrame:CGRectMake(textLeftMargin, nameLabelHeight/2 - textSize.height/2, textSize.width, textSize.height)];
+  
+  UIView *destNameTextWrapper = [[UIView alloc] initWithFrame:CGRectMake(offsetForShadow/2, offsetForShadow, WIDTH, nameLabelHeight)];
+  destNameTextWrapper.backgroundColor = [UIColor blackColor];
+  [destNameTextWrapper addSubview:destNameLabel];
+  
+  // add roundedCorner on bottom left and right
+  UIBezierPath *cornersPath = [UIBezierPath bezierPathWithRoundedRect:destNameTextWrapper.bounds byRoundingCorners:(UIRectCornerBottomLeft|UIRectCornerBottomRight|UIRectCornerTopLeft|UIRectCornerTopRight) cornerRadii:CGSizeMake(5, 5)];
+  CAShapeLayer *maskLayer = [CAShapeLayer layer];
+  maskLayer.path = cornersPath.CGPath;
+  destNameTextWrapper.layer.mask = maskLayer;
+  // [end draw node name label]
+  
+  // [start draw right-arrow image]
+  NSInteger rightArrowImageHeight = textSize.height - 6;
+  NSInteger rightArrowImageLeft = (textLeftMargin + textSize.width)/2 + WIDTH/2 - rightArrowImageWidth/2;
+  UIImageView * rightArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(rightArrowImageLeft, nameLabelHeight/2 - rightArrowImageHeight/2, rightArrowImageWidth, rightArrowImageHeight)];
+  rightArrowImageView.image = [UIImage imageNamed:@"right-arrow.png"];
+  rightArrowImageView.backgroundColor = [UIColor clearColor];
+  [destNameTextWrapper addSubview:rightArrowImageView];
+  // [end draw right-arrow image]
+  
+  // [start draw triangle]
+  UIBezierPath* trianglePath = [UIBezierPath bezierPath];
+  [trianglePath moveToPoint:CGPointMake(0, 0)];
+  [trianglePath addLineToPoint:CGPointMake(triangleWidth/2, triangleHeight)];
+  [trianglePath addLineToPoint:CGPointMake(triangleWidth, 0)];
+  [trianglePath closePath];
+  
+  CAShapeLayer *triangleMaskLayer = [CAShapeLayer layer];
+  [triangleMaskLayer setPath:trianglePath.CGPath];
+  
+  UIView *triangleView = [[UIView alloc] initWithFrame:CGRectMake(WIDTH/2 - triangleWidth/2 + offsetForShadow/2, nameLabelHeight + offsetForShadow, triangleWidth, triangleHeight)];
+  
+  triangleView.backgroundColor = [UIColor blackColor];
+  triangleView.layer.mask = triangleMaskLayer;
+  // [end draw triangle]
+  
+  UIView *destIconView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH + offsetForShadow, nameLabelHeight + triangleHeight + offsetForShadow)];
+  destIconView.backgroundColor = [UIColor clearColor];
+  destIconView.layer.shadowOffset = CGSizeMake(0, 3);
+  destIconView.layer.shadowColor = [UIColor blackColor].CGColor;
+  destIconView.layer.shadowRadius = 3.0;
+  destIconView.layer.shadowOpacity = .5;
+  
+  [destIconView addSubview:destNameTextWrapper];
+  [destIconView addSubview:triangleView];
+  
+  return destIconView;
 }
 
 - (void)updateMarker: (NSString *)latitude longitude:(NSString *)longitude {
