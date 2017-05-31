@@ -10,11 +10,16 @@
 #import "VinylMapView.h"
 #import <React/RCTConvert.h>
 #import "pingstersApp-Swift.h"
+#include <math.h>
 
 @implementation VinylMapView {
   GMSMapView *_map;
   GMSMarker *_marker;
   NSMutableArray *_markers;
+  UIView *_destMarkerView;
+  UIView *_nodeMarkerView;
+  CLLocationCoordinate2D _destMarkerCoordinate;
+  CLLocationCoordinate2D _nodeMarkerCoordinate;
 }
 
 - (instancetype)init
@@ -138,11 +143,13 @@
 }
 
 - (void)addMarkerDest:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name uId:(NSString *)uId {
-  GMSMarker *new_marker = [GMSMarker markerWithPosition:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
+  _destMarkerCoordinate = CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue);
+  GMSMarker *new_marker = [GMSMarker markerWithPosition:_destMarkerCoordinate];
   NSLog(@"adding dest marker with user name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
   
-  new_marker.iconView = [self getDestStyleIconView:name];
-  new_marker.map = _map;
+  [_map addSubview:[self getDestStyleIconView:name tag:uId]];
+  //new_marker.iconView = [self getDestStyleIconView:name tag:uId];
+  //new_marker.map = _map;
   
   NSDictionary *dict = @{
                          @"marker": new_marker,
@@ -283,7 +290,7 @@
   return nodeIconView;
 }
 
-- (UIView *)getDestStyleIconView: (NSString *)name {
+- (UIView *)getDestStyleIconView: (NSString *)name tag:(NSString *)tag {
   NSInteger nameLabelHeight = 30;
   NSInteger triangleHeight = 20;
   NSInteger triangleWidth = 8;
@@ -340,17 +347,64 @@
   triangleView.layer.mask = triangleMaskLayer;
   // [end draw triangle]
   
-  UIView *destIconView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH + offsetForShadow, nameLabelHeight + triangleHeight + offsetForShadow)];
-  destIconView.backgroundColor = [UIColor clearColor];
-  destIconView.layer.shadowOffset = CGSizeMake(0, 3);
-  destIconView.layer.shadowColor = [UIColor blackColor].CGColor;
-  destIconView.layer.shadowRadius = 3.0;
-  destIconView.layer.shadowOpacity = .5;
+  _destMarkerView  = [[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH + offsetForShadow, nameLabelHeight + triangleHeight + offsetForShadow)];
+  _destMarkerView.backgroundColor = [UIColor clearColor];
+  _destMarkerView.layer.shadowOffset = CGSizeMake(0, 3);
+  _destMarkerView.layer.shadowColor = [UIColor blackColor].CGColor;
+  _destMarkerView.layer.shadowRadius = 3.0;
+  _destMarkerView.layer.shadowOpacity = .5;
   
-  [destIconView addSubview:destNameTextWrapper];
-  [destIconView addSubview:triangleView];
+  UIButton *destButton = [UIButton buttonWithType:UIButtonTypeSystem];
+  [destButton setFrame:CGRectMake(0, 0, WIDTH + offsetForShadow, nameLabelHeight + triangleHeight + offsetForShadow)];
+  destButton.backgroundColor = [UIColor clearColor];
+  [destButton setTag:[self convertStringToAscii:tag]];
+  [destButton addTarget:self action:@selector(destButtonHoldDown:) forControlEvents:UIControlEventTouchDown];
+  [destButton addTarget:self action:@selector(destButtonHoldRelease:) forControlEvents:UIControlEventTouchUpInside];
+  destButton.showsTouchWhenHighlighted = FALSE;
   
-  return destIconView;
+  destNameTextWrapper.userInteractionEnabled = NO;
+  triangleView.userInteractionEnabled = NO;
+  
+  [destButton addSubview:destNameTextWrapper];
+  [destButton addSubview:triangleView];
+  
+  [_destMarkerView addSubview:destButton];
+  
+  return _destMarkerView;
+}
+
+- (void)destButtonHoldDown: (UIButton *)sender {
+  NSInteger index = sender.tag;
+  NSLog(@"dest button holding down with tag: %ld", (long)index);
+  for (UIView *i in sender.subviews) {
+    i.backgroundColor = [UIColor grayColor];
+  }
+}
+
+- (void)destButtonHoldRelease:(UIButton *)sender {
+  NSInteger index = sender.tag;
+  NSLog(@"dest button hold released with tag: %ld", (long)index);
+  for (UIView *i in sender.subviews) {
+    i.backgroundColor = [UIColor blackColor];
+  }
+}
+
+- (void)destButtonHoldReleaseOutside:(UIButton *)sender {
+  NSInteger index = sender.tag;
+  NSLog(@"dest button released outside with tag: %ld", (long)index);
+  for (UIView *i in sender.subviews) {
+    i.backgroundColor = [UIColor blackColor];
+  }
+}
+
+- (NSInteger)convertStringToAscii: (NSString *)str {
+  NSInteger combinedAscii = 0;
+  for (NSInteger charIdx=0; charIdx<str.length; charIdx++) {
+    int asciiCode = [str characterAtIndex:charIdx];
+    int digits = (int) ceil(log10(combinedAscii));
+    combinedAscii += asciiCode * digits;
+  }
+  return combinedAscii;
 }
 
 - (void)updateMarker: (NSString *)latitude longitude:(NSString *)longitude {
@@ -443,6 +497,9 @@
 //    if (!self.onChangeCameraPosition) return;
 //    self.onChangeCameraPosition([self eventCameraPositionChange:latitude longitude:longitude]);
 //  }
+  if (_destMarkerView != nil && [_destMarkerView superview] != nil) {
+    _destMarkerView.center = [mapView.projection pointForCoordinate:_destMarkerCoordinate];
+  }
 }
 
 @end
