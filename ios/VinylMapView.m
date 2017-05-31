@@ -360,6 +360,7 @@
   [destButton setTag:[self convertStringToAscii:tag]];
   [destButton addTarget:self action:@selector(destButtonHoldDown:) forControlEvents:UIControlEventTouchDown];
   [destButton addTarget:self action:@selector(destButtonHoldRelease:) forControlEvents:UIControlEventTouchUpInside];
+  [destButton addTarget:self action:@selector(destButtonHoldReleaseOutside:) forControlEvents:UIControlEventTouchUpOutside];
   destButton.showsTouchWhenHighlighted = FALSE;
   
   destNameTextWrapper.userInteractionEnabled = NO;
@@ -386,6 +387,14 @@
   NSLog(@"dest button hold released with tag: %ld", (long)index);
   for (UIView *i in sender.subviews) {
     i.backgroundColor = [UIColor blackColor];
+  }
+  for (NSDictionary *item in _markers) {
+    NSInteger convertedTag = [self convertStringToAscii:item[@"id"]];
+    if ([item[@"type"]  isEqual: @"dest"] && sender.tag == convertedTag) {
+      if (self.onMarkerPress) {
+        self.onMarkerPress([self eventMarkerPress:_destMarkerCoordinate type:item[@"type"] nodeId:item[@"id"]]);
+      }
+    }
   }
 }
 
