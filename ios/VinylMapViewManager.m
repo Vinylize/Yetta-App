@@ -126,6 +126,15 @@ RCT_EXPORT_METHOD(fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coor
   }
 }
 
+RCT_EXPORT_METHOD(drawDirections:(NSString *)encodedPath)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap drawDirections:encodedPath];
+    });
+  }
+}
+
 RCT_EXPORT_METHOD(enableDidChangeCameraPosition)
 {
   if (_vinylMap) {

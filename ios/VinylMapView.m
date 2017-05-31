@@ -17,12 +17,16 @@ static NSString *const AT_BOTTOM = @"AT_BOTTOM";
 static NSString *const AT_TOP = @"AT_TOP";
 static NSString *const AT_LEFT = @"AT_LEFT";
 static NSString *const AT_RIGHT = @"AT_RIGHT";
+NSInteger i;
 
 @interface VinylMapView()
 @property (nonatomic, weak) NSString* destMarkerLastPosX; // either AT_LEFT or AT_RIGHT
 @property (nonatomic, weak) NSString* destMarkerLastPosY; // either AT_TOP or AT_BOTTOM
 @property (nonatomic, weak) NSString* nodeMarkerLastPosX;
 @property (nonatomic, weak) NSString* nodeMarkerLastPosY;
+
+@property (nonatomic, strong) GMSPolyline* polylineAnim;
+@property (nonatomic, strong) GMSMutablePath* pathForAnim;
 @end
 
 @implementation VinylMapView {
@@ -51,7 +55,7 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
   _map.myLocationEnabled = YES;
   _map.delegate = self;
   [self addSubview:_map];
-
+  i = 0;
   return self;
 }
 
@@ -476,6 +480,62 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
   CGFloat left = [RCTConvert CGFloat:edgePadding[@"left"]];
   
   [_map animateWithCameraUpdate:[GMSCameraUpdate fitBounds:bounds withEdgeInsets:UIEdgeInsetsMake(top, left, bottom, right)]];
+}
+
+- (void)drawDirections:(nullable NSString *)encodedPath
+{
+  GMSPath *polyLinePath = [GMSPath pathFromEncodedPath:encodedPath];
+  
+  // CAShapeLayer *layer = [self layerFromGMSMutablePath:polyLinePath];
+  
+  GMSPolyline* polyline = [GMSPolyline polylineWithPath:polyLinePath];
+  polyline.strokeColor = [UIColor redColor];
+  polyline.strokeWidth = 3.f;
+  polyline.map = _map;
+  
+  [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:true block:^(NSTimer * _Nonnull timer) {
+    [self animatePolyLinePath:polyLinePath];
+  }];
+}
+
+- (void)animatePolyLinePath:(GMSPath *)path {
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if (i < path.count) {
+      [_pathForAnim addCoordinate:[path coordinateAtIndex:i]];
+      _polylineAnim = [GMSPolyline polylineWithPath:_pathForAnim];
+      _polylineAnim.strokeWidth = 3;
+      _polylineAnim.strokeColor = [UIColor greenColor];
+      _polylineAnim.map = _map;
+      i++;
+    } else {
+      i = 0;
+      _pathForAnim = [[GMSMutablePath alloc] init];
+      _polylineAnim.map = nil;
+    }
+  });
+}
+
+-(CAShapeLayer *)layerFromGMSMutablePath:(GMSPath *)path{
+  UIBezierPath *bezierPath = [UIBezierPath bezierPath];
+  
+  CLLocationCoordinate2D firstCoordinate = [path coordinateAtIndex:0];
+  [bezierPath moveToPoint:[_map.projection pointForCoordinate:firstCoordinate]];
+  
+  for(int i=1; i<path.count; i++){
+    CLLocationCoordinate2D coordinate = [path coordinateAtIndex:i];
+    [bezierPath addLineToPoint:[_map.projection pointForCoordinate:coordinate]];
+  }
+  
+  CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+  shapeLayer.path = [[bezierPath bezierPathByReversingPath] CGPath];
+  shapeLayer.strokeColor = [[UIColor redColor] CGColor];
+  shapeLayer.lineWidth = 4.0;
+  shapeLayer.fillColor = [[UIColor clearColor] CGColor];
+  shapeLayer.lineJoin = kCALineJoinRound;
+  shapeLayer.lineCap = kCALineCapRound;
+  shapeLayer.cornerRadius = 5;
+  
+  return shapeLayer;
 }
 
 - (void)enableDidChangeCameraPosition
