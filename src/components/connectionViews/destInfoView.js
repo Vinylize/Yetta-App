@@ -14,9 +14,6 @@ import {
   resetMarkerTapped
 } from './../../actions/mapActions';
 
-// assets
-// import IMG_DEFAULT_PROFILE from './../../../assets/defaultProfileImg.png';
-
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 
@@ -43,9 +40,9 @@ class DestInfoView extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    if (nextProps.markerTapped.show === true) {
+    if (nextProps.markerTapped.type === 'dest') {
       this.props.refBackgroundView && this.props.refBackgroundView.setNativeProps({style: {opacity: 0.5}});
-    } else if (!nextProps.markerTapped.show) {
+    } else if (!nextProps.markerTapped.type !== 'dest') {
       this.props.refBackgroundView && this.props.refBackgroundView.setNativeProps({style: {opacity: 1}});
     }
   }
@@ -55,59 +52,64 @@ class DestInfoView extends Component {
   }
 
   shouldShowThisComponent() {
-    return (this.props.markerTapped.type === 'node');
+    return (this.props.markerTapped.type === 'dest');
   }
 
   render() {
     if (Platform.OS === 'ios' && !this.shouldShowThisComponent()) {
       return null;
     }
-    const { n, p, r, pUrl } = this.props.runnersOrderDetails.oId;
-    const { n1 } = this.props.runnersOrderDetails.dest;
+    let n;
+    let p;
+    let r;
+    let pUrl;
+    let n1;
+    const { oId, dest } = this.props.runnersOrderDetails;
+    if (oId && dest) {
+      n = oId.n;
+      p = oId.p;
+      r = oId.r;
+      pUrl = oId.pUrl;
+      n1 = dest.n1;
+    }
     __DEV__ && console.log(r, pUrl, n1); // eslint-disable-line no-undef
     return (
       <View style={[styles.container, (Platform.OS === 'android' && !this.shouldShowThisComponent()) ? {
         height: 0} : {height: HEIGHT}]}>
         <View style={{
-          height: HEIGHT * 0.7,
+          height: HEIGHT * 0.5,
           width: WIDTH * 0.6,
-          backgroundColor: 'grey',
-          flexDirection: 'column'
+          backgroundColor: '#f9f9f9',
+          padding: 20,
+          paddingRight: 0,
+          marginTop: HEIGHT * 0.1
         }}>
-          <View style={{
-            height: HEIGHT * 0.5,
-            width: WIDTH * 0.6,
-            backgroundColor: '#f9f9f9',
-            padding: 20,
-            paddingRight: 0,
-            alignSelf: 'flex-end'
-          }}>
-            <Text style={{
-              color: 'black',
-              fontSize: 16,
-              marginBottom: 10
-            }}>{n}</Text>
-            <Text style={{
-              color: 'black',
-              fontSize: 14,
-              marginBottom: 10
-            }}>{p}</Text>
-            <TouchableOpacity
-              style={{
-                position: 'absolute',
-                right: 0,
-                top: 0,
-                height: 30,
-                width: 30,
-                backgroundColor: 'transparent',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}
-              onPress={this.handleCancelBtn}
-            >
-              <Text style={{fontSize: 20}}>X</Text>
-            </TouchableOpacity>
-          </View>
+          <Text>오더 정보</Text>
+          <Text style={{
+            color: 'black',
+            fontSize: 16,
+            marginBottom: 10
+          }}>{n}</Text>
+          <Text style={{
+            color: 'black',
+            fontSize: 14,
+            marginBottom: 10
+          }}>{p}</Text>
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              right: 0,
+              top: 0,
+              height: 30,
+              width: 30,
+              backgroundColor: 'transparent',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+            onPress={this.handleCancelBtn}
+          >
+            <Text style={{fontSize: 20}}>X</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

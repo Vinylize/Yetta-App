@@ -137,20 +137,19 @@ class RunnerView extends Component {
         __DEV__ && console.log(res); // eslint-disable-line no-undef
         BackgroundTimer.clearTimeout(this.intervalId);
         let vmm = NativeModules.VinylMapManager;
-        const { dest, nId, oId } = this.props.runnersOrderDetails;
+        const { dest, nId, oId, items } = this.props.runnersOrderDetails;
 
-        if (vmm && dest && nId && oId) {
+        if (vmm && dest && nId && oId && items) {
+          let itemList = [];
+          items.regItem.map(el => itemList.push(`${el.n} x ${el.cnt}`));
+          items.customItem.map(el => itemList.push(`${el.n} x ${el.cnt}`));
           const coordinatesArray = [
             {latitude: dest.lat, longitude: dest.lon},
             {latitude: nId.coordinate.lat, longitude: nId.coordinate.lon},
             {latitude: parseFloat(this.props.currentLocation.lat), longitude: parseFloat(this.props.currentLocation.lon)}
           ];
-          // todo: show markers
-          // coordinatesArray.map((el, i) => {
-          //   vmm.addMarker(String(el.latitude), String(el.longitude), String(i));
-          // });
-          vmm.addMarkerNode(String(nId.coordinate.lat), String(nId.coordinate.lon), String(nId.n), String(nId.id));
-          vmm.addMarkerDest(String(dest.lat), String(dest.lon), dest.n1, oId.pUrl, oId.id);
+          vmm.addMarkerNode(String(nId.coordinate.lat), String(nId.coordinate.lon), String(nId.n), String(nId.id), itemList);
+          vmm.addMarkerDest(String(dest.lat), String(dest.lon), dest.n1, oId.id);
           __DEV__ && console.log('fitToCoordinates with: ', coordinatesArray); // eslint-disable-line no-undef
           const edgePadding = {
             left: 50,

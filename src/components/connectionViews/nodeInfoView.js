@@ -40,9 +40,9 @@ class NodeInfoView extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    if (nextProps.markerTapped.show === true) {
+    if (nextProps.markerTapped.type === 'node') {
       this.props.refBackgroundView && this.props.refBackgroundView.setNativeProps({style: {opacity: 0.5}});
-    } else if (!nextProps.markerTapped.show) {
+    } else if (!nextProps.markerTapped.type !== 'node') {
       this.props.refBackgroundView && this.props.refBackgroundView.setNativeProps({style: {opacity: 1}});
     }
   }
