@@ -101,20 +101,45 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
   [_map clear];
 }
 
-- (void)animateToLocation:(NSString *)latitude longitude:(NSString *)longitude {
+- (void)animateToLocation:(NSString *)latitude longitude:(NSString *)longitude duration:(float)duration {
   [CATransaction begin];
-  [CATransaction setValue:[NSNumber numberWithFloat: 0.7f] forKey:kCATransactionAnimationDuration];
+  [CATransaction setValue:[NSNumber numberWithFloat: duration] forKey:kCATransactionAnimationDuration];
   [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
   [_map animateToLocation: CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
   [CATransaction commit];
 }
 
-- (void)animateToLocationWithZoom:(NSString *)latitude longitude:(NSString *)longitude zoom:(float)zoom {
+- (void)animateToLocationWithZoom:(NSString *)latitude longitude:(NSString *)longitude zoom:(float)zoom duration:(float)duration {
   [CATransaction begin];
-  [CATransaction setValue:[NSNumber numberWithFloat: 0.7f] forKey:kCATransactionAnimationDuration];
+  [CATransaction setValue:[NSNumber numberWithFloat: duration] forKey:kCATransactionAnimationDuration];
   [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
   [_map animateToLocation:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
   [_map animateToZoom:zoom];
+  [CATransaction commit];
+}
+
+- (void)fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coordinates
+             edgePadding:(nonnull NSDictionary *)edgePadding
+                animated:(BOOL)animated
+                duration:(float)duration
+{
+  CLLocationCoordinate2D myLocation = coordinates.firstObject.coordinate;
+  GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:myLocation coordinate:myLocation];
+  NSLog(@"fitToCoordinates");
+  for (VinylMapCoordinate *coordinate in coordinates) {
+    bounds = [bounds includingCoordinate:coordinate.coordinate];
+  }
+  
+  // Set Map viewport
+  CGFloat top = [RCTConvert CGFloat:edgePadding[@"top"]];
+  CGFloat right = [RCTConvert CGFloat:edgePadding[@"right"]];
+  CGFloat bottom = [RCTConvert CGFloat:edgePadding[@"bottom"]];
+  CGFloat left = [RCTConvert CGFloat:edgePadding[@"left"]];
+  
+  [CATransaction begin];
+  [CATransaction setValue:[NSNumber numberWithFloat: duration] forKey:kCATransactionAnimationDuration];
+  [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
+  [_map animateWithCameraUpdate:[GMSCameraUpdate fitBounds:bounds withEdgeInsets:UIEdgeInsetsMake(top, left, bottom, right)]];
   [CATransaction commit];
 }
 
@@ -173,7 +198,7 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
   NSLog(@"adding dest marker with user name: %@ at %.10f %.10f", name, latitude.doubleValue, longitude.doubleValue);
   
   [_map addSubview:[self getDestStyleIconView:name tag:uId]];
-  new_marker.iconView = [self getBasicIconView];
+  new_marker.iconView = [self getStarIconView];
   new_marker.groundAnchor = CGPointMake(0.5, 0.5);
   new_marker.map = _map;
   
@@ -190,6 +215,13 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
   iconView.backgroundColor = [UIColor blackColor];
   iconView.transform = CGAffineTransformMakeRotation(45 * M_PI/180);
   return iconView;
+}
+
+- (UIView *)getStarIconView {
+  UIImageView *starImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 16, 16)];
+  starImageView.image = [UIImage imageNamed:@"star.png"];
+  starImageView.backgroundColor = [UIColor clearColor];
+  return starImageView;
 }
 
 - (UIView *)getNodeStyleIconView: (NSString *)name list:(NSArray<NSString *> *)list tag:(NSString *)tag {
@@ -467,26 +499,6 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
   }
 }
 
-- (void)fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coordinates
-             edgePadding:(nonnull NSDictionary *)edgePadding
-                animated:(BOOL)animated
-{
-  CLLocationCoordinate2D myLocation = coordinates.firstObject.coordinate;
-  GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:myLocation coordinate:myLocation];
-  NSLog(@"fitToCoordinates");
-  for (VinylMapCoordinate *coordinate in coordinates) {
-    bounds = [bounds includingCoordinate:coordinate.coordinate];
-  }
-
-  // Set Map viewport
-  CGFloat top = [RCTConvert CGFloat:edgePadding[@"top"]];
-  CGFloat right = [RCTConvert CGFloat:edgePadding[@"right"]];
-  CGFloat bottom = [RCTConvert CGFloat:edgePadding[@"bottom"]];
-  CGFloat left = [RCTConvert CGFloat:edgePadding[@"left"]];
-  
-  [_map animateWithCameraUpdate:[GMSCameraUpdate fitBounds:bounds withEdgeInsets:UIEdgeInsetsMake(top, left, bottom, right)]];
-}
-
 - (void)drawDirections:(nullable NSString *)encodedPath
 {
   GMSPath *polyLinePath = [GMSPath pathFromEncodedPath:encodedPath];
@@ -579,8 +591,8 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
 //    if (!self.onChangeCameraPosition) return;
 //    self.onChangeCameraPosition([self eventCameraPositionChange:latitude longitude:longitude]);
 //  }
-  CGSize screenSize = [UIScreen mainScreen].bounds.size;
-  CGPoint endPoint = CGPointMake(screenSize.width, screenSize.height);
+  CGSize mapViewSize = _map.frame.size;
+  CGPoint endPoint = CGPointMake(mapViewSize.width, mapViewSize.height);
   
   CGPoint mapCenter = [mapView.projection pointForCoordinate:[mapView.camera target]];
   

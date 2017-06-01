@@ -43,23 +43,36 @@ RCT_EXPORT_METHOD(clearMap)
   }
 }
 
-RCT_EXPORT_METHOD(animateToLocation:(NSString *)latitude: (NSString *)longitude)
+RCT_EXPORT_METHOD(animateToLocation:(NSString *)latitude: (NSString *)longitude: (float)duration)
 {
   if (_vinylMap) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      [_vinylMap animateToLocation:latitude longitude:longitude];
+      [_vinylMap animateToLocation:latitude longitude:longitude duration:duration];
     });
   }
 }
 
-RCT_EXPORT_METHOD(animateToLocationWithZoom:(NSString *)latitude: (NSString *)longitude: (float)zoom)
+RCT_EXPORT_METHOD(animateToLocationWithZoom:(NSString *)latitude: (NSString *)longitude: (float)zoom: (float)duration)
 {
   if (_vinylMap) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      [_vinylMap animateToLocationWithZoom:latitude longitude:longitude zoom:zoom];
+      [_vinylMap animateToLocationWithZoom:latitude longitude:longitude zoom:zoom duration:duration];
     });
   }
 }
+
+RCT_EXPORT_METHOD(fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coordinates:
+                  (nonnull NSDictionary *)edgePadding:
+                  (BOOL)animated:
+                  (float)duration)
+{
+  if (_vinylMap) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [_vinylMap fitToCoordinates:coordinates edgePadding:edgePadding animated:animated duration:duration];
+    });
+  }
+}
+
 
 RCT_EXPORT_METHOD(moveMarker:(NSString *)latitude: (NSString *)longitude)
 {
@@ -111,17 +124,6 @@ RCT_EXPORT_METHOD(updateMarker:(NSString *)latitude: (NSString *)longitude)
   if (_vinylMap) {
     dispatch_async(dispatch_get_main_queue(), ^{
       [_vinylMap updateMarker:latitude longitude:longitude];
-    });
-  }
-}
-
-RCT_EXPORT_METHOD(fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coordinates:
-                  (nonnull NSDictionary *)edgePadding:
-                  (BOOL)animated)
-{
-  if (_vinylMap) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [_vinylMap fitToCoordinates:coordinates edgePadding:edgePadding animated:animated];
     });
   }
 }

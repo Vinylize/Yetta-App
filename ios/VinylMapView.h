@@ -23,11 +23,12 @@
 
 - (void)moveMap:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)clearMap;
-- (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude;
-- (void)animateToLocationWithZoom:(NSString*)latitude longitude:(NSString*)longitude zoom:(float)zoom;
+- (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude duration:(float)duration;
+- (void)animateToLocationWithZoom:(NSString*)latitude longitude:(NSString*)longitude zoom:(float)zoom duration:(float)duration;
 - (void)fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coordinates
              edgePadding:(nonnull NSDictionary *)edgePadding
-                animated:(BOOL)animated;
+                animated:(BOOL)animated
+                duration:(float)duration;
 
 - (void)moveMarker:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)addMarker:(NSString *)latitude longitude:(NSString *)longitude id:(NSString*)id;
