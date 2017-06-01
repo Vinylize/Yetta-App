@@ -17,7 +17,6 @@ static NSString *const AT_BOTTOM = @"AT_BOTTOM";
 static NSString *const AT_TOP = @"AT_TOP";
 static NSString *const AT_LEFT = @"AT_LEFT";
 static NSString *const AT_RIGHT = @"AT_RIGHT";
-NSInteger i;
 
 @interface VinylMapView()
 @property (nonatomic, weak) NSString* destMarkerLastPosX; // either AT_LEFT or AT_RIGHT
@@ -25,8 +24,6 @@ NSInteger i;
 @property (nonatomic, weak) NSString* nodeMarkerLastPosX;
 @property (nonatomic, weak) NSString* nodeMarkerLastPosY;
 
-@property (nonatomic, strong) GMSPolyline* polylineAnim;
-@property (nonatomic, strong) GMSMutablePath* pathForAnim;
 @end
 
 @implementation VinylMapView {
@@ -55,7 +52,7 @@ NSInteger i;
   _map.myLocationEnabled = YES;
   _map.delegate = self;
   [self addSubview:_map];
-  i = 0;
+
   return self;
 }
 
