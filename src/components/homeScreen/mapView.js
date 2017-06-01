@@ -204,6 +204,13 @@ class Home extends Component {
     }
   }
 
+  componentDidMount() {
+    const { lat, lon } = this.props.currentLocation;
+    if (lat && lon) {
+      vmm && vmm.animateToLocationWithZoom(String(lat), String(lon), 16.0);
+    }
+  }
+
   componentWillUnmount() {
     if (this.subscriptionLocationServiceIOS) {
       // console.log('unsubscribe locationServiceIOS');
@@ -239,13 +246,6 @@ class Home extends Component {
         __DEV__ && console.log(res); // eslint-disable-line no-undef
       })
       .catch(handleError);
-  }
-
-  componentDidMount() {
-    const { lat, lon } = this.props.currentLocation;
-    if (lat && lon) {
-      vmm && vmm.animateToLocationWithZoom(String(lat), String(lon), 16.0);
-    }
   }
 
   renderMap() {

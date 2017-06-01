@@ -105,12 +105,20 @@ NSInteger i;
 }
 
 - (void)animateToLocation:(NSString *)latitude longitude:(NSString *)longitude {
+  [CATransaction begin];
+  [CATransaction setValue:[NSNumber numberWithFloat: 0.7f] forKey:kCATransactionAnimationDuration];
+  [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
   [_map animateToLocation: CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
+  [CATransaction commit];
 }
 
 - (void)animateToLocationWithZoom:(NSString *)latitude longitude:(NSString *)longitude zoom:(float)zoom {
+  [CATransaction begin];
+  [CATransaction setValue:[NSNumber numberWithFloat: 0.7f] forKey:kCATransactionAnimationDuration];
+  [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
   [_map animateToLocation:CLLocationCoordinate2DMake(latitude.doubleValue, longitude.doubleValue)];
   [_map animateToZoom:zoom];
+  [CATransaction commit];
 }
 
 - (void)moveMarker:(NSString *)latitude longitude:(NSString *)longitude {
@@ -492,27 +500,6 @@ NSInteger i;
   polyline.strokeColor = [UIColor redColor];
   polyline.strokeWidth = 3.f;
   polyline.map = _map;
-  
-  [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:true block:^(NSTimer * _Nonnull timer) {
-    [self animatePolyLinePath:polyLinePath];
-  }];
-}
-
-- (void)animatePolyLinePath:(GMSPath *)path {
-  dispatch_async(dispatch_get_main_queue(), ^{
-    if (i < path.count) {
-      [_pathForAnim addCoordinate:[path coordinateAtIndex:i]];
-      _polylineAnim = [GMSPolyline polylineWithPath:_pathForAnim];
-      _polylineAnim.strokeWidth = 3;
-      _polylineAnim.strokeColor = [UIColor greenColor];
-      _polylineAnim.map = _map;
-      i++;
-    } else {
-      i = 0;
-      _pathForAnim = [[GMSMutablePath alloc] init];
-      _polylineAnim.map = nil;
-    }
-  });
 }
 
 -(CAShapeLayer *)layerFromGMSMutablePath:(GMSPath *)path{

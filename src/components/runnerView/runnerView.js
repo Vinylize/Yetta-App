@@ -20,6 +20,7 @@ import RunnerDashboard from './runnerDashboard';
 
 import * as YettaServerAPIclient from './../../service/YettaServerAPI/client';
 import * as YettaServerAPIorder from './../../service/YettaServerAPI/order';
+import * as GoogleMapsAPI from './../../service/GoogleMapsAPI';
 
 // redux functions
 import { setRefRunnerView } from './../../actions/componentsActions/runnerViewActions';
@@ -150,6 +151,15 @@ class RunnerView extends Component {
           ];
           vmm.addMarkerNode(String(nId.coordinate.lat), String(nId.coordinate.lon), String(nId.n), String(nId.id), itemList);
           vmm.addMarkerDest(String(dest.lat), String(dest.lon), dest.n1, oId.id);
+
+          GoogleMapsAPI.directions(
+            {lat: this.props.currentLocation.lat, lon: this.props.currentLocation.lon},
+            {lat: dest.lat, lon: dest.lon},
+            {lat: nId.coordinate.lat, lon: nId.coordinate.lon})
+            .then(arr => {
+              vmm.drawDirections(arr);
+            });
+
           __DEV__ && console.log('fitToCoordinates with: ', coordinatesArray); // eslint-disable-line no-undef
           const edgePadding = {
             left: 50,
