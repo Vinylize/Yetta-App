@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import {
   Dimensions,
   LayoutAnimation,
+  NativeModules,
+  Platform,
   Text,
   TouchableOpacity,
   View
@@ -23,6 +25,7 @@ const WIDTH = Dimensions.get('window').width;
 // const HEIGHT = Dimensions.get('window').height;
 const buttonSize = 70;
 const destInfoViewHeight = buttonSize + 20;
+let vmm = NativeModules.VinylMapManager;
 
 const styles = {
   container: {
@@ -62,6 +65,12 @@ class DestInfoView extends Component {
 
     LayoutAnimation.easeInEaseOut();
     this.props.resetMarkerTapped();
+
+    if (Platform.OS === 'ios') {
+      vmm.clearMap();
+    } else if (Platform.OS === 'android') {
+      // todo: implement clearMap
+    }
   }
 
   handleCallBtn() {

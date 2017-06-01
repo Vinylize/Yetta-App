@@ -99,6 +99,8 @@ static NSString *const AT_RIGHT = @"AT_RIGHT";
 
 - (void)clearMap {
   [_map clear];
+  [_destMarkerView removeFromSuperview];
+  [_nodeMarkerView removeFromSuperview];
 }
 
 - (void)animateToLocation:(NSString *)latitude longitude:(NSString *)longitude duration:(float)duration {
