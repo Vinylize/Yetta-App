@@ -10,19 +10,22 @@ import android.os.Looper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.pingstersapp.R;
 import com.pingstersapp.VinylMap.latlnginterpolation.LatLngInterpolator;
 import com.pingstersapp.VinylMap.latlnginterpolation.MarkerAnimation;
@@ -41,6 +44,7 @@ public class VinylMapModule extends MapView implements
     private final ThemedReactContext context;
     private Marker marker; // todo: remove this
     private final Map<Marker, String> markerMap = new HashMap<>();
+    private final int baseMapPadding = 50;
 
     public VinylMapModule(ThemedReactContext reactContext, Context appContext, VinylMapManager manager,
                       GoogleMapOptions googleMapOptions) {
@@ -183,6 +187,49 @@ public class VinylMapModule extends MapView implements
                 @Override
                 public void run() {
                     updateMarkerHelper(latitude, longitude);
+                }
+            };
+            uiHandler.post(runnable);
+        }
+    }
+
+    public void fitToCoordinates(final ReadableArray coordinatesArray, final ReadableMap edgePadding, final boolean animated) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        Log.d("MAP", "edgePadding: " + edgePadding.toString());
+        if (animated) {
+            Log.d("MAP", "animated: true");
+        } else {
+            Log.d("MAP", "animated: false");
+        }
+
+        for (int i = 0; i < coordinatesArray.size(); i++) {
+            ReadableMap latLng = coordinatesArray.getMap(i);
+            Log.d("MAP", latLng.toString());
+            Double lat = latLng.getDouble("latitude");
+            Double lon = latLng.getDouble("longitude");
+            builder.include(new LatLng(lat, lon));
+        }
+
+        LatLngBounds bounds = builder.build();
+        final CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, baseMapPadding);
+
+        if (mMap != null) {
+            Handler uiHandler = new Handler(Looper.getMainLooper());
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    mMap.setPadding(
+                            edgePadding.getInt("left"),
+                            edgePadding.getInt("top"),
+                            edgePadding.getInt("right"),
+                            edgePadding.getInt("bottom"));
+
+                    if (animated) {
+                        mMap.animateCamera(cu);
+                    } else {
+                        mMap.moveCamera(cu);
+                    }
+                    mMap.setPadding(0, 0, 0, 0); // Without this, the Google logo is moved up by the value of edgePadding.bottom
                 }
             };
             uiHandler.post(runnable);

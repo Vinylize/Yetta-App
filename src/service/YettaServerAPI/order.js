@@ -22,7 +22,11 @@ export const getInitialOrderDetailsForRunner = (orderId) => {
                 addr,
                 like,
                 distance,
-                formattedDistance
+                formattedDistance,
+                coordinate {
+                  lat,
+                  lon
+                }
               },
               oId {
                 id,

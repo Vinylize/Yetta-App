@@ -1,13 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import {
-  Alert,
   Dimensions,
   Text,
   TouchableOpacity,
   StyleSheet,
   View
 } from 'react-native';
-import { NavigationActions } from 'react-navigation';
 import * as authActions from './../../actions/authActions';
 import { animateMenuHide } from './../../actions/componentsActions/menuActions';
 
@@ -52,17 +50,7 @@ class Setting extends Component {
   }
   handleLogout() {
     animateMenuHide();
-    authActions.userSignout()
-      .then(() => {
-        Alert.alert('signed out');
-        const resetAction = NavigationActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'Login' })
-          ]
-        });
-        this.props.navigation.dispatch(resetAction);
-      });
+    authActions.userSignout();
   }
 
   renderSettingsList(subject, func) {

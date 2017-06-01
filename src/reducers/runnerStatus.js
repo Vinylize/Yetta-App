@@ -7,7 +7,16 @@ const initialState = {
   waitingNewOrder: false,
   onDelivery: false,
   idVerified: false,
-  isWaitingForJudge: false
+  isWaitingForJudge: false,
+
+  /**
+   * becomes true when runner tap 구매완료 button and should be reset to false after connection is done
+   */
+  runnerCompletePurchasingItems: false,
+  /**
+   * becomes true when runner tap 배달완료 button and should be reset to false after connection is done
+   */
+  runnerCompleteDelivery: false
 };
 
 const runnerStatus = (state = initialState, action = {}) => {
@@ -20,6 +29,10 @@ const runnerStatus = (state = initialState, action = {}) => {
     return {...state, idVerified: action.idVerified};
   case types.setIsWaitingForJudge:
     return {...state, isWaitingForJudge: action.isWaitingForJudge};
+  case types.setRunnerCompletePurchasingItems:
+    return {...state, runnerCompletePurchasingItems: action.runnerCompletePurchasingItems};
+  case types.setRunnerCompleteDelivery:
+    return {...state, runnerCompleteDelivery: action.runnerCompleteDelivery};
   default:
     return state;
   }

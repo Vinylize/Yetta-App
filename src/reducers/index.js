@@ -12,6 +12,7 @@ import addProductReducer from './components/addProduct';
 import navigatorReducer from './navigator';
 import menuReducer from './components/menu';
 import runnerViewReducer from './components/runnerView';
+import mapReducer from './map';
 
 export default combineReducers({
   auth: authReducer,
@@ -26,5 +27,6 @@ export default combineReducers({
   addProduct: addProductReducer,
   navigator: navigatorReducer,
   menu: menuReducer,
-  runnerView: runnerViewReducer
+  runnerView: runnerViewReducer,
+  map: mapReducer
 });

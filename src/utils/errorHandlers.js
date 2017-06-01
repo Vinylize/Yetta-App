@@ -7,6 +7,10 @@ import * as authActions from './../actions/authActions';
 export const handleError = (error, fromSignin) => {
   __DEV__ && console.log(error); // eslint-disable-line no-undef
   const { message } = error;
+  if (String(error) && String(error).includes('TypeError:')) {
+    const prettyErroMessage = String(error).substring(String(error).indexOf('TypeError:') + 10);
+    Alert.alert(prettyErroMessage);
+  }
   if (message && message.constructor === String) {
     // sign out when unauthorized
     if (message.includes('unauthorizedError')) {
@@ -24,6 +28,10 @@ export const handleError = (error, fromSignin) => {
     } else if (message.includes('GraphQL Error:')) {
       // handle general graphQL error
       const prettyErrorMessage = message.substring(message.indexOf('GraphQL Error:') + 14);
+      Alert.alert(prettyErrorMessage);
+    } else if (message.includes('Error: ')) {
+      // handle any other error
+      const prettyErrorMessage = message.substring(message.indexOf('Error:') + 6);
       Alert.alert(prettyErrorMessage);
     }
   }

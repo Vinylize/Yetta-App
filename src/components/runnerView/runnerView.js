@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   LayoutAnimation,
+  NativeModules,
   Platform,
   Text,
   TouchableOpacity,
@@ -117,9 +118,11 @@ class RunnerView extends Component {
 
   handleCatchNewOrderBtn() {
     this.props.setBusyWaitingRunnerCatchingOrder(true);
-    BackgroundTimer.clearTimeout(this.intervalId);
     YettaServerAPIclient.getLokkaClient()
       .then(client => {
+        if (!this.props.currentLocation.lat || !this.props.currentLocation.lon) {
+          throw new Error('Error: 현재 위치를 받아올수 없습니다');
+        }
         return client.mutate(`{
           runnerCatchOrder(
             input:{
@@ -132,6 +135,37 @@ class RunnerView extends Component {
       })
       .then(res => {
         __DEV__ && console.log(res); // eslint-disable-line no-undef
+        BackgroundTimer.clearTimeout(this.intervalId);
+        let vmm = NativeModules.VinylMapManager;
+        const { dest, nId, oId, items } = this.props.runnersOrderDetails;
+
+        if (vmm && dest && nId && oId && items) {
+          let itemList = [];
+          items.regItem.map(el => itemList.push(`${el.n} x ${el.cnt}`));
+          items.customItem.map(el => itemList.push(`${el.n} x ${el.cnt}`));
+          const coordinatesArray = [
+            // {latitude: dest.lat, longitude: dest.lon},
+            {latitude: nId.coordinate.lat, longitude: nId.coordinate.lon},
+            {latitude: parseFloat(this.props.currentLocation.lat), longitude: parseFloat(this.props.currentLocation.lon)}
+          ];
+          vmm.addMarkerNode(String(nId.coordinate.lat), String(nId.coordinate.lon), String(nId.n), String(nId.id), itemList);
+          vmm.addMarkerDest(String(dest.lat), String(dest.lon), dest.n1, oId.id);
+
+          __DEV__ && console.log('fitToCoordinates with: ', coordinatesArray); // eslint-disable-line no-undef
+          const edgePadding = {
+            left: 50,
+            right: 50,
+            top: 50,
+            bottom: 50
+          };
+          const animated = true;
+          if (Platform.OS === 'ios') {
+            vmm.fitToCoordinates(coordinatesArray, edgePadding, animated, 1);
+          } else if (Platform.OS === 'android') {
+            vmm.fitToCoordinates(coordinatesArray, edgePadding, animated);
+          }
+        }
+
         this.props.setWaitingNewOrder(false);
         this.props.setOnDelivery(true);
         this.props.setBusyWaitingRunnerCatchingOrder(false);
@@ -367,7 +401,13 @@ RunnerView.propTypes = {
   setRefRunnerView: PropTypes.func,
 
   // reducers/busyWaiting
-  setBusyWaitingRunnerCatchingOrder: PropTypes.func
+  setBusyWaitingRunnerCatchingOrder: PropTypes.func,
+
+  // reducers/orderStatus
+  runnersOrderDetails: PropTypes.object,
+
+  // reducers/home
+  currentLocation: PropTypes.object
 };
 
 const mapStateToProps = (state) => {
@@ -377,7 +417,9 @@ const mapStateToProps = (state) => {
     isWaitingForJudge: state.runnerStatus.isWaitingForJudge,
     waitingNewOrder: state.runnerStatus.waitingNewOrder,
     onDelivery: state.runnerStatus.onDelivery,
-    runnerNotification: state.pushNotification.runnerNotification
+    runnerNotification: state.pushNotification.runnerNotification,
+    runnersOrderDetails: state.orderStatus.runnersOrderDetails,
+    currentLocation: state.home.currentLocation
   };
 };
 

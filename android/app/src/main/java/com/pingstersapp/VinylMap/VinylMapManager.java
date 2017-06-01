@@ -8,6 +8,8 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -84,7 +86,14 @@ public class VinylMapManager extends ViewGroupManager<VinylMapModule> {
         }
     }
 
-    public void sendEvent(ReactContext reactContext,
+    @ReactMethod
+    public void fitToCoordinates(ReadableArray coordinatesArray, ReadableMap edgePadding, boolean animated) {
+        if (this._vinylMapModule != null) {
+            this._vinylMapModule.fitToCoordinates(coordinatesArray, edgePadding, animated);
+        }
+    }
+
+        public void sendEvent(ReactContext reactContext,
                            String eventName,
                            @Nullable WritableMap params) {
         reactContext

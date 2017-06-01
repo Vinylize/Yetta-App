@@ -26,6 +26,8 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		171C02BF1E4587F7002DB33B /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 171C02BE1E4587F7002DB33B /* Podfile */; };
+		172387DC1ED9660000364F2B /* VinylMapCoordinate.m in Sources */ = {isa = PBXBuildFile; fileRef = 172387DB1ED9660000364F2B /* VinylMapCoordinate.m */; };
+		172388541ED9DFC900364F2B /* RCTConvert+YettaMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 172388531ED9DFC900364F2B /* RCTConvert+YettaMap.m */; };
 		1768ADB01E7FF94F00C8565E /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1768ADAD1E7FF91200C8565E /* libRCTPushNotification.a */; };
 		1768ADF01E80469300C8565E /* YettaLocationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 1768ADEF1E80469300C8565E /* YettaLocationService.m */; };
 		1768AE351E80F59E00C8565E /* YettaLocationServiceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1768AE341E80F59E00C8565E /* YettaLocationServiceManager.m */; };
@@ -377,6 +379,10 @@
 		1451D58CD68445F18F919F15 /* ReactNativeConfig.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeConfig.xcodeproj; path = "../node_modules/react-native-config/ios/ReactNativeConfig.xcodeproj"; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		171C02BE1E4587F7002DB33B /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		172387DA1ED965F200364F2B /* VinylMapCoordinate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VinylMapCoordinate.h; sourceTree = "<group>"; };
+		172387DB1ED9660000364F2B /* VinylMapCoordinate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VinylMapCoordinate.m; sourceTree = "<group>"; };
+		1723882D1ED9DFAD00364F2B /* RCTConvert+YettaMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+YettaMap.h"; sourceTree = "<group>"; };
+		172388531ED9DFC900364F2B /* RCTConvert+YettaMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+YettaMap.m"; sourceTree = "<group>"; };
 		174261D11E77E3AD00012E9A /* pingstersApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = pingstersApp.entitlements; path = pingstersApp/pingstersApp.entitlements; sourceTree = "<group>"; };
 		1768ADA71E7FF91200C8565E /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		1768ADEF1E80469300C8565E /* YettaLocationService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YettaLocationService.m; sourceTree = "<group>"; };
@@ -537,6 +543,7 @@
 		13B07FAE1A68108700A75B9A /* pingstersApp */ = {
 			isa = PBXGroup;
 			children = (
+				172387B41ED9645800364F2B /* YettaMaps */,
 				17E5427B1ED6A3790032E30A /* GoogleService-Info.plist */,
 				17987EEC1EC96D4D00BE72AF /* YettaUtils */,
 				17D699441EC065440052117A /* YettaUUID */,
@@ -552,11 +559,6 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
-				177913771E4615F9000454F2 /* VinylMapView.h */,
-				177913781E4616EA000454F2 /* VinylMapView.m */,
-				1779137D1E46401C000454F2 /* VinylMapViewManager.h */,
-				1779137E1E464064000454F2 /* VinylMapViewManager.m */,
-				179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */,
 				179BEF7F1E727BBD0087C0DB /* pingstersApp-Bridging-Header.h */,
 				1776E6BE1E791AB300A31769 /* YettaFCM.h */,
 				1776E6BF1E791AC900A31769 /* YettaFCM.m */,
@@ -589,6 +591,22 @@
 				170335481ED6C3100046B149 /* libReactNativeConfig.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		172387B41ED9645800364F2B /* YettaMaps */ = {
+			isa = PBXGroup;
+			children = (
+				1779137D1E46401C000454F2 /* VinylMapViewManager.h */,
+				1779137E1E464064000454F2 /* VinylMapViewManager.m */,
+				179BEF571E7156650087C0DB /* VinylMapMarkerView.swift */,
+				177913771E4615F9000454F2 /* VinylMapView.h */,
+				177913781E4616EA000454F2 /* VinylMapView.m */,
+				172387DA1ED965F200364F2B /* VinylMapCoordinate.h */,
+				172387DB1ED9660000364F2B /* VinylMapCoordinate.m */,
+				1723882D1ED9DFAD00364F2B /* RCTConvert+YettaMap.h */,
+				172388531ED9DFC900364F2B /* RCTConvert+YettaMap.m */,
+			);
+			name = YettaMaps;
 			sourceTree = "<group>";
 		};
 		1768ADA81E7FF91200C8565E /* Products */ = {
@@ -1318,6 +1336,7 @@
 				1779137F1E464064000454F2 /* VinylMapViewManager.m in Sources */,
 				0DEE91231EB30B8E00279ACB /* YettaFCMManager.m in Sources */,
 				17987F121EC96D9A00BE72AF /* YettaUtils.m in Sources */,
+				172387DC1ED9660000364F2B /* VinylMapCoordinate.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				1768AE351E80F59E00C8565E /* YettaLocationServiceManager.m in Sources */,
@@ -1325,6 +1344,7 @@
 				0DEE91221EB30B8E00279ACB /* RNHockeyApp.m in Sources */,
 				1768ADF01E80469300C8565E /* YettaLocationService.m in Sources */,
 				1776E6C01E791AC900A31769 /* YettaFCM.m in Sources */,
+				172388541ED9DFC900364F2B /* RCTConvert+YettaMap.m in Sources */,
 				179BEF581E7156650087C0DB /* VinylMapMarkerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

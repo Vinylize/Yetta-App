@@ -78,7 +78,7 @@ class Splash extends Component {
     return YettaServerAPIuserInfo.queryUser()
       .then((viewer) => {
         this.props.setUser(viewer);
-        console.log(viewer);
+        __DEV__ && console.log(viewer); // eslint-disable-line no-undef
         return viewer;
       })
       .catch(e => {

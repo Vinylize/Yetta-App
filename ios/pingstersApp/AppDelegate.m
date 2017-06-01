@@ -246,7 +246,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
   NSString *refreshedToken = [[FIRInstanceID instanceID] token];
   NSLog(@"InstanceID token in requesting permission: %@", refreshedToken);
   // With swizzling disabled you must set the APNs token here.
-  [[FIRInstanceID instanceID] setAPNSToken:deviceToken type:FIRInstanceIDAPNSTokenTypeSandbox];
+  [[FIRInstanceID instanceID] setAPNSToken:deviceToken type:FIRInstanceIDAPNSTokenTypeUnknown];
   
   [RCTPushNotificationManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }

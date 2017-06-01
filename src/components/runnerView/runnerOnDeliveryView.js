@@ -26,7 +26,7 @@ const styles = {
     top: 0,
     zIndex: 1,
     elevation: 10,
-    height: HEIGHT * 0.20,
+    height: HEIGHT * 0.16,
     width: WIDTH,
     backgroundColor: '#f9f9f9',
     justifyContent: 'center',
@@ -84,7 +84,16 @@ class RunnerOnDeliveryView extends Component {
   }
 
   render() {
-    const { nId } = this.props.runnersOrderDetails;
+    const { nId, dest } = this.props.runnersOrderDetails;
+    let headerText;
+    let bodyText;
+    if (this.props.runnerCompletePurchasingItems === true && dest) {
+      headerText = dest.n1;
+      bodyText = '에 구매한 물건을 배달하세요';
+    } else if (this.props.runnerCompletePurchasingItems === false && nId) {
+      headerText = nId.n;
+      bodyText = '에서 배달물건을 구매하세요';
+    }
 
     return (
       <View style={[styles.container, {
@@ -98,7 +107,7 @@ class RunnerOnDeliveryView extends Component {
               fontWeight: '700',
               color: '#205D98'
             }}>
-            {nId && nId.n}
+            {headerText}
           </Text>
         </TouchableOpacity>
         <Text style={{
@@ -107,7 +116,7 @@ class RunnerOnDeliveryView extends Component {
           color: 'black',
           marginTop: 4
         }}>
-          에서 배달물건을 구매하세요
+          {bodyText}
         </Text>
       </View>
     );
@@ -123,6 +132,7 @@ RunnerOnDeliveryView.propTypes = {
   setWaitingNewOrder: PropTypes.func,
   onDelivery: PropTypes.bool,
   setOnDelivery: PropTypes.func,
+  runnerCompletePurchasingItems: PropTypes.bool,
 
   // reducers/pushNotification
   runnerNotification: PropTypes.any,
@@ -137,6 +147,7 @@ function mapStateToProps(state) {
     isRunner: state.userStatus.isRunner,
     waitingNewOrder: state.runnerStatus.waitingNewOrder,
     onDelivery: state.runnerStatus.onDelivery,
+    runnerCompletePurchasingItems: state.runnerStatus.runnerCompletePurchasingItems,
     runnerNotification: state.pushNotification.runnerNotification,
     runnersOrderDetails: state.orderStatus.runnersOrderDetails
   };

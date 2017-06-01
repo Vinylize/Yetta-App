@@ -15,6 +15,8 @@ export const setWaitingNewOrder = 'SET_WAITING_NEW_ORDER';
 export const setOnDelivery = 'SET_ON_DELIEVERY';
 export const setIdVerified = 'SET_ID_VERIFIED';
 export const setIsWaitingForJudge = 'SET_IS_WAITING_FOR_JUDGE';
+export const setRunnerCompletePurchasingItems = 'SET_RUNNER_COMPLETE_PURCHASE_ITEMS';
+export const setRunnerCompleteDelivery = 'SET_RUNNER_COMPLETE_DELIVERY';
 
 // pushNotification
 export const setRunnerNotification = 'SET_RUNNER_NOTIFICATION';
@@ -65,3 +67,7 @@ export const setMenuAppeared = 'SET_MENU_APPEARED';
 
 // components/runnerView
 export const setRefRunnerView = 'SET_REF_RUNNER_VIEW';
+
+// map
+export const setMarkerTapped = 'SET_MARKER_TAPPED';
+export const resetMarkerTapped = 'RESET_MARKER_TAPPED';

@@ -248,11 +248,11 @@ class Menu extends Component {
         style={{
           position: 'absolute',
           bottom: (Platform.OS === 'ios') ? -1 : 23,
-          left: 0,
+          right: 0,
           paddingRight: 16,
           backgroundColor: '#ff9700',
           height: 52,
-          width: WIDTH * 0.75,
+          width: WIDTH * 0.76,
           justifyContent: 'center',
           alignItems: 'flex-end',
           opacity: (this.state.highlightingBtnNum === 'SWITCH') ? 0.5 : 1

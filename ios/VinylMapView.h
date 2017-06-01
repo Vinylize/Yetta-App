@@ -11,6 +11,7 @@
 
 #import <React/RCTView.h>
 #import <GoogleMaps/GoogleMaps.h>
+#import "VinylMapCoordinate.h"
 
 @interface VinylMapView : GMSMapView<GMSMapViewDelegate>
 
@@ -21,12 +22,21 @@
 @property (nonatomic, assign) BOOL didChangeCameraPositionEnabled;
 
 - (void)moveMap:(NSString*)latitude longitude:(NSString*)longitude;
-- (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude;
-- (void)animateToLocationWithZoom:(NSString*)latitude longitude:(NSString*)longitude zoom:(float)zoom;
+- (void)clearMap;
+- (void)animateToLocation:(NSString*)latitude longitude:(NSString*)longitude duration:(float)duration;
+- (void)animateToLocationWithZoom:(NSString*)latitude longitude:(NSString*)longitude zoom:(float)zoom duration:(float)duration;
+- (void)fitToCoordinates:(nonnull NSArray<VinylMapCoordinate *> *)coordinates
+             edgePadding:(nonnull NSDictionary *)edgePadding
+                animated:(BOOL)animated
+                duration:(float)duration;
 
 - (void)moveMarker:(NSString*)latitude longitude:(NSString*)longitude;
 - (void)addMarker:(NSString *)latitude longitude:(NSString *)longitude id:(NSString*)id;
+- (void)removeMarker:(NSString *)id;
+- (void)addMarkerNode:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name nodeId:(NSString *)nodeId list:(NSArray<NSString *> *)list;
+- (void)addMarkerDest:(NSString *)latitude longitude:(NSString *)longitude name:(NSString *)name uId:(NSString *)uId;
 - (void)updateMarker:(NSString*)latitude longitude:(NSString*)longitude;
+- (void)drawDirections:(nullable NSString *)encodedPath;
 
 - (void)enableDidChangeCameraPosition;
 - (void)disableDidChangeCameraPosition;
