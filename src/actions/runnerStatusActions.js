@@ -27,3 +27,17 @@ export const setIsWaitingForJudge = (isWaitingForJudge) => {
     isWaitingForJudge
   };
 };
+
+export const setRunnerCompletePurchasingItems = (runnerCompletePurchasingItems) => {
+  return {
+    type: types.setRunnerCompletePurchasingItems,
+    runnerCompletePurchasingItems
+  };
+};
+
+export const setRunnerCompleteDelivery = (runnerCompleteDelivery) => {
+  return {
+    type: types.setRunnerCompleteDelivery,
+    runnerCompleteDelivery
+  };
+};

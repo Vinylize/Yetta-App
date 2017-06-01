@@ -16,6 +16,9 @@ import {
   setMarkerTapped,
   resetMarkerTapped
 } from './../../actions/mapActions';
+import {
+  setRunnerCompletePurchasingItems
+} from './../../actions/runnerStatusActions';
 
 // assets
 import IMG_LINE from './../../../assets/minus-horizontal-straight-line.png';
@@ -96,6 +99,8 @@ class NodeInfoView extends Component {
       LayoutAnimation.easeInEaseOut();
       this.props.resetMarkerTapped();
     }
+
+    this.props.setRunnerCompletePurchasingItems(true);
   }
 
   handleCancelBtn() {
@@ -196,7 +201,7 @@ class NodeInfoView extends Component {
               <Text style={{
                 color: 'white',
                 fontSize: 20
-              }}>배달완료</Text>
+              }}>구매완료</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -231,7 +236,10 @@ NodeInfoView.propTypes = {
   runnersOrderDetails: PropTypes.object,
 
   // reducers/components/home
-  currentLocation: PropTypes.object
+  currentLocation: PropTypes.object,
+
+  // reducers/runnerStatus
+  setRunnerCompletePurchasingItems: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
@@ -245,7 +253,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setMarkerTapped: (markerTapped) => dispatch(setMarkerTapped(markerTapped)),
-    resetMarkerTapped: () => dispatch(resetMarkerTapped())
+    resetMarkerTapped: () => dispatch(resetMarkerTapped()),
+    setRunnerCompletePurchasingItems: (runnerCompletePurchasingItems) => dispatch(setRunnerCompletePurchasingItems(runnerCompletePurchasingItems))
   };
 };
 

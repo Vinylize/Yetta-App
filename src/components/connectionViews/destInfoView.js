@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
   Dimensions,
+  LayoutAnimation,
   Text,
   TouchableOpacity,
   View
@@ -12,10 +13,16 @@ import {
   setMarkerTapped,
   resetMarkerTapped
 } from './../../actions/mapActions';
+import {
+  setRunnerCompleteDelivery,
+  setOnDelivery
+} from './../../actions/runnerStatusActions';
+import { setRunnerNotification } from '../../actions/pushNotificationActions';
 
 const WIDTH = Dimensions.get('window').width;
-const HEIGHT = Dimensions.get('window').height;
-const destInfoViewHeight = HEIGHT * 0.3;
+// const HEIGHT = Dimensions.get('window').height;
+const buttonSize = 70;
+const destInfoViewHeight = buttonSize + 20;
 
 const styles = {
   container: {
@@ -24,7 +31,7 @@ const styles = {
     bottom: 0,
     width: WIDTH,
     height: destInfoViewHeight,
-    backgroundColor: 'blue',
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
@@ -37,11 +44,32 @@ const styles = {
 class DestInfoView extends Component {
   constructor() {
     super();
+    this.handleCallBtn = this.handleCallBtn.bind(this);
+    this.handleDeliveryDoneBtn = this.handleDeliveryDoneBtn.bind(this);
     this.handleCancelBtn = this.handleCancelBtn.bind(this);
     this.shouldShowThisComponent = this.shouldShowThisComponent.bind(this);
   }
 
+  handleDeliveryDoneBtn() {
+    this.props.setRunnerCompleteDelivery(true);
+
+    this.props.setOnDelivery(false);
+    const newArr = this.props.runnerNotification.concat();
+    if (newArr.length > 0) {
+      newArr.pop();
+    }
+    this.props.setRunnerNotification(newArr);
+
+    LayoutAnimation.easeInEaseOut();
+    this.props.resetMarkerTapped();
+  }
+
+  handleCallBtn() {
+    // todo:
+  }
+
   handleCancelBtn() {
+    LayoutAnimation.easeInEaseOut();
     this.props.resetMarkerTapped();
   }
 
@@ -50,15 +78,15 @@ class DestInfoView extends Component {
   }
 
   render() {
-    let n;
-    let p;
+    // let n;
+    // let p;
     let r;
     let pUrl;
     let n1;
     const { oId, dest } = this.props.runnersOrderDetails;
     if (oId && dest) {
-      n = oId.n;
-      p = oId.p;
+      // n = oId.n;
+      // p = oId.p;
       r = oId.r;
       pUrl = oId.pUrl;
       n1 = dest.n1;
@@ -70,33 +98,71 @@ class DestInfoView extends Component {
         <View style={{
           height: destInfoViewHeight,
           width: WIDTH,
-          backgroundColor: '#f9f9f9'
+          backgroundColor: 'transparent',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingLeft: WIDTH * 0.1,
+          paddingRight: WIDTH * 0.1
         }}>
-          <Text>오더 정보</Text>
-          <Text style={{
-            color: 'black',
-            fontSize: 16,
-            marginBottom: 10
-          }}>{n}</Text>
-          <Text style={{
-            color: 'black',
-            fontSize: 14,
-            marginBottom: 10
-          }}>{p}</Text>
           <TouchableOpacity
             style={{
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              height: 30,
-              width: 30,
-              backgroundColor: 'transparent',
+              height: buttonSize,
+              width: buttonSize,
+              backgroundColor: 'black',
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              borderRadius: buttonSize / 2,
+              shadowOffset: {height: 1, width: 1},
+              shadowOpacity: 0.2,
+              elevation: 1
+            }}
+            onPress={this.handleDeliveryDoneBtn}
+          >
+            <Text style={{
+              fontSize: 15,
+              color: 'white',
+              backgroundColor: 'transparent'
+            }}>배달완료</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              height: buttonSize,
+              width: buttonSize,
+              backgroundColor: 'black',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: buttonSize / 2,
+              shadowOffset: {height: 1, width: 1},
+              shadowOpacity: 0.2,
+              elevation: 1
+            }}
+            onPress={this.handleCallBtn}
+          >
+            <Text style={{
+              fontSize: 20,
+              color: 'white',
+              backgroundColor: 'transparent'
+            }}>전화</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              height: buttonSize,
+              width: buttonSize,
+              backgroundColor: 'black',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: buttonSize / 2,
+              shadowOffset: {height: 1, width: 1},
+              shadowOpacity: 0.2,
+              elevation: 1
             }}
             onPress={this.handleCancelBtn}
           >
-            <Text style={{fontSize: 20}}>X</Text>
+            <Text style={{
+              fontSize: 20,
+              color: 'white',
+              backgroundColor: 'transparent'
+            }}>취소</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -111,20 +177,32 @@ DestInfoView.propTypes = {
   resetMarkerTapped: PropTypes.func,
 
   // reducers/orderStatus
-  runnersOrderDetails: PropTypes.object
+  runnersOrderDetails: PropTypes.object,
+
+  // reducers/runnerStatus
+  setRunnerCompleteDelivery: PropTypes.func,
+  setOnDelivery: PropTypes.func,
+
+  // reducers/pushNotification
+  runnerNotification: PropTypes.any,
+  setRunnerNotification: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
   return {
     markerTapped: state.map.markerTapped,
-    runnersOrderDetails: state.orderStatus.runnersOrderDetails
+    runnersOrderDetails: state.orderStatus.runnersOrderDetails,
+    runnerNotification: state.pushNotification.runnerNotification
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setMarkerTapped: (markerTapped) => dispatch(setMarkerTapped(markerTapped)),
-    resetMarkerTapped: () => dispatch(resetMarkerTapped())
+    resetMarkerTapped: () => dispatch(resetMarkerTapped()),
+    setRunnerCompleteDelivery: (runnerCompleteDelivery) => dispatch(setRunnerCompleteDelivery(runnerCompleteDelivery)),
+    setRunnerNotification: (runnerNotification) => dispatch(setRunnerNotification(runnerNotification)),
+    setOnDelivery: (onDelivery) => dispatch(setOnDelivery(onDelivery))
   };
 };
 
