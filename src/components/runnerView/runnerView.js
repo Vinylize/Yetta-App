@@ -20,7 +20,6 @@ import RunnerDashboard from './runnerDashboard';
 
 import * as YettaServerAPIclient from './../../service/YettaServerAPI/client';
 import * as YettaServerAPIorder from './../../service/YettaServerAPI/order';
-import * as GoogleMapsAPI from './../../service/GoogleMapsAPI';
 
 // redux functions
 import { setRefRunnerView } from './../../actions/componentsActions/runnerViewActions';
@@ -145,20 +144,12 @@ class RunnerView extends Component {
           items.regItem.map(el => itemList.push(`${el.n} x ${el.cnt}`));
           items.customItem.map(el => itemList.push(`${el.n} x ${el.cnt}`));
           const coordinatesArray = [
-            {latitude: dest.lat, longitude: dest.lon},
+            // {latitude: dest.lat, longitude: dest.lon},
             {latitude: nId.coordinate.lat, longitude: nId.coordinate.lon},
             {latitude: parseFloat(this.props.currentLocation.lat), longitude: parseFloat(this.props.currentLocation.lon)}
           ];
           vmm.addMarkerNode(String(nId.coordinate.lat), String(nId.coordinate.lon), String(nId.n), String(nId.id), itemList);
           vmm.addMarkerDest(String(dest.lat), String(dest.lon), dest.n1, oId.id);
-
-          GoogleMapsAPI.directions(
-            {lat: this.props.currentLocation.lat, lon: this.props.currentLocation.lon},
-            {lat: dest.lat, lon: dest.lon},
-            {lat: nId.coordinate.lat, lon: nId.coordinate.lon})
-            .then(arr => {
-              vmm.drawDirections(arr);
-            });
 
           __DEV__ && console.log('fitToCoordinates with: ', coordinatesArray); // eslint-disable-line no-undef
           const edgePadding = {
@@ -168,7 +159,11 @@ class RunnerView extends Component {
             bottom: 50
           };
           const animated = true;
-          vmm.fitToCoordinates(coordinatesArray, edgePadding, animated);
+          if (Platform.OS === 'ios') {
+            vmm.fitToCoordinates(coordinatesArray, edgePadding, animated, 1);
+          } else if (Platform.OS === 'android') {
+            vmm.fitToCoordinates(coordinatesArray, edgePadding, animated);
+          }
         }
 
         this.props.setWaitingNewOrder(false);

@@ -180,7 +180,7 @@ class Home extends Component {
         'didUpdateToLocation',
         (data) => {
           if (this.initialLocationUpdate === false) {
-            vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0);
+            vmm.animateToLocationWithZoom(data.latitude, data.longitude, 16.0, 1);
             this.initialLocationUpdate = true;
           }
           // vmm.addMarkerNode(String(data.latitude), String(data.longitude), '애오개역', String(123123), [
@@ -194,7 +194,7 @@ class Home extends Component {
           });
 
           if (vmm && this.state.trackingCurrentPos) {
-            vmm.animateToLocation(data.latitude, data.longitude);
+            vmm.animateToLocation(data.latitude, data.longitude, 0.5);
           }
           if (firebase.auth().currentUser) {
             this.userUpdateCoordinateHelper(data);
@@ -207,7 +207,11 @@ class Home extends Component {
   componentDidMount() {
     const { lat, lon } = this.props.currentLocation;
     if (lat && lon) {
-      vmm && vmm.animateToLocationWithZoom(String(lat), String(lon), 16.0);
+      if (Platform.OS === 'ios') {
+        vmm && vmm.animateToLocationWithZoom(String(lat), String(lon), 16.0, 1);
+      } else if (Platform.OS === 'android') {
+        vmm && vmm.animateToLocationWithZoom(String(lat), String(lon), 16.0);
+      }
     }
   }
 
@@ -252,7 +256,10 @@ class Home extends Component {
     if (Platform.OS === 'ios') {
       return (
         <VinylMapIOS
-          style={{flex: 1}}
+          style={{
+            flex: 1,
+            marginTop: (this.props.isRunner === true && this.props.onDelivery) ? HEIGHT * 0.16 : 0
+          }}
           onPress={(e) => {
             __DEV__ && console.log(e.nativeEvent); // eslint-disable-line no-undef
           }}
@@ -260,8 +267,10 @@ class Home extends Component {
             __DEV__ && console.log(e.nativeEvent); // eslint-disable-line no-undef
             const { type, id } = e.nativeEvent;
             if (type === 'node') {
+              LayoutAnimation.easeInEaseOut();
               this.props.setMarkerTapped({type, id});
             } else if (type === 'dest') {
+              LayoutAnimation.easeInEaseOut();
               this.props.setMarkerTapped({type, id});
             }
           }}
@@ -320,6 +329,19 @@ class Home extends Component {
     );
   }
 
+  handleLocationBtn() {
+    const { lat, lon } = this.props.currentLocation;
+    if (lat && lon) {
+      if (Platform.OS === 'ios') {
+        vmm && vmm.animateToLocationWithZoom(lat, lon, 16.0, 1);
+      } else if (Platform.OS === 'android') {
+        vmm && vmm.animateToLocationWithZoom(lat, lon, 16.0);
+      }
+    }
+    LayoutAnimation.easeInEaseOut();
+    this.setState({trackingCurrentPos: true});
+  }
+
   renderLocationBtn() {
     if (Platform.OS === 'ios' && this.state.trackingCurrentPos) {
       /**
@@ -352,18 +374,7 @@ class Home extends Component {
           zIndex: 1
         }}
         activeOpacity={1}
-        onPress={() => {
-          const { lat, lon } = this.props.currentLocation;
-          if (lat && lon) {
-            if (Platform.OS === 'android') {
-              vmm && vmm.animateToLocationWithZoom(lat, lon, 16.0);
-            } else if (Platform.OS === 'ios') {
-              vmm && vmm.animateToLocation(String(lat), String(lon));
-            }
-          }
-          LayoutAnimation.easeInEaseOut();
-          this.setState({trackingCurrentPos: true});
-        }}
+        onPress={this.handleLocationBtn.bind(this)}
       >
         <Image
           style={{height: 28, width: 28}}
@@ -515,14 +526,8 @@ class Home extends Component {
           refBlurView={(Platform.OS === 'ios') ?
             this.refViewContainerWithoutMenu : this.refMapAndroid}
         />
-        <NodeInfoView
-          refBackgroundView={(Platform.OS === 'ios') ?
-            this.refViewContainerWithoutMenu : this.refMapAndroid}
-        />
-        <DestInfoView
-          refBackgroundView={(Platform.OS === 'ios') ?
-            this.refViewContainerWithoutMenu : this.refMapAndroid}
-        />
+        <NodeInfoView/>
+        <DestInfoView/>
       </View>
     );
   }

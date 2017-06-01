@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
   Dimensions,
-  Platform,
   Text,
   TouchableOpacity,
   View
@@ -16,19 +15,22 @@ import {
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
+const destInfoViewHeight = HEIGHT * 0.3;
 
 const styles = {
   container: {
     position: 'absolute',
     left: 0,
-    top: 0,
+    bottom: 0,
     width: WIDTH,
-    height: HEIGHT,
-    backgroundColor: 'transparent',
+    height: destInfoViewHeight,
+    backgroundColor: 'blue',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
-    elevation: 1
+    elevation: 1,
+    shadowOffset: {height: 1, width: 1},
+    shadowOpacity: 0.2
   }
 };
 
@@ -37,14 +39,6 @@ class DestInfoView extends Component {
     super();
     this.handleCancelBtn = this.handleCancelBtn.bind(this);
     this.shouldShowThisComponent = this.shouldShowThisComponent.bind(this);
-  }
-
-  componentWillUpdate(nextProps) {
-    if (nextProps.markerTapped.type === 'dest') {
-      this.props.refBackgroundView && this.props.refBackgroundView.setNativeProps({style: {opacity: 0.5}});
-    } else if (!nextProps.markerTapped.type !== 'dest') {
-      this.props.refBackgroundView && this.props.refBackgroundView.setNativeProps({style: {opacity: 1}});
-    }
   }
 
   handleCancelBtn() {
@@ -56,9 +50,6 @@ class DestInfoView extends Component {
   }
 
   render() {
-    if (Platform.OS === 'ios' && !this.shouldShowThisComponent()) {
-      return null;
-    }
     let n;
     let p;
     let r;
@@ -74,15 +65,12 @@ class DestInfoView extends Component {
     }
     __DEV__ && console.log(r, pUrl, n1); // eslint-disable-line no-undef
     return (
-      <View style={[styles.container, (Platform.OS === 'android' && !this.shouldShowThisComponent()) ? {
-        height: 0} : {height: HEIGHT}]}>
+      <View style={[styles.container, (this.shouldShowThisComponent()) ? {
+        bottom: 0} : {bottom: -destInfoViewHeight}]}>
         <View style={{
-          height: HEIGHT * 0.5,
-          width: WIDTH * 0.6,
-          backgroundColor: '#f9f9f9',
-          padding: 20,
-          paddingRight: 0,
-          marginTop: HEIGHT * 0.1
+          height: destInfoViewHeight,
+          width: WIDTH,
+          backgroundColor: '#f9f9f9'
         }}>
           <Text>오더 정보</Text>
           <Text style={{
@@ -117,8 +105,6 @@ class DestInfoView extends Component {
 }
 
 DestInfoView.propTypes = {
-  refBackgroundView: PropTypes.any.isRequired,
-
   // reducers/map
   markerTapped: PropTypes.object,
   setMarkerTapped: PropTypes.func,

@@ -26,7 +26,7 @@ const styles = {
     top: 0,
     zIndex: 1,
     elevation: 10,
-    height: HEIGHT * 0.20,
+    height: HEIGHT * 0.16,
     width: WIDTH,
     backgroundColor: '#f9f9f9',
     justifyContent: 'center',

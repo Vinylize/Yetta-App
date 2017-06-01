@@ -2,7 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
   Dimensions,
-  Platform,
+  Image,
+  LayoutAnimation,
+  NativeModules,
+  ScrollView,
   Text,
   TouchableOpacity,
   View
@@ -14,40 +17,89 @@ import {
   resetMarkerTapped
 } from './../../actions/mapActions';
 
+// assets
+import IMG_LINE from './../../../assets/minus-horizontal-straight-line.png';
+
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
+const defaultNodeInfoViewHeight = HEIGHT * 0.23;
+const itemListRowHeight = 40;
+let vmm = NativeModules.VinylMapManager;
 
 const styles = {
   container: {
     position: 'absolute',
     left: 0,
-    top: 0,
+    bottom: 0,
     width: WIDTH,
-    height: HEIGHT,
-    backgroundColor: 'transparent',
+    height: defaultNodeInfoViewHeight,
+    backgroundColor: '#f9f9f9',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
-    elevation: 1
+    elevation: 1,
+    shadowOffset: {height: 1, width: 1},
+    shadowOpacity: 0.2,
+    paddingTop: 20
   }
 };
 
 class NodeInfoView extends Component {
   constructor() {
     super();
+    this.state = {
+      nodeInfoViewHeight: defaultNodeInfoViewHeight
+    };
+    this.handleDoneBtn = this.handleDoneBtn.bind(this);
     this.handleCancelBtn = this.handleCancelBtn.bind(this);
     this.shouldShowThisComponent = this.shouldShowThisComponent.bind(this);
   }
 
-  componentWillUpdate(nextProps) {
-    if (nextProps.markerTapped.type === 'node') {
-      this.props.refBackgroundView && this.props.refBackgroundView.setNativeProps({style: {opacity: 0.5}});
-    } else if (!nextProps.markerTapped.type !== 'node') {
-      this.props.refBackgroundView && this.props.refBackgroundView.setNativeProps({style: {opacity: 1}});
+  componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(this.props.runnersOrderDetails !== JSON.stringify(nextProps.runnersOrderDetails))) {
+      const { items } = nextProps.runnersOrderDetails;
+      let customItem = [];
+      let regItem = [];
+      if (items) {
+        customItem = items.customItem;
+        regItem = items.regItem;
+      }
+
+      this.setState(() => {
+        let numberOfTotalRows = customItem.length + regItem.length;
+        if (numberOfTotalRows > 8) {
+          numberOfTotalRows = 8;
+        }
+        return {nodeInfoViewHeight: defaultNodeInfoViewHeight + numberOfTotalRows * itemListRowHeight};
+      });
+    }
+  }
+
+  handleDoneBtn() {
+    // todo: implement this
+    const { dest } = this.props.runnersOrderDetails;
+    const { currentLocation } = this.props;
+    if (dest && currentLocation) {
+      const coordinatesArray = [
+        {latitude: dest.lat, longitude: dest.lon},
+        {latitude: parseFloat(currentLocation.lat), longitude: parseFloat(currentLocation.lon)}
+      ];
+      const edgePadding = {
+        left: 50,
+        right: 50,
+        top: 50,
+        bottom: 50
+      };
+      const animated = true;
+      const duration = 1.5;
+      vmm.fitToCoordinates(coordinatesArray, edgePadding, animated, duration);
+      LayoutAnimation.easeInEaseOut();
+      this.props.resetMarkerTapped();
     }
   }
 
   handleCancelBtn() {
+    LayoutAnimation.easeInEaseOut();
     this.props.resetMarkerTapped();
   }
 
@@ -55,21 +107,46 @@ class NodeInfoView extends Component {
     return (this.props.markerTapped.type === 'node');
   }
 
+  renderItemRow(name, cnt, key) {
+    return (
+      <View
+        key={key}
+        style={{
+          height: itemListRowHeight,
+          width: WIDTH,
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          paddingLeft: 28,
+          flexDirection: 'row',
+          borderBottomColor: '#dfe2e8',
+          borderBottomWidth: 1
+        }}
+      >
+        <Image
+          style={{
+            width: 20
+          }}
+          source={IMG_LINE}
+          resizeMode="contain"
+        />
+        <Text style={{
+          marginLeft: 20,
+          fontSize: 18,
+          color: 'black'
+        }}>{name}: {cnt} 개</Text>
+      </View>
+    );
+  }
+
   render() {
-    if (Platform.OS === 'ios' && !this.shouldShowThisComponent()) {
-      return null;
-    }
-    const { eDP } = this.props.runnersOrderDetails;
+    // const { eDP } = this.props.runnersOrderDetails;
     const { nId, items } = this.props.runnersOrderDetails;
-    let addr;
-    let n;
-    let p;
     let customItem = [];
     let regItem = [];
     if (nId) {
-      addr = nId.addr;
-      n = nId.n;
-      p = nId.p;
+      // addr = nId.addr;
+      // n = nId.n;
+      // p = nId.p;
     }
     if (items) {
       customItem = items.customItem;
@@ -77,62 +154,67 @@ class NodeInfoView extends Component {
     }
     __DEV__ && console.log(regItem); // eslint-disable-line no-undef
     return (
-      <View style={[styles.container, (Platform.OS === 'android' && !this.shouldShowThisComponent()) ? {
-        height: 0} : {height: HEIGHT}]}>
+      <View style={[styles.container, {height: this.state.nodeInfoViewHeight}, (this.shouldShowThisComponent()) ? {
+        bottom: 0} : {bottom: -this.state.nodeInfoViewHeight}]}>
         <View style={{
-          height: HEIGHT * 0.5,
-          width: WIDTH * 0.6,
-          backgroundColor: '#f9f9f9',
-          padding: 20,
-          paddingRight: 0
+          flex: 1,
+          backgroundColor: 'transparent'
         }}>
           <Text style={{
+            fontSize: 20,
             color: 'black',
-            fontSize: 16,
-            marginBottom: 10
-          }}>{n}</Text>
-          <Text style={{
-            color: 'black',
-            fontSize: 14,
-            marginBottom: 10
-          }}>{addr}</Text>
-          <Text style={{
-            color: 'black',
-            fontSize: 14,
-            marginBottom: 10
-          }}>{p}</Text>
-          <Text style={{
-            color: 'black',
-            fontSize: 14,
-            marginBottom: 10
-          }}>{eDP}</Text>
-          {customItem.map((el, i) =>
-            <Text
-              key={i}
+            fontWeight: '500',
+            marginLeft: 20
+          }}>아래 물품들을 구매하세요</Text>
+          <ScrollView style={{
+            marginTop: 20,
+            marginLeft: 20,
+            backgroundColor: 'transparent'
+          }}>
+            {customItem.map((el, i) => this.renderItemRow(el.n, el.cnt, i))}
+          </ScrollView>
+          <View style={{
+            height: 70,
+            width: WIDTH,
+            backgroundColor: 'transparent',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <TouchableOpacity
               style={{
-                color: 'black',
-                fontSize: 14,
-                marginBottom: 10
+                height: 40,
+                width: WIDTH * 0.4,
+                backgroundColor: 'black',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 2,
+                marginRight: 20
               }}
+              onPress={this.handleDoneBtn}
             >
-              {el.n} x {el.cnt}
-            </Text>
-          )}
-          <TouchableOpacity
-            style={{
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              height: 30,
-              width: 30,
-              backgroundColor: 'transparent',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-            onPress={this.handleCancelBtn}
-          >
-            <Text style={{fontSize: 20}}>X</Text>
-          </TouchableOpacity>
+              <Text style={{
+                color: 'white',
+                fontSize: 20
+              }}>배달완료</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                height: 40,
+                width: WIDTH * 0.4,
+                backgroundColor: 'black',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 2
+              }}
+              onPress={this.handleCancelBtn}
+            >
+              <Text style={{
+                color: 'white',
+                fontSize: 20
+              }}>닫기</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -140,21 +222,23 @@ class NodeInfoView extends Component {
 }
 
 NodeInfoView.propTypes = {
-  refBackgroundView: PropTypes.any.isRequired,
-
   // reducers/map
   markerTapped: PropTypes.object,
   setMarkerTapped: PropTypes.func,
   resetMarkerTapped: PropTypes.func,
 
   // reducers/orderStatus
-  runnersOrderDetails: PropTypes.object
+  runnersOrderDetails: PropTypes.object,
+
+  // reducers/components/home
+  currentLocation: PropTypes.object
 };
 
 const mapStateToProps = (state) => {
   return {
     markerTapped: state.map.markerTapped,
-    runnersOrderDetails: state.orderStatus.runnersOrderDetails
+    runnersOrderDetails: state.orderStatus.runnersOrderDetails,
+    currentLocation: state.home.currentLocation
   };
 };
 
