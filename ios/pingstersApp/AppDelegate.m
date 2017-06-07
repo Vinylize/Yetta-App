@@ -169,7 +169,7 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-  [YettaFCM didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+  //[YettaFCM didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
   [RCTPushNotificationManager didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
   
   #ifdef DEBUG
@@ -199,7 +199,12 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void (^)())completionHandler {
-  [RCTPushNotificationManager didReceiveRemoteNotification:response.notification.request.content.userInfo fetchCompletionHandler:completionHandler];
+  
+  NSLog(@"The user clicked a push while the app was in the BG");
+  NSMutableDictionary * notification = [NSMutableDictionary dictionaryWithDictionary:response.notification.request.content.userInfo];
+  [notification setValue:@true forKey:@"tappedByUser"];
+  [RCTPushNotificationManager didReceiveRemoteNotification:notification fetchCompletionHandler:completionHandler];
+  
   [YettaFCM didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
   
   #ifdef DEBUG
@@ -224,11 +229,19 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
   [YettaFCM tokenRefreshNotification:notification];
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+  NSLog(@"application did become active");
   [YettaFCM applicationDidBecomeActive:application];
 }
 
+- (void) applicationWillEnterForeground: (UIApplication *) application
+{
+  NSLog(@"application will enter foreground");
+}
+
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+  NSLog(@"application did enter background");
   [YettaFCM applicationDidEnterBackground:application];
 }
 

@@ -20,6 +20,7 @@ import {
   setOnDelivery
 } from './../../actions/runnerStatusActions';
 import { setRunnerNotification } from '../../actions/pushNotificationActions';
+import { setRunnersOrderDetails } from './../../actions/orderStatusActions';
 
 const WIDTH = Dimensions.get('window').width;
 // const HEIGHT = Dimensions.get('window').height;
@@ -62,6 +63,8 @@ class DestInfoView extends Component {
       newArr.pop();
     }
     this.props.setRunnerNotification(newArr);
+
+    this.props.setRunnersOrderDetails({});
 
     LayoutAnimation.easeInEaseOut();
     this.props.resetMarkerTapped();
@@ -187,6 +190,7 @@ DestInfoView.propTypes = {
 
   // reducers/orderStatus
   runnersOrderDetails: PropTypes.object,
+  setRunnersOrderDetails: PropTypes.func,
 
   // reducers/runnerStatus
   setRunnerCompleteDelivery: PropTypes.func,
@@ -211,7 +215,8 @@ const mapDispatchToProps = (dispatch) => {
     resetMarkerTapped: () => dispatch(resetMarkerTapped()),
     setRunnerCompleteDelivery: (runnerCompleteDelivery) => dispatch(setRunnerCompleteDelivery(runnerCompleteDelivery)),
     setRunnerNotification: (runnerNotification) => dispatch(setRunnerNotification(runnerNotification)),
-    setOnDelivery: (onDelivery) => dispatch(setOnDelivery(onDelivery))
+    setOnDelivery: (onDelivery) => dispatch(setOnDelivery(onDelivery)),
+    setRunnersOrderDetails: (runnersOrderDetails) => dispatch(setRunnersOrderDetails(runnersOrderDetails))
   };
 };
 
