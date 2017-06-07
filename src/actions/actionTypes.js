@@ -20,6 +20,8 @@ export const setRunnerCompleteDelivery = 'SET_RUNNER_COMPLETE_DELIVERY';
 
 // pushNotification
 export const setRunnerNotification = 'SET_RUNNER_NOTIFICATION';
+export const setLaunchedByUserTapPushNotif = 'SET_LAUNCHED_BY_USER_TAP_PUSH_NOTIF';
+export const resetLaunchedByUserTapPushNotif = 'RESET_LAUNCHED_BY_USER_TAP_PUSH_NOTIF';
 
 // components/home
 export const setCameraWillMoveByPlaceDetailAPI = 'SET_CAMERA_WILL_MOVE_BY_PLACE_DETAIL_API';

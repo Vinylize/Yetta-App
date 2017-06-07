@@ -20,15 +20,16 @@ import { setNavigator } from './../actions/navigatorActions';
 import { setCurrentLocation } from './../actions/componentsActions/homeActions';
 // [end redux functions]
 
+// actions
+import * as pushNotificationActions from './../actions/pushNotificationActions';
+
 import IMG_LOGO from './../../assets/logo.png';
 
 class Splash extends Component {
   constructor() {
     super();
-    this.state = {
-
-    };
     this.autoLoginIfUserFound = this.autoLoginIfUserFound.bind(this);
+    this.checkIfLaunchedByUserTapPushNotification = this.checkIfLaunchedByUserTapPushNotification.bind(this);
   }
 
   componentWillMount() {
@@ -74,6 +75,15 @@ class Splash extends Component {
     });
   }
 
+  checkIfLaunchedByUserTapPushNotification() {
+    const { status, notification } = this.props.launchedByUserTapPushNotif;
+    if (status === true) {
+      if (Platform.OS === 'ios') {
+        pushNotificationActions.receivedRemoteNotificationIOS(notification);
+      }
+    }
+  }
+
   queryUser() {
     return YettaServerAPIuserInfo.queryUser()
       .then((viewer) => {
@@ -97,6 +107,7 @@ class Splash extends Component {
       })
       .then(viewer => {
         if (viewer.isPV === true) {
+          this.checkIfLaunchedByUserTapPushNotification();
           this.navigateToHome();
         } else if (viewer.isPV === false) {
           this.navigateToPhoneVerification();
@@ -172,7 +183,16 @@ class Splash extends Component {
 Splash.propTypes = {
   navigation: PropTypes.object.isRequired,
   setNavigator: PropTypes.func,
-  setUser: PropTypes.func
+  setUser: PropTypes.func,
+
+  // reducers/pushNotification
+  launchedByUserTapPushNotif: PropTypes.object
+};
+
+const mapStateToProps = (state) => {
+  return {
+    launchedByUserTapPushNotif: state.pushNotification.launchedByUserTapPushNotif
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -182,4 +202,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(undefined, mapDispatchToProps)(Splash);
+export default connect(mapStateToProps, mapDispatchToProps)(Splash);
