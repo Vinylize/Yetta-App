@@ -37,6 +37,7 @@ export const getDeviceID = () => {
       );
     }
     // todo: handle error
+    __DEV__ && console.log('Error: getDeviceID rejected'); // eslint-disable-line no-undef
     return reject();
   });
 };
@@ -49,6 +50,7 @@ export const getLokkaClient = () => {
       return getDeviceID();
     })
     .then(deviceID => {
+      __DEV__ && console.log(deviceID); // eslint-disable-line no-undef
       client._transport._httpOptions.headers = {
         authorization: fcmToken,
         device: deviceID

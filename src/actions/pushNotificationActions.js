@@ -117,23 +117,47 @@ export const receivedRemoteNotificationIOS = (notification) => {
 };
 
 export const receivedRemoteNotificationAndroid = (data) => {
-  // runnerNotification must be structured same as what iOS does
-  if (data && data.fcm && data.type === 'NEW_ORDER') {
-    changeUserModeIfNeeded(SHOULD_BE_RUNNER);
-    const message = {
-      title: data.fcm.title,
-      body: data.fcm.body
-    };
-    const chunk = { message, data };
-    const newArr = store.getState().pushNotification.runnerNotification.concat(chunk);
-    store.dispatch(setRunnerNotification(newArr));
+  __DEV__ && console.log(data); // eslint-disable-line no-undef
+
+  let tappedByUser = false;
+
+  if (data && data.opened_from_tray === '1' && data.type !== null) {
+    // user tapped push notification from app in background/killed
+    // opened_from_tray can be '1' even if there was nothing to receive
+    tappedByUser = true;
+  }
+
+  if (data && data.type === 'NEW_ORDER') {
+    if (tappedByUser === true) {
+      changeUserModeIfNeeded(SHOULD_BE_RUNNER);
+      showNewOrder();
+    }
+    // todo: fcm information may not needed anymore. remove
+    if (data && data.fcm) {
+      const message = {
+        title: data.fcm.title,
+        body: data.fcm.body
+      };
+      const chunk = { message, data };
+      const newArr = store.getState().pushNotification.runnerNotification.concat(chunk);
+      store.dispatch(setRunnerNotification(newArr));
+    }
   } else if (data && data.type === 'CATCH_ORDER') {
+    if (tappedByUser === true) {
+      changeUserModeIfNeeded(SHOULD_BE_ORDER);
+    }
     changeUserModeIfNeeded(SHOULD_BE_ORDER);
     store.dispatch(foundRunnerAndUpdateOrder(data.data));
   } else if (data && data.type === 'ADMIN_DISAPPROVE_RUNNER') {
-    changeUserModeIfNeeded(SHOULD_BE_RUNNER);
+    if (tappedByUser === true) {
+      changeUserModeIfNeeded(SHOULD_BE_RUNNER);
+      showIdVerificationView();
+    }
   } else if (data && data.type === 'ADMIN_APPROVE_RUNNER') {
-    changeUserModeIfNeeded(SHOULD_BE_RUNNER);
+    if (tappedByUser === true) {
+      changeUserModeIfNeeded(SHOULD_BE_RUNNER);
+      showRunnerProfile();
+    }
   }
   store.dispatch(resetLaunchedByUserTapPushNotif());
 };

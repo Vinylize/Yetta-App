@@ -102,7 +102,7 @@ class Splash extends Component {
     YettaServerAPIauth.userSignIn()
       .then(res => {
         // todo: handle on res error codes
-        console.log(res);
+        __DEV__ && console.log(res); // eslint-disable-line no-undef
         return this.queryUser(lokkaClient);
       })
       .then(viewer => {

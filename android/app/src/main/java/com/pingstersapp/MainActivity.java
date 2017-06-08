@@ -210,12 +210,15 @@ public class MainActivity extends ReactActivity implements
         if (intent.getExtras() != null) {
             for (String key : intent.getExtras().keySet()) {
                 String value = intent.getExtras().get(key).toString();
-                Log.d(TAG, "background Key11: " + key + " Value: " + value);
+                Log.d(TAG, "background Key: " + key + " Value: " + value);
             }
         }
         Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationBackgroundedOrKilled");
         i.putExtra("message", intent.putExtra("opened_from_tray", 1)); // todo: change getIntent() to appropriate
+
         sendOrderedBroadcast(i, null);
+
+
 
         setIntent(intent);
     }
