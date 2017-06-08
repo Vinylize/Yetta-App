@@ -10,6 +10,7 @@ export const queryUser = () => {
   return new Promise((resolve, reject) => {
     return YettaServerAPIclient.getLokkaClient()
       .then(client => {
+        __DEV__ && console.log('got client: ' + JSON.stringify(client)); // eslint-disable-line no-undef
         return client.query(`{
           viewer{
             isPV,
@@ -30,6 +31,7 @@ export const queryUser = () => {
         }`);
       })
       .then(({viewer}) => {
+        __DEV__ && console.log(viewer); // eslint-disable-line no-undef
         const { mode, isRA, isWJ } = viewer;
         if (mode === 0) {
           store.dispatch(setIsRunner(false));

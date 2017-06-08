@@ -69,7 +69,7 @@ class RunnerView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { runnerNotification } = nextProps;
+    const { runnerNotification, runnersOrderDetails } = nextProps;
     if (this.state.receivedNewOrder === false) {
       if (runnerNotification && runnerNotification.length > 0) {
         const { data } = runnerNotification[runnerNotification.length - 1].data;
@@ -89,6 +89,10 @@ class RunnerView extends Component {
               __DEV__ && console.log(err); // eslint-disable-line no-undef
             });
         }
+      }
+    } else if (this.state.receivedNewOrder === true) {
+      if (!Object.keys(runnersOrderDetails).length) {
+        this.setState({receivedNewOrder: false});
       }
     }
   }

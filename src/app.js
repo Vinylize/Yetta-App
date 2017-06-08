@@ -8,18 +8,13 @@ import { Provider } from 'react-redux';
 import HockeyApp from 'react-native-hockeyapp';
 import store from './store';
 import AppWithNavigationState from './navigator/navigatorRoutes';
+
 // [start redux actions]
-import { setRunnerNotification } from './actions/pushNotificationActions';
-import { foundRunnerAndUpdateOrder } from './actions/orderStatusActions';
-// [end redux actions]
+import { setLaunchedByUserTapPushNotif } from './actions/pushNotificationActions';
+
+import * as PushNotificationActions from './actions/pushNotificationActions';
 
 export default class Yetta extends Component {
-  constructor(props) {
-    super(props);
-    this.receivedRemoteNotificationAndroid = this.receivedRemoteNotificationAndroid.bind(this);
-    this.receivedRemoteNotificationIOS = this.receivedRemoteNotificationIOS.bind(this);
-  }
-
   componentWillMount() {
     const HOCKEY_APP_ID = Platform.OS === 'android' ?
       'a2b9cda775f044ebb66dd827eb98c03f' :
@@ -33,11 +28,11 @@ export default class Yetta extends Component {
     // [start adding FCM listeners]
     if (Platform.OS === 'android') {
       // todo: research how to remove these listeners from DeviceEventEmitter for possible memory leaks
-      DeviceEventEmitter.addListener('FCMNotificationReceived', async(data) => this.receivedRemoteNotificationAndroid(data));
+      DeviceEventEmitter.addListener('FCMNotificationReceived', async(data) => PushNotificationActions.receivedRemoteNotificationAndroid(data));
     } else if (Platform.OS === 'ios') {
       PushNotificationIOS.addEventListener('register', console.log);
       PushNotificationIOS.addEventListener('registrationError', console.log);
-      PushNotificationIOS.addEventListener('notification', this.receivedRemoteNotificationIOS);
+      PushNotificationIOS.addEventListener('notification', PushNotificationActions.receivedRemoteNotificationIOS);
     }
     // [end adding FCM listeners]
   }
@@ -49,43 +44,32 @@ export default class Yetta extends Component {
       HockeyApp.checkForUpdate();
     }
     /* eslint-enable no-undef */
+
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.getInitialNotification()
+        .then(notification => {
+          __DEV__ && console.log(notification); // eslint-disable-line no-undef
+          if (notification) {
+            // res is not null when app launched by user tapping push notification
+            store.dispatch(setLaunchedByUserTapPushNotif({
+              status: true,
+              notification: notification
+            }));
+          }
+        });
+    } else if (Platform.OS === 'android') {
+      /**
+       * getting initial notification on app start from background/killed is implemented differently.
+       * for Android, receivedRemoteNotificationAndroid will take care normally but payload includes opened_from_tray
+       * as key and "1" as value only when app launched from app start from user tapping push notification.
+       */
+    }
   }
 
   componentWillUnmount() {
     PushNotificationIOS.removeEventListener('register', console.log);
     PushNotificationIOS.removeEventListener('registrationError', console.log);
     PushNotificationIOS.removeEventListener('notification', console.log);
-  }
-
-  receivedRemoteNotificationAndroid(data) {
-    // runnerNotification must be structured same as what iOS does
-    if (data && data.fcm && data.type === 'NEW_ORDER') {
-      const message = {
-        title: data.fcm.title,
-        body: data.fcm.body
-      };
-      const chunk = { message, data };
-      const newArr = store.getState().pushNotification.runnerNotification.concat(chunk);
-      store.dispatch(setRunnerNotification(newArr));
-    } else if (data && data.type === 'CATCH_ORDER') {
-      store.dispatch(foundRunnerAndUpdateOrder(data.data));
-    }
-  }
-
-  receivedRemoteNotificationIOS(notification) {
-    notification.finish(PushNotificationIOS.FetchResult.NewData);
-
-    const message = notification.getMessage();
-    const data = notification.getData();
-
-    if (data && data.type === 'NEW_ORDER') {
-      // todo: reducing size of chunk may improve performance
-      const chunk = { message, data };
-      const newArr = store.getState().pushNotification.runnerNotification.concat(chunk);
-      store.dispatch(setRunnerNotification(newArr));
-    } else if (data && data.type === 'CATCH_ORDER') {
-      store.dispatch(foundRunnerAndUpdateOrder(data.data));
-    }
   }
 
   render() {
