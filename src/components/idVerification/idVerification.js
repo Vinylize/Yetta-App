@@ -69,7 +69,14 @@ class IdVerification extends Component {
   }
 
   handleSubmitButton() {
-    YettaServerAPIverification.idVerificationImageUpload(this.state.imageDataBase64);
+    YettaServerAPIverification.idVerificationImageUpload(this.state.imageDataBase64)
+      .then(() => {
+        // reset image
+        this.setState({
+          idImage: undefined,
+          imageDataBase64: undefined
+        });
+      });
   }
 
   renderImage() {
