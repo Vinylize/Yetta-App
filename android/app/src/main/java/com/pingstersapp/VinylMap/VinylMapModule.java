@@ -23,9 +23,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.pingstersapp.R;
 import com.pingstersapp.VinylMap.latlnginterpolation.LatLngInterpolator;
 import com.pingstersapp.VinylMap.latlnginterpolation.MarkerAnimation;
@@ -42,7 +44,9 @@ public class VinylMapModule extends MapView implements
     public static GoogleMap mMap;
     private final VinylMapManager manager;
     private final ThemedReactContext context;
-    private Marker marker; // todo: remove this
+    private Marker nodeMarker;
+    private Marker destMarker;
+    private HashMap<String, Marker> hashMapRunnerMarker;
     private final Map<Marker, String> markerMap = new HashMap<>();
     private final int baseMapPadding = 50;
 
@@ -52,6 +56,8 @@ public class VinylMapModule extends MapView implements
 
         this.manager = manager;
         this.context = reactContext;
+
+        hashMapRunnerMarker = new HashMap<>();
 
         super.onCreate(null);
         super.onResume();
@@ -110,6 +116,7 @@ public class VinylMapModule extends MapView implements
     @Override
     public void onCameraMove() {
         // TBD
+        Log.d("onCameraMove", "camera center at " + mMap.getCameraPosition().target);
     }
 
     @Override
@@ -148,11 +155,21 @@ public class VinylMapModule extends MapView implements
     }
 
     public void updateMarkerHelper(final String latitude, final String longitude) {
-        if (marker != null) {
-            LatLng tmp = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-            LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Linear();
-            MarkerAnimation.animateMarkerToGB(marker, tmp, latLngInterpolator);
+//        if (marker != null) {
+//            LatLng tmp = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+//            LatLngInterpolator latLngInterpolator = new LatLngInterpolator.Linear();
+//            MarkerAnimation.animateMarkerToGB(marker, tmp, latLngInterpolator);
+//        }
+    }
+
+    public void clearMap() {
+        if (nodeMarker != null) {
+            nodeMarker.remove();
         }
+        if (destMarker != null) {
+            destMarker.remove();
+        }
+        mMap.clear();
     }
 
     public void animateToLocation(final String latitude, final String longitude) {
@@ -180,6 +197,22 @@ public class VinylMapModule extends MapView implements
             uiHandler.post(runnable);
         }
     }
+
+    public void addMarkerNode(final String latitude, final String longitude, final String name, final String nodeId, final ReadableArray list) {
+        final LatLng nodeLatLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+        nodeMarker = mMap.addMarker(new MarkerOptions()
+                                        .position(nodeLatLng)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.star)));
+    }
+
+    public void addMarkerDest(final String latitude, final String longitude, final String name, final String uId) {
+        final LatLng destLatLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+        destMarker = mMap.addMarker(new MarkerOptions()
+                                        .position(destLatLng)
+                                        .rotation(45)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.dest_marker)));
+    }
+
     public void updateMarker(final String latitude, final String longitude) {
         if (mMap != null) {
             Handler uiHandler = new Handler(Looper.getMainLooper());

@@ -141,12 +141,12 @@ public class MainActivity extends ReactActivity implements
         // [START handle push notification after app terminated]
         final Intent message = getIntent();
 
-        IntentFilter intentFilter = new IntentFilter("com.pingstersapp.fcm.ReceiveNotificationKilled");
+        IntentFilter intentFilter = new IntentFilter("com.pingstersapp.fcm.ReceiveNotificationKilledHelper");
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationBackgroundedOrKilled");
-                i.putExtra("message", message);
+                Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationKilled");
+                i.putExtra("message", message.putExtra("opened_from_tray", 1));
                 sendOrderedBroadcast(i, null);
             }
         }, intentFilter);
@@ -213,12 +213,10 @@ public class MainActivity extends ReactActivity implements
                 Log.d(TAG, "background Key: " + key + " Value: " + value);
             }
         }
-        Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationBackgroundedOrKilled");
-        i.putExtra("message", intent.putExtra("opened_from_tray", 1)); // todo: change getIntent() to appropriate
+        Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationBackground");
+        i.putExtra("message", intent.putExtra("opened_from_tray", 1));
 
         sendOrderedBroadcast(i, null);
-
-
 
         setIntent(intent);
     }
