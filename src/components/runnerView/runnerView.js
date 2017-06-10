@@ -141,9 +141,9 @@ class RunnerView extends Component {
         __DEV__ && console.log(res); // eslint-disable-line no-undef
         BackgroundTimer.clearTimeout(this.intervalId);
         let vmm = NativeModules.VinylMapManager;
-        const { dest, nId, oId, items } = this.props.runnersOrderDetails;
+        const { n1, coordinate, nId, oId, items } = this.props.runnersOrderDetails;
 
-        if (vmm && dest && nId && oId && items) {
+        if (vmm && n1 && coordinate && nId && oId && items) {
           let itemList = [];
           items.regItem.map(el => itemList.push(`${el.n} x ${el.cnt}`));
           items.customItem.map(el => itemList.push(`${el.n} x ${el.cnt}`));
@@ -153,7 +153,7 @@ class RunnerView extends Component {
             {latitude: parseFloat(this.props.currentLocation.lat), longitude: parseFloat(this.props.currentLocation.lon)}
           ];
           vmm.addMarkerNode(String(nId.coordinate.lat), String(nId.coordinate.lon), String(nId.n), String(nId.id), itemList);
-          vmm.addMarkerDest(String(dest.lat), String(dest.lon), dest.n1, oId.id);
+          vmm.addMarkerDest(String(coordinate.lat), String(coordinate.lon), n1, oId.id);
 
           __DEV__ && console.log('fitToCoordinates with: ', coordinatesArray); // eslint-disable-line no-undef
           const edgePadding = {
