@@ -86,10 +86,6 @@ public class YettaFcmModule extends ReactContextBaseJavaModule {
     private void registerMessageHandlerOnBackgrounded() {
         IntentFilter intentFilter = new IntentFilter("com.pingstersapp.fcm.ReceiveNotificationBackground");
 
-//        System.out.println("노티 리시버 등록");
-//        Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationKilled");
-//        getReactApplicationContext().sendOrderedBroadcast(i, null);
-
         getReactApplicationContext().registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -137,7 +133,7 @@ public class YettaFcmModule extends ReactContextBaseJavaModule {
         WritableMap fcm = Arguments.createMap();
         fcm.putString("action", intent.getAction());
         params.putMap("fcm", fcm);
-        
+
         params.putInt("opened_from_tray", 1);
         return params;
     }

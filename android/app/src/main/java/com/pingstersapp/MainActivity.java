@@ -138,19 +138,6 @@ public class MainActivity extends ReactActivity implements
         }
         // [END handle_data_extras]
 
-        // [START handle push notification after app terminated]
-        final Intent message = getIntent();
-
-        IntentFilter intentFilter = new IntentFilter("com.pingstersapp.fcm.ReceiveNotificationKilledHelper");
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationKilled");
-                i.putExtra("message", message.putExtra("opened_from_tray", 1));
-                sendOrderedBroadcast(i, null);
-            }
-        }, intentFilter);
-        // [END handle push notification after app terminated]
 
         // [START register broadcastReceivers for LocationService Methods]
         IntentFilter intentFilterStartLocationUpdates = new IntentFilter(
