@@ -129,9 +129,9 @@ class OrderHistory extends Component {
               tP
               cAt
               status
-              dest {
-                n1
-                n2
+              n1
+              n2
+              coordinate {
                 lat
                 lon
               }
@@ -152,11 +152,11 @@ class OrderHistory extends Component {
           }
         }`);
       })
-      .then(res => {
+      .then(({viewer}) => {
         this.setState({
-          statusCategory: JSON.parse(res.viewer.orderStatusCategory)
+          statusCategory: JSON.parse(viewer.orderStatusCategory)
         });
-        return res.viewer.orderHistory;
+        return viewer.orderHistory;
       })
       .then(orderHistory => {
         this.setState({
@@ -167,7 +167,7 @@ class OrderHistory extends Component {
               date: new Date(order.cAt).toISOString().slice(0, 10),
               itemSummary: this.getOrderItemSummary(order.items),
               startNode: `${order.nId.addr} ${order.nId.n}`,
-              dest: `${order.dest.n1} ${order.dest.n2}`,
+              dest: `${order.n1} ${order.n2}`,
               eDP: order.eDP,
               rDP: order.rDP,
               tP: order.tP
