@@ -4,14 +4,17 @@ package com.pingstersapp.fcm;
  * Created by jeyoungchan on 3/15/17.
  */
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -31,7 +34,7 @@ public class YettaFcmModule extends ReactContextBaseJavaModule {
     public YettaFcmModule(ReactApplicationContext reactContext) {
         super(reactContext);
         registerMessageHandlerOnForeground();
-        registerMessageHandlerOnBackgroundedOrKilled();
+        registerMessageHandlerOnBackgrounded();
     }
 
     @Override
@@ -80,12 +83,8 @@ public class YettaFcmModule extends ReactContextBaseJavaModule {
         }, intentFilter);
     }
 
-    private void registerMessageHandlerOnBackgroundedOrKilled() {
-        IntentFilter intentFilter = new IntentFilter("com.pingstersapp.fcm.ReceiveNotificationBackgroundedOrKilled");
-
-        System.out.println("노티 리시버 등록");
-        Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationKilled");
-        getReactApplicationContext().sendOrderedBroadcast(i, null);
+    private void registerMessageHandlerOnBackgrounded() {
+        IntentFilter intentFilter = new IntentFilter("com.pingstersapp.fcm.ReceiveNotificationBackground");
 
         getReactApplicationContext().registerReceiver(new BroadcastReceiver() {
             @Override
@@ -96,7 +95,7 @@ public class YettaFcmModule extends ReactContextBaseJavaModule {
                     if (message.getExtras() != null) {
                         for (String key : message.getExtras().keySet()) {
                             Object value = message.getExtras().get(key);
-                            Log.d(TAG, "fcm module Key: " + key + " Value: " + value);
+                            Log.d(TAG, "background fcm module Key: " + key + " Value: " + value);
                             if (value != null)
                                 params.putString(key, value.toString());
                         }
@@ -105,6 +104,38 @@ public class YettaFcmModule extends ReactContextBaseJavaModule {
                 }
             }
         }, intentFilter);
+    }
+
+    @ReactMethod
+    public void getInitialNotification(Promise promise) {
+        Activity activity = getCurrentActivity();
+        if (activity == null) {
+            Log.d(TAG, "activity is null");
+            promise.resolve(null);
+            return;
+        }
+        promise.resolve(parseIntent(getCurrentActivity().getIntent()));
+    }
+
+    private WritableMap parseIntent(Intent intent){
+        WritableMap params;
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            try {
+                params = Arguments.fromBundle(extras);
+            } catch (Exception e){
+                Log.e(TAG, e.getMessage());
+                params = Arguments.createMap();
+            }
+        } else {
+            params = Arguments.createMap();
+        }
+        WritableMap fcm = Arguments.createMap();
+        fcm.putString("action", intent.getAction());
+        params.putMap("fcm", fcm);
+
+        params.putInt("opened_from_tray", 1);
+        return params;
     }
 
     @ReactMethod

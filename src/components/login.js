@@ -115,7 +115,7 @@ class Login extends Component {
       .then((viewer) => {
         this.props.setUser(viewer);
         this.hideLoading();
-        console.log(viewer);
+        __DEV__ && console.log(viewer); // eslint-disable-line no-undef
         return viewer;
       })
       .catch(e => {

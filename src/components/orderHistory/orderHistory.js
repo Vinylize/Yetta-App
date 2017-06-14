@@ -152,11 +152,11 @@ class OrderHistory extends Component {
           }
         }`);
       })
-      .then(res => {
+      .then(({viewer}) => {
         this.setState({
-          statusCategory: JSON.parse(res.viewer.orderStatusCategory)
+          statusCategory: JSON.parse(viewer.orderStatusCategory)
         });
-        return res.viewer.orderHistory;
+        return viewer.orderHistory;
       })
       .then(orderHistory => {
         this.setState({

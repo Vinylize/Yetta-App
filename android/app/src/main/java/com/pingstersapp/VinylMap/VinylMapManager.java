@@ -66,6 +66,13 @@ public class VinylMapManager extends ViewGroupManager<VinylMapModule> {
     }
 
     @ReactMethod
+    public void clearMap() {
+        if (this._vinylMapModule != null) {
+            this._vinylMapModule.clearMap();
+        }
+    }
+
+    @ReactMethod
     public void animateToLocation(final String latitude, final String longitude) {
         if (this._vinylMapModule != null) {
             this._vinylMapModule.animateToLocation(latitude, longitude);
@@ -76,6 +83,20 @@ public class VinylMapManager extends ViewGroupManager<VinylMapModule> {
     public void animateToLocationWithZoom(final String latitude, final String longitude, final float zoom) {
         if (this._vinylMapModule != null) {
             this._vinylMapModule.animateTolocationWithZoom(latitude, longitude, zoom);
+        }
+    }
+
+    @ReactMethod
+    public void addMarkerNode(final String latitude, final String longitude, final String name, final String nodeId, final ReadableArray list) {
+        if (this._vinylMapModule != null) {
+            this._vinylMapModule.addMarkerNode(latitude, longitude, name, nodeId, list);
+        }
+    }
+
+    @ReactMethod
+    public void addMarkerDest(final String latitude, final String longitude, final String name, final String uId) {
+        if (this._vinylMapModule != null) {
+            this._vinylMapModule.addMarkerDest(latitude, longitude, name, uId);
         }
     }
 

@@ -138,19 +138,6 @@ public class MainActivity extends ReactActivity implements
         }
         // [END handle_data_extras]
 
-        // [START handle push notification after app terminated]
-        final Intent message = getIntent();
-
-        IntentFilter intentFilter = new IntentFilter("com.pingstersapp.fcm.ReceiveNotificationKilled");
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationBackgroundedOrKilled");
-                i.putExtra("message", message);
-                sendOrderedBroadcast(i, null);
-            }
-        }, intentFilter);
-        // [END handle push notification after app terminated]
 
         // [START register broadcastReceivers for LocationService Methods]
         IntentFilter intentFilterStartLocationUpdates = new IntentFilter(
@@ -213,12 +200,10 @@ public class MainActivity extends ReactActivity implements
                 Log.d(TAG, "background Key: " + key + " Value: " + value);
             }
         }
-        Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationBackgroundedOrKilled");
-        i.putExtra("message", intent.putExtra("opened_from_tray", 1)); // todo: change getIntent() to appropriate
+        Intent i = new Intent("com.pingstersapp.fcm.ReceiveNotificationBackground");
+        i.putExtra("message", intent.putExtra("opened_from_tray", 1));
 
         sendOrderedBroadcast(i, null);
-
-
 
         setIntent(intent);
     }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   DeviceEventEmitter,
+  NativeModules,
   PushNotificationIOS,
   Platform
 } from 'react-native';
@@ -58,11 +59,20 @@ export default class Yetta extends Component {
           }
         });
     } else if (Platform.OS === 'android') {
-      /**
-       * getting initial notification on app start from background/killed is implemented differently.
-       * for Android, receivedRemoteNotificationAndroid will take care normally but payload includes opened_from_tray
-       * as key and "1" as value only when app launched from app start from user tapping push notification.
-       */
+      const AndroidYettaFCMManager = NativeModules.YettaFCMManager;
+      AndroidYettaFCMManager.getInitialNotification()
+        .then(notification => {
+          __DEV__ && console.log(notification); // eslint-disable-line no-undef
+          if (notification && notification.opened_from_tray === 1 && notification.fcm && notification.fcm.action) {
+            store.dispatch(setLaunchedByUserTapPushNotif({
+              status: true,
+              notification: notification
+            }));
+          }
+        })
+        .catch(err => {
+          __DEV__ && console.log(err); // eslint-disable-line no-undef
+        });
     }
   }
 
