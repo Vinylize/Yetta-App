@@ -121,24 +121,22 @@ export const receivedRemoteNotificationAndroid = (data) => {
 
   let tappedByUser = false;
 
-  if (data && data.opened_from_tray === '1' && data.type !== null) {
+  if (data && (data.opened_from_tray === '1' || data.opened_from_tray === 1) && data.type !== null) {
     // user tapped push notification from app in background/killed
     // opened_from_tray can be '1' even if there was nothing to receive
+    __DEV__ && console.log('push notification tapped by user'); // eslint-disable-line no-undef
     tappedByUser = true;
   }
 
   if (data && data.type === 'NEW_ORDER') {
     if (tappedByUser === true) {
+      __DEV__ && console.log('new order tapped by user'); // eslint-disable-line no-undef
       changeUserModeIfNeeded(SHOULD_BE_RUNNER);
       showNewOrder();
     }
-    // todo: fcm information may not needed anymore. remove
-    if (data && data.fcm) {
-      const message = {
-        title: data.fcm.title,
-        body: data.fcm.body
-      };
-      const chunk = { message, data };
+
+    if (data) {
+      const chunk = { data };
       const newArr = store.getState().pushNotification.runnerNotification.concat(chunk);
       store.dispatch(setRunnerNotification(newArr));
     }

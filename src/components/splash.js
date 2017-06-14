@@ -80,6 +80,8 @@ class Splash extends Component {
     if (status === true) {
       if (Platform.OS === 'ios') {
         pushNotificationActions.receivedRemoteNotificationIOS(notification);
+      } else if (Platform.OS === 'android') {
+        pushNotificationActions.receivedRemoteNotificationAndroid(notification);
       }
     }
   }

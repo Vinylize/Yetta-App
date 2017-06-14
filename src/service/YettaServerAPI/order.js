@@ -53,9 +53,9 @@ export const getInitialOrderDetailsForRunner = (orderId) => {
                   cnt
                 }
               },
-              n1,
-              n2,
-              coordinate {
+              dest {
+                n1,
+                n2,
                 lat,
                 lon
               },

@@ -91,12 +91,20 @@ class SearchBar extends Component {
 
       const { lat, lng } = coordinate;
       this.props.setDestinationLocation({lat, lon: lng});
-      vmm.animateToLocation(String(lat), String(lng), 1);
+      if (Platform.OS === 'ios') {
+        vmm.animateToLocation(String(lat), String(lng), 1);
+      } else if (Platform.OS === 'android') {
+        vmm.animateToLocation(String(lat), String(lng));
+      }
     } else {
       // user tapped my-location/ didn't move map at all
       const { lat, lon } = this.props.currentLocation;
       this.props.setDestinationLocation({lat, lon});
-      vmm.animateToLocation(String(lat), String(lon), 1);
+      if (Platform.OS === 'ios') {
+        vmm.animateToLocation(String(lat), String(lon), 1);
+      } else if (Platform.OS === 'android') {
+        vmm.animateToLocation(String(lat), String(lon));
+      }
     }
 
     /**

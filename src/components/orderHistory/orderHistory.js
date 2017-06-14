@@ -129,9 +129,9 @@ class OrderHistory extends Component {
               tP
               cAt
               status
-              n1
-              n2
-              coordinate {
+              dest {
+                n1
+                n2
                 lat
                 lon
               }
@@ -167,7 +167,7 @@ class OrderHistory extends Component {
               date: new Date(order.cAt).toISOString().slice(0, 10),
               itemSummary: this.getOrderItemSummary(order.items),
               startNode: `${order.nId.addr} ${order.nId.n}`,
-              dest: `${order.n1} ${order.n2}`,
+              dest: `${order.dest.n1} ${order.dest.n2}`,
               eDP: order.eDP,
               rDP: order.rDP,
               tP: order.tP

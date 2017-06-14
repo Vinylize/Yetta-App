@@ -64,12 +64,39 @@ class RunnerView extends Component {
     this.handleCatchNewOrderBtn = this.handleCatchNewOrderBtn.bind(this);
   }
 
+  componentWillMount() {
+    const { runnerNotification } = this.props;
+
+    if (this.state.receivedNewOrder === false) {
+      if (runnerNotification && runnerNotification.length > 0) {
+        const { data } = runnerNotification[runnerNotification.length - 1].data;
+        __DEV__ && console.log(data); // eslint-disable-line no-undef
+
+        // if newly received notification's data id is different from the previous one
+        if (data && data !== this.state.lastOrderId) {
+          YettaServerAPIorder.getInitialOrderDetailsForRunner(data)
+            .then(() => {
+              this.setState({
+                receivedNewOrder: true,
+                lastOrderId: data
+              });
+              this.startCount();
+            })
+            .catch(err => {
+              __DEV__ && console.log(err); // eslint-disable-line no-undef
+            });
+        }
+      }
+    }
+  }
+
   componentWillUpdate() {
     LayoutAnimation.easeInEaseOut();
   }
 
   componentWillReceiveProps(nextProps) {
     const { runnerNotification, runnersOrderDetails } = nextProps;
+    __DEV__ && console.log(this.state.receivedNewOrder); // eslint-disable-line no-undef
     if (this.state.receivedNewOrder === false) {
       if (runnerNotification && runnerNotification.length > 0) {
         const { data } = runnerNotification[runnerNotification.length - 1].data;
@@ -141,9 +168,9 @@ class RunnerView extends Component {
         __DEV__ && console.log(res); // eslint-disable-line no-undef
         BackgroundTimer.clearTimeout(this.intervalId);
         let vmm = NativeModules.VinylMapManager;
-        const { n1, coordinate, nId, oId, items } = this.props.runnersOrderDetails;
+        const { dest, nId, oId, items } = this.props.runnersOrderDetails;
 
-        if (vmm && n1 && coordinate && nId && oId && items) {
+        if (vmm && dest && nId && oId && items) {
           let itemList = [];
           items.regItem.map(el => itemList.push(`${el.n} x ${el.cnt}`));
           items.customItem.map(el => itemList.push(`${el.n} x ${el.cnt}`));
@@ -153,7 +180,7 @@ class RunnerView extends Component {
             {latitude: parseFloat(this.props.currentLocation.lat), longitude: parseFloat(this.props.currentLocation.lon)}
           ];
           vmm.addMarkerNode(String(nId.coordinate.lat), String(nId.coordinate.lon), String(nId.n), String(nId.id), itemList);
-          vmm.addMarkerDest(String(coordinate.lat), String(coordinate.lon), n1, oId.id);
+          vmm.addMarkerDest(String(dest.lat), String(dest.lon), dest.n1, oId.id);
 
           __DEV__ && console.log('fitToCoordinates with: ', coordinatesArray); // eslint-disable-line no-undef
           const edgePadding = {
@@ -294,28 +321,16 @@ class RunnerView extends Component {
   }
 
   renderBodyFoundNewOrder() {
-    let lastNotif = '';
-    let title = '';
-    let body = '';
-    if (this.props.runnerNotification) {
-      lastNotif = this.props.runnerNotification[this.props.runnerNotification.length - 1];
-      if (lastNotif) {
-        const { message } = lastNotif;
-        if (message) {
-          title = message.title;
-          body = message.body;
-        }
-      } else {
-        return this.renderBodyWaitingNewOrder();
-      }
-    }
+    const { dest, eDP } = this.props.runnersOrderDetails;
+    let title = dest.n1;
+    let body = eDP;
 
     let remainingTime = Math.floor(10 - (100 - this.state.fill) / 10);
     if (remainingTime < 0) {
       remainingTime = 0;
     }
     return (
-      <View style={{flex: 1.5, backgroundColor: 'transparent', paddingTop: 100}}>
+      <View style={{flex: 1.5, backgroundColor: 'transparent', paddingTop: 100, alignSelf: 'center'}}>
         <AnimatedCircularProgress
           ref="circularProgress"
           size={280}
@@ -344,11 +359,11 @@ class RunnerView extends Component {
                   fontWeight: '600'
                 }}>{title}</Text>
                 <Text style={{
-                  fontSize: 10,
+                  fontSize: 20,
                   marginLeft: 20,
                   marginRight: 20,
                   textAlign: 'center'
-                }}>{body}</Text>
+                }}>{body}원</Text>
                 <Text style={{marginTop: 20}}>
                   {remainingTime}초 남았어요!
                 </Text>
